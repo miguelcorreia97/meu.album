@@ -1952,10 +1952,10 @@ function tick(){
   const ph=phase();
   if(ph==='draft'){const dl=(G.ts||now)+PICK_MS,t=turn();
     if(t===WHO&&now>dl&&L.choosing==null&&L.autoK!==picks().length){L.autoK=picks().length;const [a,b]=offer(picks().length);toast('⏱ Acabou o tempo — escolhi por ti.');L.choosing=null;W(pickPatch(WHO,(Math.random()<.5?a:b).i))}
-    else if(MODE==='online'&&t!==WHO&&now>dl+6000&&L.autoK!==picks().length){L.autoK=picks().length;autoPickFor(t)}}
-  else if(ph==='order'){const dl=(G.orderTs||now)+ORDER_MS;
+    else if(MODE==='online'&&t!==WHO&&!L.peerOnline&&now>dl+45000&&L.autoK!==picks().length){L.autoK=picks().length;autoPickFor(t)}}
+  else if(ph==='order'){const dl=(G.orderTs||now)+orderMs();
     if(!G.orders?.[P(WHO)]&&now>dl&&!L.autoLock){L.autoLock=G.round;toast('⏱ Acabou o tempo — fechei o teu álbum assim.');lockOrder()}
-    else if(MODE==='online'&&G.orders?.[P(WHO)]&&!G.orders?.[P(1-WHO)]&&now>dl+8000&&L.autoLockO!==G.round){L.autoLockO=G.round;W({orders:{[P(1-WHO)]:rawTracks(1-WHO).map((_,k)=>k)},reveal:0,revealAt:now})}}
+    else if(MODE==='online'&&G.orders?.[P(WHO)]&&!G.orders?.[P(1-WHO)]&&!L.peerOnline&&now>dl+60000&&L.autoLockO!==G.round){L.autoLockO=G.round;W({orders:{[P(1-WHO)]:rawTracks(1-WHO).map((_,k)=>k)},reveal:0,revealAt:now})}}
   else if(ph==='duels'){const [k]=stageKind(),dur=STAGE_MS[k];if(dur&&now>(G.revealAt||now)+dur&&L.lastAdv!==stage())advance()}
 }
 setInterval(tick,250);
@@ -2000,7 +2000,7 @@ function rulesBox(){
     body=`<p>No fim analiso <b>como montaste o álbum</b>. Estes pontos valem mais do que os duelos!</p>
     <div class="rchips">${C.map((c,i)=>`<button class="rchip ${sel===i?'on':''}" onclick="L.rsel=${i};render()">${c[0]} ${c[1]}</button>`).join('')}</div>
     <div class="rexp"><b>${C[sel][0]} ${C[sel][1]}</b><span>${C[sel][2]}</span></div>`}
-  if(k===5){body=`<div class="rtimes"><div><b>30 s</b><span>para cada escolha</span><i class="rbar"><em style="animation-duration:6s"></em></i></div><div><b>1 min 30 s</b><span>para ordenar o álbum</span><i class="rbar"><em style="animation-duration:12s"></em></i></div></div>
+  if(k===5){body=`<div class="rtimes"><div><b>30 s</b><span>para cada escolha</span><i class="rbar"><em style="animation-duration:6s"></em></i></div><div><b>50 s · 1:15 · 1:45</b><span>para ordenar álbuns de 5, 8 ou 10 músicas</span><i class="rbar"><em style="animation-duration:12s"></em></i></div></div>
     <p class="rsmall">Se o tempo acabar, escolho por ti ou fecho o álbum como está. Os resultados aparecem aos dois ao mesmo tempo.</p>
     <div class="rtie"><div>🤝 <b>Empate?</b><span>Cada um escolhe uma faixa bónus, também em isto ou aquilo.</span></div><div>🪙 <b>Ainda empatado?</b><span>Decide a moeda.</span></div></div>`}
   return `<div class="panel rules2"><div class="rhead"><span class="mono">como se joga</span><span class="rstep">${k+1} / ${T.length}</span></div>
@@ -2038,7 +2038,7 @@ function mv(k,d){const o=L.order;if(k+d<0||k+d>=o.length)return;const before={};
     el.animate([{transform:`translateY(${dy}px)`},{transform:'none'}],{duration:380,easing:'cubic-bezier(.2,.8,.2,1)'});
     if(+el.dataset.id===moved)el.animate([{boxShadow:'0 0 0 2px #ffc93c, 0 0 30px rgba(255,201,60,.5)'},{boxShadow:'0 0 0 0 transparent'}],{duration:900})});
   const tot=document.querySelector('.dock-tot,.otot');if(tot)tot.animate([{transform:'scale(1.25)'},{transform:'scale(1)'}],{duration:350});}
-function lockOrder(){const n=(document.getElementById('albName')?.value||L.albName||'').trim().slice(0,40);const tr=rawTracks(WHO);const ord=(L.order&&L.order.length===tr.length)?L.order.slice():tr.map((_,k)=>k);W({orders:{[P(WHO)]:ord},names:{[P(WHO)]:n},reveal:0,revealAt:Date.now()})}
+function lockOrder(){if(G&&G.orders&&G.orders[P(WHO)])return;const n=(document.getElementById('albName')?.value||L.albName||'').trim().slice(0,40);const tr=rawTracks(WHO);const ord=(L.order&&L.order.length===tr.length)?L.order.slice():tr.map((_,k)=>k);W({orders:{[P(WHO)]:ord},names:{[P(WHO)]:n},reveal:0,revealAt:Date.now()})}
 function chooseBonus(i){W({bonus:{[P(WHO)]:i},revealAt:Date.now()})}
 function flip(){const c=document.getElementById('coin'),w=coinWinner();if(c){c.classList.add('spin');setTimeout(()=>{c.textContent=nm(w)},600)}setTimeout(()=>{L.coinShown=true;render()},1700)}
 async function copyRes(w){
@@ -2162,7 +2162,7 @@ function draft(){
 }
 function order(){
   const oi=1-WHO;
-  if(G.orders?.[P(WHO)])return `<div class="panel wait"><div class="minirecord"></div><div class="big">Alinhamento fechado</div><p>À espera que ${o_(oi)} feche o alinhamento. Os duelos começam logo a seguir.</p></div>`;
+  if(G.orders?.[P(WHO)])return `<div class="panel wait"><div class="minirecord"></div><div class="big">Álbum fechado 🔒</div><p>À espera que ${o_(oi)} acabe de ordenar. Ninguém vê resultados até os dois terminarem — depois os duelos começam ao mesmo tempo para os dois.</p>${timerBar((G.orderTs||Date.now())+orderMs(),orderMs(),'tempo '+d_(oi))}</div>`;
   const tr=rawTracks(WHO);if(!L.order||L.order.length!==tr.length)L.order=tr.map((_,k)=>k);
   if(L.albName===null)L.albName=G.names?.[P(WHO)]||'';
   const seq=L.order.map(k=>tr[k]),ck=checklist(seq);
@@ -2176,10 +2176,10 @@ function order(){
   const sum=`<div class="osum"><div class="mono">pontos de combinação</div><div class="otot">${sg(ck.total)}</div>
     ${ck.rows.map(r=>`<div class="ck ${r.ok?'ok':r.bad?'bad':''}"><span class="ci">${r.ok?'✓':r.bad?'!':'○'}</span><div><b>${r.ic} ${esc(r.t)}</b><span>${esc(r.h)}</span></div><em>${r.p?sg(r.p):'0'}</em></div>`).join('')}</div>`;
   return `${pedidoBox()}<div class="tot-head"><h2 class="c${WHO}">Ordena o teu álbum</h2><div class="sub">Usa as setas. Os pontos de combinação mudam na hora e valem mais do que as notas. A faixa 1 duela com a faixa 1 ${d_(oi)}, e por aí fora.</div></div>
-  <div class="mobile-only">${timerBar((G.orderTs||Date.now())+ORDER_MS,ORDER_MS,'tempo para ordenar')}</div><div class="ogrid"><div class="panel olist"><label class="mono" style="color:var(--muted)">nome do teu álbum</label>
+  <div class="mobile-only">${timerBar((G.orderTs||Date.now())+orderMs(),orderMs(),'tempo para ordenar')}</div><div class="ogrid"><div class="panel olist"><label class="mono" style="color:var(--muted)">nome do teu álbum</label>
   <input type="text" id="albName" maxlength="40" value="${esc(L.albName)}" placeholder="${esc('O Álbum '+d_(WHO))}" oninput="L.albName=this.value">
   <div class="mt">${rows}</div></div>
-  <div class="panel oside">${timerBar((G.orderTs||Date.now())+ORDER_MS,ORDER_MS,'tempo para ordenar')}${sum}${L.err?`<div class="err">${esc(L.err)}</div>`:''}
+  <div class="panel oside">${timerBar((G.orderTs||Date.now())+orderMs(),orderMs(),'tempo para ordenar')}${sum}${L.err?`<div class="err">${esc(L.err)}</div>`:''}
   <button class="btn full mt" ${L.busy?'disabled':''} onclick="lockOrder()">🔒 Fechar o álbum</button>
   ${G.orders?.[P(oi)]?`<p class="hint center">${O_(oi)} já fechou o álbum.</p>`:''}</div></div>`;
 }
@@ -2209,14 +2209,14 @@ function dock(){
   const ck=checklist(L.order.map(k=>tr[k]));
   return `<div class="odock ${L.dockOpen?'open':''}">
    <div class="dsheet">${ck.rows.map(r=>`<div class="ck ${r.ok?'ok':r.bad?'bad':''}"><span class="ci">${r.ok?'✓':r.bad?'!':'○'}</span><div><b>${r.ic} ${esc(r.t)}</b><span>${esc(r.h)}</span></div><em>${r.p?sg(r.p):'0'}</em></div>`).join('')}</div>
-   ${timerBar((G.orderTs||Date.now())+ORDER_MS,ORDER_MS,'tempo')}
+   ${timerBar((G.orderTs||Date.now())+orderMs(),orderMs(),'tempo')}
    <div class="drow"><button class="dsum" onclick="L.dockOpen=!L.dockOpen;render()"><span class="dock-tot">${sg(ck.total)}</span><span class="dicons">${ck.rows.map(r=>`<i class="${r.ok?'ok':r.bad?'bad':''}" title="${esc(r.t)}">${r.ic}</i>`).join('')}</span><small>${L.dockOpen?'▼':'▲'}</small></button>
    <button class="btn sm" ${L.busy?'disabled':''} onclick="lockOrder()">🔒 Fechar</button></div></div>`;
 }
 function duelLabel(d){return d>=G.per?'faixa bónus':`duelo ${d+1} / ${G.per}`}
 function scoreboard(sc,lbl){return `<div class="score"><div class="s"><div class="num c0" data-count="${sc[0]}" data-delay="700">${fmt(sc[0])}</div><div class="lbl">${ico(0)}${esc(nm(0))}</div></div><div class="dash">${lbl||'vs'}</div><div class="s"><div class="num c1" data-count="${sc[1]}" data-delay="700">${fmt(sc[1])}</div><div class="lbl">${ico(1)}${esc(nm(1))}</div></div></div>`}
 function partial(d){const s=[0,0];for(let k=0;k<=d;k++){const j=judge(k);if(j.w===-1){s[0]+=1;s[1]+=1}else s[j.w]+=2}return s}
-const PICK_MS=30000,ORDER_MS=90000,STAGE_MS={duel:5000,combos:10000,suspense:4000};
+const PICK_MS=30000,ORDER_BY={5:50000,8:75000,10:105000},orderMs=()=>ORDER_BY[G&&G.per]||75000,STAGE_MS={duel:5000,combos:10000,suspense:4000};
 function stage(){return G.reveal||0}
 function mainTie(){const d=partial(G.per-1);return d[0]+prizePts(0)===d[1]+prizePts(1)}
 function stageKind(){const s=stage(),n=G.per;
