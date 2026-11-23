@@ -1268,6 +1268,40 @@ body.has-sdock #app{padding-bottom:150px}
 .rnav{display:flex;justify-content:space-between;align-items:center;margin-top:14px;gap:10px}
 .rdone{font-weight:700;color:var(--gold)}
 @media(max-width:600px){.rtabs{grid-template-columns:repeat(6,1fr);gap:4px}.rtabs button{padding:6px 2px}.rtabs button small{display:none}.rtitle{font-size:22px}.rtimes,.rtie{grid-template-columns:1fr}.rcard img{width:min(120px,32vw)}}
+
+/* pedido da noite em destaque */
+.pedido{background:linear-gradient(110deg,#FFD700,#ffb43b 55%,#FFD700)!important;background-size:220% 100%!important;animation:pedShine 6s linear infinite;box-shadow:0 0 0 2px rgba(255,240,180,.55),0 10px 30px rgba(255,180,40,.45)!important;position:relative}
+@keyframes pedShine{to{background-position:-220% 0}}
+.pedido .mono{color:#5a2e00!important;font-weight:700}
+.pedido b{color:#1c0b02!important}
+.pedido>span:last-child,.dstick .pedido span:last-child{color:#2a1205!important;font-weight:700!important;opacity:1!important}
+.pedido::before{content:"🎯";position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:20px;animation:pedPulse 1.6s ease-in-out infinite}
+@keyframes pedPulse{50%{transform:translateY(-50%) scale(1.2)}}
+@media(max-width:600px){.pedido::before{font-size:15px;left:8px}}
+/* doca: resumo do teu álbum */
+.ddock{display:grid!important;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)!important;gap:6px 16px!important;align-items:center}
+.ddock .dlist{grid-column:1/-1}
+.drows{min-width:0}
+.drows .drow2+.drow2{border-left:0!important;padding-left:0!important;border-top:1px dashed rgba(255,214,150,.2)!important}
+.psum{border-left:1px dashed rgba(255,214,150,.25);padding-left:12px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.pslab{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.psum em{font-size:12px;color:var(--cream2);font-style:normal}
+.psrow{display:flex;flex-wrap:wrap;gap:4px;align-items:center;font-size:11px}
+.psrow i{font-style:normal;color:var(--muted);width:46px;flex:none;font-size:10px}
+.psrow span{border-radius:999px;padding:1px 7px;border:1px solid rgba(255,214,150,.25);white-space:nowrap;color:var(--ink)}
+.psrow span b{font-family:Anton,sans-serif;font-weight:400;margin-left:2px}
+.psrow .pt{background:rgba(255,215,0,.85);color:#2a1205;border:0}
+.psrow .pp{border-color:rgba(63,215,122,.6)}
+@media(max-width:600px){
+  .ddock{grid-template-columns:auto minmax(0,1fr)!important;gap:4px 10px!important}
+  .psum{padding-left:8px;gap:3px}
+  .psrow{font-size:9.5px;gap:3px}.psrow i{width:auto;margin-right:2px;font-size:9px}
+  .psrow span{padding:0 5px}
+  .pslab{font-size:8.5px}
+  .dslots{grid-template-columns:repeat(var(--n),24px)!important}
+  .drow2{grid-template-columns:40px auto!important}
+}
+@media(max-width:600px){.dtoggle{right:auto!important;left:12px}body.has-ddock #app{padding-bottom:130px!important}}
 </style>
 </head>
 <body>
@@ -2115,6 +2149,16 @@ function order(){
   <button class="btn full mt" ${L.busy?'disabled':''} onclick="lockOrder()">🔒 Fechar o álbum</button>
   ${G.orders?.[P(oi)]?`<p class="hint center">${O_(oi)} já fechou o álbum.</p>`:''}</div></div>`;
 }
+function pickSummary(){
+  const tr=rawTracks(WHO);if(!tr.length)return `<div class="psum"><span class="pslab">o teu álbum</span><em>Escolhe a primeira música para veres aqui os estilos e temas.</em></div>`;
+  const es=tr.map(t=>ev(t.i)),gc={},tc={};es.forEach(e=>{gc[e.gen]=(gc[e.gen]||0)+1;e.tags.forEach(x=>tc[x]=(tc[x]||0)+1)});
+  const en=es.reduce((a,e)=>a+e.en,0)/es.length,pd=pedido(),hits=es.filter(pd.t).length;
+  const chip=(o,f,cls)=>Object.entries(o).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<span class="${cls}">${f(k)} <b>${v}</b></span>`).join('');
+  return `<div class="psum"><span class="pslab">o teu álbum</span>
+   <div class="psrow"><i>estilos</i>${chip(gc,k=>GEN[k],'pg')}</div>
+   <div class="psrow"><i>temas</i>${chip(tc,k=>TAGN[k],'pt')}</div>
+   <div class="psrow"><i>energia</i><span class="pe">média <b>${fmt1(en)}</b>/5</span><span class="pp">🌙 pedido <b>${hits}</b></span></div></div>`;
+}
 function draftDock(){
   if(!G||!G.seed||!MODE||phase()!=='draft'||L.screen)return '';
   const rowFor=i=>{const tr=rawTracks(i);const slots=Array.from({length:G.per},(_,k)=>tr[k]?`<div class="dmini" title="${esc(tr[k].t)} — ${esc(tr[k].a)}">${cimg(tr[k])}</div>`:'<div class="slot"></div>').join('');
@@ -2123,7 +2167,7 @@ function draftDock(){
   return `<div class="ddock ${L.shelfOpen?'open':''}">
     <div class="dlist"><div><b class="c${WHO}">${esc(alb(WHO))}</b><ol>${list(WHO)}</ol></div><div><b class="c${1-WHO}">${esc(alb(1-WHO))}</b><ol>${list(1-WHO)}</ol></div></div>
     <button class="dtoggle" onclick="L.shelfOpen=!L.shelfOpen;render()" aria-label="Ver as músicas escolhidas">${L.shelfOpen?'▼ fechar':'▲ ver lista'}</button>
-    ${rowFor(WHO)}${rowFor(1-WHO)}</div>`;
+    <div class="drows">${rowFor(WHO)}${rowFor(1-WHO)}</div>${pickSummary()}</div>`;
 }
 function dock(){
   if(!G||!G.seed||!MODE||phase()!=='order'||G.orders?.[P(WHO)])return '';
@@ -2161,7 +2205,7 @@ function miniScore(sc){return `<div class="mscore"><span class="c0">${ico(0)}${e
 function duelScreen(d){
   const j=judge(d);
   const card=i=>{const s=i?j.B:j.A,t=i?j.b:j.a;return `<div class="pick ${j.w===i?'win':j.w===-1?'':'lose'} ${j.w===i&&i===WHO?'mine':''}"><div class="owner c${i}">${ico(i)}${esc(nm(i))}</div>${sleeve(s)}<div class="info"><div class="tt">${esc(s.t)}</div><div class="ta">${esc(s.a)}</div>
-    <div class="nota" data-count="${t.sc}" data-dec="1" data-delay="${350+i*150}">${fmt1(t.sc)}</div>${bars(t.e)}<details class="whyd"><summary>notas e detalhes</summary><div class="mbars">${bars(t.e)}</div><p class="why">${esc(t.e.why)}</p>${listen(s)}</details></div></div>`};
+    <div class="nota" data-count="${t.sc}" data-dec="1" data-delay="${350+i*150}">${fmt1(t.sc)}</div>${bars(t.e)}<details class="whyd" open><summary>notas e detalhes</summary><div class="mbars">${bars(t.e)}</div><p class="why">${esc(t.e.why)}</p>${listen(s)}</details></div></div>`};
   const verdict=j.w===-1?'Empate':(j.w===WHO?'2 pontos para ti!':'2 pontos para '+(o_(j.w)));
   const isBonus=d>=G.per,run=isBonus?duelPts():partial(d);
   return `<div class="meta mono"><span>${duelLabel(d)}</span><span>a minha nota</span></div><div class="progress"><div style="width:${Math.min(1,(d+1)/G.per)*100}%"></div></div>
