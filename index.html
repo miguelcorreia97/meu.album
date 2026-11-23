@@ -1229,6 +1229,45 @@ body.has-sdock #app{padding-bottom:150px}
 }
 .mbars{display:none}
 @media(max-width:600px){.reveal .info>.bars{display:none}.mbars{display:block}.whyd summary{font-size:11px}}
+
+/* regras interativas */
+.rules2{margin-top:22px;text-align:left}
+.rhead{display:flex;justify-content:space-between;align-items:center}.rstep{font-family:"Space Mono",monospace;font-size:12px;color:var(--muted)}
+.rtabs{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:12px 0 14px}
+.rtabs button{background:rgba(255,214,150,.07);border:1px solid rgba(255,214,150,.2);border-radius:12px;padding:8px 4px;cursor:pointer;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:2px;transition:background .2s,transform .2s}
+.rtabs button span{font-size:20px}.rtabs button small{font-size:10.5px;line-height:1.15;text-align:center;color:var(--cream2)}
+.rtabs button.on{background:var(--gold);border-color:var(--gold);transform:translateY(-2px)}.rtabs button.on small{color:#2a1205;font-weight:700}
+.rtitle{font-family:'Playfair Display',serif;font-size:26px;margin:4px 0 6px}
+.rbody{animation:smoothIn .4s ease both}
+.rbody p{margin:6px 0 10px;color:var(--cream2)}.rbody p b{color:var(--ink)}
+.rsmall{font-size:13px}.rtry{text-align:center;font-weight:600;color:var(--ink)!important}
+.rpair{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;max-width:420px;margin:8px auto}
+.rou{width:38px;height:38px;border-radius:50%;background:var(--gold);color:#2a1205;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-style:italic;font-weight:700}
+.rcard{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:0;color:var(--ink);cursor:pointer;padding:0;font:inherit;transition:transform .3s,opacity .3s}
+.rcard img{width:min(140px,30vw);aspect-ratio:1;object-fit:cover;border-radius:6px;box-shadow:0 12px 26px rgba(0,0,0,.4)}
+.rcard b{font-size:14px;text-align:center}.rcard span{font-size:12px;color:var(--muted)}
+.rcard.on{transform:scale(1.06)}.rcard.on img{box-shadow:0 0 0 3px var(--gold),0 14px 30px rgba(255,170,60,.4)}
+.rcard.off{opacity:.35;transform:scale(.92)}
+.rcard.duel{cursor:default}.rcard .rq{font-family:Anton,sans-serif;font-size:30px;color:var(--muted)}
+.rcard .nota{font-size:30px!important;margin:2px 0!important}.rcard .bars{max-width:150px}
+.rlegend{display:flex;justify-content:center}
+.rped{margin:8px auto 10px!important;max-width:460px}
+.rchips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:10px 0}
+.rchip{border:1px solid rgba(255,214,150,.3);background:rgba(255,214,150,.07);color:var(--ink);border-radius:999px;padding:7px 13px;cursor:pointer;font:inherit;font-size:14px;transition:all .2s}
+.rchip.on{background:var(--gold);color:#2a1205;border-color:var(--gold)}
+.rexp{background:rgba(20,8,2,.35);border:1px solid rgba(255,214,150,.18);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:4px;animation:smoothIn .35s both}
+.rexp b{font-size:17px}.rexp span{color:var(--cream2);font-size:14px}
+.rbody .orow{margin-bottom:4px}.rbody .orow .thumb img{width:44px;height:44px}
+.rtimes{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:6px 0}
+.rtimes>div{background:rgba(20,8,2,.35);border:1px solid rgba(255,214,150,.18);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:4px}
+.rtimes b{font-family:Anton,sans-serif;font-size:28px;font-weight:400;color:var(--gold)}.rtimes span{font-size:13px;color:var(--cream2)}
+.rbar{display:block;height:6px;border-radius:999px;background:rgba(255,214,150,.15);overflow:hidden;margin-top:4px}
+.rbar em{display:block;height:100%;background:linear-gradient(90deg,#3fd77a,#ffd76a);animation:rdrain linear infinite;transform-origin:left}
+@keyframes rdrain{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+.rtie{display:grid;grid-template-columns:1fr 1fr;gap:12px}.rtie>div{display:flex;flex-direction:column;gap:2px;font-size:15px}.rtie span{font-size:13px;color:var(--cream2)}
+.rnav{display:flex;justify-content:space-between;align-items:center;margin-top:14px;gap:10px}
+.rdone{font-weight:700;color:var(--gold)}
+@media(max-width:600px){.rtabs{grid-template-columns:repeat(6,1fr);gap:4px}.rtabs button{padding:6px 2px}.rtabs button small{display:none}.rtitle{font-size:22px}.rtimes,.rtie{grid-template-columns:1fr}.rcard img{width:min(120px,32vw)}}
 </style>
 </head>
 <body>
@@ -1854,6 +1893,55 @@ function tick(){
 }
 setInterval(tick,250);
 
+
+/* ======== regras interativas ======== */
+const RD={a:5,b:22,c:[20,39,113],d:[69,113]};
+function rset(k){L.rule=k;L.rsel=null;L.rrev=false;render();const el=document.querySelector('.rules2');if(el)el.scrollIntoView({block:'nearest',behavior:'smooth'})}
+function rmv(k,d){const o=L.rord=L.rord||RD.c.slice();if(k+d<0||k+d>=o.length)return;[o[k],o[k+d]]=[o[k+d],o[k]];render()}
+function rulesBox(){
+  const k=L.rule||0,S=song;
+  const T=[['🎵','Isto ou aquilo'],['🌙','Pedido da noite'],['↕️','Ordenar'],['⚔️','Duelos'],['🧩','Combinações'],['⏱️','Tempo e desempate']];
+  let body='';
+  if(k===0){const A=S(RD.a),B=S(RD.b),sel=L.rsel;
+    const c=(x)=>`<button class="rcard ${sel===x.i?'on':sel!=null?'off':''}" onclick="L.rsel=${x.i};render()">${cimg(x)}<b>${esc(x.t)}</b><span>${esc(x.a)}</span></button>`;
+    body=`<p>À vez, cada um recebe <b>duas músicas</b> e fica com uma. A outra vai para a gaveta e não volta.</p>
+    <div class="rpair">${c(A)}<i class="rou">ou</i>${c(B)}</div>
+    <p class="rtry">${sel==null?'👆 Experimenta: toca numa capa.':`✅ “${esc(S(sel).t)}” entrou no teu álbum! A outra foi para a gaveta.`}</p>
+    <div class="rlegend">${chips(A)}</div><p class="rsmall">Antes de escolher vês o <b>estilo</b>, a <b>energia</b> (1 = calma, 5 = para dançar) e o <b>tema</b>. As minhas notas ficam secretas.</p>`}
+  if(k===1){const i=L.rped||0,pd=PEDIDOS[i%PEDIDOS.length];
+    body=`<p>Cada partida sorteia um <b>pedido da noite</b>. Cada música que o cumpra dá <b>+0,5</b> (até +2).</p>
+    <div class="pedido rped"><span class="mono">pedido da noite</span><b>${pd.n}</b><span>${pd.d}</span></div>
+    <div class="center"><button class="btn ghost sm" onclick="L.rped=(L.rped||0)+1;render()">🎲 Ver outro pedido</button></div>
+    <p class="rsmall">Assim, decorar as notas não chega: as músicas que valem a pena mudam de partida para partida.</p>`}
+  if(k===2){const o=L.rord||RD.c.slice(),tr=o.map(S);let tot=0;
+    const rows=tr.map((t,n)=>{let link='';if(n<tr.length-1){const l=linkScore(t,tr[n+1]);tot+=l.p;link=`<div class="olink ${l.p>=1?'good':l.p>0?'ok':l.p<0?'bad':'none'}"><span class="lp">${l.p?sg(l.p):'0'}</span><span class="lw">${l.why.join(' · ')||'sem ligação'}</span></div>`}
+      return `<div class="orow"><div class="n">${n+1}</div><div class="thumb">${cimg(t)}</div><div class="info"><div class="tt">${esc(t.t)}</div>${chips(t)}</div><div class="mvs"><button class="mv" ${n===0?'disabled':''} onclick="rmv(${n},-1)">↑</button><button class="mv" ${n===tr.length-1?'disabled':''} onclick="rmv(${n},1)">↓</button></div></div>${link}`}).join('');
+    body=`<p>Depois, cada um <b>ordena</b> o álbum em segredo. As faixas seguidas que combinam dão pontos.</p>${rows}
+    <p class="rtry">👆 Experimenta mexer nas setas. Química deste exemplo: <b class="rpts">${sg(tot)||'0'}</b></p>`}
+  if(k===3){const A=S(RD.d[0]),B=S(RD.d[1]),ea=ev(A.i),eb=ev(B.i),rev=L.rrev,w=ea.nota>=eb.nota?0:1;
+    const c=(x,e,i)=>`<div class="rcard duel ${rev&&w===i?'on':rev?'off':''}">${cimg(x)}<b>${esc(x.t)}</b>${rev?`<div class="nota">${fmt1(e.nota)}</div>${bars(e)}`:'<div class="rq">?</div>'}</div>`;
+    body=`<p>A faixa 1 de um enfrenta a faixa 1 do outro, e por aí fora. Eu dou uma <b>nota de 0 a 10</b>, a média de <b>legado</b>, <b>letra</b>, <b>som</b> e <b>vibe</b>.</p>
+    <div class="rpair">${c(A,ea,0)}<i class="rou">vs</i>${c(B,eb,1)}</div>
+    <div class="center">${rev?`<p class="rtry">🏆 Ganha a nota mais alta: <b>2 pontos</b>. Empate: 1 ponto a cada.</p>`:`<button class="btn sm" onclick="L.rrev=true;render()">Revelar as notas</button>`}</div>`}
+  if(k===4){const sel=L.rsel==null?0:L.rsel;
+    const C=[['🧪','Química','Entre cada faixa e a seguinte: mesmo estilo +0,5 (parecido +0,25), energia parecida +0,5 (salto de 3+ níveis −0,5), tema em comum +0,5 (amor +0,25), mesmo artista +0,25.'],
+      ['🎢','Arco','Abrir com uma faixa de energia 4–5: +1. Fechar com uma balada (1–2): +1. Pico de energia a meio: +0,5.'],
+      ['💿','Tema do álbum','Metade ou mais das faixas com o mesmo tema: +1,5. Ou 80% de amor: +1.'],
+      ['🎯','Coesão ou mistura','60% do mesmo estilo, ou 4+ estilos diferentes: +1.'],
+      ['🎨','Variedade','Quase todas de artistas diferentes: +0,5. Demasiadas do mesmo artista (🔁 Monotonia): −1.'],
+      ['🌙','Pedido da noite','+0,5 por cada faixa que cumpra o pedido, até +2.']];
+    body=`<p>No fim analiso <b>como montaste o álbum</b>. Estes pontos valem mais do que os duelos!</p>
+    <div class="rchips">${C.map((c,i)=>`<button class="rchip ${sel===i?'on':''}" onclick="L.rsel=${i};render()">${c[0]} ${c[1]}</button>`).join('')}</div>
+    <div class="rexp"><b>${C[sel][0]} ${C[sel][1]}</b><span>${C[sel][2]}</span></div>`}
+  if(k===5){body=`<div class="rtimes"><div><b>30 s</b><span>para cada escolha</span><i class="rbar"><em style="animation-duration:6s"></em></i></div><div><b>1 min 30 s</b><span>para ordenar o álbum</span><i class="rbar"><em style="animation-duration:12s"></em></i></div></div>
+    <p class="rsmall">Se o tempo acabar, escolho por ti ou fecho o álbum como está. Os resultados aparecem aos dois ao mesmo tempo.</p>
+    <div class="rtie"><div>🤝 <b>Empate?</b><span>Cada um escolhe uma faixa bónus, também em isto ou aquilo.</span></div><div>🪙 <b>Ainda empatado?</b><span>Decide a moeda.</span></div></div>`}
+  return `<div class="panel rules2"><div class="rhead"><span class="mono">como se joga</span><span class="rstep">${k+1} / ${T.length}</span></div>
+   <div class="rtabs">${T.map((t,i)=>`<button class="${i===k?'on':''}" onclick="rset(${i})" title="${t[1]}"><span>${t[0]}</span><small>${t[1]}</small></button>`).join('')}</div>
+   <h3 class="rtitle">${T[k][0]} ${T[k][1]}</h3><div class="rbody" key="${k}">${body}</div>
+   <div class="rnav"><button class="btn ghost sm" ${k===0?'disabled':''} onclick="rset(${k-1})">← Anterior</button>${k<T.length-1?`<button class="btn sm" onclick="rset(${k+1})">Seguinte →</button>`:`<span class="rdone">Prontos para jogar! 🎶</span>`}</div></div>`;
+}
+
 /* ======== ações ======== */
 function setWho(i){WHO=i;lsSet({who:i});setPresence();L.err='';render()}
 function newSeed(){return Math.random().toString(36).slice(2,10)}
@@ -1966,7 +2054,7 @@ function modeScreen(){
   <div class="modes">
    <button class="modebtn" onclick="setMode('online')"><span class="ic">👥</span><b>Com mais uma pessoa</b><span>Cada um no seu telemóvel, numa sala com código.</span></button>
    <button class="modebtn" onclick="setMode('cpu')"><span class="ic">🤖</span><b>Contra o computador</b><span>Treina sozinho contra um adversário que também sabe montar álbuns.</span></button>
-  </div><div class="center mt"><button class="btn ghost" onclick="openRanking()">🏆 Top 10 álbuns</button></div>`;
+  </div><div class="center mt"><button class="btn ghost" onclick="openRanking()">🏆 Top 10 álbuns</button></div>${rulesBox()}`;
 }
 function whoScreen(){
   return `<div class="hero"><div class="kick">um jogo de música brasileira</div><h1 class="herot">Meu <em>Álbum</em></h1><div class="turntable"><div class="record"></div></div>${heroVs()}
@@ -1979,20 +2067,7 @@ function newScreen(){
   <p>Só músicas das vossas playlists. Eu dou-vos duas de cada vez e vocês ficam com uma. No fim, sou eu que julgo: as faixas duelam entre si, mas o que mais pesa é a forma como combinaste o teu álbum.</p></div>
   <div class="panel"><div class="mono" style="color:var(--muted)">Músicas por álbum</div>
   ${MODE==='cpu'?`<div class="mono" style="color:var(--muted)">nível do computador</div><div class="chips" style="margin:10px 0 16px">${[['facil','Fácil'],['normal','Normal'],['dificil','Difícil']].map(([k,n])=>`<button class="chip ${(L.level||'normal')===k?'on':''}" onclick="L.level='${k}';render()">${n}</button>`).join('')}</div><div class="mono" style="color:var(--muted)">Músicas por álbum</div>`:''}<div class="chips" style="margin-top:10px">${[5,8,10].map(n=>`<button class="chip ${L.per===n?'on':''}" onclick="L.per=${n};render()">${n} cada · ${n*2} no total</button>`).join('')}</div>
-  <ol class="rules mt">
-    <li><b>Isto ou aquilo:</b> à vez, cada um recebe duas músicas vossas e fica com uma; a outra vai para a gaveta. Vês o estilo, a energia e os temas de cada música — as minhas notas ficam secretas até aos duelos.</li>
-    <li><b>Pedido da noite:</b> cada partida tem um pedido diferente (ex.: Noite de baile, Coração partido, Verão tropical…) que dá até +2 a quem o cumprir. Muda as músicas que valem a pena.</li>
-    <li><b>Alinhamento:</b> cada um ordena o álbum em segredo e dá-lhe um nome. Ao mexer na ordem, vês em direto quanto valem as tuas combinações.</li>
-    <li><b>Duelos (2 pontos cada):</b> faixa 1 contra faixa 1, e por aí fora. Ganha a minha nota mais alta, de 0 a 10: média de <b>Legado</b>, <b>Letra</b>, <b>Som</b> e <b>Vibe</b> (quente, tropical, romântico). Empate = 1 ponto a cada.</li>
-    <li><b>Combinações — o que mais pesa:</b>
-      <ul><li>🧪 <b>Química</b>, entre cada faixa e a seguinte: mesmo estilo +0,5 (estilos vizinhos +0,25) · energia parecida +0,5 (salto de 3+ níveis −0,5) · tema em comum +0,5 (amor +0,25) · mesmo artista +0,25;</li>
-      <li>🎢 <b>Arco</b>: abrir com energia +1 · fechar com balada +1 · pico de energia a meio +0,5;</li>
-      <li>💿 <b>Conceito</b>: metade ou mais das faixas com o mesmo tema +1,5 (ou 80% de amor +1);</li>
-      <li>🎯 <b>Coesão</b> (60% do mesmo estilo) ou 🌈 <b>Mistura</b> (4+ estilos) +1 · 🎨 <b>Variedade de artistas</b> +0,5 · 🔁 <b>Monotonia</b> (demasiado do mesmo artista) −1;</li>
-      <li>🌙 <b>Pedido da noite</b>: +0,5 por faixa que o cumpra, até +2.</li></ul></li>
-    <li><b>Tempo:</b> 30 segundos para cada escolha e 1 minuto e meio para ordenar o álbum. Se o tempo acabar, eu escolho por ti (ao calhas) ou fecho o álbum como está. Os resultados aparecem aos dois ao mesmo tempo e avançam sozinhos.</li>
-    <li><b>Desempate:</b> faixa bónus em isto ou aquilo, que eu julgo; se ainda empatar, decide a moeda.</li>
-  </ol>
+  ${rulesBox()}
   ${L.err?`<div class="err">${esc(L.err)}</div>`:''}
   <button class="btn full mt" ${L.busy?'disabled':''} onclick="startGame()">🪙 Atirar a moeda e começar</button></div>`;
 }
