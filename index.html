@@ -1082,6 +1082,11 @@ body.has-ddock #ytbox,body.has-dock #ytbox{bottom:auto;top:74px}
   #ytbox{width:170px;left:8px}#ytframe{width:170px;height:96px}
   body.has-ddock #ytbox,body.has-dock #ytbox{top:62px}
 }
+
+#ytbox{display:none!important}
+.verdict{background:rgba(40,18,6,.55)!important;border:1px solid rgba(255,214,150,.22)!important}
+.verdict p{color:#ffffff!important}.verdict .mono{color:var(--gold)!important}
+@media(max-width:600px){.ytlink{display:inline-block!important;font-size:11px;padding:3px 8px}}
 </style>
 </head>
 <body>
@@ -1524,10 +1529,10 @@ function makeP2PDb(){
 }
 
 /* ======== música de fundo: YouTube (versão web) ======== */
-const ONWEB=!(window.claude&&window.claude.use),YT_ID='wR__3bqwsRQ',YT_URL='https://www.youtube.com/watch?v='+YT_ID;
+const ONWEB=!(window.claude&&window.claude.use),YT_ID='C8-CQ6mGKwk',YT_URL='https://www.youtube.com/watch?v='+YT_ID;
 let YTP=null;
 function ytBox(){let b=document.getElementById('ytbox');if(!b){b=document.createElement('div');b.id='ytbox';b.innerHTML=`<div class="ythead"><span>♫ Tom Jobim · bossa nova</span><button onclick="sndToggle()" aria-label="Desligar som">✕</button></div><div id="ytframe"></div>`;document.body.appendChild(b)}return b}
-function ytStart(){if(!ONWEB)return false;try{ytBox().classList.add('show');
+function ytStart(){return false;if(!ONWEB)return false;try{ytBox().classList.add('show');
   if(YTP&&YTP.playVideo){YTP.playVideo();return true}
   window.onYouTubeIframeAPIReady=()=>{YTP=new YT.Player('ytframe',{videoId:YT_ID,width:'100%',height:'100%',playerVars:{autoplay:1,playsinline:1,rel:0,loop:1,playlist:YT_ID},
     events:{onReady:e=>{try{e.target.setVolume(55);e.target.playVideo()}catch(x){}},onError:()=>{ytStop(true);if(SND.on&&SND.startMusic)SND.startMusic()}}})};
@@ -1537,7 +1542,7 @@ function ytStop(hide){try{YTP&&YTP.pauseVideo&&YTP.pauseVideo()}catch(e){}const 
 
 /* ======== som: ondas, gaivotas e bossa nova (sintetizados) ======== */
 const SND={ctx:null,on:false,timers:[],master:null};
-function sndBtn(){return (SND.on&&!ONWEB?`<a class="ytlink" href="${YT_URL}" target="_blank" rel="noopener">♫ Tom Jobim ↗</a>`:'')+`<button class="sndbtn ${SND.on?'on':''}" onclick="sndToggle()" title="${SND.on?'Desligar som':'Ligar som'}" aria-label="${SND.on?'Desligar som':'Ligar som'}">${SND.on?'🔊':'🔇'}</button>`}
+function sndBtn(){return `<a class="ytlink" href="${YT_URL}" target="_blank" rel="noopener" title="Abrir a música de fundo no YouTube">♫ Música ↗</a>`+`<button class="sndbtn ${SND.on?'on':''}" onclick="sndToggle()" title="${SND.on?'Desligar o som do mar':'Ligar o som do mar e dos pássaros'}" aria-label="${SND.on?'Desligar som':'Ligar som'}">${SND.on?'🔊':'🔇'}</button>`}
 function sndToggle(){if(SND.on)sndStop();else sndStart();lsSet({snd:SND.on});const h=document.getElementById('hdr');if(h)h.outerHTML=header()}
 function sndStop(){SND.on=false;ytStop();try{SND.el&&SND.el.pause()}catch(e){}SND.timers.forEach(t=>{clearTimeout(t);clearInterval(t)});SND.timers=[];if(SND.master){const c=SND.ctx;SND.master.gain.setTargetAtTime(0,c.currentTime,.3);setTimeout(()=>{try{c.suspend()}catch(e){}},900)}}
 function sndStart(){
@@ -1584,7 +1589,7 @@ function sndStart(){
       const ms=step%64;MEL.forEach(([p0,n])=>{if(p0===ms&&Math.floor(step/64)%3!==0)pluck(mid(n),next,1.1,.14,'sine')});
       step++;next+=STEP}SND.timers.push(setTimeout(sched,120))};sched();
   };
-  if(!ytStart())SND.startMusic();
+  /* sem música sintetizada: só mar e pássaros */
   }catch(e){SND.on=false}
 }
 document.addEventListener('pointerdown',function once(){document.removeEventListener('pointerdown',once,true);if(lsGet().snd&&!SND.on){sndStart();const h=document.getElementById('hdr');if(h)h.outerHTML=header()}},true);
