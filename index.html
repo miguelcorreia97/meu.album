@@ -1302,6 +1302,30 @@ body.has-sdock #app{padding-bottom:150px}
   .drow2{grid-template-columns:40px auto!important}
 }
 @media(max-width:600px){.dtoggle{right:auto!important;left:12px}body.has-ddock #app{padding-bottom:130px!important}}
+
+/* sticky volta a funcionar */
+html{overflow-x:clip!important;overflow-y:visible!important}
+body{overflow:visible!important}
+/* ranking por tamanho */
+.rktabs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:420px;margin:0 auto 14px}
+.rktabs button{background:rgba(255,214,150,.07);border:1px solid rgba(255,214,150,.25);border-radius:14px;padding:10px 6px;cursor:pointer;color:var(--ink);display:flex;flex-direction:column;align-items:center;transition:all .2s}
+.rktabs b{font-family:Anton,sans-serif;font-weight:400;font-size:26px;line-height:1}.rktabs span{font-size:12px;color:var(--cream2)}
+.rktabs button.on{background:var(--gold);border-color:var(--gold);transform:translateY(-2px)}.rktabs button.on b,.rktabs button.on span{color:#2a1205}
+/* escolha mais compacta no computador */
+@media(min-width:601px){
+  .dstick~.tot-head .sub{display:none}
+  .dstick~.tot-head{margin-bottom:8px!important}
+  .pair .sleeve{width:clamp(110px,calc(100vh - 640px),210px)!important}
+  .pair .pick .tags{margin-top:4px}
+  .dlisten{margin-top:2px}
+  .ddock .dslots{grid-template-columns:repeat(var(--n),minmax(0,34px))!important}
+  body.has-ddock #app{padding-bottom:150px!important}
+}
+/* ordenar: total sempre visível */
+.oside{position:sticky!important;top:12px;max-height:calc(100vh - 24px);overflow:auto}
+.oside .osum>.mono,.oside .otot{position:sticky;top:-1px;z-index:2;background:rgba(40,18,6,.96);margin:0;padding-top:4px}
+.oside .otot{top:16px;padding-bottom:6px}
+@media(min-width:601px){.dstick~.pair .dlisten,.pair .dlisten{display:none}}
 </style>
 </head>
 <body>
@@ -2061,25 +2085,26 @@ async function saveRanking(){
   try{const tr=aligned(WHO).slice(0,G.per),sc=rankScore(WHO);
     await db.doc('albuns/'+key).set({score:sc,album:alb(WHO),player:NAMES[WHO],vs:MODE==='cpu'?'computador':nm(1-WHO),won:winnerIdx()===WHO,
       combos:prizePts(WHO),per:G.per,tracks:tr.map(t=>t.i),pedido:pedido().n,at:new Date().toISOString()});
-    const top=await db.collection('albuns').orderBy('score','desc').limit(10).get();
-    const pos=top.docs.findIndex(d=>d.id===key);if(pos>=0)setTimeout(()=>toast(`🏆 “${alb(WHO)}” entrou no top 10 — ${pos+1}.º lugar!`),2600);
+    const top=await db.collection('albuns').orderBy('score','desc').limit(300).get();
+    const pos=top.docs.filter(d=>(d.data().per||5)===G.per).slice(0,10).findIndex(d=>d.id===key);if(pos>=0)setTimeout(()=>toast(`🏆 “${alb(WHO)}” entrou no top 10 de ${G.per} músicas — ${pos+1}.º lugar!`),2600);
   }catch(e){}
 }
 function winnerIdx(){const sc=score();if(sc[0]!==sc[1])return sc[0]>sc[1]?0:1;return coinWinner()}
 function openRanking(){L.screen='ranking';L.rank=null;L.rankErr='';render();
   if(!db){L.rankErr='O ranking precisa de sessão iniciada no Claude.';render();return}
   rankUnsub?.();const t=setTimeout(()=>{if(!L.rank){L.rankErr='O ranking está a demorar a carregar…';render()}},10000);
-  rankUnsub=db.collection('albuns').orderBy('score','desc').limit(10).onSnapshot(q=>{clearTimeout(t);L.rank=q.docs.map(d=>({id:d.id,...d.data()}));L.rankErr='';if(L.screen==='ranking')render()},e=>{clearTimeout(t);L.rankErr='Não consegui abrir o ranking.';render()})}
+  rankUnsub=db.collection('albuns').orderBy('score','desc').limit(300).onSnapshot(q=>{clearTimeout(t);L.rank=q.docs.map(d=>({id:d.id,...d.data()}));L.rankErr='';if(L.screen==='ranking')render()},e=>{clearTimeout(t);L.rankErr='Não consegui abrir o ranking.';render()})}
 function closeRanking(){rankUnsub?.();rankUnsub=null;L.screen=null;render()}
 function rankingScreen(){
-  const list=L.rank;
+  const per=L.rankPer||5,list=L.rank&&L.rank.filter(r=>(r.per||5)===per).slice(0,10);
+  const tabs=`<div class="rktabs">${[5,8,10].map(n=>`<button class="${n===per?'on':''}" onclick="L.rankPer=${n};render()"><b>${n}</b><span>músicas</span></button>`).join('')}</div>`;
   const row=(r,k)=>{const tr=(r.tracks||[]).filter(i=>SONGS[i]).map(song);const medal=['🥇','🥈','🥉'][k]||(k+1)+'.º';
     return `<div class="rrow ${k<3?'podium':''}" style="--d:${k*.06}s"><div class="rpos">${medal}</div><div class="rcov">${tr.slice(0,4).map(cimg).join('')}</div>
     <div class="rinfo"><b>${esc(r.album||'Sem nome')}</b><span class="${r.player==='Miguel'?'c0':'c1'}">${esc(r.player||'')}</span><span class="rmeta">${r.per||tr.length} faixas · ${r.won?'ganhou':'perdeu'} contra ${esc(r.vs||'')}${r.at?' · '+new Date(r.at).toLocaleDateString('pt-PT'):''}</span>
     <details><summary>ver faixas</summary><ol>${tr.map(t=>`<li>${esc(t.t)} <span>— ${esc(t.a)}</span></li>`).join('')}</ol></details></div>
     <div class="rscore">${fmt(r.score)}</div></div>`};
   return `<div class="tot-head"><div class="mono" style="color:var(--muted)">hall da fama</div><h2>Top 10 álbuns</h2><div class="sub">Os melhores álbuns montados pelo Miguel e pela Clara (os do computador não contam).</div></div>
-  <div class="panel rlist">${L.rankErr?`<p class="hint center">${esc(L.rankErr)}</p>`:!list?`<div class="wait"><div class="minirecord"></div></div>`:list.length?list.map(row).join(''):'<p class="hint center">Ainda não há álbuns no ranking. Joguem uma partida!</p>'}</div>
+  ${tabs}<div class="panel rlist">${L.rankErr?`<p class="hint center">${esc(L.rankErr)}</p>`:!list?`<div class="wait"><div class="minirecord"></div></div>`:list.length?list.map(row).join(''):`<p class="hint center">Ainda não há álbuns de ${per} músicas no ranking. Joguem uma partida!</p>`}</div>
   <p class="hint center mt">Pontuação do álbum = média das minhas notas das faixas + pontos de combinação (ajustados ao tamanho do álbum, para comparar álbuns de 5, 8 ou 10 faixas).</p>
   <div class="actions"><button class="btn" onclick="closeRanking()">← Voltar</button></div>`;
 }
@@ -2263,7 +2288,7 @@ function body(){
   if(!G.seed)return newScreen();
   return ({draft,order,duels})[phase()]();
 }
-function viewKey(){if(L.screen)return 'scr:'+L.screen+(L.rank?'1':'0');if(!G||!G.seed||!MODE)return [WHO,MODE,CODE,L.status,G?.joined?.p0,G?.joined?.p1,G?.seed].join('|');const ph=phase();return [MODE,G.round,ph,ph==='draft'?picks().length:'',ph==='duels'?stageKind().join(':'):'',ph==='order'?!!G.orders?.[P(WHO)]:''].join('|')}
+function viewKey(){if(L.screen)return 'scr:'+L.screen+(L.rank?'1':'0')+(L.rankPer||5);if(!G||!G.seed||!MODE)return [WHO,MODE,CODE,L.status,G?.joined?.p0,G?.joined?.p1,G?.seed].join('|');const ph=phase();return [MODE,G.round,ph,ph==='draft'?picks().length:'',ph==='duels'?stageKind().join(':'):'',ph==='order'?!!G.orders?.[P(WHO)]:''].join('|')}
 function render(){
   const app=document.getElementById('app'),keep={};app.querySelectorAll('input[id]').forEach(i=>keep[i.id]=i.value);
   const fid=document.activeElement&&document.activeElement.id;
@@ -2275,7 +2300,7 @@ function render(){
   const pk=(G&&G.seed&&MODE)?(phase()==='duels'?'duels:'+(stageKind()[0]==='duel'&&stageKind()[1]<G.per?'duel':stageKind()[0]):phase()):'';
   if(pk!==L.lastPhase){const prevP=L.lastPhase;L.lastPhase=pk;if(prevP!==undefined&&pk){const T={draft:['Isto ou aquilo!','escolham as vossas músicas'],order:['Hora de ordenar','monta o teu álbum'],'duels:duel':['Duelos!','faixa contra faixa'],'duels:combos':['Combinações','como montaram os álbuns'],'duels:suspense':['E agora…','o grande final']}[pk];if(T)intertitle(T[0],T[1])}}
   sambaLetters();
-  if(enter){window.scrollTo({top:0,behavior:'smooth'});countUps();
+  if(enter){window.scrollTo({top:0,behavior:'smooth'});countUps();setTimeout(fitDraft,450);
     if(document.querySelector('.view .winner')){celebrate(120);saveRanking()}
     else if(document.querySelector('.view .pick.win.mine'))celebrate(24);}
 }
@@ -2285,6 +2310,7 @@ function intertitle(t,sub){return;if(FX.ok){document.querySelectorAll('.inter').
   document.body.appendChild(d);setTimeout(()=>d.remove(),2000)}
 const BIGW={draft:'ISTO OU AQUILO',order:'ÁLBUM','duels:duel':'DUELO','duels:combos':'COMBOS','duels:bonus':'BÓNUS','duels:suspense':'FINAL'};
 function sambaLetters(){document.querySelectorAll('.view .tot-head h2').forEach(h=>{if(h.dataset.k)return;h.dataset.k=1;const t=h.textContent;const m=t.match(/^(.*?)(\s\S+)$/);if(m)h.innerHTML=`${esc(m[1])} <em>${esc(m[2].trim())}</em>`});return;const w=L.screen==='ranking'?'TOP 10':BIGW[L.lastPhase];document.querySelectorAll('.view .tot-head').forEach(h=>{if(w&&!h.querySelector('.bigword'))h.insertAdjacentHTML('afterbegin',`<div class="bigword" aria-hidden="true">${esc(w)}</div>`)});return;document.querySelectorAll('.view .tot-head h2,.view .suspense h2').forEach(h=>{if(h.children.length)return;const t=h.textContent;h.innerHTML=[...t].map((c,k)=>`<span class="sl" style="animation-delay:${.15+k*.035}s">${c===' '?'&nbsp;':esc(c)}</span>`).join('')})}
+function fitDraft(){try{const d=document.querySelector('.ddock');const btn=[...document.querySelectorAll('.pair .pick .btn')];if(!d||!btn.length)return;const lim=d.getBoundingClientRect().top-10,bot=Math.max(...btn.map(b=>b.getBoundingClientRect().bottom));if(bot>lim)window.scrollBy({top:bot-lim})}catch(e){}}
 function countUps(){
   document.querySelectorAll('[data-count]').forEach(el=>{const v=parseFloat(el.dataset.count),dec=el.dataset.dec==='1',t0=performance.now(),dur=900+Math.random()*300,delay=parseFloat(el.dataset.delay||'250');
     el.textContent=dec?'0':'0';
