@@ -1603,6 +1603,17 @@ const PEDIDOS=[
  {n:'Noite Jorge Ben 🎸',d:'+0,5 por cada faixa do Jorge Ben Jor',t:(e,s)=>/Jorge Ben/.test(s.a)},
  {n:'Noite Djavan 🌊',d:'+0,5 por cada faixa do Djavan',t:(e,s)=>/Djavan/.test(s.a)},
  {n:'Churrasco do Seu Jorge 🔥',d:'+0,5 por cada faixa do Seu Jorge',t:(e,s)=>/Seu Jorge/.test(s.a)},
+,
+{n:'Jorge Ben a dançar 🎸💃',d:'+0,75 por cada faixa do Jorge Ben Jor com energia 4 ou 5',v:.75,t:(e,s)=>/Jorge Ben/.test(s.a)&&e.en>=4},
+ {n:'Djavan apaixonado 🌊💌',d:'+0,75 por cada faixa do Djavan com o tema amor',v:.75,t:(e,s)=>/Djavan/.test(s.a)&&e.tags.includes('amor')},
+ {n:'Djavan ao luar 🌙',d:'+0,75 por cada faixa do Djavan com energia 1 ou 2',v:.75,t:(e,s)=>/Djavan/.test(s.a)&&e.en<=2},
+ {n:'Festa do Seu Jorge 🔥🎉',d:'+0,75 por cada faixa do Seu Jorge com o tema festa',v:.75,t:(e,s)=>/Seu Jorge/.test(s.a)&&e.tags.includes('festa')},
+ {n:'Samba romântico 🥁💌',d:'+0,75 por cada faixa de samba/pagode com o tema amor',v:.75,t:e=>e.gen==='samba'&&e.tags.includes('amor')},
+ {n:'Pagode animado 🥁💃',d:'+0,75 por cada faixa de samba/pagode com energia 4 ou 5',v:.75,t:e=>e.gen==='samba'&&e.en>=4},
+ {n:'MPB de saudade 🎙️💔',d:'+0,75 por cada faixa de MPB/bossa com o tema saudade',v:.75,t:e=>(e.gen==='mpb'||e.gen==='bossa')&&e.tags.includes('saudade')},
+ {n:'Samba-rock de amor 🕺💌',d:'+0,75 por cada faixa de suingue/samba-rock com o tema amor',v:.75,t:e=>e.gen==='suingue'&&e.tags.includes('amor')},
+ {n:'Mar calmo 🌊🌅',d:'+0,75 por cada faixa de mar & sol com energia 3 ou menos',v:.75,t:e=>e.tags.includes('mar')&&e.en<=3},
+
 ];
 function pedido(){return PEDIDOS[hash(G.seed+':pedido')%PEDIDOS.length]}
 function linkScore(ta,tb){const a=ev(ta.i),b=ev(tb.i);let p=0;const why=[];
@@ -1633,7 +1644,7 @@ function combos(tr){
   const lim=Math.max(2,Math.ceil(n*.4));
   if(Object.keys(ac).length>=Math.ceil(n*.8))out.push({k:'art',n:'🎨 Variedade',p:.5,w:`${Object.keys(ac).length} artistas diferentes.`});
   Object.entries(ac).filter(([,c])=>c>lim).forEach(([a,c])=>out.push({k:'mono',n:'🔁 Monotonia',p:-1,w:`${c} faixas de ${a}.`}));
-  if(G&&G.seed){const pd=pedido(),hits=tr.filter(t=>pd.t(ev(t.i),t)).length,pp=Math.min(2,hits*.5);if(pp)out.push({k:'ped',n:'🌙 Pedido da noite',p:pp,w:`${hits} faixa${hits>1?'s':''} cumpre${hits>1?'m':''} “${pd.n}”.`})}
+  if(G&&G.seed){const pd=pedido(),hits=tr.filter(t=>pd.t(ev(t.i),t)).length,pp=Math.min(2,hits*(pd.v||.5));if(pp)out.push({k:'ped',n:'🌙 Pedido da noite',p:pp,w:`${hits} faixa${hits>1?'s':''} cumpre${hits>1?'m':''} “${pd.n}”.`})}
   return out;
 }
 /* checklist para o ecrã de alinhamento: tudo o que pode valer pontos, conseguido ou não */
@@ -1646,7 +1657,7 @@ function checklist(tr){
   rows.push({ic:'💿',t:'Tema do álbum',p:t?t.p:0,ok:!!t,h:t?t.w:`Precisas de ${Math.ceil(n/2)} faixas com o mesmo tema${bt?` (tens ${bt[1]} de ${TAGN[bt[0]]})`:''}.`,max:1.5});
   const st=get('estilo');rows.push({ic:'🎯',t:'Estilo (coesão ou mistura)',p:st?st.p:0,ok:!!st,h:st?st.w:'60% do mesmo estilo, ou 4 estilos diferentes.',max:1});
   const ar=get('art'),mo=cs.filter(x=>x.k==='mono');rows.push({ic:'🎨',t:'Variedade de artistas',p:(ar?ar.p:0)+mo.reduce((a,x)=>a+x.p,0),ok:!!ar&&!mo.length,bad:mo.length>0,h:mo.length?mo.map(x=>x.w).join(' ')+' Perdes 1 ponto.':(ar?ar.w:'Quase todas as faixas de artistas diferentes.'),max:.5});
-  const pd=pedido(),hits=tr.filter(t=>pd.t(ev(t.i),t)).length,pp=Math.min(2,hits*.5);rows.push({ic:'🌙',t:'Pedido: '+pd.n,p:pp,ok:pp>0,h:`${hits} faixa${hits===1?'':'s'} cumpre${hits===1?'':'m'} o pedido (máx. +2).`,max:2});
+  const pd=pedido(),hits=tr.filter(t=>pd.t(ev(t.i),t)).length,pp=Math.min(2,hits*(pd.v||.5));rows.push({ic:'🌙',t:'Pedido: '+pd.n,p:pp,ok:pp>0,h:`${hits} faixa${hits===1?'':'s'} cumpre${hits===1?'':'m'} o pedido (máx. +2).`,max:2});
   return {rows,total:cs.reduce((a,x)=>a+x.p,0)};
 }
 function prizes(i){return combos(aligned(i).slice(0,G.per))}
@@ -1981,7 +1992,7 @@ function rulesBox(){
     <p class="rtry">${sel==null?'👆 Experimenta: toca numa capa.':`✅ “${esc(S(sel).t)}” entrou no teu álbum! A outra foi para a gaveta.`}</p>
     <div class="rlegend">${chips(A)}</div><p class="rsmall">Antes de escolher vês o <b>estilo</b>, a <b>energia</b> (1 = calma, 5 = para dançar) e o <b>tema</b>. As minhas notas ficam secretas.</p>`}
   if(k===1){const i=L.rped||0,pd=PEDIDOS[i%PEDIDOS.length];
-    body=`<p>Cada partida sorteia um <b>pedido da noite</b>. Cada música que o cumpra dá <b>+0,5</b> (até +2).</p>
+    body=`<p>Cada partida sorteia um <b>pedido da noite</b>: um estilo, um cantor, a energia ou um tema, às vezes dois juntos. Cada música que o cumpra dá <b>+0,5</b> (ou <b>+0,75</b> nos pedidos combinados), até +2.</p>
     <div class="pedido rped"><span class="mono">pedido da noite</span><b>${pd.n}</b><span>${pd.d}</span></div>
     <div class="center"><button class="btn ghost sm" onclick="L.rped=(L.rped||0)+1;render()">🎲 Ver outro pedido</button></div>
     <p class="rsmall">Assim, decorar as notas não chega: as músicas que valem a pena mudam de partida para partida.</p>`}
