@@ -1315,7 +1315,7 @@ body.has-sdock #app{padding-bottom:150px}
 html{overflow-x:clip!important;overflow-y:visible!important}
 body{overflow:visible!important}
 /* ranking por tamanho */
-.rktabs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:420px;margin:0 auto 14px}
+.rktabs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:540px;margin:0 auto 14px}
 .rktabs button{background:rgba(255,214,150,.07);border:1px solid rgba(255,214,150,.25);border-radius:14px;padding:10px 6px;cursor:pointer;color:var(--ink);display:flex;flex-direction:column;align-items:center;transition:all .2s}
 .rktabs b{font-family:Anton,sans-serif;font-weight:400;font-size:26px;line-height:1}.rktabs span{font-size:12px;color:var(--cream2)}
 .rktabs button.on{background:var(--gold);border-color:var(--gold);transform:translateY(-2px)}.rktabs button.on b,.rktabs button.on span{color:#2a1205}
@@ -2105,15 +2105,15 @@ function openRanking(){L.screen='ranking';L.rank=null;L.rankErr='';render();
   rankUnsub=db.collection('albuns').orderBy('score','desc').limit(300).onSnapshot(q=>{clearTimeout(t);L.rank=q.docs.map(d=>({id:d.id,...d.data()}));L.rankErr='';if(L.screen==='ranking')render()},e=>{clearTimeout(t);L.rankErr='Não consegui abrir o ranking.';render()})}
 function closeRanking(){rankUnsub?.();rankUnsub=null;L.screen=null;render()}
 function rankingScreen(){
-  const per=L.rankPer||5,list=L.rank&&L.rank.filter(r=>(r.per||5)===per).slice(0,10);
-  const tabs=`<div class="rktabs">${[5,8,10].map(n=>`<button class="${n===per?'on':''}" onclick="L.rankPer=${n};render()"><b>${n}</b><span>músicas</span></button>`).join('')}</div>`;
+  const per=L.rankPer||'all',list=L.rank&&L.rank.filter(r=>per==='all'||(r.per||5)===per).slice(0,10);
+  const tabs=`<div class="rktabs"><button class="${per==='all'?'on':''}" onclick="L.rankPer='all';render()"><b>★</b><span>todos</span></button>${[5,8,10].map(n=>`<button class="${n===per?'on':''}" onclick="L.rankPer=${n};render()"><b>${n}</b><span>músicas</span></button>`).join('')}</div>`;
   const row=(r,k)=>{const tr=(r.tracks||[]).filter(i=>SONGS[i]).map(song);const medal=['🥇','🥈','🥉'][k]||(k+1)+'.º';
     return `<div class="rrow ${k<3?'podium':''}" style="--d:${k*.06}s"><div class="rpos">${medal}</div><div class="rcov">${tr.slice(0,4).map(cimg).join('')}</div>
     <div class="rinfo"><b>${esc(r.album||'Sem nome')}</b><span class="${r.player==='Miguel'?'c0':'c1'}">${esc(r.player||'')}</span><span class="rmeta">${r.per||tr.length} faixas · ${r.won?'ganhou':'perdeu'} contra ${esc(r.vs||'')}${r.at?' · '+new Date(r.at).toLocaleDateString('pt-PT'):''}</span>
     <details><summary>ver faixas</summary><ol>${tr.map(t=>`<li>${esc(t.t)} <span>— ${esc(t.a)}</span></li>`).join('')}</ol></details></div>
     <div class="rscore">${fmt(r.score)}</div></div>`};
   return `<div class="tot-head"><div class="mono" style="color:var(--muted)">hall da fama</div><h2>Top 10 álbuns</h2><div class="sub">Os melhores álbuns montados pelo Miguel e pela Clara (os do computador não contam).</div></div>
-  ${tabs}<div class="panel rlist">${L.rankErr?`<p class="hint center">${esc(L.rankErr)}</p>`:!list?`<div class="wait"><div class="minirecord"></div></div>`:list.length?list.map(row).join(''):`<p class="hint center">Ainda não há álbuns de ${per} músicas no ranking. Joguem uma partida!</p>`}</div>
+  ${tabs}<div class="panel rlist">${L.rankErr?`<p class="hint center">${esc(L.rankErr)}</p>`:!list?`<div class="wait"><div class="minirecord"></div></div>`:list.length?list.map(row).join(''):`<p class="hint center">${per==='all'?'Ainda não há álbuns no ranking.':`Ainda não há álbuns de ${per} músicas no ranking.`} Joguem uma partida!</p>`}</div>
   <p class="hint center mt">Pontuação do álbum = média das minhas notas das faixas + pontos de combinação (ajustados ao tamanho do álbum, para comparar álbuns de 5, 8 ou 10 faixas).</p>
   <div class="actions"><button class="btn" onclick="closeRanking()">← Voltar</button></div>`;
 }
@@ -2297,7 +2297,7 @@ function body(){
   if(!G.seed)return newScreen();
   return ({draft,order,duels})[phase()]();
 }
-function viewKey(){if(L.screen)return 'scr:'+L.screen+(L.rank?'1':'0')+(L.rankPer||5);if(!G||!G.seed||!MODE)return [WHO,MODE,CODE,L.status,G?.joined?.p0,G?.joined?.p1,G?.seed].join('|');const ph=phase();return [MODE,G.round,ph,ph==='draft'?picks().length:'',ph==='duels'?stageKind().join(':'):'',ph==='order'?!!G.orders?.[P(WHO)]:''].join('|')}
+function viewKey(){if(L.screen)return 'scr:'+L.screen+(L.rank?'1':'0')+(L.rankPer||'all');if(!G||!G.seed||!MODE)return [WHO,MODE,CODE,L.status,G?.joined?.p0,G?.joined?.p1,G?.seed].join('|');const ph=phase();return [MODE,G.round,ph,ph==='draft'?picks().length:'',ph==='duels'?stageKind().join(':'):'',ph==='order'?!!G.orders?.[P(WHO)]:''].join('|')}
 function render(){
   const app=document.getElementById('app'),keep={};app.querySelectorAll('input[id]').forEach(i=>keep[i.id]=i.value);
   const fid=document.activeElement&&document.activeElement.id;
