@@ -1,0 +1,1 @@
+{"name":"Meu Álbum","short_name":"Meu Álbum","start_url":"./","scope":"./","display":"standalone","background_color":"#1a0d05","theme_color":"#2a1205","icons":[{"src":"icon-192.png","sizes":"192x192","type":"image/png"},{"src":"icon-512.png","sizes":"512x512","type":"image/png"},{"src":"icon-1024.png","sizes":"1024x1024","type":"image/png","purpose":"any"}]}
