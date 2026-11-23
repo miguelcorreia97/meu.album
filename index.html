@@ -1753,6 +1753,13 @@ function notify(prev){
 }
 
 /* ======== modo web (GitHub Pages): ligação direta entre os dois telemóveis ======== */
+/* top 10 online (Firebase Firestore, versão web) */
+const FS_URL='https://firestore.googleapis.com/v1/projects/meualbum-ace50/databases/(default)/documents/albuns',FS_KEY='AIzaSyBrqsIqD9SF4QWkLrRb94TaWvvmMTkCgd4';
+function fsVal(v){if(v===null||v===undefined)return {nullValue:null};if(typeof v==='boolean')return {booleanValue:v};if(typeof v==='number')return Number.isInteger(v)?{integerValue:String(v)}:{doubleValue:v};if(Array.isArray(v))return {arrayValue:{values:v.map(fsVal)}};return {stringValue:String(v)}}
+function fsGet(f){if(!f)return null;if('integerValue' in f)return +f.integerValue;if('doubleValue' in f)return f.doubleValue;if('booleanValue' in f)return f.booleanValue;if('stringValue' in f)return f.stringValue;if('arrayValue' in f)return (f.arrayValue.values||[]).map(fsGet);return null}
+async function cloudList(){const out={};let tok='';for(let k=0;k<5;k++){const r=await fetch(`${FS_URL}?pageSize=300&key=${FS_KEY}${tok?'&pageToken='+tok:''}`);if(!r.ok)throw new Error('fs '+r.status);const j=await r.json();(j.documents||[]).forEach(d=>{const id=d.name.split('/').pop(),o={};for(const k2 in d.fields)o[k2]=fsGet(d.fields[k2]);out[id]=o});if(!j.nextPageToken)break;tok=j.nextPageToken}return out}
+async function cloudPut(id,d){const keep=['score','album','player','vs','won','combos','per','tracks','pedido','at'],fields={};keep.forEach(k=>{if(d[k]!==undefined)fields[k]=k==='score'||k==='combos'?{doubleValue:+d[k]}:fsVal(d[k])});
+  const r=await fetch(`${FS_URL}?documentId=${encodeURIComponent(id)}&key=${FS_KEY}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields})});return r.ok||r.status===409}
 function makeP2PDb(){
   const subs={},local={},albSubs=new Set();let peer=null,conn=null,hostCode=null,role=null,waiters=[];
   const LSA='ma-albuns';let albuns={};try{albuns=JSON.parse(localStorage.getItem(LSA)||'{}')}catch(e){}
@@ -1760,6 +1767,11 @@ function makeP2PDb(){
   const snapOf=p=>({id:p.split('/').pop(),exists:p in local,data:()=>local[p]?JSON.parse(JSON.stringify(local[p])):undefined,metadata:{fromCache:false}});
   const emit=p=>(subs[p]||[]).slice().forEach(fn=>{try{fn(snapOf(p))}catch(e){}});
   const emitAlb=()=>albSubs.forEach(f=>f());
+  let cloudOk=false;
+  const cloudSync=async()=>{try{const c=await cloudList();cloudOk=true;let ch=false;for(const id in c){if(!albuns[id]||albuns[id].score!==c[id].score){albuns[id]=c[id];ch=true}}
+    for(const id in albuns){if(!c[id]&&albuns[id]&&albuns[id].player&&[5,8,10].includes(albuns[id].per||5)){const d={...albuns[id],per:albuns[id].per||5};cloudPut(id,d).catch(()=>{})}}
+    if(ch){saveAlb();emitAlb()}}catch(e){}};
+  setTimeout(cloudSync,300);
   const send=m=>{try{if(conn&&conn.open)conn.send(m)}catch(e){}};
   const persist=()=>{if(role==='host'){try{localStorage.setItem('ma-host-'+hostCode,JSON.stringify(local['salas/'+hostCode]))}catch(e){}}};
   function apply(p,d,whole){local[p]=whole?JSON.parse(JSON.stringify(d)):deepMerge(local[p]||{},JSON.parse(JSON.stringify(d)));emit(p);if(role==='host'){persist();send({t:'state',code:hostCode,doc:local[p]})}}
@@ -1783,13 +1795,13 @@ function makeP2PDb(){
       if(!peer||peer.destroyed){peer=new Peer();peer.on('open',go);peer.on('error',e=>{if(e.type==='peer-unavailable')fin(false)})}else go()})},
     doc:p=>({
       get:async()=>{if(p.startsWith('salas/')&&!(p in local)&&!(role==='host'&&hostCode===p.slice(6))){const ok=await api.connectGuest(p.slice(6));if(!ok)return snapOf('salas/__none__')}return snapOf(p)},
-      set:async d=>{if(p.startsWith('albuns/')){const id=p.slice(7);albuns[id]=JSON.parse(JSON.stringify(d));saveAlb();emitAlb();send({t:'albuns',items:{[id]:albuns[id]}});return}
+      set:async d=>{if(p.startsWith('albuns/')){const id=p.slice(7);albuns[id]=JSON.parse(JSON.stringify(d));saveAlb();emitAlb();send({t:'albuns',items:{[id]:albuns[id]}});cloudPut(id,albuns[id]).catch(()=>{});return}
         if(role==='guest'){local[p]=JSON.parse(JSON.stringify(d));emit(p);send({t:'write',path:p,data:d,whole:true})}else apply(p,d,true)},
       update:async d=>{if(role==='guest'){local[p]=deepMerge(local[p]||{},JSON.parse(JSON.stringify(d)));emit(p);send({t:'write',path:p,data:d,whole:false})}else apply(p,d,false)},
       onSnapshot:(fn)=>{(subs[p]=subs[p]||[]).push(fn);setTimeout(()=>fn(snapOf(p)),0);return()=>{subs[p]=(subs[p]||[]).filter(f=>f!==fn)}}}),
     collection:()=>{let lim=99;const q={orderBy:()=>q,limit:n=>{lim=n;return q},
       get:async()=>({docs:Object.entries(albuns).map(([id,d])=>({id,exists:true,data:()=>d})).sort((a,b)=>b.data().score-a.data().score).slice(0,lim)}),
-      onSnapshot:fn=>{const f=()=>q.get().then(fn);albSubs.add(f);f();return()=>albSubs.delete(f)}};return q}};
+      onSnapshot:fn=>{const f=()=>q.get().then(fn);albSubs.add(f);f();cloudSync();const iv=setInterval(cloudSync,20000);return()=>{albSubs.delete(f);clearInterval(iv)}}};return q}};
   return api;
 }
 
