@@ -1335,6 +1335,7 @@ body{overflow:visible!important}
 .oside .otot{top:16px;padding-bottom:6px}
 @media(min-width:601px){.dstick~.pair .dlisten,.pair .dlisten{display:none}}
 #app{padding-top:max(12px,env(safe-area-inset-top))}
+@media(max-width:600px){.ddock{grid-template-columns:1fr!important}.psum{border-left:0!important;border-top:1px dashed rgba(255,214,150,.25);padding:5px 0 0!important;flex-direction:row!important;flex-wrap:wrap;gap:3px 6px!important;align-items:center}.psum .pslab{width:100%}.psrow{flex-wrap:nowrap!important;overflow:hidden}.psrow span{flex:none}body.has-ddock #app{padding-bottom:175px!important}}
 </style>
 </head>
 <body>
@@ -1589,15 +1590,19 @@ const TAGN={amor:'amor',saudade:'saudade',festa:'festa',mar:'mar & sol',brasil:'
 const NEIGH=new Set(['mpb|bossa','mpb|rock','mpb|nordeste','mpb|samba','samba|suingue','samba|bossa','suingue|bossa','reggae|pop','rock|pop','nordeste|samba','suingue|mpb','reggae|mpb','pop|mpb']);
 const near=(a,b)=>NEIGH.has(a+'|'+b)||NEIGH.has(b+'|'+a);
 const PEDIDOS=[
- {n:'Noite de baile 💃',d:'+0,5 por cada faixa com muita energia (4 ou 5)',t:e=>e.en>=4},
- {n:'Coração partido 💔',d:'+0,5 por cada faixa de saudade',t:e=>e.tags.includes('saudade')},
- {n:'Raízes 🌳',d:'+0,5 por cada grande clássico (legado 9+)',t:e=>e.leg>=9},
- {n:'Verão tropical 🌴',d:'+0,5 por cada faixa de mar & sol',t:e=>e.tags.includes('mar')},
- {n:'Poesia ✍️',d:'+0,5 por cada letra de 9+',t:e=>e.let>=9},
- {n:'Brasil 🇧🇷',d:'+0,5 por cada faixa sobre o Brasil e a sua gente',t:e=>e.tags.includes('brasil')},
- {n:'Groove 🕺',d:'+0,5 por cada faixa com som 9+',t:e=>e.som>=9},
- {n:'Vida boa ☀️',d:'+0,5 por cada faixa sobre a vida',t:e=>e.tags.includes('vida')},
- {n:'Fim de tarde 🌅',d:'+0,5 por cada faixa calma (energia 1 ou 2)',t:e=>e.en<=2},
+ {n:'Noite de baile 💃',d:'+0,5 por cada faixa com energia 4 ou 5',t:e=>e.en>=4},
+ {n:'Fim de tarde 🌅',d:'+0,5 por cada faixa com energia 1 ou 2',t:e=>e.en<=2},
+ {n:'Coração partido 💔',d:'+0,5 por cada faixa com o tema saudade',t:e=>e.tags.includes('saudade')},
+ {n:'Verão tropical 🌴',d:'+0,5 por cada faixa com o tema mar & sol',t:e=>e.tags.includes('mar')},
+ {n:'Brasil 🇧🇷',d:'+0,5 por cada faixa com o tema Brasil',t:e=>e.tags.includes('brasil')},
+ {n:'Vida boa ☀️',d:'+0,5 por cada faixa com o tema vida',t:e=>e.tags.includes('vida')},
+ {n:'Roda de samba 🥁',d:'+0,5 por cada faixa de samba/pagode',t:e=>e.gen==='samba'},
+ {n:'Samba-rock 🕺',d:'+0,5 por cada faixa de suingue/samba-rock',t:e=>e.gen==='suingue'},
+ {n:'Noite de MPB 🎙️',d:'+0,5 por cada faixa de MPB ou bossa nova',t:e=>e.gen==='mpb'||e.gen==='bossa'},
+ {n:'Rock brasileiro 🎸',d:'+0,5 por cada faixa de rock/pop BR',t:e=>e.gen==='rock'},
+ {n:'Noite Jorge Ben 🎸',d:'+0,5 por cada faixa do Jorge Ben Jor',t:(e,s)=>/Jorge Ben/.test(s.a)},
+ {n:'Noite Djavan 🌊',d:'+0,5 por cada faixa do Djavan',t:(e,s)=>/Djavan/.test(s.a)},
+ {n:'Churrasco do Seu Jorge 🔥',d:'+0,5 por cada faixa do Seu Jorge',t:(e,s)=>/Seu Jorge/.test(s.a)},
 ];
 function pedido(){return PEDIDOS[hash(G.seed+':pedido')%PEDIDOS.length]}
 function linkScore(ta,tb){const a=ev(ta.i),b=ev(tb.i);let p=0;const why=[];
@@ -1628,7 +1633,7 @@ function combos(tr){
   const lim=Math.max(2,Math.ceil(n*.4));
   if(Object.keys(ac).length>=Math.ceil(n*.8))out.push({k:'art',n:'🎨 Variedade',p:.5,w:`${Object.keys(ac).length} artistas diferentes.`});
   Object.entries(ac).filter(([,c])=>c>lim).forEach(([a,c])=>out.push({k:'mono',n:'🔁 Monotonia',p:-1,w:`${c} faixas de ${a}.`}));
-  if(G&&G.seed){const pd=pedido(),hits=es.filter(pd.t).length,pp=Math.min(2,hits*.5);if(pp)out.push({k:'ped',n:'🌙 Pedido da noite',p:pp,w:`${hits} faixa${hits>1?'s':''} cumpre${hits>1?'m':''} “${pd.n}”.`})}
+  if(G&&G.seed){const pd=pedido(),hits=tr.filter(t=>pd.t(ev(t.i),t)).length,pp=Math.min(2,hits*.5);if(pp)out.push({k:'ped',n:'🌙 Pedido da noite',p:pp,w:`${hits} faixa${hits>1?'s':''} cumpre${hits>1?'m':''} “${pd.n}”.`})}
   return out;
 }
 /* checklist para o ecrã de alinhamento: tudo o que pode valer pontos, conseguido ou não */
@@ -1641,7 +1646,7 @@ function checklist(tr){
   rows.push({ic:'💿',t:'Tema do álbum',p:t?t.p:0,ok:!!t,h:t?t.w:`Precisas de ${Math.ceil(n/2)} faixas com o mesmo tema${bt?` (tens ${bt[1]} de ${TAGN[bt[0]]})`:''}.`,max:1.5});
   const st=get('estilo');rows.push({ic:'🎯',t:'Estilo (coesão ou mistura)',p:st?st.p:0,ok:!!st,h:st?st.w:'60% do mesmo estilo, ou 4 estilos diferentes.',max:1});
   const ar=get('art'),mo=cs.filter(x=>x.k==='mono');rows.push({ic:'🎨',t:'Variedade de artistas',p:(ar?ar.p:0)+mo.reduce((a,x)=>a+x.p,0),ok:!!ar&&!mo.length,bad:mo.length>0,h:mo.length?mo.map(x=>x.w).join(' ')+' Perdes 1 ponto.':(ar?ar.w:'Quase todas as faixas de artistas diferentes.'),max:.5});
-  const pd=pedido(),hits=es.filter(pd.t).length,pp=Math.min(2,hits*.5);rows.push({ic:'🌙',t:'Pedido: '+pd.n,p:pp,ok:pp>0,h:`${hits} faixa${hits===1?'':'s'} cumpre${hits===1?'':'m'} o pedido (máx. +2).`,max:2});
+  const pd=pedido(),hits=tr.filter(t=>pd.t(ev(t.i),t)).length,pp=Math.min(2,hits*.5);rows.push({ic:'🌙',t:'Pedido: '+pd.n,p:pp,ok:pp>0,h:`${hits} faixa${hits===1?'':'s'} cumpre${hits===1?'':'m'} o pedido (máx. +2).`,max:2});
   return {rows,total:cs.reduce((a,x)=>a+x.p,0)};
 }
 function prizes(i){return combos(aligned(i).slice(0,G.per))}
@@ -2186,7 +2191,7 @@ function order(){
 function pickSummary(){
   const tr=rawTracks(WHO);if(!tr.length)return `<div class="psum"><span class="pslab">o teu álbum</span><em>Escolhe a primeira música para veres aqui os estilos e temas.</em></div>`;
   const es=tr.map(t=>ev(t.i)),gc={},tc={};es.forEach(e=>{gc[e.gen]=(gc[e.gen]||0)+1;e.tags.forEach(x=>tc[x]=(tc[x]||0)+1)});
-  const en=es.reduce((a,e)=>a+e.en,0)/es.length,pd=pedido(),hits=es.filter(pd.t).length;
+  const en=es.reduce((a,e)=>a+e.en,0)/es.length,pd=pedido(),hits=tr.filter(t=>pd.t(ev(t.i),t)).length;
   const chip=(o,f,cls)=>Object.entries(o).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<span class="${cls}">${f(k)} <b>${v}</b></span>`).join('');
   return `<div class="psum"><span class="pslab">o teu álbum</span>
    <div class="psrow"><i>estilos</i>${chip(gc,k=>GEN[k],'pg')}</div>
