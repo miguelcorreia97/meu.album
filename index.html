@@ -754,10 +754,237 @@ details summary{color:var(--blue)!important}
 .leaf{opacity:1!important}
 .bigword{-webkit-mask:none!important;mask:none!important;opacity:.38!important;color:var(--yellow)!important}
 @keyframes bwIn{from{opacity:0;letter-spacing:.12em}to{opacity:.38;letter-spacing:-.01em}}
+
+/* ================= PRAIA AO PÔR DO SOL ================= */
+body{background:#fde9cf!important}
+#beach{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+#beach .sky{position:absolute;inset:0;background:linear-gradient(180deg,#fff1dc 0%,#ffe1b8 26%,#ffc488 44%,#ff9f6e 56%,#ff8466 63%,#f77a6f 66%)}
+#beach .sun{position:absolute;left:50%;top:66%;width:min(30vw,260px);aspect-ratio:1;transform:translate(-50%,-62%);border-radius:50%;background:radial-gradient(circle at 50% 45%,#fff6c2,#FFD700 45%,#ffb43b 75%,#ff8a3d);animation:sunpulse 6s ease-in-out infinite}
+#beach .sunglow{position:absolute;left:50%;top:66%;width:min(90vw,800px);aspect-ratio:1;transform:translate(-50%,-55%);border-radius:50%;background:radial-gradient(circle,rgba(255,215,0,.45),rgba(255,160,90,.18) 40%,transparent 68%);animation:glow 6s ease-in-out infinite}
+@keyframes sunpulse{50%{transform:translate(-50%,-60%) scale(1.02)}}@keyframes glow{50%{opacity:.75}}
+#beach .cloud{position:absolute;height:14px;border-radius:999px;background:rgba(255,255,255,.55);filter:blur(1px)}
+#beach .cloud::after{content:"";position:absolute;left:18%;top:-8px;width:45%;height:16px;border-radius:999px;background:inherit}
+#beach .c1{top:18%;width:180px;animation:drift 90s linear infinite}#beach .c2{top:30%;width:120px;animation:drift 120s -40s linear infinite;opacity:.7}#beach .c3{top:12%;width:240px;animation:drift 150s -90s linear infinite;opacity:.5}
+@keyframes drift{from{transform:translateX(-30vw)}to{transform:translateX(130vw)}}
+#beach .gull{position:absolute;width:34px;animation:fly 38s linear infinite}
+#beach .gull svg{width:100%;animation:flap .9s ease-in-out infinite}
+#beach .g1{top:24%;animation-delay:-5s}#beach .g2{top:30%;width:24px;animation-delay:-18s;animation-duration:46s}#beach .g3{top:20%;width:20px;animation-delay:-30s;animation-duration:52s}
+@keyframes fly{from{transform:translate(-10vw,0)}50%{transform:translate(55vw,-30px)}to{transform:translate(115vw,10px)}}
+@keyframes flap{50%{transform:scaleY(.4)}}
+#beach .sea{position:absolute;left:0;right:0;top:66%;height:22%;background:linear-gradient(180deg,#5a63b8 0%,#3150c2 30%,#1f45b8 65%,#1338BE);overflow:hidden}
+#beach .shine{position:absolute;left:50%;top:0;width:min(26vw,220px);height:100%;transform:translateX(-50%);background:repeating-linear-gradient(180deg,rgba(255,226,140,.85) 0 3px,transparent 3px 12px);-webkit-mask:linear-gradient(180deg,#000,transparent);mask:linear-gradient(180deg,#000,transparent);animation:shimmer 2.4s ease-in-out infinite}
+@keyframes shimmer{50%{opacity:.55;transform:translateX(-50%) scaleX(.85)}}
+#beach .wv{position:absolute;left:0;right:0;height:26px;overflow:hidden}
+#beach .wv>div{width:200%;height:100%;animation:wave 14s linear infinite}
+#beach .wv svg{width:100%;height:100%;display:block}
+#beach .w1{top:28%}#beach .w2{top:52%}#beach .w2>div{animation-duration:10s;animation-direction:reverse}#beach .w3{top:76%}#beach .w3>div{animation-duration:8s}
+@keyframes wave{to{transform:translateX(-50%)}}
+#beach .sand{position:absolute;left:0;right:0;top:86%;bottom:0;background:linear-gradient(180deg,#f2d39d,#ecc482 60%,#e5b873)}
+#beach .wet{position:absolute;left:0;right:0;top:0;height:40%;background:linear-gradient(180deg,rgba(150,110,70,.35),transparent);animation:wet 8s ease-in-out infinite}
+#beach .foam{position:absolute;left:-5%;right:-5%;top:-14px;height:34px;animation:shore 8s ease-in-out infinite}
+#beach .foam svg{width:100%;height:100%;display:block}
+@keyframes shore{0%,100%{transform:translateY(0) scaleY(.7);opacity:.65}45%{transform:translateY(26px) scaleY(1.1);opacity:1}70%{transform:translateY(14px);opacity:.8}}
+@keyframes wet{0%,100%{opacity:.4}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){#beach *{animation:none!important}}
+body::before{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;background:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .05 0 0 0 0 .12 0 0 0 0 .36 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.5}
+.leaf{z-index:2}
+/* legibilidade sobre o céu */
+.tot-head h2,.tot-head .sub,.tot-head .mono,.meta,.hero p,.winner .by,.winner .mono,.suspense .mono{text-shadow:0 0 14px rgba(255,241,220,.95),0 0 4px rgba(255,241,220,.9)}
+.bigword{color:#fff!important;opacity:.55!important}
+@keyframes bwIn{from{opacity:0;letter-spacing:.12em}to{opacity:.55;letter-spacing:-.01em}}
+/* Clara em amarelo */
+.c1{color:#FFD700!important;background:none!important;padding:0!important;text-shadow:-1px -1px 0 #0d1f5c,1px -1px 0 #0d1f5c,-1px 1px 0 #0d1f5c,1px 1px 0 #0d1f5c,2px 2px 0 #0d1f5c!important}
+.score .num.c1,.sc.c1,.winner h1.c1{-webkit-text-stroke:0!important}
+.hero .vs .c1,.winner h1.c1{text-shadow:-2px -2px 0 #0d1f5c,2px -2px 0 #0d1f5c,-2px 2px 0 #0d1f5c,2px 2px 0 #0d1f5c,4px 4px 0 #0d1f5c!important}
+.tally span[style*="--p1"]{color:#0d1f5c!important;border:1.5px solid #0d1f5c}
+:root{--p1:#FFD700}
+/* som */
+.sndbtn{width:38px;height:38px;border-radius:50%;border:2px solid var(--ink);background:#fffdf7;font-size:17px;cursor:pointer;box-shadow:3px 3px 0 var(--ink);transition:transform .2s,box-shadow .2s,background .2s;flex:none}
+.sndbtn.on{background:var(--yellow);animation:sndpulse 1.9s ease-in-out infinite}
+.sndbtn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+@keyframes sndpulse{50%{box-shadow:3px 3px 0 var(--ink),0 0 0 6px rgba(255,215,0,.35)}}
+/* smooth & prático */
+.btn,.chip,.mv,.linkbtn,.modebtn,.whobtn,.orow,.rrow{transition:transform .22s cubic-bezier(.2,.8,.2,1),box-shadow .22s,background .22s,filter .2s}
+.btn:hover{transform:translate(-2px,-2px)}.btn:hover{box-shadow:6px 6px 0 var(--ink)!important}
+.pick.tappable{cursor:pointer}
+.pick.tappable .sleeve{transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.pick.tappable:hover .sleeve{transform:translateY(-6px) rotate(-1.5deg)}
+.pick.tappable:active .sleeve{transform:scale(.97)}
+.orow:hover{transform:translateX(3px)}
+.rrow:hover{transform:translateY(-2px);box-shadow:5px 5px 0 var(--ink)}
+.view.enter{animation:smoothIn .5s cubic-bezier(.2,.8,.2,1) both!important}
+@keyframes smoothIn{from{opacity:0;transform:translateY(14px) scale(.995)}to{opacity:1;transform:none}}
+.view.enter .panel,.view.enter .orow,.view.enter .rrow,.view.enter .modebtn{animation:smoothIn .55s cubic-bezier(.2,.8,.2,1) both!important}
+.view.enter .orow:nth-child(odd){animation-delay:.04s!important}
+.view.enter .pair>.pick:first-child{animation:slideL .6s cubic-bezier(.2,.8,.2,1) both!important}
+.view.enter .pair>.pick:last-child{animation:slideR .6s .08s cubic-bezier(.2,.8,.2,1) both!important}
+@keyframes slideL{from{opacity:0;transform:translateX(-36px)}}@keyframes slideR{from{opacity:0;transform:translateX(36px)}}
+html{scroll-behavior:smooth}
+/* telemóvel */
+@media(max-width:600px){
+  .top{position:sticky;top:0;z-index:30;margin:-12px -12px 14px;padding:10px 12px;background:rgba(255,241,220,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:2px solid var(--ink)}
+  .logo{font-size:20px!important}.topr{gap:8px!important}.sndbtn{width:32px;height:32px;font-size:14px;box-shadow:2px 2px 0 var(--ink)}
+  .tot-head h2{font-size:36px!important}.bigword{font-size:88px}
+  .heroword{font-size:92px;text-shadow:4px 4px 0 var(--green)}.heroword span:last-child{text-shadow:4px 4px 0 var(--blue)}
+  .hero .turntable{width:130px;height:130px;margin-top:-46px}
+  .pick .btn{padding:12px 10px!important;font-size:13px}
+  .ou{width:46px!important;height:46px!important;font-size:18px!important}
+  .pick .tags{gap:3px}.tags span{font-size:10px;padding:1px 6px}
+  .panel{box-shadow:4px 4px 0 var(--ink)!important}
+  .modes{gap:12px}.modebtn{padding:16px!important}
+}
+@media(min-width:1100px){#app{max-width:1080px}}
+
+/* ===== legibilidade: conteúdo num cartão de vidro ===== */
+#beach .sky{background:linear-gradient(180deg,#fff1dc 0%,#ffe1b8 30%,#ffc488 52%,#ff9f6e 66%,#ff8466 74%,#f77a6f 78%)!important}
+#beach .sun,#beach .sunglow{top:78%!important}
+#beach .sea{top:78%!important;height:13%!important}
+#beach .sand{top:91%!important}
+main.view{background:rgba(255,248,236,.86);backdrop-filter:blur(12px) saturate(1.1);-webkit-backdrop-filter:blur(12px) saturate(1.1);border:2px solid var(--ink);border-radius:22px;padding:22px 22px 28px;box-shadow:8px 8px 0 rgba(13,31,92,.85);margin-bottom:24px}
+.tot-head h2,.tot-head .sub,.tot-head .mono,.meta,.hero p,.winner .by,.winner .mono,.suspense .mono{text-shadow:none!important}
+.hero .vs{margin-top:6px}
+.top{position:relative;z-index:5}
+/* barra fixa do pedido + tempo enquanto escolhes */
+.dstick{position:sticky;top:8px;z-index:20;background:rgba(255,248,236,.96);border-radius:16px;padding:8px 0 2px;margin:-4px 0 12px}
+.dstick .pedido{margin:0 0 8px!important;padding:8px 12px!important}
+.dstick .timer{margin:0 4px 4px}
+/* prateleiras fixas em baixo */
+.ddock{position:fixed;left:50%;transform:translateX(-50%);bottom:10px;z-index:40;width:min(1040px,calc(100% - 20px));background:#fffdf7;border:2px solid var(--ink);border-radius:18px;box-shadow:5px 5px 0 var(--ink);padding:10px 12px 10px;animation:ddIn .5s cubic-bezier(.2,.8,.2,1) both}
+@keyframes ddIn{from{transform:translate(-50%,120%)}}
+body.has-ddock #app{padding-bottom:170px}
+.drow2{display:grid;grid-template-columns:86px 1fr;gap:10px;align-items:center;padding:4px 0}
+.drow2+.drow2{border-top:1px dashed rgba(13,31,92,.2)}
+.dlab{display:flex;flex-direction:column;line-height:1.1;min-width:0}.dlab b{font-family:'Playfair Display',serif;font-weight:900;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.dlab small{font-size:11px;color:var(--muted)}
+.dslots{display:grid;grid-template-columns:repeat(var(--n),minmax(0,48px));gap:6px}
+.dslots .slot,.dmini{aspect-ratio:1;border-radius:4px}
+.dslots .slot{border:2px dashed rgba(13,31,92,.25)}
+.dmini{overflow:hidden;border:1.5px solid var(--ink);animation:popIn .45s cubic-bezier(.2,.8,.2,1) both}
+.dmini img{width:100%;height:100%;object-fit:cover;display:block}
+.dtoggle{position:absolute;right:12px;top:-16px;background:var(--yellow);border:2px solid var(--ink);border-radius:999px;font:700 12px "DM Sans",sans-serif;color:var(--ink);padding:4px 12px;cursor:pointer}
+.dlist{display:none;grid-template-columns:1fr 1fr;gap:14px;max-height:40vh;overflow:auto;padding:6px 2px 10px;border-bottom:1px dashed rgba(13,31,92,.2);margin-bottom:6px}
+.ddock.open .dlist{display:grid}
+.dlist b{font-family:'Playfair Display',serif;font-weight:900}
+.dlist ol{list-style:none;margin:6px 0 0;padding:0;font-size:13px}.dlist li{padding:3px 0}.dlist li span{color:var(--muted);font-family:"Space Mono",monospace;font-size:11px}.dlist em{color:var(--muted);font-style:normal}
+@media(max-width:600px){
+  main.view{padding:14px 12px 20px;border-radius:16px;box-shadow:5px 5px 0 rgba(13,31,92,.85);margin:0 -2px 18px}
+  .dstick{top:62px}
+  .ddock{bottom:0;width:100%;border-radius:16px 16px 0 0;border-bottom:0;box-shadow:0 -4px 0 var(--ink);padding:10px 10px calc(10px + env(safe-area-inset-bottom))}
+  .drow2{grid-template-columns:54px 1fr;gap:8px}.dlab b{font-size:13px}
+  .dslots{gap:4px;grid-template-columns:repeat(var(--n),minmax(0,1fr))}
+  .dlist{grid-template-columns:1fr;max-height:45vh}
+  body.has-ddock #app{padding-bottom:150px}
+  .pair .tt{font-size:17px!important;line-height:1.15}
+  .pick .info{min-width:0}.pick .tt,.pick .ta{overflow-wrap:anywhere}
+  .hero .vs{font-size:40px!important}
+}
+/* sem sobreposições */
+.pick .info{width:100%}
+.pick .tags{justify-content:center}
+.tot-head .sub{max-width:640px;margin-left:auto;margin-right:auto}
+.meta{gap:8px}
+
+.hero .turntable{margin:14px auto 6px!important}
+.pdot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;border:1.5px solid var(--ink);vertical-align:0}
+.pdot.p0{background:var(--blue)}.pdot.p1{background:var(--yellow)}
+.dlab b{font-family:"DM Sans",sans-serif!important;font-weight:700!important}
+.pair .sleeve{width:min(230px,26vh,40vw)!important}
+@media(min-width:601px){
+  .ddock{display:grid;grid-template-columns:1fr 1fr;gap:6px 22px;padding:12px 16px}
+  .ddock .dlist{grid-column:1/-1}
+  .drow2+.drow2{border-top:0;border-left:1px dashed rgba(13,31,92,.2);padding-left:18px}
+  .dslots{grid-template-columns:repeat(var(--n),minmax(0,40px))}
+  body.has-ddock #app{padding-bottom:120px}
+}
+@media(max-width:600px){.dslots{grid-template-columns:repeat(var(--n),minmax(0,38px))!important}.drow2{padding:3px 0}.heroword{font-size:84px!important}.hero .turntable{width:120px!important;height:120px!important}}
+
+/* ===== mais real, mais quente, menos branco ===== */
+:root{--p0:#009C3B;--warm:#f6dcb3;--warm2:#efcf9c;--ink:#2b1d14;--cream:#2b1d14;--cream2:#5a4330;--muted:#8a6c50}
+.c0{color:#009C3B!important}
+.score .num.c0,.nota{color:#009C3B!important}
+.pdot.p0{background:#009C3B}
+/* céu e sol realistas */
+#beach .sky{background:linear-gradient(180deg,#e9813f 0%,#f39a4a 22%,#f8b25a 42%,#fbc36a 58%,#f6a457 70%,#ef8a4a 78%)!important}
+#beach .sun{background:radial-gradient(circle at 50% 50%,#fff0c0 0%,#ffd27a 30%,#ffaa45 62%,#f7822f 100%)!important;box-shadow:0 0 60px 20px rgba(255,160,70,.55),0 0 160px 60px rgba(255,140,60,.35);filter:blur(.6px)}
+#beach .sunglow{background:radial-gradient(circle,rgba(255,190,90,.55),rgba(255,140,60,.22) 40%,transparent 70%)!important}
+#beach .cloud{background:rgba(255,200,150,.55)!important;filter:blur(8px)!important;height:22px!important}
+#beach .cloud::after{height:26px!important;top:-12px!important}
+#beach .sea{background:linear-gradient(180deg,#b9705a 0%,#7d5a72 18%,#3f4f86 45%,#24397a 75%,#1a2c63)!important}
+#beach .shine{background:linear-gradient(180deg,rgba(255,200,110,.9),rgba(255,170,80,.35) 60%,transparent)!important;filter:blur(6px);width:min(22vw,180px)!important;-webkit-mask:none!important;mask:none!important}
+#beach .wv{opacity:.55;filter:blur(.8px)}
+#beach .sand{background:linear-gradient(180deg,#c99868,#b8865a 50%,#a5764e)!important}
+#beach .wet{background:linear-gradient(180deg,rgba(90,60,40,.45),transparent)!important}
+#beach .foam{opacity:.8;filter:blur(1px)}
+#beach .gull svg path{stroke:#3a2418}
+body{background:#f39a4a!important}
+body::before{opacity:.25!important}
+.leaf{filter:drop-shadow(0 18px 24px rgba(60,30,10,.35)) saturate(.85) brightness(.85)!important}
+/* menos grafismo: sombras suaves, contornos finos */
+main.view{background:rgba(246,220,179,.82)!important;border:1px solid rgba(43,29,20,.18)!important;box-shadow:0 30px 60px rgba(80,40,10,.28)!important}
+.panel,.modebtn,.whobtn,.orow,.rrow{background:rgba(250,232,200,.75)!important;border:1px solid rgba(43,29,20,.16)!important;box-shadow:0 10px 26px rgba(80,40,10,.14)!important}
+.modebtn:hover,.whobtn:hover,.rrow:hover{box-shadow:0 16px 34px rgba(80,40,10,.22)!important;transform:translateY(-3px)!important}
+.btn{border:0!important;box-shadow:0 8px 20px rgba(0,120,45,.32)!important;text-transform:none;letter-spacing:0;font-size:16px}
+.btn:hover{box-shadow:0 12px 26px rgba(0,120,45,.4)!important;transform:translateY(-2px)}
+.btn.ghost{background:rgba(250,232,200,.6)!important;border:1px solid rgba(43,29,20,.3)!important;box-shadow:none!important}
+.sleeve .cover{border:0!important;border-radius:4px!important;box-shadow:0 16px 30px rgba(60,30,10,.35)!important}
+.pick.win .sleeve .cover,.pick.chosen .sleeve .cover{box-shadow:0 0 0 3px #FFD700,0 18px 40px rgba(60,30,10,.4)!important}
+.coverwrap:not(.lose) .sleeve .cover{box-shadow:0 0 0 3px #FFD700,0 20px 40px rgba(60,30,10,.4)!important}
+.mini,.dmini,.orow .thumb img,.rcov{border:0!important;box-shadow:0 4px 10px rgba(60,30,10,.3)!important}
+.pedido{background:rgba(255,215,0,.85)!important;border:0!important;box-shadow:0 8px 20px rgba(120,80,0,.2)!important}
+.ou{border:0!important;box-shadow:0 6px 16px rgba(120,80,0,.3)}
+.chip{border:1px solid rgba(43,29,20,.35)!important;background:rgba(250,232,200,.6)!important}
+.chip.on{background:#FFD700!important;border-color:#FFD700!important}
+input[type=text]{background:rgba(255,244,225,.85)!important;border:1px solid rgba(43,29,20,.3)!important}
+.tags .tg-g,.tags .tg-e,.legend b{background:rgba(255,244,225,.7)!important;border:1px solid rgba(43,29,20,.25)!important}
+.tags .tg-t,.legend .lg-t{background:rgba(255,215,0,.8)!important;border:0!important}
+.mv{background:rgba(255,244,225,.8)!important;border:1px solid rgba(43,29,20,.3)!important}
+.sndbtn{background:rgba(250,232,200,.8);border:1px solid rgba(43,29,20,.3);box-shadow:0 4px 10px rgba(80,40,10,.2)}
+.sndbtn.on{background:#FFD700}
+.ddock,.odock{background:rgba(246,220,179,.95)!important;border:1px solid rgba(43,29,20,.2)!important;box-shadow:0 -10px 30px rgba(80,40,10,.25)!important;backdrop-filter:blur(10px)}
+.dtoggle{border:0!important;box-shadow:0 4px 10px rgba(120,80,0,.25)}
+.dstick{background:rgba(246,220,179,.96)!important}
+.ck .ci{background:rgba(255,244,225,.8)!important;border:1px solid rgba(43,29,20,.35)!important}
+.verdict{background:rgba(255,215,0,.85)!important}
+.sr.tot .sc.lead{background:#FFD700!important;box-shadow:none!important}
+.toast{background:#2b1d14!important;border:0!important}
+.codepill{border:0!important}
+.record{box-shadow:0 18px 40px rgba(60,30,10,.45)!important}
+.minirecord{box-shadow:0 10px 24px rgba(60,30,10,.35)!important}
+.heroword{-webkit-text-stroke:0!important;text-shadow:0 10px 30px rgba(120,60,10,.35)!important;color:#FFD700!important}
+.heroword span:last-child{color:#009C3B!important;text-shadow:0 10px 30px rgba(60,30,10,.35)!important}
+.winner h1{text-shadow:0 8px 24px rgba(120,60,10,.3)!important}
+.bigcode{text-shadow:0 8px 20px rgba(120,60,10,.3)!important}
+.c1{text-shadow:0 0 1px #2b1d14,0 1px 2px rgba(43,29,20,.9),0 0 8px rgba(43,29,20,.45)!important}
+.hero .vs .c1,.winner h1.c1{text-shadow:0 2px 3px rgba(43,29,20,.9),0 0 14px rgba(43,29,20,.5)!important}
+.top{background:transparent}
+.logo,.linkbtn{color:#2b1d14!important}
+@media(max-width:600px){.top{background:rgba(243,154,74,.85)!important;border-bottom:1px solid rgba(43,29,20,.2)!important}main.view{box-shadow:0 20px 40px rgba(80,40,10,.28)!important}.ddock{box-shadow:0 -10px 30px rgba(80,40,10,.3)!important}}
+
+.leaf{display:none!important}
+main.view{background:rgba(246,220,179,.72)!important}
+/* escolha cabe no ecrã */
+.dstick~.tot-head{padding-top:2px;margin-bottom:10px}
+.dstick~.tot-head h2{font-size:clamp(30px,4.6vw,46px)!important}
+.dstick~.tot-head h2::after{margin-top:6px!important;height:4px!important}
+.dstick~.tot-head .sub{font-size:14px}
+.pair .sleeve{width:min(200px,22vh,38vw)!important}
+.pair .pick .info{margin-top:10px}
+.pair .pick .btn{margin-top:10px;padding:11px 22px}
+.listen{white-space:nowrap}
+.dstick~.legend{display:none}
+@media(max-width:600px){.meta{font-size:10px}.pair .sleeve{width:100%!important;max-width:150px}.pair .tt{font-size:16px!important}.pair .ta{font-size:12px!important}.dstick .pedido span:last-child{font-size:11px}}
 </style>
 </head>
 <body>
-<div id="bgwall" aria-hidden="true"></div><div class="leaf lf1" aria-hidden="true"><svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg"><path d="M100 215 C 98 160 96 120 100 20" stroke="#0b5a2a" stroke-width="5" fill="none"/><path d="M100 20 C 40 30 5 80 10 130 C 15 175 55 205 100 210 C 145 205 185 175 190 130 C 195 80 160 30 100 20Z" fill="#009C3B"/><g stroke="#F7F7F7" stroke-width="7" stroke-linecap="round"><path d="M100 60 L 35 75"/><path d="M100 90 L 22 115"/><path d="M100 125 L 28 160"/><path d="M100 160 L 50 192"/><path d="M100 60 L 165 75"/><path d="M100 90 L 178 115"/><path d="M100 125 L 172 160"/><path d="M100 160 L 150 192"/></g><g fill="#F7F7F7"><ellipse cx="68" cy="95" rx="6" ry="11"/><ellipse cx="132" cy="95" rx="6" ry="11"/><ellipse cx="62" cy="140" rx="6" ry="11"/><ellipse cx="138" cy="140" rx="6" ry="11"/></g><path d="M100 22 L100 210" stroke="#0b5a2a" stroke-width="3"/></svg></div><div class="leaf lf2" aria-hidden="true"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg"><path d="M20 230 Q 90 150 220 30" stroke="#0b5a2a" stroke-width="5" fill="none"/><path d="M20 230 q -30.0 -45 -40 -80 q 25 30 40 80z" fill="#007a2e"/><path d="M20 230 q 45 20 85 30 q -35 20 -85 -30z" fill="#007a2e"/><path d="M40 210 q -28.5 -43 -37 -76 q 25 30 40 80z" fill="#009C3B"/><path d="M40 210 q 43 19 81 28 q -35 20 -85 -30z" fill="#009C3B"/><path d="M60 190 q -27.0 -41 -34 -72 q 25 30 40 80z" fill="#00a843"/><path d="M60 190 q 41 18 77 26 q -35 20 -85 -30z" fill="#00a843"/><path d="M80 170 q -25.5 -39 -31 -68 q 25 30 40 80z" fill="#009C3B"/><path d="M80 170 q 39 17 73 24 q -35 20 -85 -30z" fill="#009C3B"/><path d="M100 150 q -24.0 -37 -28 -64 q 25 30 40 80z" fill="#007a2e"/><path d="M100 150 q 37 16 69 22 q -35 20 -85 -30z" fill="#007a2e"/><path d="M120 130 q -22.5 -35 -25 -60 q 25 30 40 80z" fill="#00b14a"/><path d="M120 130 q 35 15 65 20 q -35 20 -85 -30z" fill="#00b14a"/><path d="M140 110 q -21.0 -33 -22 -56 q 25 30 40 80z" fill="#009C3B"/><path d="M140 110 q 33 14 61 18 q -35 20 -85 -30z" fill="#009C3B"/><path d="M160 90 q -19.5 -31 -19 -52 q 25 30 40 80z" fill="#008a34"/><path d="M160 90 q 31 13 57 16 q -35 20 -85 -30z" fill="#008a34"/><path d="M180 70 q -18.0 -29 -16 -48 q 25 30 40 80z" fill="#00a843"/><path d="M180 70 q 29 12 53 14 q -35 20 -85 -30z" fill="#00a843"/></svg></div><div class="leaf lf3" aria-hidden="true"><svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg"><path d="M100 215 C 98 160 96 120 100 20" stroke="#0b5a2a" stroke-width="5" fill="none"/><path d="M100 20 C 40 30 5 80 10 130 C 15 175 55 205 100 210 C 145 205 185 175 190 130 C 195 80 160 30 100 20Z" fill="#009C3B"/><g stroke="#F7F7F7" stroke-width="7" stroke-linecap="round"><path d="M100 60 L 35 75"/><path d="M100 90 L 22 115"/><path d="M100 125 L 28 160"/><path d="M100 160 L 50 192"/><path d="M100 60 L 165 75"/><path d="M100 90 L 178 115"/><path d="M100 125 L 172 160"/><path d="M100 160 L 150 192"/></g><g fill="#F7F7F7"><ellipse cx="68" cy="95" rx="6" ry="11"/><ellipse cx="132" cy="95" rx="6" ry="11"/><ellipse cx="62" cy="140" rx="6" ry="11"/><ellipse cx="138" cy="140" rx="6" ry="11"/></g><path d="M100 22 L100 210" stroke="#0b5a2a" stroke-width="3"/></svg></div><div class="leaf lf4" aria-hidden="true"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg"><path d="M20 230 Q 90 150 220 30" stroke="#0b5a2a" stroke-width="5" fill="none"/><path d="M20 230 q -30.0 -45 -40 -80 q 25 30 40 80z" fill="#007a2e"/><path d="M20 230 q 45 20 85 30 q -35 20 -85 -30z" fill="#007a2e"/><path d="M40 210 q -28.5 -43 -37 -76 q 25 30 40 80z" fill="#009C3B"/><path d="M40 210 q 43 19 81 28 q -35 20 -85 -30z" fill="#009C3B"/><path d="M60 190 q -27.0 -41 -34 -72 q 25 30 40 80z" fill="#00a843"/><path d="M60 190 q 41 18 77 26 q -35 20 -85 -30z" fill="#00a843"/><path d="M80 170 q -25.5 -39 -31 -68 q 25 30 40 80z" fill="#009C3B"/><path d="M80 170 q 39 17 73 24 q -35 20 -85 -30z" fill="#009C3B"/><path d="M100 150 q -24.0 -37 -28 -64 q 25 30 40 80z" fill="#007a2e"/><path d="M100 150 q 37 16 69 22 q -35 20 -85 -30z" fill="#007a2e"/><path d="M120 130 q -22.5 -35 -25 -60 q 25 30 40 80z" fill="#00b14a"/><path d="M120 130 q 35 15 65 20 q -35 20 -85 -30z" fill="#00b14a"/><path d="M140 110 q -21.0 -33 -22 -56 q 25 30 40 80z" fill="#009C3B"/><path d="M140 110 q 33 14 61 18 q -35 20 -85 -30z" fill="#009C3B"/><path d="M160 90 q -19.5 -31 -19 -52 q 25 30 40 80z" fill="#008a34"/><path d="M160 90 q 31 13 57 16 q -35 20 -85 -30z" fill="#008a34"/><path d="M180 70 q -18.0 -29 -16 -48 q 25 30 40 80z" fill="#00a843"/><path d="M180 70 q 29 12 53 14 q -35 20 -85 -30z" fill="#00a843"/></svg></div><div id="bgshade"></div><div class="calcadao top" aria-hidden="true"></div><div class="calcadao bottom" aria-hidden="true"></div>
+<div id="beach" aria-hidden="true">
+ <div class="sky"></div><div class="sunglow"></div><div class="sun"></div>
+ <div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>
+ <div class="gull g1"><svg viewBox="0 0 40 16" xmlns="http://www.w3.org/2000/svg"><path d="M2 10 Q 10 2 20 9 Q 30 2 38 10" fill="none" stroke="#2a2340" stroke-width="2.6" stroke-linecap="round"/></svg></div><div class="gull g2"><svg viewBox="0 0 40 16" xmlns="http://www.w3.org/2000/svg"><path d="M2 10 Q 10 2 20 9 Q 30 2 38 10" fill="none" stroke="#2a2340" stroke-width="2.6" stroke-linecap="round"/></svg></div><div class="gull g3"><svg viewBox="0 0 40 16" xmlns="http://www.w3.org/2000/svg"><path d="M2 10 Q 10 2 20 9 Q 30 2 38 10" fill="none" stroke="#2a2340" stroke-width="2.6" stroke-linecap="round"/></svg></div>
+ <div class="sea"><div class="shine"></div>
+  <div class="wv w1"><div><svg viewBox="0 0 1200 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 30 Q 50 24 100 30 T 200 30 Q 250 24 300 30 T 400 30 Q 450 24 500 30 T 600 30 Q 650 24 700 30 T 800 30 Q 850 24 900 30 T 1000 30 Q 1050 24 1100 30 T 1200 30 Q 1250 24 1300 30 T 1400 30 Q 1450 24 1500 30 T 1600 30 Q 1650 24 1700 30 T 1800 30 Q 1850 24 1900 30 T 2000 30 Q 2050 24 2100 30 T 2200 30 Q 2250 24 2300 30 T 2400 30 V 60 H 0 Z" fill="#2c50c4" opacity="1"/></svg></div></div>
+  <div class="wv w2"><div><svg viewBox="0 0 1200 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 30 Q 50 22 100 30 T 200 30 Q 250 22 300 30 T 400 30 Q 450 22 500 30 T 600 30 Q 650 22 700 30 T 800 30 Q 850 22 900 30 T 1000 30 Q 1050 22 1100 30 T 1200 30 Q 1250 22 1300 30 T 1400 30 Q 1450 22 1500 30 T 1600 30 Q 1650 22 1700 30 T 1800 30 Q 1850 22 1900 30 T 2000 30 Q 2050 22 2100 30 T 2200 30 Q 2250 22 2300 30 T 2400 30 V 60 H 0 Z" fill="#1f45b8" opacity="1"/></svg></div></div>
+  <div class="wv w3"><div><svg viewBox="0 0 1200 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 30 Q 50 20 100 30 T 200 30 Q 250 20 300 30 T 400 30 Q 450 20 500 30 T 600 30 Q 650 20 700 30 T 800 30 Q 850 20 900 30 T 1000 30 Q 1050 20 1100 30 T 1200 30 Q 1250 20 1300 30 T 1400 30 Q 1450 20 1500 30 T 1600 30 Q 1650 20 1700 30 T 1800 30 Q 1850 20 1900 30 T 2000 30 Q 2050 20 2100 30 T 2200 30 Q 2250 20 2300 30 T 2400 30 V 60 H 0 Z" fill="#1338BE" opacity="1"/></svg></div></div></div>
+ <div class="sand"><div class="wet"></div><div class="foam"><svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 20 C 100 6 200 30 300 16 S 500 4 600 18 S 800 30 900 14 S 1100 6 1200 18 V 40 H 0 Z" fill="#ffffff" opacity=".85"/><path d="M0 26 C 150 16 250 34 400 24 S 650 14 800 26 S 1050 34 1200 24" fill="none" stroke="#ffffff" stroke-width="3" opacity=".7"/></svg></div></div>
+</div><div id="bgwall" aria-hidden="true"></div><div class="leaf lf1" aria-hidden="true"><svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg"><path d="M100 215 C 98 160 96 120 100 20" stroke="#0b5a2a" stroke-width="5" fill="none"/><path d="M100 20 C 40 30 5 80 10 130 C 15 175 55 205 100 210 C 145 205 185 175 190 130 C 195 80 160 30 100 20Z" fill="#009C3B"/><g stroke="#F7F7F7" stroke-width="7" stroke-linecap="round"><path d="M100 60 L 35 75"/><path d="M100 90 L 22 115"/><path d="M100 125 L 28 160"/><path d="M100 160 L 50 192"/><path d="M100 60 L 165 75"/><path d="M100 90 L 178 115"/><path d="M100 125 L 172 160"/><path d="M100 160 L 150 192"/></g><g fill="#F7F7F7"><ellipse cx="68" cy="95" rx="6" ry="11"/><ellipse cx="132" cy="95" rx="6" ry="11"/><ellipse cx="62" cy="140" rx="6" ry="11"/><ellipse cx="138" cy="140" rx="6" ry="11"/></g><path d="M100 22 L100 210" stroke="#0b5a2a" stroke-width="3"/></svg></div><div class="leaf lf2" aria-hidden="true"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg"><path d="M20 230 Q 90 150 220 30" stroke="#0b5a2a" stroke-width="5" fill="none"/><path d="M20 230 q -30.0 -45 -40 -80 q 25 30 40 80z" fill="#007a2e"/><path d="M20 230 q 45 20 85 30 q -35 20 -85 -30z" fill="#007a2e"/><path d="M40 210 q -28.5 -43 -37 -76 q 25 30 40 80z" fill="#009C3B"/><path d="M40 210 q 43 19 81 28 q -35 20 -85 -30z" fill="#009C3B"/><path d="M60 190 q -27.0 -41 -34 -72 q 25 30 40 80z" fill="#00a843"/><path d="M60 190 q 41 18 77 26 q -35 20 -85 -30z" fill="#00a843"/><path d="M80 170 q -25.5 -39 -31 -68 q 25 30 40 80z" fill="#009C3B"/><path d="M80 170 q 39 17 73 24 q -35 20 -85 -30z" fill="#009C3B"/><path d="M100 150 q -24.0 -37 -28 -64 q 25 30 40 80z" fill="#007a2e"/><path d="M100 150 q 37 16 69 22 q -35 20 -85 -30z" fill="#007a2e"/><path d="M120 130 q -22.5 -35 -25 -60 q 25 30 40 80z" fill="#00b14a"/><path d="M120 130 q 35 15 65 20 q -35 20 -85 -30z" fill="#00b14a"/><path d="M140 110 q -21.0 -33 -22 -56 q 25 30 40 80z" fill="#009C3B"/><path d="M140 110 q 33 14 61 18 q -35 20 -85 -30z" fill="#009C3B"/><path d="M160 90 q -19.5 -31 -19 -52 q 25 30 40 80z" fill="#008a34"/><path d="M160 90 q 31 13 57 16 q -35 20 -85 -30z" fill="#008a34"/><path d="M180 70 q -18.0 -29 -16 -48 q 25 30 40 80z" fill="#00a843"/><path d="M180 70 q 29 12 53 14 q -35 20 -85 -30z" fill="#00a843"/></svg></div><div class="leaf lf3" aria-hidden="true"><svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg"><path d="M100 215 C 98 160 96 120 100 20" stroke="#0b5a2a" stroke-width="5" fill="none"/><path d="M100 20 C 40 30 5 80 10 130 C 15 175 55 205 100 210 C 145 205 185 175 190 130 C 195 80 160 30 100 20Z" fill="#009C3B"/><g stroke="#F7F7F7" stroke-width="7" stroke-linecap="round"><path d="M100 60 L 35 75"/><path d="M100 90 L 22 115"/><path d="M100 125 L 28 160"/><path d="M100 160 L 50 192"/><path d="M100 60 L 165 75"/><path d="M100 90 L 178 115"/><path d="M100 125 L 172 160"/><path d="M100 160 L 150 192"/></g><g fill="#F7F7F7"><ellipse cx="68" cy="95" rx="6" ry="11"/><ellipse cx="132" cy="95" rx="6" ry="11"/><ellipse cx="62" cy="140" rx="6" ry="11"/><ellipse cx="138" cy="140" rx="6" ry="11"/></g><path d="M100 22 L100 210" stroke="#0b5a2a" stroke-width="3"/></svg></div><div class="leaf lf4" aria-hidden="true"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg"><path d="M20 230 Q 90 150 220 30" stroke="#0b5a2a" stroke-width="5" fill="none"/><path d="M20 230 q -30.0 -45 -40 -80 q 25 30 40 80z" fill="#007a2e"/><path d="M20 230 q 45 20 85 30 q -35 20 -85 -30z" fill="#007a2e"/><path d="M40 210 q -28.5 -43 -37 -76 q 25 30 40 80z" fill="#009C3B"/><path d="M40 210 q 43 19 81 28 q -35 20 -85 -30z" fill="#009C3B"/><path d="M60 190 q -27.0 -41 -34 -72 q 25 30 40 80z" fill="#00a843"/><path d="M60 190 q 41 18 77 26 q -35 20 -85 -30z" fill="#00a843"/><path d="M80 170 q -25.5 -39 -31 -68 q 25 30 40 80z" fill="#009C3B"/><path d="M80 170 q 39 17 73 24 q -35 20 -85 -30z" fill="#009C3B"/><path d="M100 150 q -24.0 -37 -28 -64 q 25 30 40 80z" fill="#007a2e"/><path d="M100 150 q 37 16 69 22 q -35 20 -85 -30z" fill="#007a2e"/><path d="M120 130 q -22.5 -35 -25 -60 q 25 30 40 80z" fill="#00b14a"/><path d="M120 130 q 35 15 65 20 q -35 20 -85 -30z" fill="#00b14a"/><path d="M140 110 q -21.0 -33 -22 -56 q 25 30 40 80z" fill="#009C3B"/><path d="M140 110 q 33 14 61 18 q -35 20 -85 -30z" fill="#009C3B"/><path d="M160 90 q -19.5 -31 -19 -52 q 25 30 40 80z" fill="#008a34"/><path d="M160 90 q 31 13 57 16 q -35 20 -85 -30z" fill="#008a34"/><path d="M180 70 q -18.0 -29 -16 -48 q 25 30 40 80z" fill="#00a843"/><path d="M180 70 q 29 12 53 14 q -35 20 -85 -30z" fill="#00a843"/></svg></div><div id="bgshade"></div><div class="calcadao top" aria-hidden="true"></div><div class="calcadao bottom" aria-hidden="true"></div>
 <div id="app"></div>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script>
@@ -910,7 +1137,7 @@ const SONGS=[
 ];
 const EVAL=[[4, 5, 6, 8, 2, "pop", "Balada romântica latina, doce e direta — ganha no coração, perde no peso histórico."], [6, 6, 8, 9, 3, "suingue", "Jorge Ben da fase Sacundin Ben Samba: violão suingado e lirismo leve."], [7, 8, 7, 9, 2, "mpb", "A declaração de amor de Cazuza, aqui na voz suave de Bebel Gilberto — romantismo puro."], [9, 8, 9, 8, 4, "mpb", "A gaita de Stevie Wonder num dos maiores sucessos do Djavan: groove e melodia de luxo."], [7, 8, 8, 9, 2, "mpb", "Balada de Djavan com poesia delicada; ao vivo ganha o calor da plateia."], [5, 6, 8, 8, 4, "suingue", "Jorge Ben a dançar: suingue contagiante, letra simples e solar."], [7, 6, 9, 9, 5, "suingue", "Samba-rock em estado puro com o Trio Mocotó: impossível ficar parado."], [8, 7, 9, 7, 2, "pop", "Clássico sofisticado de Sade: voz de veludo e saxofone, mas foge ao espírito brasileiro."], [4, 5, 6, 8, 2, "pop", "Balada latina romântica e fácil de cantar — bonita, mas sem grande legado."], [4, 5, 6, 8, 3, "pop", "Romance latino com coro — querida, mas leve para um duelo de peso."], [6, 8, 8, 7, 2, "mpb", "Djavan introspetivo: harmonia sofisticada e letra cheia de imagens."], [6, 8, 8, 8, 3, "mpb", "Canção luminosa sobre aproveitar a vida, com a assinatura harmónica do Djavan."], [6, 6, 8, 9, 3, "mpb", "Tim Maia e a sua voz enorme num tema de afeto simples e caseiro."], [5, 6, 8, 8, 3, "pop", "Pop/R&B brasileiro atual, com a voz potente da IZA e muito carinho."], [5, 8, 8, 9, 2, "mpb", "Nova MPB de Tim Bernardes: intimista, poética e cheia de ternura — e amarela, como os girassóis."], [5, 6, 7, 8, 3, "pop", "Pop romântico na voz de Preta Gil, quente e direto."], [6, 6, 8, 8, 4, "samba", "Pagode moderno de Thiaguinho, feito para cantar em coro."], [8, 6, 8, 10, 3, "bossa", "Clássico de Marcos Valle na voz de Caetano: sol, mar e verão em forma de canção."], [5, 6, 7, 9, 3, "reggae", "Reggae solar dos Natiruts — puro clima de praia."], [5, 6, 8, 8, 3, "nordeste", "Forró com sanfona e saudade, à moda nordestina de agora."], [9, 9, 9, 9, 2, "mpb", "Uma das canções de amor mais bonitas do Brasil: melodia e poesia de nível máximo."], [7, 8, 8, 8, 3, "mpb", "Paixão intensa em metáforas fortes, com o balanço típico do Djavan."], [8, 9, 9, 8, 2, "mpb", "Uma das letras mais celebradas do Djavan, sobre amor e saudade, em harmonia riquíssima."], [7, 8, 8, 9, 3, "mpb", "Calor tropical e paixão: a linha do Equador como metáfora de amor."], [9, 9, 8, 9, 2, "mpb", "Balada icónica do Djavan — declaração de amor que atravessa gerações."], [6, 6, 9, 8, 4, "suingue", "Jorge Ben com banda em grande: suingue elétrico e romântico."], [9, 8, 8, 9, 3, "rock", "Rita Lee no auge pop: sensual, divertida e um dos maiores êxitos dela."], [6, 7, 7, 9, 2, "mpb", "MPB romântica de Jorge Vercillo, com o vaivém do mar na letra."], [6, 7, 7, 7, 3, "mpb", "Romance com humor, num dos temas mais conhecidos do Vercillo."], [8, 9, 8, 8, 2, "mpb", "Saudade em forma de canção — Djavan no seu registo mais tocante."], [5, 7, 7, 8, 2, "mpb", "Balada sonhadora, suave e melódica."], [8, 9, 8, 9, 2, "mpb", "Delicadeza pura: o amor descrito com imagens de flores e leveza."], [5, 7, 7, 8, 2, "mpb", "Djavan elegante e romântico, da fase mais recente."], [8, 8, 8, 8, 3, "mpb", "Cazuza com charme, ironia e romance em clima de bossa."], [6, 7, 7, 8, 3, "mpb", "Elogio à mulher amada com melodia fácil e solar."], [9, 9, 8, 7, 2, "samba", "Samba existencial de Candeia, eternizado por Cartola: simples, profundo e eterno."], [10, 8, 8, 7, 4, "samba", "Hino do samba paulista: humor, ternura e um refrão que toda a gente sabe."], [7, 7, 9, 9, 4, "suingue", "Jorge Ben da Tábua de Esmeralda: groove místico e elogio à beleza negra."], [10, 10, 10, 6, 3, "mpb", "Obra-prima absoluta: letra de proparoxítonas e arranjo épico. Técnica máxima, pouco romântica."], [10, 10, 9, 5, 2, "mpb", "Protesto genial contra a censura com o duplo sentido 'cálice/cale-se'. Peso histórico enorme, clima pesado."], [8, 9, 8, 9, 2, "mpb", "Valsa terna de Chico e Vinicius sobre um casal que reencontra o amor."], [8, 6, 8, 7, 5, "nordeste", "Ney Matogrosso num xote provocador e teatral — energia de palco."], [9, 8, 9, 9, 3, "mpb", "Clássico do Djavan com o célebre 'caetanear': balanço e poesia em perfeita sintonia."], [8, 9, 8, 9, 2, "mpb", "Balada dolorosa e bonita de Cazuza, cheia de imagens de amor."], [7, 7, 8, 9, 3, "mpb", "Tribalistas em modo declaração: leve, harmonioso e apaixonado."], [8, 8, 8, 9, 3, "mpb", "Marisa Monte com uma citação de Eça de Queirós — ponte Brasil–Portugal perfeita para vocês."], [6, 7, 8, 9, 3, "nordeste", "Alceu Valença com perfume nordestino: poesia e calor."], [9, 7, 9, 10, 4, "nordeste", "Hino tropical do Alceu — fruta, sol e sensualidade numa só canção."], [5, 6, 8, 8, 4, "suingue", "Suingue bem-disposto do Jorge Ben, para qualquer hora do dia."], [7, 9, 7, 8, 2, "bossa", "Poesia de Vinicius e violão de Toquinho, numa história terna."], [8, 8, 8, 7, 3, "rock", "Composição de Cazuza e Frejat imortalizada pela voz rouca de Cássia Eller."], [5, 7, 7, 5, 4, "rock", "Cazuza rock e inquieto — muita energia, pouco romance."], [6, 8, 8, 9, 2, "mpb", "Paisagem tropical e intimidade, à maneira do Djavan."], [6, 8, 8, 8, 2, "mpb", "Djavan dos primeiros discos: suave e cheio de sentimento."], [8, 7, 8, 10, 3, "suingue", "Jorge Ben e Toquinho a celebrar o amor — alegria pura."], [7, 8, 8, 9, 2, "mpb", "Vanessa da Mata em ternura máxima — uma das baladas mais queridas deste século."], [6, 7, 7, 8, 2, "mpb", "Declaração romântica serena e melódica."], [5, 7, 7, 8, 2, "mpb", "Bethânia em tom íntimo de domingo calmo."], [9, 9, 9, 7, 3, "mpb", "Hino de Milton Nascimento e Fernando Brant na voz de Elis: força e dignidade."], [6, 6, 8, 8, 3, "samba", "Alcione, a Marrom, cheia de garra."], [8, 7, 8, 9, 3, "samba", "Um dos grandes êxitos de Alcione: paixão arrebatadora e voz imponente."], [8, 7, 8, 9, 5, "rock", "Pop dançante e malicioso de Rita Lee — festa garantida."], [5, 8, 8, 7, 2, "mpb", "Djavan melancólico e outonal, elegante mas contido."], [7, 8, 8, 6, 3, "rock", "Cazuza e Gilberto Gil: crónica urbana de olhar crítico."], [6, 8, 8, 8, 2, "mpb", "Balada de Herbert Vianna cantada por Gal com doçura."], [6, 8, 8, 7, 2, "mpb", "Gal Costa dramática e intensa."], [5, 9, 8, 7, 1, "mpb", "Despedida intimista e crua — linda, mas de partir o coração."], [8, 9, 8, 9, 2, "mpb", "Chico e Sivuca: o amor contado como brincadeira de crianças. Ternura máxima."], [7, 9, 8, 8, 1, "bossa", "Canção de Tom Jobim, de beleza rara, em clima de lua e saudade."], [5, 6, 8, 7, 4, "suingue", "Jorge Ben do Samba Esquema Novo: o suingue a nascer."], [9, 9, 8, 6, 4, "rock", "Retrato feroz de uma geração — Cazuza no seu discurso mais forte."], [5, 8, 8, 8, 3, "mpb", "Djavan a navegar entre amor e mar."], [9, 9, 8, 9, 4, "mpb", "Hino à alegria de viver, cantado em coro há décadas."], [8, 10, 8, 8, 1, "mpb", "Chico e Tom Jobim: um diálogo de amor em ruínas, de poesia sublime."], [8, 9, 7, 6, 1, "samba", "Homenagem comovente de um filho ao pai, na voz grave de Nelson Gonçalves."], [9, 6, 9, 9, 3, "suingue", "Do primeiro disco de Jorge Ben: a batida que mudou a música brasileira."], [8, 9, 7, 9, 2, "bossa", "Vinicius canta o amor com graça e brincadeira."], [10, 8, 9, 9, 2, "bossa", "A canção brasileira mais famosa do mundo, aqui com Toquinho."], [8, 10, 8, 7, 1, "mpb", "Dueto sobre a dor da ausência — uma das letras mais fortes do Chico."], [5, 8, 8, 8, 2, "mpb", "Djavan sereno, sobre encontrar paz no amor."], [4, 6, 7, 7, 3, "reggae", "Reggae roots com mensagem positiva — boa vibe, mas longe da MPB."], [7, 8, 8, 7, 3, "rock", "Pop sofisticado dos anos 90 de Marina Lima, vulnerável e elegante."], [6, 8, 7, 7, 2, "mpb", "Bethânia interpreta Roberto e Erasmo com dramatismo."], [8, 9, 8, 7, 4, "mpb", "Rita Lee e Roberto de Carvalho na voz de Elis: humor e crítica social."], [9, 10, 7, 6, 3, "mpb", "Manifesto de Belchior: identidade latina e poesia afiada."], [6, 6, 8, 9, 3, "rock", "Pop praiano e romântico de Lulu Santos."], [9, 9, 7, 5, 3, "rock", "Raul Seixas e o direito a mudar de ideias — filosofia em forma de rock."], [7, 8, 8, 8, 3, "rock", "Cazuza romântico e moderno: o amor como invenção a dois."], [6, 7, 8, 9, 4, "samba", "Samba bem-humorado de Ana Carolina na voz de Mart'nália."], [6, 6, 8, 8, 4, "suingue", "Samba-rock de churrasco à moda do Seu Jorge."], [9, 9, 7, 7, 3, "rock", "A história de amor improvável mais famosa do rock brasileiro."], [6, 7, 7, 9, 2, "reggae", "Reggae romântico e suave, um clássico dos Natiruts."], [7, 8, 7, 7, 2, "rock", "Balada de Herbert Vianna e Paula Toller, melancólica e bonita."], [8, 8, 8, 8, 3, "rock", "Nando Reis na voz de Cássia Eller: místico e luminoso."], [4, 6, 7, 8, 2, "pop", "Pop romântico e suave de Preta Gil."], [9, 10, 8, 9, 1, "bossa", "Tom e Vinicius na mais bonita promessa de amor eterno."], [3, 6, 6, 8, 3, "pop", "Canção ternurenta e otimista — encantadora, mas leve."], [10, 9, 8, 7, 4, "mpb", "Samba de protesto que driblou a censura — esperança contra a ditadura."], [5, 6, 8, 8, 3, "suingue", "Jorge Ben místico da Tábua de Esmeralda."], [7, 6, 8, 9, 4, "suingue", "Do primeiro disco de Jorge Ben: paixão juvenil com batida irresistível."], [6, 6, 9, 8, 4, "suingue", "Força Bruta: Jorge Ben e Trio Mocotó num groove denso e saudoso."], [5, 6, 8, 8, 4, "suingue", "Jorge Ben divertido, a chamar a Bebete para a festa."], [9, 6, 9, 9, 5, "suingue", "Um dos grooves mais famosos do Brasil — pura euforia."], [6, 6, 8, 8, 4, "samba", "Samba malandro e bem-humorado de uma roda lendária."], [6, 7, 8, 8, 3, "suingue", "Seu Jorge com groove carioca e desabafo amoroso."], [7, 8, 8, 8, 3, "mpb", "Chico jovem, irónico e sambista."], [6, 8, 7, 8, 2, "bossa", "Esperança amorosa em clima de violão e poesia."], [4, 6, 7, 8, 3, "bossa", "Bossa nova com batida eletrónica — moderna e descontraída."], [8, 9, 8, 7, 1, "mpb", "Retrato terno dos subúrbios, de Garoto com letra de Vinicius e Chico."], [6, 6, 8, 8, 4, "suingue", "Jorge Ben do disco de 1969: suingue e procura apaixonada."], [6, 7, 8, 9, 3, "suingue", "Jorge Ben derretido de amor pela Domingas."], [6, 6, 8, 8, 4, "suingue", "Samba de churrasco com história picante e muito humor."], [7, 6, 8, 8, 4, "suingue", "Paixão de vizinho em samba-funk — hit absoluto do Seu Jorge."], [7, 6, 9, 8, 5, "suingue", "Groove de pista com crítica divertida — energia máxima."], [6, 6, 7, 9, 3, "reggae", "Reggae solar com coro — sorriso garantido."], [5, 5, 8, 8, 5, "suingue", "Exatamente o que o título promete: pista e balanço."], [6, 6, 8, 9, 3, "suingue", "Seu Jorge celebra a alegria simples, com voz grave e calorosa."], [5, 5, 8, 7, 4, "suingue", "Samba de churrasco divertido e descarado."], [8, 6, 9, 9, 4, "suingue", "Clássico de 1969: suingue cool que atravessou fronteiras."], [5, 6, 8, 8, 4, "suingue", "História de amor maluca com batida contagiante."], [8, 7, 8, 9, 3, "samba", "Pagode romântico clássico — impossível não cantar o refrão."], [5, 5, 8, 8, 3, "samba", "Versão em pagode de um êxito de Alejandro Sanz — moderna e sofrida."], [7, 7, 8, 8, 3, "samba", "Pagode de fim de amor, na voz macia de Péricles."], [5, 6, 8, 8, 3, "samba", "Pagode romântico do Revelação, de roda e coração."], [7, 7, 8, 9, 3, "samba", "Um dos maiores êxitos do Revelação: romantismo e coro."], [6, 6, 8, 8, 4, "samba", "Pagode bem-disposto para cantar ao vivo."], [7, 8, 8, 9, 3, "samba", "Arlindo Cruz, mestre do partido-alto, em dúvida romântica."], [5, 6, 8, 9, 4, "suingue", "Festa e celebração, à moda do churrasco."], [5, 6, 8, 8, 4, "suingue", "Samba divertido com sotaque de quintal."], [8, 8, 8, 9, 3, "suingue", "Um dos grandes sucessos do Seu Jorge: romântico e balançado."], [5, 6, 8, 7, 4, "suingue", "Humor e groove numa história de amor confusa."], [5, 6, 8, 7, 4, "suingue", "Crónica urbana suingada."], [8, 7, 8, 8, 3, "suingue", "Clássico do Jorge Ben, eternizado também por Gal e Caetano — saudade elegante."], [7, 7, 8, 8, 4, "samba", "Pagode de superação, cantado a plenos pulmões."], [6, 6, 8, 10, 4, "samba", "Samba de praia de Diogo Nogueira: sol, mar e alegria."], [7, 6, 8, 9, 4, "samba", "Pagode luminoso e otimista."], [8, 8, 8, 9, 4, "samba", "Arlindo Cruz canta Madureira com orgulho e emoção."], [6, 7, 8, 9, 3, "bossa", "Toquinho e Jorge Ben num violão leve e encantador."], [10, 7, 9, 10, 5, "suingue", "O hino do Brasil tropical: sol, futebol e alegria."], [6, 8, 8, 7, 3, "suingue", "Homenagem ao trabalhador brasileiro, com groove e consciência."], [6, 8, 7, 6, 3, "rock", "O Rappa em balada urbana e reflexiva."], [6, 8, 8, 9, 3, "samba", "Encontro de Arlindo Cruz e Caetano num samba romântico."], [5, 6, 8, 8, 4, "suingue", "Paixão inesperada em samba de churrasco."], [7, 5, 9, 9, 5, "suingue", "Do primeiro disco de Jorge Ben: curta, mas com um balanço irresistível."]];
 const TAGS=["amor", "amor", "amor", "amor", "amor", "amor,festa", "festa,amor", "amor,saudade", "amor", "amor", "amor", "vida", "vida", "amor", "amor", "amor", "amor,festa", "mar,amor", "mar,vida", "saudade", "amor,mar", "amor", "amor,saudade", "amor,mar", "amor", "amor,festa", "amor,festa", "amor,mar", "amor", "saudade", "amor", "amor", "amor", "amor", "amor", "vida,saudade", "brasil,amor", "amor,festa", "brasil", "brasil", "amor", "festa,brasil", "amor", "amor,saudade", "amor", "amor", "amor,mar", "mar,festa", "vida,festa", "vida", "vida", "vida", "mar,amor", "amor", "amor,vida", "amor", "amor", "saudade", "brasil,vida", "amor", "amor", "festa,amor", "saudade", "brasil", "amor,saudade", "saudade", "saudade", "amor,saudade", "amor,saudade", "saudade", "brasil", "mar,amor", "vida,festa", "amor,saudade", "saudade", "amor", "amor", "mar,amor", "saudade", "amor", "vida", "vida", "amor,saudade", "brasil", "brasil", "mar,amor", "vida", "amor", "amor,festa", "festa,amor", "amor", "amor", "saudade", "vida", "amor", "amor", "vida", "brasil", "amor", "amor,festa", "saudade,festa", "festa", "festa,amor", "festa", "amor", "amor", "amor", "vida", "brasil", "amor,festa", "amor", "festa", "festa,amor", "festa", "vida,mar", "festa", "vida", "festa", "vida", "festa,amor", "amor", "saudade", "saudade", "amor", "amor", "festa", "amor", "festa", "festa", "amor", "festa,amor", "brasil", "saudade", "vida", "mar,festa", "amor,vida", "brasil,festa", "amor", "brasil,mar", "brasil", "saudade", "amor", "festa,amor", "festa"];
-const EXCL=new Set([7,80]); /* Sade, Mo'Kalamity: fora da América Latina */
+const EXCL=new Set([7]); /* Sade: fora da América Latina */
 const NAMES=['Miguel','Clara'];
 let MODE=null;
 const isCpu=i=>MODE==='cpu'&&i!==WHO;
@@ -1195,6 +1422,49 @@ function makeP2PDb(){
   return api;
 }
 
+/* ======== som: ondas, gaivotas e bossa nova (sintetizados) ======== */
+const SND={ctx:null,on:false,timers:[],master:null};
+function sndBtn(){return `<button class="sndbtn ${SND.on?'on':''}" onclick="sndToggle()" title="${SND.on?'Desligar som':'Ligar som'}" aria-label="${SND.on?'Desligar som':'Ligar som'}">${SND.on?'🔊':'🔇'}</button>`}
+function sndToggle(){if(SND.on)sndStop();else sndStart();lsSet({snd:SND.on});const h=document.getElementById('hdr');if(h)h.outerHTML=header()}
+function sndStop(){SND.on=false;SND.timers.forEach(t=>{clearTimeout(t);clearInterval(t)});SND.timers=[];if(SND.master){const c=SND.ctx;SND.master.gain.setTargetAtTime(0,c.currentTime,.3);setTimeout(()=>{try{c.suspend()}catch(e){}},900)}}
+function sndStart(){
+  try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
+  if(!SND.ctx){SND.ctx=new AC();}
+  const c=SND.ctx;c.resume();SND.on=true;
+  const m=c.createGain();m.gain.value=0;const comp=c.createDynamicsCompressor();m.connect(comp);comp.connect(c.destination);SND.master=m;m.gain.setTargetAtTime(.8,c.currentTime,1.2);
+  // ruído
+  const nb=c.createBuffer(1,c.sampleRate*3,c.sampleRate),nd=nb.getChannelData(0);let last=0;for(let i=0;i<nd.length;i++){const w=Math.random()*2-1;last=(last+.02*w)/1.02;nd[i]=last*3.5}
+  const wb=c.createBuffer(1,c.sampleRate*2,c.sampleRate),wd=wb.getChannelData(0);for(let i=0;i<wd.length;i++)wd[i]=Math.random()*2-1;
+  // ondas: ruído castanho filtrado com ondulação
+  const src=c.createBufferSource();src.buffer=nb;src.loop=true;const lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=700;const wg=c.createGain();wg.gain.value=.05;src.connect(lp);lp.connect(wg);wg.connect(m);src.start();
+  const src2=c.createBufferSource();src2.buffer=wb;src2.loop=true;const hp=c.createBiquadFilter();hp.type='bandpass';hp.frequency.value=2500;hp.Q.value=.4;const fg=c.createGain();fg.gain.value=0;src2.connect(hp);hp.connect(fg);fg.connect(m);src2.start();
+  const swell=()=>{if(!SND.on)return;const t=c.currentTime,d=6.5+Math.random()*2.5;wg.gain.cancelScheduledValues(t);wg.gain.setValueAtTime(wg.gain.value,t);wg.gain.linearRampToValueAtTime(.42,t+d*.42);wg.gain.linearRampToValueAtTime(.06,t+d);
+    fg.gain.cancelScheduledValues(t);fg.gain.setValueAtTime(0,t+d*.3);fg.gain.linearRampToValueAtTime(.05,t+d*.45);fg.gain.linearRampToValueAtTime(0,t+d*.9);lp.frequency.setValueAtTime(500,t);lp.frequency.linearRampToValueAtTime(1100,t+d*.42);lp.frequency.linearRampToValueAtTime(450,t+d);
+    SND.timers.push(setTimeout(swell,d*1000))};swell();
+  // gaivotas
+  const gull=()=>{if(!SND.on)return;const n=1+Math.floor(Math.random()*3);for(let k=0;k<n;k++){const t=c.currentTime+k*.32+Math.random()*.1;const o=c.createOscillator();o.type='sawtooth';const bp=c.createBiquadFilter();bp.type='bandpass';bp.frequency.value=2200;bp.Q.value=3;const g=c.createGain();g.gain.value=0;
+      const f0=1500+Math.random()*500;o.frequency.setValueAtTime(f0,t);o.frequency.linearRampToValueAtTime(f0*1.25,t+.06);o.frequency.exponentialRampToValueAtTime(f0*.7,t+.28);
+      g.gain.linearRampToValueAtTime(.05,t+.03);g.gain.exponentialRampToValueAtTime(.0005,t+.3);o.connect(bp);bp.connect(g);g.connect(m);o.start(t);o.stop(t+.35)}
+    SND.timers.push(setTimeout(gull,7000+Math.random()*11000))};SND.timers.push(setTimeout(gull,3500));
+  // bossa nova instrumental (composição original do jogo)
+  const mus=c.createGain();mus.gain.value=.16;const mlp=c.createBiquadFilter();mlp.type='lowpass';mlp.frequency.value=2600;mus.connect(mlp);mlp.connect(m);
+  const rev=c.createDelay();rev.delayTime.value=.23;const rfb=c.createGain();rfb.gain.value=.25;const rwet=c.createGain();rwet.gain.value=.25;mus.connect(rev);rev.connect(rfb);rfb.connect(rev);rev.connect(rwet);rwet.connect(mlp);
+  const mid=n=>440*Math.pow(2,(n-69)/12);
+  const CH=[[50,[53,57,60,64]],[43,[53,57,59,64]],[48,[52,55,59,62]],[45,[49,55,58,65]],[50,[53,57,60,64]],[43,[53,56,59,62]],[48,[52,55,59,64]],[48,[52,55,59,62]]];
+  const MEL=[[0,76],[3,74],[6,72],[10,74],[12,76],[16,77],[19,76],[22,74],[24,72],[28,71],[32,72],[35,74],[38,76],[42,79],[44,77],[48,76],[51,74],[54,72],[56,71],[60,69]];
+  const pluck=(f,t,dur,vol,type)=>{const o=c.createOscillator();o.type=type||'triangle';o.frequency.value=f;const o2=c.createOscillator();o2.type='sine';o2.frequency.value=f*2.001;const g=c.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.008);g.gain.exponentialRampToValueAtTime(.0008,t+dur);const g2=c.createGain();g2.gain.value=.25;o.connect(g);o2.connect(g2);g2.connect(g);g.connect(mus);o.start(t);o2.start(t);o.stop(t+dur+.05);o2.stop(t+dur+.05)};
+  const shaker=(t,v)=>{const s=c.createBufferSource();s.buffer=wb;const f=c.createBiquadFilter();f.type='highpass';f.frequency.value=7000;const g=c.createGain();g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0005,t+.06);s.connect(f);f.connect(g);g.connect(mus);s.start(t,Math.random());s.stop(t+.08)};
+  const STEP=60/124/4,HITS=[0,3,6,10,12],HITS2=[2,6,8,11,14];let step=0,next=c.currentTime+.3;
+  const sched=()=>{if(!SND.on)return;while(next<c.currentTime+.4){const bar=Math.floor(step/16)%CH.length,pos=step%16,[bass,ch]=CH[bar];
+      if(pos===0)pluck(mid(bass-12),next,1.1,.22,'sine');if(pos===8)pluck(mid(bass-5),next,1.1,.18,'sine');
+      if((bar%2?HITS2:HITS).includes(pos))ch.forEach((n,k)=>pluck(mid(n),next+k*.006,.55,.05,'triangle'));
+      if(pos%2===0)shaker(next,pos%4===0?.05:.025);
+      const ms=step%64;MEL.forEach(([p0,n])=>{if(p0===ms&&Math.floor(step/64)%2===1)pluck(mid(n),next,.9,.06,'sine')});
+      step++;next+=STEP}SND.timers.push(setTimeout(sched,120))};sched();
+  }catch(e){SND.on=false}
+}
+document.addEventListener('pointerdown',function once(){document.removeEventListener('pointerdown',once,true);if(lsGet().snd&&!SND.on){sndStart();const h=document.getElementById('hdr');if(h)h.outerHTML=header()}},true);
+
 /* ======== computador ======== */
 let cpuTimer=null;
 const comboTotal=tr=>combos(tr).reduce((a,x)=>a+x.p,0);
@@ -1287,7 +1557,7 @@ function pedidoBox(){const pd=pedido();return `<div class="pedido"><span class="
 function header(){
   const inRoom=MODE==='online'&&CODE&&G;
   return `<div class="top" id="hdr"><div class="logo">Meu Álbum <span class="tinyflower">${sunflower()}</span><small>${WHO!=null?'tu és '+(WHO===0?'o Miguel':'a Clara'):'Miguel & Clara'}${MODE==='cpu'?' · vs computador':''}</small></div>
-  <div class="topr">${inRoom?`<span><span class="dot ${L.peerOnline?'on':''}"></span>${nm(1-WHO)}</span><span class="codepill">${esc(CODE)}</span>`:''}
+  <div class="topr">${sndBtn()}${inRoom?`<span><span class="dot ${L.peerOnline?'on':''}"></span>${nm(1-WHO)}</span><span class="codepill">${esc(CODE)}</span>`:''}
   ${(inRoom||MODE==='cpu')&&G?.seed?`<button class="linkbtn ${L.confirmNew?'warn':''}" onclick="resetGame()">Nova partida</button>`:''}
   ${inRoom?`<button class="linkbtn ${L.confirmLeave?'warn':''}" onclick="leaveRoom()">${L.confirmLeave?'Sair? Toca outra vez':'Sair da sala'}</button>`:''}
   ${WHO!=null&&L.screen!=='ranking'?`<button class="linkbtn" onclick="openRanking()">🏆 top 10</button>`:''}
@@ -1389,19 +1659,18 @@ function shelf(i){
 }
 function draft(){
   const total=G.per*2,k=picks().length,t=turn(),mine=t===WHO,[A,B]=offer(k),last=picks()[k-1];
-  const card=(s,btn)=>`<div class="pick ${btn?'':'waiting-pick'} ${(L.choosing===s.i||L.cpuPick===s.i)?'chosen':(L.choosing!=null||L.cpuPick!=null)?'dropped':''}">${sleeve(s)}<div class="info"><div class="tt">${esc(s.t)}</div><div class="ta">${esc(s.a)}</div>${chips(s)}${listen(s)}
-    ${btn?`<button class="btn" ${L.busy?'disabled':''} onclick="choose(${s.i})">Fica comigo</button>`:''}</div></div>`;
+  const card=(s,btn)=>`<div ${btn?`onclick="if(!event.target.closest('a'))choose(${s.i})"`:''} class="pick ${btn?'tappable':'waiting-pick'} ${(L.choosing===s.i||L.cpuPick===s.i)?'chosen':(L.choosing!=null||L.cpuPick!=null)?'dropped':''}">${sleeve(s)}<div class="info"><div class="tt">${esc(s.t)}</div><div class="ta">${esc(s.a)}</div>${chips(s)}${listen(s)}
+    ${btn?`<button class="btn" ${L.busy?'disabled':''} onclick="event.stopPropagation();choose(${s.i})">Fica comigo</button>`:''}</div></div>`;
   return `<div class="meta mono"><span>escolha ${k+1} / ${total}</span><span>${mine?'a tua vez':'vez '+(d_(t))}</span></div>
   <div class="progress"><div style="width:${k/total*100}%"></div></div>
-  ${pedidoBox()}
-  ${timerBar((G.ts||Date.now())+PICK_MS,PICK_MS,mine?'tens':(isCpu(t)?'computador':'tempo '+d_(t)))}
+  <div class="dstick">${pedidoBox()}${timerBar((G.ts||Date.now())+PICK_MS,PICK_MS,mine?'tens':(isCpu(t)?'computador':'tempo '+d_(t)))}</div>
   <div class="tot-head"><h2 class="c${t}">${mine?'Isto ou aquilo?':(O_(t))+' está a escolher'}</h2>
   <div class="sub">${mine?`Uma vai para “${esc(alb(WHO))}”, a outra vai para a gaveta.`:(isCpu(t)?'Estou a pensar nas combinações… 🤖':'Entre estas duas… a página atualiza sozinha.')}</div></div>
   <div class="pair">${card(A,mine)}<div class="ou">ou</div>${card(B,mine)}</div>
   ${legend()}
   ${L.err?`<div class="err">${esc(L.err)}</div>`:''}
   ${last&&last.p===WHO&&!mine?`<div class="center mt"><button class="linkbtn" onclick="undo()">↩ enganei-me, desfazer a última escolha</button></div>`:''}
-  <div class="shelves">${shelf(0)}${shelf(1)}</div>`;
+  `;
 }
 function order(){
   const oi=1-WHO;
@@ -1425,6 +1694,16 @@ function order(){
   <div class="panel oside">${timerBar((G.orderTs||Date.now())+ORDER_MS,ORDER_MS,'tempo para ordenar')}${sum}${L.err?`<div class="err">${esc(L.err)}</div>`:''}
   <button class="btn full mt" ${L.busy?'disabled':''} onclick="lockOrder()">🔒 Fechar o álbum</button>
   ${G.orders?.[P(oi)]?`<p class="hint center">${O_(oi)} já fechou o álbum.</p>`:''}</div></div>`;
+}
+function draftDock(){
+  if(!G||!G.seed||!MODE||phase()!=='draft'||L.screen)return '';
+  const rowFor=i=>{const tr=rawTracks(i);const slots=Array.from({length:G.per},(_,k)=>tr[k]?`<div class="dmini" title="${esc(tr[k].t)} — ${esc(tr[k].a)}">${cimg(tr[k])}</div>`:'<div class="slot"></div>').join('');
+    return `<div class="shelfbox drow2" data-p="${i}"><div class="dlab"><b><i class="pdot p${i}"></i>${esc(i===WHO?'Tu':nm(i))}</b><small>${tr.length}/${G.per}</small></div><div class="dslots" style="--n:${G.per}">${slots}</div></div>`};
+  const list=i=>rawTracks(i).map((t,k)=>`<li><span>${k+1}.</span> ${esc(t.t)} <em>— ${esc(t.a)}</em></li>`).join('')||'<li><em>ainda nada</em></li>';
+  return `<div class="ddock ${L.shelfOpen?'open':''}">
+    <div class="dlist"><div><b class="c${WHO}">${esc(alb(WHO))}</b><ol>${list(WHO)}</ol></div><div><b class="c${1-WHO}">${esc(alb(1-WHO))}</b><ol>${list(1-WHO)}</ol></div></div>
+    <button class="dtoggle" onclick="L.shelfOpen=!L.shelfOpen;render()" aria-label="Ver as músicas escolhidas">${L.shelfOpen?'▼ fechar':'▲ ver lista'}</button>
+    ${rowFor(WHO)}${rowFor(1-WHO)}</div>`;
 }
 function dock(){
   if(!G||!G.seed||!MODE||phase()!=='order'||G.orders?.[P(WHO)])return '';
@@ -1525,8 +1804,8 @@ function render(){
   const app=document.getElementById('app'),keep={};app.querySelectorAll('input[id]').forEach(i=>keep[i.id]=i.value);
   const fid=document.activeElement&&document.activeElement.id;
   const key=viewKey(),enter=key!==L.lastKey;L.lastKey=key;
-  app.innerHTML=header()+`<main class="view ${enter?'enter':''}">${body()}</main>`+dock();
-  document.body.classList.toggle('has-dock',!!document.querySelector('.odock'));
+  app.innerHTML=header()+`<main class="view ${enter?'enter':''}">${body()}</main>`+dock()+draftDock();
+  document.body.classList.toggle('has-dock',!!document.querySelector('.odock'));document.body.classList.toggle('has-ddock',!!document.querySelector('.ddock'));
   for(const k in keep){const el=document.getElementById(k);if(el)el.value=keep[k]}
   if(fid)document.getElementById(fid)?.focus();
   const pk=(G&&G.seed&&MODE)?(phase()==='duels'?'duels:'+(stageKind()[0]==='duel'&&stageKind()[1]<G.per?'duel':stageKind()[0]):phase()):'';
@@ -1541,7 +1820,7 @@ function intertitle(t,sub){if(window.matchMedia&&matchMedia('(prefers-reduced-mo
   d.innerHTML=`<div class="iflower">${sunflower()}</div><div class="it"><b>${esc(t)}</b><small>${esc(sub)}</small></div>`;
   document.body.appendChild(d);setTimeout(()=>d.remove(),2000)}
 const BIGW={draft:'ISTO OU AQUILO',order:'ÁLBUM','duels:duel':'DUELO','duels:combos':'COMBOS','duels:bonus':'BÓNUS','duels:suspense':'FINAL'};
-function sambaLetters(){const w=L.screen==='ranking'?'TOP 10':BIGW[L.lastPhase];document.querySelectorAll('.view .tot-head').forEach(h=>{if(w&&!h.querySelector('.bigword'))h.insertAdjacentHTML('afterbegin',`<div class="bigword" aria-hidden="true">${esc(w)}</div>`)});return;document.querySelectorAll('.view .tot-head h2,.view .suspense h2').forEach(h=>{if(h.children.length)return;const t=h.textContent;h.innerHTML=[...t].map((c,k)=>`<span class="sl" style="animation-delay:${.15+k*.035}s">${c===' '?'&nbsp;':esc(c)}</span>`).join('')})}
+function sambaLetters(){return;const w=L.screen==='ranking'?'TOP 10':BIGW[L.lastPhase];document.querySelectorAll('.view .tot-head').forEach(h=>{if(w&&!h.querySelector('.bigword'))h.insertAdjacentHTML('afterbegin',`<div class="bigword" aria-hidden="true">${esc(w)}</div>`)});return;document.querySelectorAll('.view .tot-head h2,.view .suspense h2').forEach(h=>{if(h.children.length)return;const t=h.textContent;h.innerHTML=[...t].map((c,k)=>`<span class="sl" style="animation-delay:${.15+k*.035}s">${c===' '?'&nbsp;':esc(c)}</span>`).join('')})}
 function countUps(){
   document.querySelectorAll('[data-count]').forEach(el=>{const v=parseFloat(el.dataset.count),dec=el.dataset.dec==='1',t0=performance.now(),dur=900+Math.random()*300,delay=parseFloat(el.dataset.delay||'250');
     el.textContent=dec?'0':'0';
