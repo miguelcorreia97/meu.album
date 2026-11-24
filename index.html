@@ -1652,13 +1652,20 @@ body,#app{overflow-x:clip}
 .dcard.r-raro{border-color:rgba(74,163,255,.45)}.dcard.r-epico{border-color:rgba(176,107,255,.55)}.dcard.r-lend{border-color:rgba(255,204,51,.7);box-shadow:0 0 18px rgba(255,204,51,.15)}
 .dcard .dtags i:first-child{background:color-mix(in srgb,var(--rc,#c9c1b4) 22%,transparent);color:var(--rc,#ffd23f)}
 .rrar{margin-bottom:4px}
-/* quarto maior no telemóvel: arrasta para os lados */
-@media(max-width:700px){.roomscene{margin-left:-16px!important;margin-right:-16px!important;border-radius:0!important;max-width:none!important}
- .roomscroll{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none}.roomscroll::-webkit-scrollbar{display:none}
- .roomscroll .roomsvg{width:215%;max-width:none}
- .roomhint{display:block!important}}
-.roomhint{display:none;position:absolute;right:8px;bottom:8px;padding:4px 10px;border-radius:99px;background:rgba(20,10,4,.7);color:var(--cream);font-size:.68rem;pointer-events:none;animation:rhint 4s 1s both}
-@keyframes rhint{0%,80%{opacity:1}100%{opacity:0}}
+/* quarto no telemóvel: de ponta a ponta + modo ecrã inteiro deitado */
+@media(max-width:700px){.roomscene:not(.full) .hud{transform:scale(.78);transform-origin:top left;width:128%}.roomscene{margin-left:-16px!important;margin-right:-16px!important;border-radius:0!important;max-width:none!important}.rfullbtn{display:flex!important}}
+.rfullbtn{display:none;position:absolute;right:8px;bottom:8px;z-index:3;align-items:center;gap:6px;padding:7px 12px;border-radius:99px;border:1px solid rgba(255,214,150,.35);background:rgba(20,10,4,.78);color:var(--cream);font:inherit;font-size:.74rem;font-weight:700;cursor:pointer;backdrop-filter:blur(4px)}
+.rfullbtn b{font-size:1rem;line-height:1}
+.roomscene.full{position:fixed!important;inset:0;z-index:150;margin:0!important;max-width:none!important;border-radius:0!important;display:grid;place-items:center;background:#0d0806}
+.roomscene.full .roomscroll{width:100%}.roomscene.full .roomsvg{width:100%;height:auto;max-height:100dvh;display:block}
+.roomscene.full .rfullbtn{display:flex!important;top:10px;bottom:auto;right:10px}
+body.rfull{overflow:hidden}
+@media(orientation:portrait){
+ .roomscene.full{inset:auto;top:50%;left:50%;width:100dvh;height:100dvw;transform:translate(-50%,-50%) rotate(90deg)}
+ .roomscene.full .roomsvg{max-height:100dvw}
+ body.rfull .rzoom,body.rfull .buyfx{inset:auto;top:50%;left:50%;width:100dvh;height:100dvw;transform:translate(-50%,-50%) rotate(90deg)}
+ body.rfull .rzoom .rzbox{max-height:calc(100dvw - 24px);overflow:auto}
+ body.rfull .rzoom.sheet .rzbox{max-height:62dvw}}
 
 .pfz .pfrow{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px dashed rgba(255,214,150,.15)}.pfz .pfrow.col{flex-direction:column;align-items:stretch}
 .pfsw{width:52px;height:30px;border-radius:99px;border:0;background:rgba(255,255,255,.15);position:relative;cursor:pointer}.pfsw i{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:left .2s}.pfsw.on{background:#2f9e44}.pfsw.on i{left:25px}
@@ -3189,7 +3196,7 @@ function itemThumb(it){RUID=Math.floor(Math.random()*1e6);const pl={sh:[],wl:[],
   return `<svg viewBox="${IBOX[it.id]||RTHUMB[it.s]}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">${roomDefs()}${inner}</svg>`}
 
 /* ---------- ecrã ---------- */
-function openRoom(){L.screen='quarto';setTimeout(roomBills,1500);L.rTodV=null;L.rNoteEd=0;if(db&&db.cloud)bdLoad();L.rTab=L.rTab||'loja';L.rCat=L.rCat||'cama';L.rPrev=null;L.rTodV=null;CASAL.forEach(w=>profLoad(w));sqPull();render();scrollTo(0,0)}
+function openRoom(){L.screen='quarto';L.rFull=false;document.body.classList.remove('rfull');setTimeout(roomBills,1500);L.rTodV=null;L.rNoteEd=0;if(db&&db.cloud)bdLoad();L.rTab=L.rTab||'loja';L.rCat=L.rCat||'cama';L.rPrev=null;L.rTodV=null;CASAL.forEach(w=>profLoad(w));sqPull();render();scrollTo(0,0)}
 function roomMine(){return canEdit()}
 function roomRefresh(){if(L.screen!=='quarto'||L.rNoteEd||document.querySelector('.rplayfx'))return;const a=document.activeElement;if(a&&/INPUT|TEXTAREA/.test(a.tagName))return;render()}
 function roomTod(t){L.rTodV=t||null;const s=document.querySelector('.roomscene .roomsvg');if(s)s.outerHTML=roomSceneInner();document.querySelectorAll('.todbar button').forEach(b=>b.classList.toggle('on',(b.dataset.t||'')===(t||'')))}
@@ -3199,6 +3206,10 @@ function roomBuy(id){const it=RIT[id];if(!it||!canEdit()||it.lock)return;const q
   q.spent+=it.p;q.own[id]=1;q.eq[it.s]=id;L.rPrev=null;roomSave(q);profAdd('compras');profMax('ninho',Object.keys(q.own).length);render();
   buyFx({html:itemThumb(it),title:it.n,sub:'novo no quarto!',kind:'item'},()=>{const sc=document.querySelector('.roomscene');if(sc&&sc.scrollIntoView)sc.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>{roomOnce('.ract-'+it.s,'rm-new',2200);if(it.s==='plafon')setTimeout(plafonZoom,900)},450)})}
 function roomScroll(){const s=document.querySelector('.roomscene');if(s&&s.getBoundingClientRect().top<-80)s.scrollIntoView({behavior:'smooth',block:'start'})}
+function roomFull(on){on=on===undefined?!L.rFull:on;L.rFull=on;document.body.classList.toggle('rfull',on);const sc=document.querySelector('.roomscene');if(sc){sc.classList.toggle('full',on);const b=sc.querySelector('.rfullbtn');if(b)b.innerHTML=on?'<b>✕</b> Sair':'<b>⛶</b> Ver em grande'}
+ try{if(on){const r=document.documentElement;if(r.requestFullscreen)r.requestFullscreen({navigationUI:'hide'}).then(()=>screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape').catch(()=>{})).catch(()=>{})}else if(document.fullscreenElement){if(screen.orientation&&screen.orientation.unlock)screen.orientation.unlock();document.exitFullscreen().catch(()=>{})}}catch(e){}}
+document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&L.rFull)roomFull(false)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&L.rFull&&!document.querySelector('.rzoom'))roomFull(false)});
 function roomSceneInner(){const o={};if(L.rPrev)o.eq={[RIT[L.rPrev].s]:L.rPrev};if(L.rTodV)o.tod=L.rTodV;return roomSvg(0,o)}
 function roomPop(t){const sc=document.querySelector('.roomscene'),lt=document.getElementById('rleitor');if(!sc||!lt)return;const a=sc.getBoundingClientRect(),b=lt.getBoundingClientRect();const e=document.createElement('div');e.className='rpop';e.textContent=t;e.style.left=(b.left-a.left+b.width/2)+'px';e.style.top=(b.top-a.top)+'px';sc.appendChild(e);setTimeout(()=>e.remove(),1800)}
 /* animação: o disco sai da capa e vai para o gira-discos, com ondas e notas */
@@ -3223,7 +3234,7 @@ const TODN={manha:'amanhecer',dia:'dia',tarde:'pôr do sol',noite:'noite'};
 function quartoScreen(){const ed=canEdit(),coins=roomCoins(),q=roomQ(),pl=discPlaces(),n=lisNow(),tnow=todNow(n),prev=L.rPrev&&RIT[L.rPrev],falta=prev?prev.p-coins:0,pd=pl.play&&DISCO(pl.play),on=q.on&&pd;
   let h=`<div class="tot-head"><div class="mono" style="color:var(--muted)">o nosso quarto</div><h2>O quarto do Miguel e da Clara</h2><div class="sub">${ed?'Decorem juntos com os BPM que os dois ganham nas missões. Com música a tocar no quarto também ganham BPM.':'Estás de visita. Só o Miguel e a Clara podem mudar as coisas.'}</div></div>
   <div class="qbar"><span class="qcoins">♩ <b id="bpmv">${coins}</b> BPM</span><span class="rdisc">💿 ${pl.own.length} discos</span><span class="rdisc">🕰️ <b id="rclock">${n.hh}</b> em Portugal</span>${ed?`<button class="rdisc rbill" onclick="billsZoom()">🧾 −${billDay()} BPM/dia</button>`:''}</div>
-  <div class="roomscene"><div class="roomscroll">${roomSceneInner()}</div>${sceneHud()}<span class="roomhint">↔ arrasta para ver o quarto</span></div>
+  <div class="roomscene${L.rFull?' full':''}"><div class="roomscroll">${roomSceneInner()}</div>${sceneHud()}<button class="rfullbtn" onclick="roomFull()">${L.rFull?'<b>✕</b> Sair':'<b>⛶</b> Ver em grande'}</button></div>
   <p class="hint center todinfo">👆 Toquem nas coisas do quarto: gira-discos, prateleira, móvel, molduras, quadro de recados, janela, luzes, animais… Agora é ${TODN[tnow]} em Portugal: o quarto segue a hora real. O sol nasce às ${n.f(n.rise)} e põe-se às ${n.f(n.set)}.</p>`;
   if(prev)h+=`<div class="rprev"><div><span class="mono">a experimentar</span><b>${esc(prev.n)}</b><em>${prev.lock?`🔒 Só com a missão a dois “${esc(lockM(prev).n)}”: ${esc(lockM(prev).d)}`:`♩ ${prev.p} BPM`}</em></div><div class="acts">${prev.lock?'':falta>0?`<button class="btn" disabled>Faltam ${falta} BPM</button>`:`<button class="btn" onclick="roomBuy('${prev.id}')">Comprar</button>`}<button class="btn ghost" onclick="L.rPrev=null;render()">Tirar</button></div></div>`;
   if(!ed)return h+`<div class="actions"><button class="btn" onclick="L.screen=null;render()">← Voltar</button></div>`;
@@ -3537,7 +3548,7 @@ Object.assign(RDR,{
 });
 function plafonGlow(x,y){const L_=clGet(),i=L_.i;return `<radialGradient id="gl-pf"><stop offset="0" stop-color="${L_.c}" stop-opacity=".95"/><stop offset=".3" stop-color="${L_.c}" stop-opacity=".4"/><stop offset="1" stop-color="${L_.c}" stop-opacity="0"/></radialGradient><circle cx="${x}" cy="${y}" r="${60+i*80}" fill="url(#gl-pf)" style="mix-blend-mode:screen" opacity="${.5+i*.5}"/><path d="M${x-26} ${y+4} L${x-260} 500 L${x+260} 500 L${x+26} ${y+4}z" fill="url(#gl-pf)" style="mix-blend-mode:screen" opacity="${i*.35}"/>`}
 /* painel da luz: abre ao tocar no candeeiro do teto */
-function plafonZoom(){const sc=document.querySelector('.roomscene');if(sc&&!document.querySelector('.rzoom.sheet')){const r=sc.getBoundingClientRect();if(r.top<0||r.top>60)scrollTo({top:scrollY+r.top-60,behavior:'smooth'})}const rs=document.querySelector('.roomscroll');if(rs&&rs.scrollWidth>rs.clientWidth+4)rs.scrollTo({left:rs.scrollWidth*(800/1080)-rs.clientWidth/2,behavior:'smooth'});const L_=clGet(),ed=canEdit(),id=roomQ().eq.plafon,it=RIT[id];
+function plafonZoom(){const sc=document.querySelector('.roomscene');if(sc&&!L.rFull&&!document.querySelector('.rzoom.sheet')){const r=sc.getBoundingClientRect();if(r.top<0||r.top>60)scrollTo({top:scrollY+r.top-60,behavior:'smooth'})}const L_=clGet(),ed=canEdit(),id=roomQ().eq.plafon,it=RIT[id];
   zoomOpen(`<div class="rzlist pfz"><h3>💡 ${esc(it?it.n:'Luz do teto')}</h3>
   ${ed?`<div class="pfrow"><span>Ligada</span><button class="pfsw ${L_.on?'on':''}" onclick="plafonSet({on:${L_.on?0:1}})"><i></i></button></div>
   <div class="pfrow col"><span>Cor</span><div class="pfcores">${CL_CORES.map(([c,n])=>`<button class="${L_.c===c?'on':''}" style="--c:${c}" title="${n}" onclick="plafonSet({c:'${c}'})"><i></i><small>${n}</small></button>`).join('')}<label class="pfcustom" title="Outra cor"><input type="color" value="${L_.c}" oninput="plafonSet({c:this.value},1)"><small>Outra</small></label></div></div>
@@ -4154,7 +4165,7 @@ function body(){
   return ({draft,order,duels})[phase()]();
 }
 function viewKey(){if(L.screen)return 'scr:'+L.screen+(L.rank?'1':'0')+(L.rankPer||'all');if(MODE==='online'&&G&&G.coop&&G.coop.seed){const c=G.coop;return ['co',c.seed,c.m,(c.tp||[]).length,!!(c.ok&&c.ok.p0&&c.ok.p1),JSON.stringify(c.fav&&Object.keys(c.fav)),JSON.stringify(c.gs&&Object.keys(c.gs)),c.r,JSON.stringify(c.hist&&c.hist[c.r])].join('|')}if(!G||!G.seed||!MODE)return [WHO,MODE,CODE,L.status,G?.joined?.p0,G?.joined?.p1,G?.seed].join('|');const ph=phase();return [MODE,G.round,ph,ph==='draft'?picks().length:'',ph==='duels'?stageKind().join(':'):'',ph==='order'?!!G.orders?.[P(WHO)]:''].join('|')}
-function render(){
+function render(){if(L.rFull&&L.screen!=='quarto'){L.rFull=false;document.body.classList.remove('rfull');if(document.fullscreenElement)document.exitFullscreen().catch(()=>{})}
   const app=document.getElementById('app'),keep={},kx={};app.querySelectorAll('.rcats,.rart,.qtabs,.dsub,.roomscroll').forEach((e,i)=>kx[e.className+'#'+i]=e.scrollLeft);app.querySelectorAll('input[id]').forEach(i=>keep[i.id]=i.value);
   const fid=document.activeElement&&document.activeElement.id;
   const key=viewKey(),enter=key!==L.lastKey,prevKey=L.lastKey||'';L.lastKey=key;
