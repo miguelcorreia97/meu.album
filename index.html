@@ -1381,6 +1381,7 @@ body{overflow:visible!important}
 .rxfloat .rxtxt{max-width:min(70vw,260px);margin-bottom:6px;padding:8px 12px;border-radius:16px 16px 16px 4px;background:#fff6e6;color:#2b1d14;font-weight:700;font-size:.95rem;text-align:center;box-shadow:0 8px 18px rgba(0,0,0,.35)}
 .rxfloat.long{animation-duration:3.8s}
 body.ingame .top{position:sticky!important;top:0!important;z-index:50!important;background:rgba(34,16,6,.86)!important;backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important}
+.rxmute{border:1px solid rgba(255,214,150,.3);background:rgba(255,246,230,.08);color:var(--ink);border-radius:999px;padding:7px 12px;font:inherit;font-size:.85rem;font-weight:700;cursor:pointer}
 </style>
 </head>
 <body>
@@ -1992,7 +1993,7 @@ function boardMount(){const slot=document.getElementById('boardSlot');
 
 /* ======== reações com emojis durante o jogo ======== */
 const REACTS=['😍','😂','😮','😭','🔥','👏','🤔','😈','🙄','❤️','🌻','🌴'];
-const RX={open:false,last:0,seen:{},bot:{seed:null,n:0,picks:-1,won:false}};
+const RX={mute:(()=>{try{return localStorage.getItem('stk-mute')==='1'}catch(e){return false}})(),open:false,last:0,seen:{},bot:{seed:null,n:0,picks:-1,won:false}};
 /* stickers do WhatsApp: em cada partida, 5 diferentes para cada jogador (nunca os mesmos entre os dois) */
 const STK=Array.from({length:46},(_,k)=>'stickers/s'+String(k+1).padStart(2,'0')+'.webp');
 const STK_GOZO=[1,10,11,12,16,19,21,23,24,25,26,28,29,32,37,40,41,42,43,44,45,46].map(n=>n-1);
@@ -2006,10 +2007,11 @@ function stkFor(p){if(!G||!G.seed)return [];const a=stkOrder();
 const rxHtml=k=>String(k).startsWith('s:')?`<img class="rxs" src="${STK[+k.slice(2)]}" alt="sticker">`:`<span class="rxe">${k}</span>`;
 function reactBar(){if(!(G&&G.seed&&MODE))return '';
   const mine=stkFor(WHO);
-  return `<div class="rxwrap ${RX.open?'open':''}"><div class="rxpal">${mine.length?`<div class="rxlab mono">os teus stickers desta partida</div><div class="rxstk">${mine.map(i=>`<button onclick="react('s:${i}')" aria-label="enviar sticker"><img src="${STK[i]}" alt="" loading="lazy"></button>`).join('')}</div>`:''}</div></div>`}
+  return `<div class="rxwrap ${RX.open?'open':''}"><div class="rxpal"><button class="rxmute" onclick="rxMute()">${RX.mute?'🔔 Voltar a mostrar stickers':'🔕 Silenciar stickers'}</button>${RX.mute?'<div class="rxlab mono">stickers silenciados — não vês os do outro nem do computador</div>':''}${mine.length?`<div class="rxlab mono">os teus stickers desta partida</div><div class="rxstk">${mine.map(i=>`<button onclick="react('s:${i}')" aria-label="enviar sticker"><img src="${STK[i]}" alt="" loading="lazy"></button>`).join('')}</div>`:''}</div></div>`}
+function rxMute(){RX.mute=!RX.mute;try{localStorage.setItem('stk-mute',RX.mute?'1':'0')}catch(e){}document.querySelectorAll('.rxfloat').forEach(d=>{if(RX.mute)d.remove()});RX.open=true;const h=document.getElementById('hdr');if(h)h.outerHTML=header();const w=document.querySelector('.rxwrap');if(w)w.outerHTML=reactBar()}
 function rxToggle(){RX.open=!RX.open;document.querySelector('.rxwrap')?.classList.toggle('open',RX.open)}
 document.addEventListener('pointerdown',e=>{if(RX.open&&!e.target.closest('.rxwrap,.rxtop')){RX.open=false;document.querySelector('.rxwrap')?.classList.remove('open')}});
-function rxFloat(e,who,txt){const d=document.createElement('div');d.className='rxfloat';{const vw=innerWidth,w=txt?Math.min(230,vw*.6):160,room=Math.max(0,vw/2-w-12),x=who===WHO?12+Math.random()*room:vw-w-12-Math.random()*room;d.style.left=Math.max(8,x)+'px';d.style.width=w+'px'}
+function rxFloat(e,who,txt){if(RX.mute&&who!==WHO)return;const d=document.createElement('div');d.className='rxfloat';{const vw=innerWidth,w=txt?Math.min(230,vw*.6):160,room=Math.max(0,vw/2-w-12),x=who===WHO?12+Math.random()*room:vw-w-12-Math.random()*room;d.style.left=Math.max(8,x)+'px';d.style.width=w+'px'}
   d.innerHTML=`${txt?`<span class="rxtxt">${esc(txt)}</span>`:''}${rxHtml(e)}<span class="rxn c${who}">${isCpu(who)?'🤖 Computador':(who===0?'🌴 Miguel':'🌻 Clara')}</span>`;if(txt)d.classList.add('long');document.body.appendChild(d);setTimeout(()=>d.remove(),txt?3800:2800)}
 function react(e){const now=Date.now();if(now-RX.last<900)return;RX.last=now;RX.open=false;document.querySelector('.rxwrap')?.classList.remove('open');
   const k=P(WHO);RX.seen[k]=now;rxFloat(e,WHO);
@@ -2017,22 +2019,24 @@ function react(e){const now=Date.now();if(now-RX.last<900)return;RX.last=now;RX.
     if(Math.random()<.6)setTimeout(()=>{const lead=botLead();botSay(lead>=0?'gozo':'raiva',lead>=0?BOT_TXT.resposta_gozo:BOT_TXT.resposta_raiva)},1000+Math.random()*900);return}
   try{ref().update({react:{[k]:{e,t:now}}}).catch(()=>{})}catch(x){}}
 /* ======== personalidade do computador: goza quando ganha, irrita-se quando perde ======== */
+/* frases revistas em nov/2026 com base em guias de gírias Gen Z (BR, PT e TikTok);
+   evitadas as que os próprios jovens já acham cringe (6-7, skibidi, bussin, bae, YOLO…) */
 const BOT_TXT={
- gozo:['-1000 de aura pra ti 💀','Que tiro foi esse? 🔫','Paga nada, só observa 👀','Aceita que dói menos','Chora não, bebê 😭','Tá tranquilo, tá favorável 😎','Very demure, very mindful 💅','Isso foi brainrot puro 🧠','Ninguém liga, amigo','Bué fraco 😂','Chill guy a ganhar 😎','Senta e aprende','Volta ao Spotify a aprender 🤭','Obrigado pelos pontos 🙏','Próximo!'],
- raiva:['Calma, calabreso 😤','Cê tá de brincadeira, né?','Que papinho, hein','Isso tá roubado, juiz!','Mercúrio retrógrado, só pode','NPC com sorte…','Nazaré confusa 🤨','Ai que ódio','Tás a gozar comigo?','Isto está viciado 😤','Sorte de principiante…','Não conta, estava a aquecer','Hmpf.','Vou fingir que não vi'],
- mauPick:['Meteu essa? 💀','Delulu total','Senhora?? 🤨','Escolha de NPC','Hmm… cringe','Tá de sacanagem?','Deixaste a melhor pra mim? Obrigado 😏','Essa? Corajoso…'],
- bomPick:['Mewing e escolhendo bem 😎','Rizz musical: 100','Sigma pick 🗿','Essa é minha, tchau 👋','Olha o que eu apanhei 😎'],
- ganhei:['É O ROBÔ 🤖🔥','Para nossa alegria 🎶','+1000 de aura','GG ez','Volta pro tutorial 🤭','Isto foi um massacre','Que tiro foi esse? 🔫'],
- perdi:['Revanche. AGORA. 😤','Isso não fica assim, ouviu?','Foi a internet que caiu','Tô de mal','Me deixa quieto 😭','Fizeste batota, só pode','Nem quero falar sobre isto'],
- espera:['Acorda, bebê 💤','Tá pensando na morte da bezerra?','Vai demorar muito? 🥱','Rápido que eu tenho mais o que fazer','Escolhe logo, NPC','Tic tac… ⏰'],
- ordem:['Já ordenei o meu, tô só esperando 💅','Chill guy esperando 😎','Ordena aí, sem pressa… mentira, tenho pressa','O meu já tá perfeito, só dizendo'],
- random:['Tung tung tung sahur 🥁','6 7 🤷','Pedro pedro pedro 🦝','Sextou com MPB 🎶','Isso aqui é Brasil, irmão 🇧🇷','Tô vibrando com Jorge Ben 🕺','Que delícia, cara','Ai, que preguiça 🥱'],
- suspense:['Tô nervoso 😬','Já sei que ganhei, só tô esperando','Reza aí 🙏','Rufem os tambores 🥁'],
- resposta_gozo:['Manda mais que eu tô rindo 😂','Ri não, que tu tá perdendo','Sticker bonito, pena o álbum'],
- resposta_raiva:['Calma, calabreso 😤','Agora gozas?','Ainda vou virar isso, ouviu?']};
+ gozo:['Tás cooked 💀','-1000 de aura pra ti','Essa música é mid, aceita','L pra ti, W pra mim','Flopou feio 📉','Não tankou, né?','Farmei aura com esta','Old que eu ia ganhar essa','Aceita que dói menos','Sai da live, Denise 📵','Chat, vocês viram isto? 💀','Bué fraco 😂','Moggei-te 😎','Comi. 💅'],
+ raiva:['Tô cooked… mas é só esta','Garçom, traz pitu também 🍺','O juiz tá delulu','Quase dei crash out agora 😤','Tás a gozar comigo?','Red flag esse resultado 🚩','Esta derrota vai ficar rent free','Ok, doeu. Não vou mentir','Lock in, robô. Lock in.','Isso não conta, o wi-fi caiu','Senhora?? 🤨'],
+ mauPick:['Meteu essa? 💀','Delulu total','Isso é mid, amigo','Red flag de escolha 🚩','Tás a gozar?','Chat, olhem esta escolha 💀','A outra era melhor, só dizendo','NPC moment'],
+ bomPick:['Essa é minha, obrigado 😌','Farmei aura com essa','GOAT pick 🐐','Comi.','Lock in total 🔒'],
+ ganhei:['GG. Tás cooked 💀','Comi e não deixei migalha','+1000 de aura','W gigante 🏆','Era old que eu ganhava','Vai tocar na relva e volta 🌱','Servi. 💅'],
+ perdi:['Revanche. AGORA. 😤','Tô cooked… desta vez','Garçom, traz pitu também 🍺','Quase crash out, mas tá na boa','Respeito… mas vou voltar','Ok, moggaste-me 😭'],
+ espera:['Lock in, que o tempo tá a correr ⏰','Tás a farmar aura a pensar?','Decide aí, NPC','Chat, travou? 🥶','Tic tac… ⏰','Escolhe logo, não é exame'],
+ ordem:['O meu já tá ordenado, só esperando 💅','Lock in na ordem aí 🔒','Ordena com calma… ou não ⏰'],
+ random:['Jorge Ben é o GOAT, sem discussão 🐐','Esta playlist vive rent free na minha cabeça','É sobre isso 🎶','Chat, isto tá renhido','Pdp, tô confiante 😎'],
+ suspense:['Tô nervoso 😬','Old que ganhei. Ou não…','Reza aí 🙏','Lock in 🔒'],
+ resposta_gozo:['Manda mais, tô a rir 😂','Sticker bonito, pena o álbum','Glazing não te vai salvar'],
+ resposta_raiva:['Sai da live, Denise 📵','Agora gozas?','Ainda vou virar isto']};
 const pickOne=a=>a[Math.floor(Math.random()*a.length)];
 function botStk(mood){const a=stkFor(1-WHO),pool=a.filter(i=>(mood==='raiva'?STK_RAIVA:STK_GOZO).includes(i));return 's:'+pickOne(pool.length?pool:a)}
-function botSay(mood,lines){const u=RX.bot.used||(RX.bot.used=new Set()),free=lines.filter(l=>!u.has(l)),t=pickOne(free.length?free:lines);u.add(t);RX.bot.lastSay=Date.now();rxFloat(botStk(mood),1-WHO,t)}
+function botSay(mood,lines){if(RX.mute)return;const u=RX.bot.used||(RX.bot.used=new Set()),free=lines.filter(l=>!u.has(l)),t=pickOne(free.length?free:lines);u.add(t);RX.bot.lastSay=Date.now();rxFloat(botStk(mood),1-WHO,t)}
 /* quem vai à frente nos duelos já revelados (do ponto de vista do computador) */
 function botLead(){try{if(phase()!=='duels')return 0;const C=1-WHO,[k,d]=stageKind();const n=k==='duel'?d+1:G.per;let s=0;for(let x=0;x<n;x++){const j=judge(x);if(j.w===C)s++;else if(j.w===WHO)s--}return s}catch(e){return 0}}
 function botTick(){if(MODE!=='cpu'||!G||!G.seed)return;const B=RX.bot,C=1-WHO;
@@ -2348,7 +2352,7 @@ function pedidoBox(){const pd=pedido();return `<div class="pedido"><span class="
 function header(){
   const inRoom=MODE==='online'&&CODE&&G;
   return `<div class="top" id="hdr"><div class="logo">Meu Álbum<small>${WHO!=null?'tu és '+(WHO===0?'o Miguel':'a Clara'):'Miguel & Clara'}${MODE==='cpu'?' · vs computador':''}</small></div>
-  <div class="topr">${(G&&G.seed&&MODE)?`<button class="linkbtn rxtop" onclick="rxToggle()" aria-label="mandar um sticker">😊<span class="lt"> stickers</span></button>`:''}${sndBtn()}${inRoom?`<span><span class="dot ${L.peerOnline?'on':''}"></span>${nm(1-WHO)}</span><span class="codepill">${esc(CODE)}</span>`:''}
+  <div class="topr">${(G&&G.seed&&MODE)?`<button class="linkbtn rxtop" onclick="rxToggle()" aria-label="stickers">${RX.mute?'🔕':'😊'}<span class="lt"> stickers</span></button>`:''}${sndBtn()}${inRoom?`<span><span class="dot ${L.peerOnline?'on':''}"></span>${nm(1-WHO)}</span><span class="codepill">${esc(CODE)}</span>`:''}
   ${(inRoom||MODE==='cpu')&&G?.seed?`<button class="linkbtn ${L.confirmNew?'warn':''}" onclick="resetGame()">↻<span class="lt"> Nova partida</span></button>`:''}
   ${inRoom?`<button class="linkbtn ${L.confirmLeave?'warn':''}" onclick="leaveRoom()">${L.confirmLeave?'Sair?':'✕<span class="lt"> Sair da sala</span>'}</button>`:''}
   ${WHO!=null&&L.screen!=='ranking'?`<button class="linkbtn" onclick="openRanking()">🏆<span class="lt"> top 10</span></button>`:''}
