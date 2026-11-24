@@ -2702,7 +2702,7 @@ function render(){
   /* prende a altura durante a troca, para a página não saltar */
   const h0=app.offsetHeight;if(enter&&h0){app.style.minHeight=h0+'px';clearTimeout(L.hT);L.hT=setTimeout(()=>{app.style.minHeight=''},soft?450:700)}
   document.body.classList.toggle('ingame',!!(G&&G.seed&&MODE));app.innerHTML=header()+`<main class="view ${enter?(soft?'enter soft':'enter'):''}">${body()}</main>`+dock()+draftDock()+reactBar();try{rxCheck();botTick();voteCheck();skipCheck()}catch(e){}
-  document.body.classList.toggle('has-dock',!!document.querySelector('.odock'));document.body.classList.toggle('has-ddock',!!document.querySelector('.ddock'));{const sd=app.querySelector('main .stagedock');if(sd)app.appendChild(sd)}document.body.classList.toggle('has-sdock',!!document.querySelector('.stagedock'));
+  document.body.classList.toggle('has-dock',!!document.querySelector('.odock'));document.body.classList.toggle('has-ddock',!!document.querySelector('.ddock'));{const sd=app.querySelector('main .stagedock');if(sd){if(L.hadSd)sd.style.animation='none';app.appendChild(sd)}L.hadSd=!!sd}document.body.classList.toggle('has-sdock',!!document.querySelector('.stagedock'));
   try{boardMount()}catch(e){}
   for(const k in keep){const el=document.getElementById(k);if(el)el.value=keep[k]}
   if(fid)document.getElementById(fid)?.focus();
