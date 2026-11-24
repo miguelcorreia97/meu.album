@@ -2027,7 +2027,7 @@ const BOT_TXT={
  resposta_raiva:['Não me provoques 😤','Agora gozas?','Espera pela próxima…']};
 const pickOne=a=>a[Math.floor(Math.random()*a.length)];
 function botStk(mood){const a=stkFor(1-WHO),pool=a.filter(i=>(mood==='raiva'?STK_RAIVA:STK_GOZO).includes(i));return 's:'+pickOne(pool.length?pool:a)}
-function botSay(mood,lines){const u=RX.bot.used||(RX.bot.used=new Set()),free=lines.filter(l=>!u.has(l)),t=pickOne(free.length?free:lines);u.add(t);rxFloat(botStk(mood),1-WHO,t)}
+function botSay(mood,lines){const u=RX.bot.used||(RX.bot.used=new Set()),free=lines.filter(l=>!u.has(l)),t=pickOne(free.length?free:lines);u.add(t);rxFloat(botStk(mood),1-WHO)}
 /* quem vai à frente nos duelos já revelados (do ponto de vista do computador) */
 function botLead(){try{if(phase()!=='duels')return 0;const C=1-WHO,[k,d]=stageKind();const n=k==='duel'?d+1:G.per;let s=0;for(let x=0;x<n;x++){const j=judge(x);if(j.w===C)s++;else if(j.w===WHO)s--}return s}catch(e){return 0}}
 function botTick(){if(MODE!=='cpu'||!G||!G.seed)return;const B=RX.bot,C=1-WHO;
