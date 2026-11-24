@@ -2549,6 +2549,11 @@ let _bgW=0;window.addEventListener('resize',()=>{const n=Math.ceil(window.innerW
 /* ======== arranque ======== */
 buildBg();
 {const w=lsGet().who;WHO=(w===0||w===1)?w:null}
+/* abrir o site de novo começa sempre no menu principal (mantém quem és);
+   só um recarregar acidental a meio do jogo (menos de 2 min) continua onde estava */
+{const ls=lsGet();if(!(ls.alive&&Date.now()-ls.alive<120000))lsSet({mode:null,code:null,cpuGame:null})}
+const _alive=()=>{if(!document.hidden)lsSet({alive:Date.now()})};_alive();setInterval(_alive,15000);
+addEventListener('pagehide',()=>lsSet({alive:Date.now()}));document.addEventListener('visibilitychange',()=>{if(document.hidden)lsSet({alive:Date.now()})});
 render();
 try{fxInit()}catch(e){}
 (async()=>{
