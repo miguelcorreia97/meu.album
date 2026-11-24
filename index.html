@@ -254,8 +254,8 @@ input.codein{text-transform:uppercase;letter-spacing:.35em;font-family:Anton,Imp
 .modebtn:hover{transform:translateY(-4px);border-color:var(--sol);box-shadow:0 14px 40px rgba(255,201,60,.18)}
 .modebtn .ic{font-size:30px}.modebtn b{font-family:Fraunces,serif;font-size:22px}.modebtn span{color:var(--cream2);font-size:14px}
 /* transições */
-.view.enter{animation:viewIn .6s cubic-bezier(.2,.7,.2,1) both}
-@keyframes viewIn{from{opacity:0;transform:translateY(22px);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
+.view.enter{animation:viewIn .42s cubic-bezier(.2,.7,.2,1) both}
+@keyframes viewIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 .view.enter .tot-head,.view.enter .hero{animation:rise .6s .05s both}
 .view.enter .pedido{animation:rise .6s .12s both}
 .view.enter .pair>.pick:first-child{animation:inL .75s .18s cubic-bezier(.2,.8,.2,1) both}
@@ -1389,6 +1389,16 @@ body.ingame .top{position:sticky!important;top:0!important;z-index:50!important;
 .vhint.ok{background:rgba(47,179,107,.18);color:var(--ink)}
 .btn.pulse{animation:npulse 1.4s ease-in-out infinite}
 @media(max-width:600px){.rxfloat .rxs{width:70px;height:70px}.rxfloat .rxtxt{font-size:.78rem;padding:5px 10px;max-width:170px}.rxfloat .rxn{font-size:.7rem}.rxfloat{bottom:22%}}
+/* trocas entre duelos: só fade, sem reanimar tudo */
+@keyframes softIn{from{opacity:.35}to{opacity:1}}
+.view.enter.soft{animation:none}
+.view.enter.soft>*{animation:softIn .32s ease both!important}
+.view.enter.soft *{animation-delay:0s!important}
+.view.enter.soft .panel,.view.enter.soft .shelfbox,.view.enter.soft .prize,.view.enter.soft .tot-head{animation:softIn .32s ease both!important}
+#app{transition:none}
+@media(max-width:600px){main.view{backdrop-filter:blur(6px) saturate(1.05)!important;-webkit-backdrop-filter:blur(6px) saturate(1.05)!important}
+ .stagedock,.ddock,.odock{backdrop-filter:blur(6px)!important;-webkit-backdrop-filter:blur(6px)!important}}
+@media(prefers-reduced-motion:reduce){.view.enter,.view.enter *{animation:none!important}}
 </style>
 </head>
 <body>
@@ -2647,8 +2657,12 @@ function viewKey(){if(L.screen)return 'scr:'+L.screen+(L.rank?'1':'0')+(L.rankPe
 function render(){
   const app=document.getElementById('app'),keep={};app.querySelectorAll('input[id]').forEach(i=>keep[i.id]=i.value);
   const fid=document.activeElement&&document.activeElement.id;
-  const key=viewKey(),enter=key!==L.lastKey;L.lastKey=key;
-  document.body.classList.toggle('ingame',!!(G&&G.seed&&MODE));app.innerHTML=header()+`<main class="view ${enter?'enter':''}">${body()}</main>`+dock()+draftDock()+reactBar();try{rxCheck();botTick();voteCheck();skipCheck()}catch(e){}
+  const key=viewKey(),enter=key!==L.lastKey,prevKey=L.lastKey||'';L.lastKey=key;
+  /* troca suave dentro da mesma fase (duelo → duelo): só um fade, sem a página toda a reentrar */
+  const soft=enter&&key.split('|').slice(0,3).join('|')===prevKey.split('|').slice(0,3).join('|')&&key.includes('|duels|')&&!/\|result/.test(key);
+  /* prende a altura durante a troca, para a página não saltar */
+  const h0=app.offsetHeight;if(enter&&h0){app.style.minHeight=h0+'px';clearTimeout(L.hT);L.hT=setTimeout(()=>{app.style.minHeight=''},soft?450:700)}
+  document.body.classList.toggle('ingame',!!(G&&G.seed&&MODE));app.innerHTML=header()+`<main class="view ${enter?(soft?'enter soft':'enter'):''}">${body()}</main>`+dock()+draftDock()+reactBar();try{rxCheck();botTick();voteCheck();skipCheck()}catch(e){}
   document.body.classList.toggle('has-dock',!!document.querySelector('.odock'));document.body.classList.toggle('has-ddock',!!document.querySelector('.ddock'));{const sd=app.querySelector('main .stagedock');if(sd)app.appendChild(sd)}document.body.classList.toggle('has-sdock',!!document.querySelector('.stagedock'));
   try{boardMount()}catch(e){}
   for(const k in keep){const el=document.getElementById(k);if(el)el.value=keep[k]}
@@ -2656,7 +2670,7 @@ function render(){
   const pk=(G&&G.seed&&MODE)?(phase()==='duels'?'duels:'+(stageKind()[0]==='duel'&&stageKind()[1]<G.per?'duel':stageKind()[0]):phase()):'';
   if(pk!==L.lastPhase){const prevP=L.lastPhase;L.lastPhase=pk;if(prevP!==undefined&&pk){const T={draft:['Isto ou aquilo!','escolham as vossas músicas'],order:['Hora de ordenar','monta o teu álbum'],'duels:duel':['Duelos!','faixa contra faixa'],'duels:combos':['Combinações','como montaram os álbuns'],'duels:suspense':['E agora…','o grande final']}[pk];if(T)intertitle(T[0],T[1])}}
   sambaLetters();
-  if(enter){window.scrollTo({top:0,behavior:'smooth'});countUps();setTimeout(fitDraft,450);
+  if(enter){if(!soft&&scrollY>4)window.scrollTo({top:0,behavior:scrollY>900?'auto':'smooth'});else if(soft&&scrollY>120)window.scrollTo({top:0,behavior:'smooth'});countUps();setTimeout(fitDraft,450);
     if(document.querySelector('.view .winner')){celebrate(120);saveRanking()}
     else if(document.querySelector('.view .pick.win.mine'))celebrate(24);}
 }
