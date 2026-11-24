@@ -1361,10 +1361,17 @@ body{overflow:visible!important}
 @keyframes bflash{0%,60%{box-shadow:0 0 0 4px #ffd23f,0 0 40px rgba(255,210,63,.6)}100%{box-shadow:none}}
 .rxwrap{position:fixed;right:10px;top:58px;z-index:60;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
 .rxbtn{width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,214,150,.35);background:rgba(34,16,6,.88);backdrop-filter:blur(8px);font-size:22px;cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,.4)}
-.rxpal{display:none;grid-template-columns:repeat(4,42px);gap:6px;padding:8px;border-radius:16px;background:rgba(34,16,6,.94);border:1px solid rgba(255,214,150,.3);box-shadow:0 10px 26px rgba(0,0,0,.45)}
-.rxwrap.open .rxpal{display:grid}
-.rxpal button{width:42px;height:42px;border:0;border-radius:12px;background:rgba(255,246,230,.08);font-size:24px;cursor:pointer}
-.rxpal button:active{transform:scale(.9)}
+.rxpal{display:none;flex-direction:column;gap:8px;padding:8px;border-radius:16px;background:rgba(34,16,6,.95);border:1px solid rgba(255,214,150,.3);box-shadow:0 10px 26px rgba(0,0,0,.45);max-height:calc(100vh - 80px);overflow:auto}
+.rxwrap.open .rxpal{display:flex}
+.rxemo{display:grid;grid-template-columns:repeat(4,42px);gap:6px}
+.rxlab{font-size:.62rem;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;padding:2px 2px 0}
+.rxstk{display:grid;grid-template-columns:repeat(3,58px);gap:8px;justify-content:center}
+.rxstk button{width:58px;height:58px;padding:2px;border:0;border-radius:12px;background:rgba(255,246,230,.08);cursor:pointer}
+.rxstk img{width:100%;height:100%;object-fit:contain;display:block}
+.rxfloat .rxs{width:150px;height:150px;object-fit:contain;filter:drop-shadow(0 8px 16px rgba(0,0,0,.5))}
+
+.rxemo button{width:42px;height:42px;border:0;border-radius:12px;background:rgba(255,246,230,.08);font-size:24px;cursor:pointer}
+.rxemo button:active{transform:scale(.9)}
 .rxfloat{position:fixed;bottom:14%;z-index:80;display:flex;flex-direction:column;align-items:center;pointer-events:none;animation:rxup 2.6s ease-out forwards}
 .rxfloat .rxe{font-size:64px;line-height:1;filter:drop-shadow(0 6px 12px rgba(0,0,0,.45))}
 .rxfloat .rxn{margin-top:4px;font-size:.8rem;font-weight:700;padding:2px 9px;border-radius:999px;background:rgba(34,16,6,.85)}
@@ -1983,18 +1990,29 @@ function boardMount(){const slot=document.getElementById('boardSlot');
 
 /* ======== reações com emojis durante o jogo ======== */
 const REACTS=['😍','😂','😮','😭','🔥','👏','🤔','😈','🙄','❤️','🌻','🌴'];
-const RX={open:false,last:0,seen:{}};
+const RX={open:false,last:0,seen:{},bot:{seed:null,n:0,picks:-1,won:false}};
+/* stickers do WhatsApp: em cada partida, 5 diferentes para cada jogador (nunca os mesmos entre os dois) */
+const STK=Array.from({length:46},(_,k)=>'stickers/s'+String(k+1).padStart(2,'0')+'.webp');
+function stkFor(p){if(!G||!G.seed)return [];const r=rng(hash('stk'+G.seed)),a=STK.map((_,i)=>i);for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a.slice(p*5,p*5+5)}
+const rxHtml=k=>String(k).startsWith('s:')?`<img class="rxs" src="${STK[+k.slice(2)]}" alt="sticker">`:`<span class="rxe">${k}</span>`;
 function reactBar(){if(!(G&&G.seed&&MODE))return '';
-  return `<div class="rxwrap ${RX.open?'open':''}"><div class="rxpal">${REACTS.map(e=>`<button onclick="react('${e}')" aria-label="reagir ${e}">${e}</button>`).join('')}</div></div>`}
+  const mine=stkFor(WHO);
+  return `<div class="rxwrap ${RX.open?'open':''}"><div class="rxpal"><div class="rxemo">${REACTS.map(e=>`<button onclick="react('${e}')" aria-label="reagir ${e}">${e}</button>`).join('')}</div>${mine.length?`<div class="rxlab mono">os teus stickers desta partida</div><div class="rxstk">${mine.map(i=>`<button onclick="react('s:${i}')" aria-label="enviar sticker"><img src="${STK[i]}" alt="" loading="lazy"></button>`).join('')}</div>`:''}</div></div>`}
 function rxToggle(){RX.open=!RX.open;document.querySelector('.rxwrap')?.classList.toggle('open',RX.open)}
 document.addEventListener('pointerdown',e=>{if(RX.open&&!e.target.closest('.rxwrap,.rxtop')){RX.open=false;document.querySelector('.rxwrap')?.classList.remove('open')}});
 function rxFloat(e,who){const d=document.createElement('div');d.className='rxfloat';d.style.left=(who===WHO?18+Math.random()*25:55+Math.random()*25)+'%';
-  d.innerHTML=`<span class="rxe">${e}</span><span class="rxn c${who}">${isCpu(who)?'🤖 Computador':(who===0?'🌴 Miguel':'🌻 Clara')}</span>`;document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}
+  d.innerHTML=`${rxHtml(e)}<span class="rxn c${who}">${isCpu(who)?'🤖 Computador':(who===0?'🌴 Miguel':'🌻 Clara')}</span>`;document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}
 function react(e){const now=Date.now();if(now-RX.last<900)return;RX.last=now;RX.open=false;document.querySelector('.rxwrap')?.classList.remove('open');
   const k=P(WHO);RX.seen[k]=now;rxFloat(e,WHO);
   if(MODE==='cpu'){G.react={...(G.react||{}),[k]:{e,t:now}};
-    if(Math.random()<.7)setTimeout(()=>{const C=1-WHO,r=['🤖','😏','🔥','🙄','😂','👏'][Math.floor(Math.random()*6)];rxFloat(r,C)},900+Math.random()*900);return}
+    if(Math.random()<.7)setTimeout(()=>{const C=1-WHO;rxFloat(Math.random()<.55?botStk():['🤖','😏','🔥','🙄','😂','👏'][Math.floor(Math.random()*6)],C)},900+Math.random()*900);return}
   try{ref().update({react:{[k]:{e,t:now}}}).catch(()=>{})}catch(x){}}
+function botStk(){const a=stkFor(1-WHO);return 's:'+a[Math.floor(Math.random()*a.length)]}
+/* o computador manda stickers a meio do jogo (poucas vezes, para não chatear) */
+function botTick(){if(MODE!=='cpu'||!G||!G.seed)return;const B=RX.bot;if(B.seed!==G.seed){B.seed=G.seed;B.n=0;B.picks=picks().length;B.won=false;return}
+  const n=picks().length;if(n!==B.picks){const prev=B.picks;B.picks=n;
+    if(n>prev&&n>=2&&B.n<4&&Math.random()<.28){B.n++;setTimeout(()=>rxFloat(botStk(),1-WHO),1300+Math.random()*1200)}}
+  if(!B.won&&document.querySelector('.view .winner')){B.won=true;setTimeout(()=>rxFloat(botStk(),1-WHO),2200)}}
 function rxCheck(){if(!G||!G.seed||MODE!=='online')return;const k=P(1-WHO),r=G.react&&G.react[k];
   if(!r||!r.t){if(RX.seen[k]===undefined)RX.seen[k]=0;return}
   if(RX.seen[k]===undefined){RX.seen[k]=r.t;return}
@@ -2531,7 +2549,7 @@ function render(){
   const app=document.getElementById('app'),keep={};app.querySelectorAll('input[id]').forEach(i=>keep[i.id]=i.value);
   const fid=document.activeElement&&document.activeElement.id;
   const key=viewKey(),enter=key!==L.lastKey;L.lastKey=key;
-  app.innerHTML=header()+`<main class="view ${enter?'enter':''}">${body()}</main>`+dock()+draftDock()+reactBar();try{rxCheck()}catch(e){}
+  app.innerHTML=header()+`<main class="view ${enter?'enter':''}">${body()}</main>`+dock()+draftDock()+reactBar();try{rxCheck();botTick()}catch(e){}
   document.body.classList.toggle('has-dock',!!document.querySelector('.odock'));document.body.classList.toggle('has-ddock',!!document.querySelector('.ddock'));{const sd=app.querySelector('main .stagedock');if(sd)app.appendChild(sd)}document.body.classList.toggle('has-sdock',!!document.querySelector('.stagedock'));
   try{boardMount()}catch(e){}
   for(const k in keep){const el=document.getElementById(k);if(el)el.value=keep[k]}
