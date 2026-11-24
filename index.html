@@ -2021,7 +2021,11 @@ function reactBar(){if(!(G&&G.seed&&MODE))return '';
 function rxMute(){RX.mute=!RX.mute;try{localStorage.setItem('stk-mute',RX.mute?'1':'0')}catch(e){}document.querySelectorAll('.rxfloat').forEach(d=>{if(RX.mute)d.remove()});RX.open=true;const h=document.getElementById('hdr');if(h)h.outerHTML=header();const w=document.querySelector('.rxwrap');if(w)w.outerHTML=reactBar()}
 function rxToggle(){RX.open=!RX.open;document.querySelector('.rxwrap')?.classList.toggle('open',RX.open)}
 document.addEventListener('pointerdown',e=>{if(RX.open&&!e.target.closest('.rxwrap,.rxtop')){RX.open=false;document.querySelector('.rxwrap')?.classList.remove('open')}});
-function rxFloat(e,who,txt){if(RX.mute&&who!==WHO)return;const d=document.createElement('div');d.className='rxfloat';{const vw=innerWidth,w=txt?Math.min(vw<600?170:230,vw*.52):(vw<600?86:160),room=Math.max(0,vw/2-w-12),x=who===WHO?12+Math.random()*room:vw-w-12-Math.random()*room;d.style.left=Math.max(8,x)+'px';d.style.width=w+'px'}
+/* fila: no mínimo 3 s entre stickers, para não ficarem sobrepostos */
+function rxFloat(e,who,txt){if(RX.mute&&who!==WHO)return;const now=Date.now(),at=Math.max(now,(RX.nextAt||0));
+  if(at-now>9000)return; /* fila demasiado cheia: descarta */
+  RX.nextAt=at+3000;if(at>now){setTimeout(()=>rxShow(e,who,txt),at-now);return}rxShow(e,who,txt)}
+function rxShow(e,who,txt){if(RX.mute&&who!==WHO)return;const d=document.createElement('div');d.className='rxfloat';{const vw=innerWidth,w=txt?Math.min(vw<600?170:230,vw*.52):(vw<600?86:160),room=Math.max(0,vw/2-w-12),x=who===WHO?12+Math.random()*room:vw-w-12-Math.random()*room;d.style.left=Math.max(8,x)+'px';d.style.width=w+'px'}
   d.innerHTML=`${txt?`<span class="rxtxt">${esc(txt)}</span>`:''}${rxHtml(e)}<span class="rxn c${who}">${isCpu(who)?'🤖 Computador':(who===0?'🌴 Miguel':'🌻 Clara')}</span>`;if(txt)d.classList.add('long');document.body.appendChild(d);setTimeout(()=>d.remove(),txt?4800:3800)}
 function react(e){const now=Date.now();if(now-RX.last<900)return;RX.last=now;RX.open=false;document.querySelector('.rxwrap')?.classList.remove('open');
   const k=P(WHO);RX.seen[k]=now;rxFloat(e,WHO);
