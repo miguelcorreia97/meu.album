@@ -1338,6 +1338,19 @@ body{overflow:visible!important}
 @media(max-width:600px){.ddock{grid-template-columns:1fr!important}.psum{border-left:0!important;border-top:1px dashed rgba(255,214,150,.25);padding:5px 0 0!important;flex-direction:row!important;flex-wrap:wrap;gap:3px 6px!important;align-items:center}.psum .pslab{width:100%}.psrow{flex-wrap:nowrap!important;overflow:hidden}.psrow span{flex:none}body.has-ddock #app{padding-bottom:175px!important}}
 .rmx{font-weight:400;opacity:.8;font-size:.85em}
 .modeline{display:flex;flex-wrap:wrap;gap:6px;align-items:center;color:var(--muted);margin-bottom:14px}
+.board{margin:22px 0 6px;padding:14px;border-radius:18px;background:rgba(34,16,6,.55);border:1px solid rgba(255,214,150,.22)}
+.bhead{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:baseline;justify-content:space-between;margin-bottom:10px}
+.bhead b{font-size:1.05rem}.bmeta{font-size:.85rem;color:var(--muted)}.bmeta .c0{color:#6fd39a}.bmeta .c1{color:#ffd34d}.bmuted{opacity:.8}
+.bnew{display:inline-block;background:#e8b52a;color:#2b1d14;font-weight:700;border-radius:999px;padding:1px 9px;animation:bpulse 1.2s ease-in-out infinite}
+@keyframes bpulse{50%{transform:scale(1.08)}}
+.board canvas{display:block;width:100%;height:auto;aspect-ratio:900/560;background:#fff6e6;border-radius:12px;touch-action:none;cursor:crosshair;box-shadow:inset 0 0 0 1px rgba(43,29,20,.15),0 8px 22px rgba(0,0,0,.3)}
+.btools{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px}
+.btools .sw{width:28px;height:28px;border-radius:50%;background:var(--c);border:2px solid rgba(255,255,255,.35);cursor:pointer;padding:0}
+.btools .sw.on,.btools .sz.on,.btools .bt.on{outline:3px solid #ffd34d;outline-offset:2px}
+.btools .sz,.btools .bt{width:32px;height:32px;border-radius:9px;background:rgba(255,246,230,.12);border:1px solid rgba(255,214,150,.25);display:grid;place-items:center;cursor:pointer;padding:0;font-size:16px}
+.btools .sz i{display:block;border-radius:50%;background:#fff6e6}
+.bsep{width:1px;height:22px;background:rgba(255,214,150,.25)}.bstat{font-size:.78rem;color:var(--muted);flex-basis:100%}
+@media(min-width:601px){.bstat{flex-basis:auto;margin-left:auto}}
 </style>
 </head>
 <body>
@@ -1865,6 +1878,62 @@ function makeCloudDb(){
   return base;
 }
 
+/* ======== quadro de mensagens (desenho partilhado no ecrã principal) ======== */
+const BD={el:null,cv:null,cx:null,by:null,at:null,dirty:false,drawing:false,timer:null,poll:null,color:'#2b1d14',size:6,erase:false,stat:''};
+const BD_PAPER='#fff6e6',BD_W=900,BD_H=560;
+const bdUrl=()=>`${FS_DOCS}/quadro/atual?key=${FS_KEY}`;
+function boardBox(){return (db&&db.cloud)?'<div id="boardSlot"></div>':''}
+function bdRel(iso){const m=Math.round((Date.now()-Date.parse(iso))/60000);if(!(m>=0))return '';if(m<1)return 'agora mesmo';if(m<60)return `há ${m} min`;const h=Math.round(m/60);if(h<24)return `há ${h} h`;const d=Math.round(h/24);return d===1?'ontem':`há ${d} dias`}
+function bdMeta(){const el=BD.el&&BD.el.querySelector('#bmeta');if(!el)return;
+  if(BD.by==null||!BD.at){el.innerHTML='<span class="bmuted">ainda sem mensagem — deixa um desenho!</span>';return}
+  const seen=lsGet().boardSeen||'',fresh=WHO!=null&&BD.by!==WHO&&BD.at>seen;
+  el.innerHTML=`${fresh?'<span class="bnew">💌 Nova</span> ':''}mensagem ${BD.by===0?'do <b class="c0">🌴 Miguel</b>':'da <b class="c1">🌻 Clara</b>'} · ${bdRel(BD.at)}`;
+  if(fresh)setTimeout(()=>lsSet({boardSeen:BD.at}),4000)}
+function bdStat(t){BD.stat=t;const el=BD.el&&BD.el.querySelector('#bstat');if(el)el.textContent=t}
+function bdPaper(){BD.cx.globalCompositeOperation='source-over';BD.cx.fillStyle=BD_PAPER;BD.cx.fillRect(0,0,BD_W,BD_H)}
+function boardEl(){
+  if(BD.el)return BD.el;
+  const el=document.createElement('div');el.className='board';
+  const cols=[['#2b1d14','tinta'],['#2f7d55','verde do Miguel'],['#e8b52a','amarelo da Clara'],['#d9603b','vermelho'],['#1f5c8a','azul'],['#c2477a','rosa']];
+  el.innerHTML=`<div class="bhead"><b>✏️ Quadro de recados</b><span id="bmeta" class="bmeta"></span></div>
+   <canvas width="${BD_W}" height="${BD_H}" aria-label="Quadro de desenho"></canvas>
+   <div class="btools">${cols.map(([c,n],k)=>`<button class="sw ${k?'':'on'}" style="--c:${c}" data-c="${c}" title="${n}" aria-label="${n}"></button>`).join('')}
+   <span class="bsep"></span>${[[3,'fino'],[6,'médio'],[14,'grosso']].map(([z,n])=>`<button class="sz ${z===6?'on':''}" data-z="${z}" title="${n}" aria-label="traço ${n}"><i style="width:${z+2}px;height:${z+2}px"></i></button>`).join('')}
+   <button class="bt" data-er="1" title="borracha">🧽</button><span class="bsep"></span>
+   <button class="btn ghost sm" data-clear="1">🗑️ Apagar tudo</button><span id="bstat" class="bstat mono"></span></div>`;
+  const cv=el.querySelector('canvas'),cx=cv.getContext('2d');BD.el=el;BD.cv=cv;BD.cx=cx;bdPaper();
+  const pos=e=>{const r=cv.getBoundingClientRect();return [(e.clientX-r.left)*BD_W/r.width,(e.clientY-r.top)*BD_H/r.height]};
+  let last=null;
+  cv.addEventListener('pointerdown',e=>{if(WHO==null){bdStat('escolhe primeiro quem és 🙂');return}e.preventDefault();cv.setPointerCapture(e.pointerId);BD.drawing=true;BD.dirty=true;clearTimeout(BD.timer);last=pos(e);
+    cx.globalCompositeOperation='source-over';cx.strokeStyle=cx.fillStyle=BD.erase?BD_PAPER:BD.color;cx.lineWidth=BD.erase?BD.size*4:BD.size;cx.lineCap=cx.lineJoin='round';
+    cx.beginPath();cx.arc(last[0],last[1],cx.lineWidth/2,0,7);cx.fill();bdStat('a desenhar…')});
+  cv.addEventListener('pointermove',e=>{if(!BD.drawing)return;e.preventDefault();const evs=e.getCoalescedEvents?e.getCoalescedEvents():[e];
+    for(const ev of evs){const p=pos(ev);cx.beginPath();cx.moveTo(last[0],last[1]);cx.lineTo(p[0],p[1]);cx.stroke();last=p}});
+  const up=()=>{if(!BD.drawing)return;BD.drawing=false;clearTimeout(BD.timer);BD.timer=setTimeout(bdSave,1200)};
+  cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);cv.addEventListener('pointerleave',e=>{if(BD.drawing&&e.pointerType==='mouse')up()});
+  el.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+    if(b.dataset.c){BD.color=b.dataset.c;BD.erase=false;el.querySelectorAll('.sw,.bt').forEach(x=>x.classList.toggle('on',x===b))}
+    else if(b.dataset.z){BD.size=+b.dataset.z;el.querySelectorAll('.sz').forEach(x=>x.classList.toggle('on',x===b))}
+    else if(b.dataset.er){BD.erase=true;el.querySelectorAll('.sw,.bt').forEach(x=>x.classList.toggle('on',x===b))}
+    else if(b.dataset.clear){if(WHO==null)return;if(!b.dataset.sure){b.dataset.sure=1;b.textContent='Tens a certeza? Toca outra vez';setTimeout(()=>{delete b.dataset.sure;b.textContent='🗑️ Apagar tudo'},3000);return}
+      delete b.dataset.sure;b.textContent='🗑️ Apagar tudo';bdPaper();BD.dirty=true;bdSave(true)}});
+  return el}
+async function bdSave(cleared){if(WHO==null)return;bdStat('a guardar…');
+  const img=cleared?'':BD.cv.toDataURL('image/jpeg',.82),at=new Date().toISOString();
+  try{const r=await fetch(bdUrl(),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:{img:{stringValue:img},by:{integerValue:String(WHO)},at:{stringValue:at}}})});
+    if(!r.ok)throw 0;BD.dirty=false;BD.by=WHO;BD.at=at;lsSet({boardSeen:at});bdStat(cleared?'quadro limpo ✓':`guardado ✓ ${WHO===0?'a Clara':'o Miguel'} vai ver quando abrir`);bdMeta()}
+  catch(e){bdStat('não consegui guardar — tenta outra vez');BD.dirty=true}}
+async function bdLoad(){if(BD.dirty||BD.drawing)return;
+  try{const r=await fetch(bdUrl(),{cache:'no-store'});if(r.status===404){BD.by=null;BD.at=null;bdMeta();return}if(!r.ok)return;
+    const j=await r.json(),f=j.fields||{},at=f.at?.stringValue||'';if(at&&at===BD.at)return;
+    BD.by=f.by?+f.by.integerValue:null;BD.at=at;const img=f.img?.stringValue||'';
+    if(!img){bdPaper()}else{const im=new Image();im.onload=()=>{if(BD.dirty||BD.drawing)return;bdPaper();BD.cx.drawImage(im,0,0,BD_W,BD_H)};im.src=img}
+    bdMeta()}catch(e){}}
+function boardMount(){const slot=document.getElementById('boardSlot');
+  if(!slot){if(BD.poll){clearInterval(BD.poll);BD.poll=null}return}
+  slot.appendChild(boardEl());bdMeta();bdStat(BD.stat);
+  if(!BD.poll){bdLoad();BD.poll=setInterval(()=>{if(!document.hidden)bdLoad()},15000)}}
+
 /* ======== animações Two.js ======== */
 const FX={ok:false,reduced:!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)};
 const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
@@ -2216,7 +2285,7 @@ function modeScreen(){
   <div class="modes">
    <button class="modebtn" onclick="setMode('online')"><span class="ic">👥</span><b>Com mais uma pessoa</b><span>Cada um no seu telemóvel, numa sala com código.</span></button>
    <button class="modebtn" onclick="setMode('cpu')"><span class="ic">🤖</span><b>Contra o computador</b><span>Treina sozinho contra um adversário que também sabe montar álbuns.</span></button>
-  </div><div class="center mt"><button class="btn ghost" onclick="openRanking()">🏆 Top 10 álbuns</button></div>${rulesBox()}`;
+  </div>${boardBox()}<div class="center mt"><button class="btn ghost" onclick="openRanking()">🏆 Top 10 álbuns</button></div>${rulesBox()}`;
 }
 function whoScreen(){
   return `<div class="hero"><div class="kick">um jogo de música brasileira</div><h1 class="herot">Meu <em>Álbum</em></h1><div class="turntable"><div class="record"></div></div>${heroVs()}
@@ -2398,6 +2467,7 @@ function render(){
   const key=viewKey(),enter=key!==L.lastKey;L.lastKey=key;
   app.innerHTML=header()+`<main class="view ${enter?'enter':''}">${body()}</main>`+dock()+draftDock();
   document.body.classList.toggle('has-dock',!!document.querySelector('.odock'));document.body.classList.toggle('has-ddock',!!document.querySelector('.ddock'));{const sd=app.querySelector('main .stagedock');if(sd)app.appendChild(sd)}document.body.classList.toggle('has-sdock',!!document.querySelector('.stagedock'));
+  try{boardMount()}catch(e){}
   for(const k in keep){const el=document.getElementById(k);if(el)el.value=keep[k]}
   if(fid)document.getElementById(fid)?.focus();
   const pk=(G&&G.seed&&MODE)?(phase()==='duels'?'duels:'+(stageKind()[0]==='duel'&&stageKind()[1]<G.per?'duel':stageKind()[0]):phase()):'';
