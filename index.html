@@ -1514,6 +1514,42 @@ body,#app{overflow-x:clip}
 .rm-fish{animation:rmFish 4s ease-in-out infinite alternate}@keyframes rmFish{to{transform:translateX(8px) scaleX(-1)}}
 .rm-zz{animation:rmZz 3s ease-in-out infinite}@keyframes rmZz{0%{opacity:0;transform:translateY(4px)}50%{opacity:1}100%{opacity:0;transform:translateY(-6px)}}
 @media (prefers-reduced-motion:reduce){.rm-wave,.rm-glint,.rm-cloud,.rm-boat,.rm-tail,.rm-wag,.rm-bob,.rm-fish,.rm-zz{animation:none}}
+
+.rplay{display:flex;align-items:center;gap:12px;max-width:620px;margin:12px auto 0;padding:10px 12px;border-radius:16px;background:rgba(34,16,6,.6);border:1px solid rgba(255,214,150,.15)}
+.rplay.on{border-color:rgba(255,210,63,.55);background:linear-gradient(90deg,rgba(80,50,12,.6),rgba(34,16,6,.6))}
+.rplay img{width:48px;height:48px;border-radius:6px;object-fit:cover;flex:none;box-shadow:0 6px 14px rgba(0,0,0,.4)}
+.rplay.on img{animation:rmSpinCov 6s linear infinite;border-radius:50%}
+@keyframes rmSpinCov{to{transform:rotate(360deg)}}
+.rplay>div{flex:1;min-width:0}.rplay .mono{display:block;font-size:.62rem;color:#ffd23f}.rplay b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rplay em{font-style:normal;font-size:.76rem;color:var(--muted)}.rplay em b{display:inline;color:#ffd23f}
+.rplay .btn{flex:none;padding:9px 14px}
+.todbar{max-width:620px!important}.todinfo{margin:8px auto 0;max-width:620px;font-size:.8rem}
+.roomscene{position:relative}
+.rpop{position:absolute;transform:translate(-50%,0);font:700 .8rem/1 "Space Mono",monospace;color:#ffd23f;text-shadow:0 2px 6px rgba(0,0,0,.6);pointer-events:none;animation:rpop 1.8s ease-out forwards}
+@keyframes rpop{0%{opacity:0;transform:translate(-50%,6px)}15%{opacity:1}100%{opacity:0;transform:translate(-50%,-40px)}}
+.rplayfx{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.pfx-cover{position:absolute;left:50%;top:40%;width:34%;aspect-ratio:1;background-size:cover;border-radius:6px;box-shadow:0 20px 50px rgba(0,0,0,.6);transform:translate(-50%,-50%) scale(.4);opacity:0;animation:pfxCov 1.3s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes pfxCov{0%{opacity:0;transform:translate(-50%,-50%) scale(.5) rotate(-6deg)}30%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0)}70%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) translateX(-40%) scale(.9)}}
+.pfx-vinyl{position:absolute;left:50%;top:40%;width:32%;aspect-ratio:1;border-radius:50%;background:repeating-radial-gradient(#141210 0 2px,#1f1b19 2px 4px);box-shadow:0 14px 40px rgba(0,0,0,.6);display:grid;place-items:center;transform:translate(-50%,-50%) scale(.6);opacity:0;animation:pfxVin 1.9s .5s cubic-bezier(.5,0,.3,1) forwards}
+.pfx-vinyl span{width:36%;aspect-ratio:1;border-radius:50%;background-size:cover;border:2px solid #0b0908}
+@keyframes pfxVin{0%{opacity:0;left:50%;top:40%;transform:translate(-50%,-50%) translateX(20%) scale(.9) rotate(0)}25%{opacity:1;left:50%;top:40%;transform:translate(-50%,-50%) translateX(40%) scale(1) rotate(160deg)}100%{opacity:0;left:var(--x);top:var(--y);transform:translate(-50%,-50%) scale(.12) rotate(900deg)}}
+.pfx-ring{position:absolute;left:var(--x);top:var(--y);width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;border:2px solid #ffd23f;opacity:0;animation:pfxRing 1.6s 1.9s ease-out forwards}
+.pfx-ring.r2{animation-delay:2.1s;border-color:#ff8fcf}.pfx-ring.r3{animation-delay:2.3s;border-color:#7fd1ff}
+@keyframes pfxRing{0%{opacity:.9;transform:scale(.4)}100%{opacity:0;transform:scale(7)}}
+.rplayfx i{position:absolute;left:var(--x);top:var(--y);font-style:normal;font-size:1.3rem;color:#ffd23f;text-shadow:0 2px 8px rgba(0,0,0,.6);opacity:0;animation:pfxNote 1.5s ease-out forwards;animation-delay:2s!important}
+.rplayfx i:nth-of-type(2n){color:#ff8fcf}.rplayfx i:nth-of-type(3n){color:#7fd1ff}
+@keyframes pfxNote{0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}20%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1.2)}}
+.pfx-label{position:absolute;left:50%;bottom:8%;transform:translateX(-50%);padding:6px 14px;border-radius:99px;background:rgba(20,10,4,.85);border:1px solid rgba(255,210,63,.6);color:#ffd23f;font:700 .78rem "Space Mono",monospace;white-space:nowrap;opacity:0;animation:pfxLab 2.6s .7s ease forwards}
+@keyframes pfxLab{0%{opacity:0;transform:translate(-50%,8px)}15%,80%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
+.dcard .dbtn.five{grid-template-columns:repeat(5,1fr)}.dcard .dbtn.five button{font-size:.8rem}
+.mtxt .rrw.who{color:var(--muted)!important}
+@media (prefers-reduced-motion:reduce){.rplayfx,.rplay.on img{animation:none;display:none}}
+
+.rnote{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:620px;margin:12px auto 0;padding:12px 14px;border-radius:16px;background:linear-gradient(135deg,rgba(31,42,36,.85),rgba(34,16,6,.6));border:1px solid rgba(207,227,214,.2)}
+.rnote>div{min-width:0}.rnote b{display:block;margin-bottom:2px}.rnote span{font-size:.86rem;color:var(--cream);overflow-wrap:anywhere}
+.rnote.fresh{border-color:#ffd23f;box-shadow:0 0 0 3px rgba(255,210,63,.15)}.rnote.flash{animation:vtIn .6s both}.rnote .bnew{font-style:normal;color:#ffd23f}
+.rnote.edit{flex-direction:column;align-items:stretch}.rnote textarea{width:100%;box-sizing:border-box;min-height:84px;padding:10px 12px;border-radius:12px;border:1px solid rgba(207,227,214,.3);background:#1f2a24;color:#f3efe6;font:italic 1.05rem Fraunces,serif;resize:vertical}
+.rnote .nacts{display:flex;gap:8px;align-items:center;justify-content:flex-end;flex-wrap:wrap}.rnote .nacts .mono{margin-right:auto;font-size:.7rem;color:var(--muted)}.rnote small{color:#ffb3a0}
+.modebtn.room{background:linear-gradient(135deg,rgba(120,60,20,.75),rgba(40,20,8,.7))!important;border-color:rgba(255,210,63,.45)!important}
 </style>
 </head>
 <body>
@@ -2061,9 +2097,6 @@ function bdRel(iso){const m=Math.round((Date.now()-Date.parse(iso))/60000);if(!(
 function bdPid(){return BD.pid||(BD.by===0?'p0':BD.by===1?'p1':null)}
 function bdFrom(html){const pid=bdPid();if(pid==='p0')return html?'do <b class="c0">🌴 Miguel</b>':'do 🌴 Miguel';if(pid==='p1')return html?'da <b class="c1">🌻 Clara</b>':'da 🌻 Clara';const t=`${BD.em||''} ${BD.nm||'alguém'}`.trim();return html?`de <b class="cg">${esc(t)}</b>`:'de '+t}
 function bdFresh(){return !BD.empty&&bdPid()&&BD.at&&ME&&bdPid()!==myPid()&&BD.at>(lsGet().boardSeen||'')}
-function bdNotice(){return bdFresh()?`<button class="bnotice" onclick="bdGo()">💌 Tens uma mensagem nova ${esc(bdFrom(false))} no quadro — ver ↓</button>`:''}
-function bdGo(){const b=document.querySelector('.board');if(!b)return;b.scrollIntoView({behavior:'smooth',block:'center'});b.classList.remove('flash');void b.offsetWidth;b.classList.add('flash');
-  setTimeout(()=>{lsSet({boardSeen:BD.at});const n=document.getElementById('bnotice');if(n)n.innerHTML='';bdMeta()},2500)}
 function bdMeta(){const el=BD.el&&BD.el.querySelector('#bmeta');if(!el)return;
   if(BD.editing){el.innerHTML='<span class="bedit">✏️ a editar — só fica guardado quando tocares em Guardar</span>';return}
   if(BD.empty||!bdPid()||!BD.at){el.innerHTML='<span class="bmuted">quadro em branco — toca em Editar e deixa um desenho!</span>';return}
@@ -2131,7 +2164,7 @@ async function bdSave(){if(!ME)return;const blank=BD.cleared&&!BD.touched;bdStat
 async function bdLoad(){if(BD.editing)return;
   try{const r=await fetch(bdUrl(),{cache:'no-store'});if(r.status===404){BD.empty=true;bdMeta();return}if(!r.ok)return;
     const j=await r.json(),f=j.fields||{},at=f.at?.stringValue||'';if(at&&at===BD.at)return;
-    BD.by=f.by?+f.by.integerValue:null;BD.pid=f.pid?.stringValue||null;BD.nm=f.nm?.stringValue||'';BD.em=f.em?.stringValue||'';BD.at=at;BD.img=f.img?.stringValue||'';BD.empty=!BD.img;bdShow(BD.img);bdMeta()}catch(e){}}
+    BD.by=f.by?+f.by.integerValue:null;BD.pid=f.pid?.stringValue||null;BD.nm=f.nm?.stringValue||'';BD.em=f.em?.stringValue||'';BD.at=at;BD.img=f.img?.stringValue||'';BD.empty=!BD.img;if(BD.cx)bdShow(BD.img);bdMeta();if(L.screen==='quarto'&&!L.rNoteEd)roomRefresh();const nb=document.getElementById('bnotice');if(nb)nb.innerHTML=bdNotice()}catch(e){}}
 function boardMount(){const slot=document.getElementById('boardSlot');
   if(!slot){if(BD.poll){clearInterval(BD.poll);BD.poll=null}return}
   slot.appendChild(boardEl());bdMeta();bdStat(BD.stat);
@@ -2438,7 +2471,7 @@ const DISCOS_LIB=[["jorge-ben-jor--samba-esquema-novo","Jorge Ben Jor","Samba Es
 const DISCOS=DISCOS_LIB.map(([f,a,t])=>({k:f,f:'capas/biblioteca/'+f+'.jpg',a,t}));
 (()=>{[['Tim Maia','Tim Maia'],['Emmanuel Cortes','Emmanuel Cortes']].forEach(([ar])=>{const i=SONGS.findIndex(x=>artistKey(x[1])===ar);if(i>=0)DISCOS.push({k:'cola-'+i,f:SONGS[i][2],a:ar,t:'Coletânea'})})})();
 const DISCO=k=>DISCOS.find(d=>d.k===k);
-const DISCO_PRECO=120,SURPRESA_PRECO=80,BOAS_VINDAS=300;
+const DISCO_PRECO=360,SURPRESA_PRECO=240;
 /* disco certo para cada missão de artista */
 const DISC_ARTISTA={djavan:'djavan--luz',jorgeben:'jorge-ben-jor--a-tabua-de-esmeralda',seujorge:'seu-jorge--cru',chico:'chico-buarque--construcao',cazuza:'cazuza--so-se-for-a-dois',revela:'grupo-revelacao--ao-vivo-no-olimpo',vercillo:'jorge-vercillo--todos-nos-somos-um',gal:'gal-costa--gal-tropical',natiruts:'natiruts--nativus',arlindo:'arlindo-cruz--sambista-perfeito',toquinho:'toquinho--aquarela'};
 const MREW={djavan:300,jorgeben:350,seujorge:300,chico:250,cazuza:200,revela:180,vercillo:150,cortes:120,toquinho:120,gal:120,natiruts:120,arlindo:120,timmaia:100,ecletico:300,
@@ -2448,52 +2481,98 @@ const MREW={djavan:300,jorgeben:350,seujorge:300,chico:250,cazuza:200,revela:180
 const hashS=s=>{let h=2166136261;for(const c of s)h=Math.imul(h^c.charCodeAt(0),16777619);return h>>>0};
 /* as missões de estilo e a primeira partida dão um disco-surpresa (sempre o mesmo para cada missão) */
 const mReward=m=>({r:MREW[m.id]||200,disc:DISC_MISS[m.id]||null});
-function rewardTxt(m){const r=mReward(m),d=r.disc&&DISCO(r.disc);return `🪙 ${r.r}${d?` · 💿 ${d.t}`:''}`}
-/* disco de boas-vindas: um por pessoa */
-function discStart(w){const pool=DISCOS.filter(x=>!DISC_EXCL.has(x.k));return pool[hashS('start-'+w)%pool.length].k}
+function rewardTxt(m){const r=mReward(m),d=r.disc&&DISCO(r.disc);return `♩ ${r.r} BPM${d?` · 💿 ${d.t}`:''}`}
 
 /* ---------- catálogo ---------- */
-const RSLOT=[['cor','Paredes','🎨'],['chao','Chão','🪵'],['prat','Prateleiras','📚'],['poster','Parede','🖼️'],['teto','Luzes no teto','✨'],['luz','Candeeiros','💡'],['mesa','Em cima do móvel','🕯️'],['movel','Móveis','🗄️'],['leitor','Leitores','📀'],['tapete','Tapetes','🟤'],['planta','Plantas','🪴'],['planta2','Plantinhas','🌵'],['assento','Onde sentar','🛋️'],['extra','Extras','♟️'],['cama','Camas','🛏️'],['cortina','Cortinas','🪟'],['pet','Animais','🐾']];
-const RFIX={cor:1,chao:1,movel:1};
+const RSLOT=[['cor','Paredes','🎨'],['chao','Chão','🪵'],['cama','Camas','🛏️'],['cortina','Cortinas','🪟'],['prat','Prateleiras','📚'],['quadros','Pósteres de álbuns','🖼️'],['poster','Parede da cama','🪧'],['secretaria','Secretária','🖥️'],['cabeceira','Mesa de cabeceira','🏮'],['movel','Móveis','🗄️'],['leitor','Leitores','📀'],['mesa','Em cima do móvel','🕯️'],['planta2','Plantinhas','🌵'],['teto','Luzes no teto','✨'],['luz','Candeeiros','💡'],['suspensa','Plantas suspensas','🌿'],['tapete','Tapetes','🟤'],['planta','Plantas','🪴'],['assento','Onde sentar','🛋️'],['extra','Extras','♟️'],['pet','Animais','🐾']];
+const RFIX={cor:1,chao:1,movel:1,cama:1};
 const RITEMS=[
- ['w-creme','cor','Creme',0,{c:'#e6d6bb'}],['w-terracota','cor','Terracota',80,{c:'#c56f4e'}],['w-oliva','cor','Verde-oliva',80,{c:'#8d905c'}],['w-mostarda','cor','Mostarda',80,{c:'#d6a03c'}],['w-rosa','cor','Rosa antigo',80,{c:'#d9a89c'}],['w-noite','cor','Azul-noite',100,{c:'#2c3654'}],['w-floresta','cor','Verde floresta',100,{c:'#345c4a'}],['w-vinho','cor','Vinho',100,{c:'#6a2a33'}],
- ['f-madeira','chao','Madeira',0,{c:'#9a6a42',l:'#7f5533'}],['f-escura','chao','Madeira escura',90,{c:'#5b3a25',l:'#462b1a'}],['f-clara','chao','Madeira clara',90,{c:'#c9a273',l:'#ad8659'}],['f-xadrez','chao','Mosaico xadrez',160,{c:'#efe3cc',l:'#1d1a18',x:1}],['f-taco','chao','Taco em espinha',140,{c:'#a8703f',l:'#86552d',h:1}],
- ['p-simples','prat','Prateleira simples',0,{cap:3,d:'3 discos à mostra'}],['p-dupla','prat','Prateleira dupla',260,{cap:6,d:'6 discos em duas filas'}],['p-cubos','prat','Cubos flutuantes',220,{cap:4,d:'4 nichos brancos'}],['p-grelha','prat','Parede de capas',380,{cap:8,d:'8 capas emolduradas'}],
- ['po-samba','poster','Póster Samba',90],['po-bossa','poster','Póster Bossa Nova',90],['po-tropical','poster','Póster Tropical',110],['po-retro','poster','Póster Anos 70',120],['po-gig','poster','Cartaz do concerto',150],['po-polaroids','poster','Fio de polaroids',130],['po-vinis','poster','Vinis na parede',220,{cap:3,d:'3 discos teus pendurados'}],
- ['t-heras','teto','Heras com luzes',220],['t-lampadas','teto','Fio de lâmpadas',150],['t-bandeirinhas','teto','Bandeirinhas',100],
- ['l-candeeiro','luz','Candeeiro de pé',160],['l-sunset','luz','Luz pôr-do-sol',180],['l-neon','luz','Néon MPB',240],
- ['mz-lava','mesa','Lava lamp',140],['mz-velas','mesa','Velas',60],['mz-sal','mesa','Candeeiro de sal',120],['mz-livros','mesa','Livros e busto',90],['mz-relogio','mesa','Relógio digital',70],
- ['m-caixote','movel','Caixote de feira',0,{top:352}],['m-retro','movel','Móvel retro de discos',280,{top:300}],['m-cubos','movel','Estante de cubos',240,{top:296}],['m-preto','movel','Móvel com aparelhagem',350,{top:328}],
- ['g-basico','leitor','Gira-discos preto',0],['g-madeira','leitor','Gira-discos de madeira',320],['g-mala','leitor','Gira-discos de mala',180],['g-cd','leitor','Leitor de CDs',200],['g-boombox','leitor','Rádio boombox',150],
- ['r-disco','tapete','Tapete vinil',200],['r-bola8','tapete','Tapete bola 8',180],['r-bege','tapete','Tapete fofo',100],['r-persa','tapete','Tapete persa',160],['r-setlist','tapete','Tapete alinhamento',220],
- ['pl-espada','planta','Espada-de-são-jorge',90],['pl-palmeira','planta','Palmeira',130],['pl-monstera','planta','Monstera',150],['pl-figueira','planta','Figueira-lira',170],
- ['pp-jiboia','planta2','Jiboia pendurada',80],['pp-cacto','planta2','Cato',50],['pp-suculenta','planta2','Suculentas',50],
- ['a-puff','assento','Puff',160],['a-cadeira','assento','Cadeira branca',140],['a-poltrona','assento','Poltrona mostarda',260],
- ['x-xadrez','extra','Xadrez porta-chaves',200],['x-relogio','extra','Relógio de sol',90],['x-auscult','extra','Auscultadores',80],['x-cortica','extra','Quadro de cortiça',110],['x-violao','extra','Violão na parede',260],
- ['cm-simples','cama','Cama de solteiro',0],['cm-futon','cama','Futon no chão',180],['cm-casal','cama','Cama de casal',300],['cm-dossel','cama','Cama com dossel',450],
- ['c-linho','cortina','Cortinas de linho',0],['c-mostarda','cortina','Cortinas mostarda',90],['c-veludo','cortina','Cortinas de veludo',140],['c-bambu','cortina','Estore de bambu',110],
- ['pet-peixe','pet','Peixinho dourado',120,{d:'Nada no aquário à janela'}],['pet-tartaruga','pet','Tartaruga',180,{d:'Passeia no tapete, devagarinho'}],['pet-papagaio','pet','Papagaio',280,{d:'Abana a cabeça ao som da música'}],['pet-gato','pet','Gato laranja',320,{d:'Dorme em cima da cama'}],['pet-caramelo','pet','Vira-lata caramelo',350,{d:'Abana o rabo no tapete'}]
+ ['w-creme','cor','Creme',0,{c:'#e6d6bb'}],['w-pessego','cor','Pêssego',260,{c:'#e8b49a'}],['w-terracota','cor','Terracota',240,{c:'#c56f4e'}],['w-oliva','cor','Verde-oliva',240,{c:'#8d905c'}],['w-mostarda','cor','Mostarda',240,{c:'#d6a03c'}],['w-rosa','cor','Rosa antigo',240,{c:'#d9a89c'}],['w-cimento','cor','Cimento',280,{c:'#9a958d'}],['w-noite','cor','Azul-noite',300,{c:'#2c3654'}],['w-floresta','cor','Verde floresta',300,{c:'#345c4a'}],['w-vinho','cor','Vinho',300,{c:'#6a2a33'}],
+ ['f-madeira','chao','Madeira',0,{c:'#9a6a42',l:'#7f5533'}],['f-escura','chao','Madeira escura',270,{c:'#5b3a25',l:'#462b1a'}],['f-clara','chao','Madeira clara',270,{c:'#c9a273',l:'#ad8659'}],['f-xadrez','chao','Mosaico xadrez',480,{c:'#efe3cc',l:'#1d1a18',x:1}],['f-taco','chao','Taco em espinha',420,{c:'#a8703f',l:'#86552d',h:1}],
+ ['cm-casal','cama','Cama de casal',0,{d:'Lençóis brancos e manta azul'}],['cm-laranja','cama','Cama de malha laranja',600,{d:'Manta de malha grossa e almofadas'}],['cm-futon','cama','Futon de casal',540],['cm-dossel','cama','Cama com dossel',1350],
+ ['c-linho','cortina','Cortinas de linho',0],['c-mostarda','cortina','Cortinas mostarda',270],['c-veludo','cortina','Cortinas de veludo',420],['c-bambu','cortina','Estore de bambu',330],
+ ['p-simples','prat','Prateleira simples',0,{cap:3,d:'3 discos à mostra'}],['p-dupla','prat','Prateleira dupla',780,{cap:6,d:'6 discos em duas filas'}],['p-cubos','prat','Cubos flutuantes',660,{cap:4,d:'4 nichos brancos'}],['p-grelha','prat','Parede de capas',1140,{cap:8,d:'8 capas emolduradas'}],
+ ['qd-capa','quadros','Póster de álbum',600,{cap:1,d:'Um álbum vosso em grande'}],['qd-trio','quadros','Trio de pósteres',1200,{cap:3,d:'Três álbuns emoldurados'}],['qd-galeria','quadros','Parede galeria',1500,{cap:3,d:'3 álbuns, relógio e pósteres'}],['qd-graficos','quadros','Pósteres gráficos',700,{d:'Onda, sol e tipografia'}],
+ ['po-samba','poster','Póster Samba',270],['po-bossa','poster','Póster Bossa Nova',270],['po-tropical','poster','Póster Tropical',330],['po-retro','poster','Póster Anos 70',360],['po-gig','poster','Cartaz do concerto',450],['po-polaroids','poster','Fio de polaroids',390],['po-vinis','poster','Vinis na parede',660,{cap:3,d:'3 discos vossos pendurados'}],
+ ['sc-madeira','secretaria','Secretária de madeira',1350,{d:'Ecrã, colunas e candeeiro de braço'}],['sc-branca','secretaria','Secretária branca',1200,{d:'Teclado colorido e candeeiro cogumelo'}],['sc-estante','secretaria','Estante preta em escada',900,{d:'Câmaras, feto e livros'}],
+ ['cb-papel','cabeceira','Mesinha com candeeiro de papel',480],['cb-cogumelo','cabeceira','Mesinha com candeeiro cogumelo',540],['cb-velas','cabeceira','Mesinha com velas e livros',360],
+ ['m-caixote','movel','Caixote de feira',0,{top:352}],['m-retro','movel','Móvel retro de discos',840,{top:300}],['m-cubos','movel','Estante de cubos',720,{top:296}],['m-preto','movel','Móvel com aparelhagem',1050,{top:328}],
+ ['g-basico','leitor','Gira-discos preto',0],['g-madeira','leitor','Gira-discos de madeira',960],['g-mala','leitor','Gira-discos de mala',540],['g-cd','leitor','Leitor de CDs',600],['g-boombox','leitor','Rádio boombox',450],
+ ['mz-lava','mesa','Lava lamp',420],['mz-velas','mesa','Velas',180],['mz-sal','mesa','Candeeiro de sal',360],['mz-livros','mesa','Livros e busto',270],['mz-relogio','mesa','Relógio digital',210,{d:'Mostra a hora de Portugal'}],['mz-camara','mesa','Máquina instantânea',330],['mz-peluche','mesa','Urso de peluche',240],
+ ['pp-jiboia','planta2','Jiboia pendurada',240],['pp-cacto','planta2','Cato',150],['pp-suculenta','planta2','Suculentas',150],
+ ['t-heras','teto','Heras com luzes',660],['t-lampadas','teto','Fio de lâmpadas',450],['t-bandeirinhas','teto','Bandeirinhas',300],
+ ['l-candeeiro','luz','Candeeiro de pé',480],['l-sunset','luz','Luz pôr-do-sol',540],['l-neon','luz','Néon MPB',720],['l-onair','luz','Letreiro ON AIR',900],['l-led','luz','Luz LED verde',420,{d:'Brilho verde no canto'}],
+ ['su-jiboia','suspensa','Jiboia do teto',360],['su-macrame','suspensa','Vaso de macramé',420],
+ ['r-disco','tapete','Tapete vinil',600],['r-bola8','tapete','Tapete bola 8',540],['r-bege','tapete','Tapete fofo',300],['r-persa','tapete','Tapete persa',480],['r-setlist','tapete','Tapete alinhamento',660],['r-nuvem','tapete','Tapete nuvem',720],['r-xadrez','tapete','Tapete xadrez',780],
+ ['pl-espada','planta','Espada-de-são-jorge',270],['pl-palmeira','planta','Palmeira',390],['pl-monstera','planta','Monstera',450],['pl-figueira','planta','Figueira-lira',510],['pl-feto','planta','Feto em vaso branco',360],
+ ['a-puff','assento','Puff',480],['a-cadeira','assento','Cadeira branca',420],['a-papasan','assento','Cadeira papasan',720],['a-poltrona','assento','Poltrona mostarda',780],['a-sofa','assento','Sofá com almofadas',1500,{d:'Almofadas xadrez e bola 8'}],
+ ['x-xadrez','extra','Xadrez porta-chaves',600],['x-relogio','extra','Relógio de sol',270],['x-relvermelho','extra','Relógio vermelho',300,{d:'Com a hora de Portugal'}],['x-auscult','extra','Auscultadores',240],['x-cortica','extra','Quadro de cortiça',330],['x-pegboard','extra','Quadro perfurado',480],['x-skate','extra','Skate na parede',420],['x-espelho','extra','Espelho ondulado',690],['x-violao','extra','Violão na parede',780],
+ ['pet-peixe','pet','Peixinho dourado',360,{d:'Nada no aquário à janela'}],['pet-tartaruga','pet','Tartaruga',540,{d:'Passeia no tapete, devagarinho'}],['pet-papagaio','pet','Papagaio',840,{d:'Abana a cabeça ao som da música'}],['pet-gato','pet','Gato laranja',960,{d:'Dorme em cima da cama'}],['pet-caramelo','pet','Vira-lata caramelo',1050,{d:'Abana o rabo no tapete'}]
 ].map(([id,s,n,p,o])=>({id,s,n,p,...(o||{})}));
 const RIT=Object.fromEntries(RITEMS.map(x=>[x.id,x]));
-const RDEF={cor:'w-creme',chao:'f-madeira',prat:'p-simples',movel:'m-caixote',leitor:'g-basico',cama:'cm-simples',cortina:'c-linho'};
-const LUZES=new Set(['t-heras','t-lampadas','l-candeeiro','l-sunset','l-neon','mz-lava','mz-velas','mz-sal','mz-relogio']);
+const RDEF={cor:'w-creme',chao:'f-madeira',prat:'p-simples',movel:'m-caixote',leitor:'g-basico',cama:'cm-casal',cortina:'c-linho'};
+const LUZES=new Set(['t-heras','t-lampadas','l-candeeiro','l-sunset','l-neon','l-onair','l-led','mz-lava','mz-velas','mz-sal','mz-relogio','cb-papel','cb-cogumelo','cb-velas','sc-madeira','sc-branca','sc-estante']);
 
-/* ---------- estado ---------- */
-function roomQ(w){const p=profGet(w);const q=p.q||{};return {eq:{...RDEF,...(q.eq||{})},own:q.own||{},spent:+q.spent||0,buy:q.buy||[],sh:q.sh||null,wl:q.wl||null,play:q.play||null,night:q.night==null?null:q.night,tod:q.tod||null}}
-function roomEarned(w){const p=profGet(w),q=roomQ(w);let n=BOAS_VINDAS;
-  for(const m of MISSOES){const r=mReward(m),v=Math.min(stVal(p,m.s),m.t);n+=Math.round(r.r*Math.floor(4*v/m.t)/4);if(r.disc&&p.u[m.id]&&q.buy.includes(r.disc))n+=DISCO_PRECO}return n}
-const roomIsNight=w=>{const q=roomQ(w);return q.night!=null?q.night:Object.values(q.eq).some(x=>LUZES.has(x))?1:0};
-const roomCoins=w=>roomEarned(w)-roomQ(w).spent;
-function discOwned(w){const p=profGet(w),q=roomQ(w),s=new Set([discStart(w)]);for(const m of MISSOES){const d=DISC_MISS[m.id];if(d&&p.u[m.id])s.add(d)}q.buy.forEach(k=>s.add(k));return [...s].filter(DISCO)}
-const ownsItem=(w,id)=>RIT[id]&&(RIT[id].p===0||!!roomQ(w).own[id]);
-function roomSave(q){const w=myPid();if(!w)return;const p=profGet(w);p.q=q;pend(w).q=JSON.parse(JSON.stringify(q));profSaveLocal(w);clearTimeout(profAfter.t);profAfter.t=setTimeout(()=>profFlush(w),1500)}
-/* onde está cada disco: prateleira, parede, gira-discos ou guardado no móvel */
-function discPlaces(w){const q=roomQ(w),own=discOwned(w),capS=RIT[q.eq.prat]?.cap||0,capW=q.eq.poster==='po-vinis'?3:0;
-  const sh=(q.sh||own).filter(k=>own.includes(k)).slice(0,capS),wl=(q.wl||own.filter(k=>!sh.includes(k))).filter(k=>own.includes(k)&&!sh.includes(k)).slice(0,capW);
-  const play=own.includes(q.play)?q.play:(own[0]||null);return {own,sh,wl,play,capS,capW,box:own.filter(k=>!sh.includes(k)&&!wl.includes(k))}}
+/* ---------- quarto partilhado do Miguel e da Clara (um só documento online) ---------- */
+const CASAL=['p0','p1'],CASA_ID='u-quarto-casa',BPM_DIA=240;
+const SQ={d:null,base:null,ut:null,busy:false,again:0};
+const sqBlank=()=>({eq:{},own:{},spent:0,buy:[],sh:null,wl:null,px:null,play:null,on:0,mus:0});
+(()=>{try{const x=JSON.parse(localStorage.getItem('quarto-casa')||'null');if(x&&x.d){SQ.d=x.d;SQ.base=JSON.parse(JSON.stringify(x.base||x.d));SQ.ut=x.ut||null}}catch(e){}if(!SQ.d){SQ.d=sqBlank();SQ.base=sqBlank()}})();
+function sqSaveLocal(){try{localStorage.setItem('quarto-casa',JSON.stringify({d:SQ.d,base:SQ.base,ut:SQ.ut}))}catch(e){}}
+const CASA_URL=()=>PROF_URL(CASA_ID);
+async function sqFetch(){if(!(db&&db.cloud))return null;try{const r=await fetch(CASA_URL(),{cache:'no-store'});if(r.status===404)return {d:sqBlank(),ut:null};if(!r.ok)return null;const j=await r.json();return {d:JSON.parse(j.fields.d.stringValue),ut:j.updateTime}}catch(e){return null}}
+/* junta as mudanças dos dois: compras somam-se, o que foi mudado ganha, o resto fica como está */
+function sqMerge(base,loc,rem){const S=x=>JSON.stringify(x),o=JSON.parse(S(rem||sqBlank()));base=base||sqBlank();loc=loc||sqBlank();
+  const ev=(x,k)=>x&&x.eq&&k in x.eq?x.eq[k]:(RDEF[k]||null);
+  o.own={...(o.own||{}),...(loc.own||{})};o.buy=[...new Set([...(o.buy||[]),...(loc.buy||[])])];
+  o.spent=(+o.spent||0)+((+loc.spent||0)-(+base.spent||0));o.mus=(+o.mus||0)+((+loc.mus||0)-(+base.mus||0));
+  o.eq={...(o.eq||{})};for(const k of new Set([...Object.keys(loc.eq||{}),...Object.keys(base.eq||{})]))if(S(ev(loc,k))!==S(ev(base,k)))o.eq[k]=ev(loc,k);
+  for(const k of ['sh','wl','px','play','on'])if(S(loc[k])!==S(base[k]))o[k]=loc[k];return o}
+async function sqSync(){if(!(db&&db.cloud))return;if(SQ.busy){SQ.again=1;return}SQ.busy=true;SQ.again=0;
+  const snap=JSON.parse(JSON.stringify(SQ.d)),base=SQ.base;
+  for(let k=0;k<8;k++){const cur=await sqFetch();if(!cur)break;const m=sqMerge(base,snap,cur.d);
+    try{const r=await fetch(CASA_URL()+(cur.ut?'&currentDocument.updateTime='+encodeURIComponent(cur.ut):'&currentDocument.exists=false'),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:{d:{stringValue:JSON.stringify(m)},at:{stringValue:new Date().toISOString()}}})});
+      if(r.ok){let j={};try{j=await r.json()}catch(e){}SQ.chg=JSON.stringify(m)!==JSON.stringify(snap);SQ.ut=j.updateTime||SQ.ut;SQ.base=JSON.parse(JSON.stringify(m));SQ.d=sqMerge(snap,SQ.d,m);sqSaveLocal();break}}catch(e){}
+    await new Promise(z=>setTimeout(z,250+Math.random()*500))}
+  SQ.busy=false;if(SQ.again)sqSync();else if(SQ.chg){SQ.chg=0;roomRefresh()}}
+async function sqPull(){if(SQ.busy||!(db&&db.cloud))return;const cur=await sqFetch();if(!cur||SQ.busy||(cur.ut&&cur.ut===SQ.ut))return;if(!cur.ut&&!SQ.ut)return;
+  const mine=JSON.stringify(SQ.d)!==JSON.stringify(SQ.base);SQ.d=mine?sqMerge(SQ.base,SQ.d,cur.d):JSON.parse(JSON.stringify(cur.d));SQ.base=JSON.parse(JSON.stringify(cur.d));SQ.ut=cur.ut;sqSaveLocal();if(mine)sqSync();roomRefresh()}
+function roomQ(){const d=SQ.d;d.eq=d.eq||{};d.own=d.own||{};d.buy=d.buy||[];d.spent=+d.spent||0;d.mus=+d.mus||0;return {...d,eq:{...RDEF,...d.eq}}}
+function roomSave(q,lazy){Object.assign(SQ.d,JSON.parse(JSON.stringify(q)));sqSaveLocal();clearTimeout(roomSave.t);roomSave.t=setTimeout(sqSync,lazy?20000:700)}
+const canEdit=()=>!!(ME&&(ME.id==='miguel'||ME.id==='clara'));
+function roomEarned(){const q=roomQ();let n=q.mus||0;for(const w of CASAL){const p=profGet(w);for(const m of MISSOES){const v=Math.min(stVal(p,m.s),m.t);n+=Math.round(mReward(m).r*Math.floor(4*v/m.t)/4)}}return n}
+const roomCoins=()=>roomEarned()-roomQ().spent;
+function discOwned(){const q=roomQ(),s=new Set;for(const m of MISSOES){const d=DISC_MISS[m.id];if(d&&CASAL.some(w=>profGet(w).u[m.id]))s.add(d)}q.buy.forEach(k=>s.add(k));return [...s].filter(DISCO)}
+const ownsItem=(w,id)=>RIT[id]&&(RIT[id].p===0||!!roomQ().own[id]);
+/* onde está cada disco: prateleira, parede, póster, gira-discos ou guardado no móvel */
+function discPlaces(){const q=roomQ(),own=discOwned(),capS=RIT[q.eq.prat]?.cap||0,capW=q.eq.poster==='po-vinis'?3:0,capP=RIT[q.eq.quadros]?.cap||0;
+  const sh=(q.sh||own).filter(k=>own.includes(k)).slice(0,capS);
+  const wl=(q.wl||own.filter(k=>!sh.includes(k))).filter(k=>own.includes(k)&&!sh.includes(k)).slice(0,capW);
+  const px=(q.px||own.filter(k=>!sh.includes(k)&&!wl.includes(k))).filter(k=>own.includes(k)&&!sh.includes(k)&&!wl.includes(k)).slice(0,capP);
+  const play=own.includes(q.play)?q.play:(own[0]||null);return {own,sh,wl,px,play,capS,capW,capP,box:own.filter(k=>!sh.includes(k)&&!wl.includes(k)&&!px.includes(k))}}
+/* hora de Portugal, nascer e pôr do sol em Lisboa */
+function lisNow(){const d=new Date();let p={};try{new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Lisbon',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(d).forEach(x=>p[x.type]=+x.value)}catch(e){p={year:d.getFullYear(),month:d.getMonth()+1,day:d.getDate(),hour:d.getHours(),minute:d.getMinutes()}}
+  const h=p.hour%24,mi=p.minute,min=h*60+mi,off=((min-(d.getUTCHours()*60+d.getUTCMinutes()))%1440+1440+720)%1440-720;
+  const N=Math.round((Date.UTC(p.year,p.month-1,p.day)-Date.UTC(p.year,0,0))/864e5),dec=23.44*Math.sin(2*Math.PI*(N-81)/365)*Math.PI/180,lat=38.72*Math.PI/180;
+  const H=Math.acos(Math.max(-1,Math.min(1,(Math.sin(-.833*Math.PI/180)-Math.sin(lat)*Math.sin(dec))/(Math.cos(lat)*Math.cos(dec)))))*180/Math.PI;
+  const B=2*Math.PI*(N-81)/364,eot=9.87*Math.sin(2*B)-7.53*Math.cos(B)-1.5*Math.sin(B),noon=720+9.14*4-eot+off;
+  const f=m=>{m=((Math.round(m)%1440)+1440)%1440;return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0')};
+  return {h,m:mi,min,rise:noon-H*4,set:noon+H*4,hh:f(min),f,ymd:`${p.year}-${p.month}-${p.day}`}}
+function todNow(n){n=n||lisNow();if(n.min<n.rise-40||n.min>n.set+40)return 'noite';if(n.min<=n.rise+70)return 'manha';if(n.min>=n.set-70)return 'tarde';return 'dia'}
+function sunPos(n){const hz=WY+100;if(todNow(n)!=='noite'||n.min>=n.rise-40&&n.min<=n.set+40){const t=(n.min-n.rise)/(n.set-n.rise),c=Math.max(0,Math.min(1,t));return [WX+18+c*(WW-36),hz-Math.sin(Math.PI*c)*86+(t<0?(-t)*60:t>1?(t-1)*60:0)]}
+  const len=1440-(n.set-n.rise),tt=((n.min-n.set)%1440+1440)%1440/len,c=Math.max(0,Math.min(1,tt));return [WX+18+c*(WW-36),hz-Math.sin(Math.PI*c)*80]}
+function roomTodOf(){return L.rTodV||todNow()}
+/* música a tocar no quarto dá BPM */
+function bpmToday(){const d=lisNow().ymd;try{const x=JSON.parse(localStorage.getItem('bpm-dia')||'{}');return x.d===d?+x.n||0:0}catch(e){return 0}}
+function bpmTick(){if(L.screen!=='quarto'||document.hidden||!canEdit()||!SND.on)return;const q=roomQ();if(!q.on||!discPlaces().play)return;const t=bpmToday();if(t>=BPM_DIA)return;
+  try{localStorage.setItem('bpm-dia',JSON.stringify({d:lisNow().ymd,n:t+1}))}catch(e){}q.mus=(+q.mus||0)+1;roomSave(q,1);
+  const v=document.getElementById('bpmv');if(v)v.textContent=roomCoins();const hd=document.getElementById('bpmday');if(hd)hd.textContent=`${t+1}/${BPM_DIA}`;roomPop('+1 BPM')}
+setInterval(bpmTick,15000);
+setInterval(()=>{if(L.screen!=='quarto')return;sqPull();const s=document.querySelector('.roomscene .roomsvg');if(s&&!L.rPrev&&!document.querySelector('.rplayfx')){const n=lisNow();s.outerHTML=roomSceneInner();const c=document.getElementById('rclock');if(c)c.textContent=n.hh}},30000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&L.screen==='quarto')sqPull()});
 
 /* ---------- desenho ---------- */
-const RY=340,RW=800,RH=500;
+const RY=340,RW=1080,RH=500;
 const shade=(hex,f)=>{const n=parseInt(hex.slice(1),16);let r=n>>16,g=n>>8&255,b=n&255;const t=f<0?0:255,a=Math.abs(f);r=Math.round(r+(t-r)*a);g=Math.round(g+(t-g)*a);b=Math.round(b+(t-b)*a);return '#'+((1<<24)|(r<<16)|(g<<8)|b).toString(16).slice(1)};
 let RUID=0;
 function cov(x,y,w,h,k,r){const d=DISCO(k);if(!d)return '';const id='rc'+(++RUID);
@@ -2620,7 +2699,6 @@ const missOfDisc=k=>MISSOES.find(m=>DISC_MISS[m.id]===k);
 
 /* ---- tempo do dia ---- */
 const TOD=[['manha','🌅','Amanhecer'],['dia','☀️','Dia'],['tarde','🌇','Pôr do sol'],['noite','🌙','Noite']];
-function roomTodOf(w){const q=roomQ(w);return q.tod||(q.night===1?'noite':q.night===0?'dia':'tarde')}
 const SKY={manha:{s:['#6d7fb8','#e9a9a6','#ffd59a'],m:['#e7a99a','#5a6f95'],l:'#ffc49a',sun:[402,128,13,'#fff0c2']},
   dia:{s:['#4f9be0','#8cc6f0','#d6eefc'],m:['#3e9fc6','#1b5f86'],l:'#fff1cf',sun:[515,66,11,'#fffbe8']},
   tarde:{s:['#2f2c6b','#c9507f','#ff9c4a'],m:['#e07448','#3d2850'],l:'#ff9a52',sun:[505,138,17,'#ffcf6a']},
@@ -2646,7 +2724,7 @@ chao(it){const VX=440,VY=110,fx=x=>VX+(x-VX)*(500-VY)/(340-VY);let g=`<clipPath 
 't-bandeirinhas'(){let b='';const C=['#d84a3a','#f0c23a','#3a9a52','#3d7fd0','#f08a3a','#c2477a','#8e44d6'];[[14,30],[30,60]].forEach(([y,s],r)=>{b+=`<path d="M0 ${y} Q400 ${y+s} 800 ${y}" stroke="#4a3a2a" stroke-width="1" fill="none"/>`;
   for(let i=0;i<32;i++){const t=(i+.5)/32,x=800*t,yy=(1-t)*(1-t)*y+2*(1-t)*t*(y+s)+t*t*y;b+=`<path d="M${x-7} ${yy} L${x+7} ${yy} L${x+7} ${yy+14} L${x} ${yy+9} L${x-7} ${yy+14}z" fill="${C[(i+r*3)%C.length]}"/>`}});return {b}},
 /* janela para o mar (fixa) */
-janela(it,c){const S=SKY[c.tod],[sx,sy,sr,sc]=S.sun,hz=WY+100,id='wclip';let st='';if(c.tod==='noite')for(let i=0;i<22;i++){const h=hashS('st'+i);st+=`<circle cx="${WX+6+h%170}" cy="${WY+4+(h>>8)%90}" r="${.5+(h>>4)%3*.35}" fill="#fff" opacity="${.4+(h>>6)%5*.12}" class="rm-tw" style="animation-delay:${i%5*.5}s"/>`}
+janela(it,c){const S=SKY[c.tod],[sx,sy,sr,sc]=c.sun?[c.sun[0],c.sun[1],S.sun[2],S.sun[3]]:S.sun,hz=WY+100,id='wclip';let st='';if(c.tod==='noite')for(let i=0;i<22;i++){const h=hashS('st'+i);st+=`<circle cx="${WX+6+h%170}" cy="${WY+4+(h>>8)%90}" r="${.5+(h>>4)%3*.35}" fill="#fff" opacity="${.4+(h>>6)%5*.12}" class="rm-tw" style="animation-delay:${i%5*.5}s"/>`}
   let wv='';for(let i=0;i<9;i++){const y=hz+5+i*6.5;wv+=`<path class="rm-wave" style="animation-delay:${i*.4}s" d="M${WX-10} ${y} q12 -2.4 24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0" stroke="rgba(255,255,255,${.05+i*.012})" stroke-width="1" fill="none"/>`}
   let rf='';if(c.tod!=='dia'||1)for(let i=0;i<8;i++){const w=(sr*1.6)*(1-i*.08),y=hz+4+i*7;rf+=`<rect class="rm-glint" style="animation-delay:${i*.25}s" x="${sx-w/2+(hashS('g'+i)%7-3)}" y="${y}" width="${w}" height="1.6" rx=".8" fill="${sc}" opacity="${.75-i*.07}"/>`}
   return {b:`<rect x="${WX-8}" y="${WY-8}" width="${WW+16}" height="${WH+16}" fill="rgba(0,0,0,.18)" rx="2"/>
@@ -2684,35 +2762,151 @@ function cortina(c1,c2,len){const fold=(x,w,flip)=>{let g='';for(let i=0;i<4;i++
   <path d="M${WX-28} ${WY-12} h42 q-8 ${len*.45} 6 ${len*.55} q-2 ${len*.3} -6 ${len*.45} h-42z" fill="${c1}"/>${fold(WX-26,40)}
   <path d="M${WX+WW+28} ${WY-12} h-42 q8 ${len*.45} -6 ${len*.55} q2 ${len*.3} 6 ${len*.45} h42z" fill="${c1}"/>${fold(WX+WW-12,40,1)}
   <rect x="${WX-28}" y="${WY-12}" width="${WW+56}" height="${len}" fill="url(#curt)" opacity=".5" style="mix-blend-mode:multiply"/>`}
-function cama(c,o){const y=o.y,low=o.low,bk=low?360:326,hd=o.head;let g=`<ellipse cx="700" cy="${y+26}" rx="130" ry="12" fill="url(#gsh)"/>`;
-  if(hd==='wood')g+=`<rect x="578" y="252" width="222" height="94" rx="3" fill="#7a4a2a"/><rect x="578" y="252" width="222" height="8" fill="#9a6238"/><rect x="590" y="266" width="210" height="70" fill="#6a3e22" opacity=".5"/>`;
-  if(hd==='tecido')g+=`<path d="M578 340 V262 q0 -16 16 -16 h206 v94z" fill="#3f5a6e"/>${[600,640,680,720,760].map(x=>`<path d="M${x} 252 V340" stroke="#344b5c" stroke-width="2"/>`).join('')}<path d="M578 262 q0 -16 16 -16 h206 v6 h-204 q-14 0 -14 14z" fill="#5a7a90"/>`;
-  const fl=low?6:24;
-  g+=`<polygon points="585,${bk+10} 612,${y} 612,${y+fl} 585,${bk+10+fl*.6}" fill="${low?'#d8cfc0':'#5e3a20'}"/><rect x="612" y="${y}" width="188" height="${fl}" fill="${low?'#e8e0d2':'#7a4a2a'}"/><rect x="612" y="${y}" width="188" height="2" fill="rgba(255,255,255,.2)"/>`;
-  g+=`<polygon points="588,${bk} 800,${bk} 800,${y} 612,${y}" fill="${o.sheet}"/><polygon points="588,${bk} 612,${y} 612,${y+8} 588,${bk+10}" fill="${shade(o.sheet,-.12)}"/><rect x="612" y="${y}" width="188" height="8" fill="${shade(o.sheet,-.06)}"/>`;
-  const pw=o.pil===3?62:90;for(let i=0;i<o.pil;i++){const x=600+i*(pw+6);g+=`<rect x="${x}" y="${bk-12}" width="${pw}" height="26" rx="11" fill="#fbf8f2"/><rect x="${x}" y="${bk+4}" width="${pw}" height="10" rx="5" fill="#e2dccf"/>`}
-  const by=bk+(y-bk)*.38,bx=588+24*.38;g+=`<polygon points="${bx},${by} 800,${by} 800,${y+14} 612,${y+14} 610,${y+30} 800,${y+30} 800,${y+14}" fill="${o.blk}"/>`;
-  g+=`<polygon points="${bx},${by} 800,${by} 800,${y} 612,${y}" fill="${o.blk}"/><polygon points="${bx},${by} 612,${y} 612,${y+22} ${bx-2},${by+18}" fill="${o.blk2}"/><path d="M612 ${y} h188 v22 h-188z" fill="${o.blk2}"/><path d="M${bx} ${by} h${800-bx}" stroke="${o.sheet}" stroke-width="7"/><path d="M${bx+40} ${by+20} q60 10 140 0 M${bx+60} ${by+48} q60 8 120 -4" stroke="${o.blk2}" stroke-width="2" fill="none" opacity=".6"/>`;
-  if(o.throw)g+=`<polygon points="700,${by+6} 800,${by+6} 800,${y+24} 722,${y+24} 716,${y}" fill="${o.throw}" opacity=".95"/>${[0,1,2,3].map(i=>`<path d="M${722+i*20} ${y+24} v5" stroke="${o.throw}" stroke-width="2"/>`).join('')}`;
-  return g}
 
 /* ---- desenho do quarto completo ---- */
+/* ---------- v3: quarto largo (1080) e objetos novos ---------- */
+GLC.grn='#3dff8a';
+const QW=1080;
+function clockHands(cx,cy,r,hh,col){const [H,M]=(hh||'10:10').split(':').map(Number),am=M/60*2*Math.PI,ah=((H%12)+M/60)/12*2*Math.PI;
+  return `<path d="M${cx} ${cy} L${(cx+Math.sin(ah)*r*.5).toFixed(1)} ${(cy-Math.cos(ah)*r*.5).toFixed(1)}" stroke="${col||'#1d1a18'}" stroke-width="${Math.max(1.4,r*.09)}" stroke-linecap="round"/><path d="M${cx} ${cy} L${(cx+Math.sin(am)*r*.78).toFixed(1)} ${(cy-Math.cos(am)*r*.78).toFixed(1)}" stroke="${col||'#1d1a18'}" stroke-width="${Math.max(1,r*.06)}" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="${Math.max(1.2,r*.07)}" fill="#c0302a"/>`}
+function aposter(x,y,w,k,fr){const d=k&&DISCO(k),h=Math.round(w*1.36),cs=w-10,fs=Math.max(4.5,w*.095);let g=`<rect x="${x+3}" y="${y+4}" width="${w}" height="${h}" fill="rgba(0,0,0,.28)"/><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${fr||'#1d1a18'}"/><rect x="${x+2.5}" y="${y+2.5}" width="${w-5}" height="${h-5}" fill="#f3ede2"/>`;
+  if(d){const id='ap'+(++RUID),t=d.t.length>18?d.t.slice(0,17)+'…':d.t;g+=`<clipPath id="${id}"><rect x="${x+5}" y="${y+5}" width="${cs}" height="${cs}"/></clipPath><image href="${esc(d.f)}" x="${x+5}" y="${y+5}" width="${cs}" height="${cs}" preserveAspectRatio="xMidYMid slice" clip-path="url(#${id})"/>
+   <text x="${x+5}" y="${y+cs+5+fs*1.25}" font-family="Fraunces,serif" font-weight="700" font-size="${fs}" fill="#1d1a18">${esc(t)}</text><text x="${x+5}" y="${y+cs+5+fs*2.35}" font-family="Space Mono,monospace" font-size="${fs*.62}" fill="#6e5a48">${esc(d.a.toUpperCase())}</text>
+   ${['#c0573e','#e8b52a','#2f7d55','#2f5c74'].map((c,i)=>`<rect x="${x+w-5-(4-i)*fs*.7}" y="${y+h-5-fs*.7}" width="${fs*.6}" height="${fs*.6}" fill="${c}"/>`).join('')}`}
+  else g+=`<rect x="${x+5}" y="${y+5}" width="${cs}" height="${cs}" fill="#d8cdbb"/><text x="${x+w/2}" y="${y+5+cs/2+4}" text-anchor="middle" font-size="${cs*.3}" opacity=".5">💿</text>`;
+  return g}
+function screenArt(x,y,w,h,c,id){const k=c.on&&c.pl.play,d=k&&DISCO(k);if(d)return `<clipPath id="${id}"><rect x="${x}" y="${y}" width="${w}" height="${h}"/></clipPath><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#0d0b0a"/><image href="${esc(d.f)}" x="${x+w/2-h/2}" y="${y}" width="${h}" height="${h}" preserveAspectRatio="xMidYMid slice" clip-path="url(#${id})"/><rect x="${x+3}" y="${y+h-5}" width="${w-6}" height="2" fill="rgba(255,255,255,.25)"/><rect x="${x+3}" y="${y+h-5}" width="${(w-6)*.4}" height="2" fill="#ffd23f"/>`;
+  return `<linearGradient id="${id}g" x2="1" y2="1"><stop offset="0" stop-color="#f3e2c4"/><stop offset="1" stop-color="#e9c9a0"/></linearGradient><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="url(#${id}g)"/><path d="M${x+6} ${y+h*.7} q${w*.2} ${-h*.5} ${w*.4} ${-h*.1} t${w*.4} ${-h*.2}" stroke="#d24a32" stroke-width="${h*.12}" fill="none" stroke-linecap="round"/><circle cx="${x+w*.75}" cy="${y+h*.35}" r="${h*.14}" fill="#1d1a18"/>`}
+function cama(c,o){const y=o.y,low=o.low,bk=low?362:328,BL=820,FL=842,R=1060,FR=1074,W=R-BL;let g=`<ellipse cx="${(FL+FR)/2}" cy="${y+28}" rx="${(FR-FL)/2+24}" ry="13" fill="url(#gsh)"/>`;
+  if(o.head==='wood')g+=`<rect x="${BL-8}" y="250" width="${W+16}" height="${bk-238}" rx="4" fill="#7a4a2a"/><rect x="${BL-8}" y="250" width="${W+16}" height="8" rx="3" fill="#9a6238"/><rect x="${BL+4}" y="264" width="${W-8}" height="${bk-266}" fill="#6a3e22" opacity=".5"/>`;
+  if(o.head==='tecido')g+=`<path d="M${BL-8} ${bk+10} V262 q0 -20 20 -20 h${W-24} q20 0 20 20 V${bk+10}z" fill="${o.hc}"/>${[...Array(7)].map((_,i)=>`<path d="M${BL+12+i*(W-24)/6} 246 V${bk+6}" stroke="rgba(0,0,0,.13)" stroke-width="2"/>`).join('')}<path d="M${BL-4} 262 q0 -16 16 -16 h${W-24} q16 0 16 16" stroke="rgba(255,255,255,.3)" stroke-width="3" fill="none"/>`;
+  const fl=low?7:24;
+  g+=`<polygon points="${BL},${bk+10} ${FL},${y} ${FL},${y+fl} ${BL},${bk+10+fl*.55}" fill="${low?'#cfc5b4':'#5e3a20'}"/><rect x="${FL}" y="${y}" width="${FR-FL}" height="${fl}" fill="${low?'#e2d9c9':'#7a4a2a'}"/><rect x="${FL}" y="${y+fl-3}" width="${FR-FL}" height="3" fill="rgba(0,0,0,.2)"/>`;
+  g+=`<polygon points="${BL},${bk} ${R},${bk} ${FR},${y} ${FL},${y}" fill="${o.sheet}"/><polygon points="${BL},${bk} ${FL},${y} ${FL},${y+8} ${BL},${bk+10}" fill="${shade(o.sheet,-.14)}"/><rect x="${FL}" y="${y}" width="${FR-FL}" height="8" fill="${shade(o.sheet,-.07)}"/>`;
+  const P=o.pc||['#fbf8f2','#fbf8f2'],np=P.length,pw=(W-16-(np-1)*5)/np;P.forEach((col,i)=>{const x=BL+8+i*(pw+5),sm=np>2&&(i===1||i===2);g+=`<rect x="${x}" y="${bk-(sm?6:16)}" width="${pw}" height="${sm?24:30}" rx="12" fill="${col}"/><rect x="${x+3}" y="${bk-(sm?6:16)+2}" width="${pw-6}" height="5" rx="3" fill="rgba(255,255,255,.25)"/><rect x="${x}" y="${bk+(sm?12:8)}" width="${pw}" height="6" rx="3" fill="rgba(0,0,0,.12)"/>`});
+  const t=.34,by=bk+(y-bk)*t,bxL=BL+(FL-BL)*t,bxR=R+(FR-R)*t;
+  g+=`<polygon points="${bxL},${by} ${bxR},${by} ${FR+2},${y} ${FL},${y}" fill="${o.blk}"/><polygon points="${bxL},${by} ${FL},${y} ${FL-1},${y+(low?14:26)} ${bxL-3},${by+(low?12:22)}" fill="${o.blk2}"/><rect x="${FL}" y="${y}" width="${FR-FL+2}" height="${low?14:26}" fill="${o.blk2}"/>`;
+  if(o.knit)g+=`<polygon points="${bxL},${by} ${bxR},${by} ${FR+2},${y} ${FL},${y}" fill="url(#knit)"/><rect x="${FL}" y="${y}" width="${FR-FL+2}" height="${low?14:26}" fill="url(#knit)"/>`;
+  g+=`<path d="M${bxL} ${by} H${bxR}" stroke="${o.sheet}" stroke-width="8"/><path d="M${bxL+40} ${by+22} q70 10 170 0 M${bxL+70} ${by+54} q70 8 140 -4" stroke="${o.blk2}" stroke-width="2.4" fill="none" opacity=".5"/><polygon points="${bxL},${by} ${bxR},${by} ${FR},${y} ${FL},${y}" fill="url(#bedlit)"/>`;
+  if(o.throw)g+=`<polygon points="${R-80},${by+8} ${R+4},${by+8} ${FR+2},${y+(low?14:26)} ${FR-74},${y+(low?14:26)} ${FR-82},${y}" fill="${o.throw}"/>`;
+  return g}
+Object.assign(RDR,{
+cor(it){const c=it.c,L=shade(c,-.2),T=shade(c,.25);return {b:`
+ <polygon points="0,0 ${QW},0 ${QW},22 130,22" fill="${T}"/><polygon points="0,0 ${QW},0 ${QW},22 130,22" fill="url(#ceil)"/>
+ <rect x="130" y="22" width="${QW-130}" height="318" fill="${c}"/><rect x="130" y="22" width="${QW-130}" height="318" fill="url(#wtex)" opacity=".55"/>
+ <polygon points="0,0 130,22 130,340 0,500" fill="${L}"/><polygon points="0,0 130,22 130,340 0,500" fill="url(#wtex)" opacity=".5"/><polygon points="0,0 130,22 130,340 0,500" fill="url(#lwall)"/>
+ <rect x="130" y="22" width="${QW-130}" height="318" fill="url(#bwall)"/><rect x="130" y="22" width="46" height="318" fill="url(#corner)"/>
+ <rect x="130" y="330" width="${QW-130}" height="10" fill="${shade(c,-.28)}"/><rect x="130" y="330" width="${QW-130}" height="1.5" fill="${shade(c,.2)}"/>
+ <polygon points="0,486 130,330 130,340 0,500" fill="${shade(c,-.38)}"/>`}},
+chao(it){const VX=540,VY=110,fx=x=>VX+(x-VX)*(500-VY)/(340-VY);let g=`<clipPath id="fclip"><polygon points="0,500 130,340 ${QW},340 ${QW},500"/></clipPath><g clip-path="url(#fclip)"><rect x="0" y="340" width="${QW}" height="160" fill="${it.c}"/>`;
+  const rows=[340,350,362,377,395,417,443,474,510],X=(x,y)=>VX+(x-VX)*(y-VY)/(340-VY);
+  if(it.x){for(let r=0;r<rows.length-1;r++)for(let i=-14;i<36;i++){if((i+r)%2)continue;const xb=130+i*34,xb2=xb+34,y0=rows[r],y1=rows[r+1];g+=`<polygon points="${X(xb,y0)},${y0} ${X(xb2,y0)},${y0} ${X(xb2,y1)},${y1} ${X(xb,y1)},${y1}" fill="${it.l}"/>`}}
+  else{for(let x=-500;x<1700;x+=it.h?20:30)g+=`<line x1="${x}" y1="340" x2="${fx(x)}" y2="500" stroke="${it.l}" stroke-width="${it.h?.8:1.1}" opacity=".75"/>`;
+    rows.forEach((y,r)=>{for(let x=-400+(r%2)*60;x<1500;x+=it.h?40:120){if(it.h)g+=`<line x1="${X(x,y)}" y1="${y}" x2="${X(x+20,rows[r+1]||500)}" y2="${rows[r+1]||500}" stroke="${it.l}" stroke-width=".8" opacity=".55"/>`;else g+=`<line x1="${X(x,y)}" y1="${y}" x2="${X(x+30,y)}" y2="${y}" stroke="${it.l}" stroke-width="1" opacity=".55"/>`}})}
+  return {b:g+`<rect x="0" y="340" width="${QW}" height="160" fill="url(#fsheen)"/><rect x="0" y="340" width="${QW}" height="26" fill="url(#seam)"/></g>`}},
+'t-bandeirinhas'(){let b='';const C=['#d84a3a','#f0c23a','#3a9a52','#3d7fd0','#f08a3a','#c2477a','#8e44d6'];[[14,30],[30,60]].forEach(([y,s],r)=>{b+=`<path d="M0 ${y} Q${QW/2} ${y+s} ${QW} ${y}" stroke="#4a3a2a" stroke-width="1" fill="none"/>`;
+  for(let i=0;i<42;i++){const t=(i+.5)/42,x=QW*t,yy=(1-t)*(1-t)*y+2*(1-t)*t*(y+s)+t*t*y;b+=`<path d="M${x-7} ${yy} L${x+7} ${yy} L${x+7} ${yy+14} L${x} ${yy+9} L${x-7} ${yy+14}z" fill="${C[(i+r*3)%C.length]}"/>`}});return {b}},
+/* camas */
+'cm-casal'(it,c){return {b:cama(c,{head:'wood',sheet:'#f4efe6',blk:'#3f7f86',blk2:'#2e6268',pc:['#fbf8f2','#fbf8f2'],y:448})}},
+'cm-laranja'(it,c){return {b:cama(c,{head:'tecido',hc:'#e2d6c4',sheet:'#f2ece2',blk:'#d2642c',blk2:'#a84a1c',knit:1,pc:['#b9402c','#7d8fa8','#f4efe6','#b9402c'],y:448})}},
+'cm-futon'(it,c){return {b:cama(c,{head:'none',sheet:'#efe6d6',blk:'#c0573e',blk2:'#963f2c',pc:['#fbf8f2','#e8c9a0'],y:470,low:1})}},
+'cm-dossel'(it,c){return {b:cama(c,{head:'wood',sheet:'#f6f1e8',blk:'#e9dcc6',blk2:'#cdbb9c',pc:['#fbf8f2','#3f6b55','#3f6b55','#fbf8f2'],y:448,throw:'#3f6b55'})+`<g><rect x="812" y="140" width="7" height="200" fill="#6e4325"/><rect x="1058" y="140" width="7" height="200" fill="#6e4325"/><rect x="836" y="140" width="8" height="336" fill="#7a4a2a"/><path d="M812 142 H1068 M836 142 H1068" stroke="#6e4325" stroke-width="6"/><path d="M844 148 q-16 130 6 320 l28 0 q-22 -180 -10 -320z" fill="#fff" opacity=".3"/><path d="M1064 148 q-34 110 -26 200 l26 0z" fill="#fff" opacity=".24"/></g>`}},
+/* animais em sítios novos */
+'pet-gato'(it,c){const b=c.eq&&c.eq.cama,[x,y]=b?(b==='cm-futon'?[960,422]:[968,400]):[470,452];return {b:`<g transform="translate(${x} ${y})"><ellipse cx="0" cy="14" rx="30" ry="6" fill="url(#gsh)"/><ellipse cx="0" cy="4" rx="27" ry="14" fill="#e08a3a"/><path d="M-22 2 q-8 10 6 14 q20 4 34 -4" fill="#c46e24"/><path d="M-18 -4 q6 4 0 10 M-8 -10 q5 6 0 12 M4 -11 q5 6 0 12" stroke="#b25e1c" stroke-width="2.4" fill="none"/><g class="rm-tail"><path d="M24 8 q16 4 10 -10 q-3 -8 -10 -6" stroke="#e08a3a" stroke-width="6" fill="none" stroke-linecap="round"/></g><circle cx="-22" cy="-4" r="11" fill="#e08a3a"/><path d="M-31 -10 l1 -11 l7 6z M-17 -13 l5 -9 l3 9z" fill="#e08a3a"/><path d="M-29 -11 l1 -6 l4 3z" fill="#f2b9a0"/><path d="M-27 -3 q2 2 4 0 M-19 -3 q2 2 4 0" stroke="#3a2010" stroke-width="1.3" fill="none"/><circle cx="-21" cy="1" r="1.2" fill="#d66"/><g class="rm-zz"><text x="-14" y="-18" font-size="9" fill="#fff" opacity=".8">z</text><text x="-8" y="-27" font-size="7" fill="#fff" opacity=".6">z</text></g></g>`}},
+/* secretárias (entre a janela e a cama) */
+'sc-madeira'(it,c){return {b:`<ellipse cx="662" cy="366" rx="100" ry="7" fill="url(#gsh)"/><rect x="582" y="298" width="6" height="66" fill="#2a1d14"/><rect x="736" y="298" width="6" height="66" fill="#2a1d14"/>
+  <polygon points="576,288 748,288 756,297 568,297" fill="#9a6238"/><rect x="568" y="297" width="188" height="8" fill="#6a3e22"/>
+  <rect x="598" y="276" width="128" height="5" fill="#7a4a2a"/><rect x="602" y="281" width="4" height="7" fill="#5a3a24"/><rect x="718" y="281" width="4" height="7" fill="#5a3a24"/>
+  <rect x="620" y="212" width="84" height="56" rx="2" fill="#141210"/>${screenArt(623,215,78,49,c,'scr1')}<rect x="658" y="268" width="8" height="8" fill="#2a2420"/>
+  ${[600,706].map(x=>`<rect x="${x}" y="236" width="18" height="40" rx="2" fill="#3a3430"/><rect x="${x}" y="236" width="18" height="3" fill="#4a4440"/><circle cx="${x+9}" cy="262" r="6" fill="#1d1a18"/><circle cx="${x+9}" cy="262" r="2.5" fill="#3a3430"/><circle cx="${x+9}" cy="246" r="3.5" fill="#1d1a18"/>`).join('')}
+  <rect x="632" y="283" width="52" height="5" rx="1" fill="#2a2420"/><ellipse cx="696" cy="286" rx="4" ry="2.4" fill="#2a2420"/>
+  <path d="M744 288 V282 L734 240 L714 230" stroke="#1d1a18" stroke-width="3" fill="none"/><path d="M702 222 l20 4 l-8 16z" fill="#1d1a18"/>
+  <path d="M638 304 q24 -9 48 0 v40 q-24 6 -48 0z" fill="#7a3a22"/><path d="M640 306 q22 -7 44 0" stroke="rgba(255,255,255,.18)" stroke-width="2" fill="none"/><path d="M662 344 v14 M646 362 l16 -4 l16 4" stroke="#2a2420" stroke-width="3" fill="none"/>`,g:`${glow(662,240,70,'azu',.55)}${glow(712,238,46,'amb',.9)}`}},
+'sc-branca'(it,c){const ks=['#e8b52a','#e8742c','#c0573e','#7fb3d1','#9bd17a','#f3ede2'];let kb='';for(let i=0;i<12;i++)kb+=`<rect x="${630+i*4.6}" y="${283+(i%2)}" width="4" height="3" fill="${ks[i%ks.length]}"/>`;
+  return {b:`<ellipse cx="662" cy="366" rx="100" ry="7" fill="url(#gsh)"/><rect x="580" y="298" width="7" height="66" fill="#e9e5de"/><rect x="738" y="298" width="7" height="66" fill="#e9e5de"/>
+  <polygon points="576,288 748,288 756,297 568,297" fill="#fbf9f5"/><rect x="568" y="297" width="188" height="7" fill="#dcd7ce"/>
+  <path d="M600 270 q60 -4 126 0 v7 h-126z" fill="#b5783e"/><path d="M600 274 q60 -3 126 0" stroke="#8a5428" stroke-width="1.4" fill="none"/>
+  <rect x="618" y="208" width="88" height="58" rx="2" fill="#141210"/>${screenArt(621,211,82,52,c,'scr2')}<rect x="636" y="202" width="52" height="4" rx="1" fill="#1d1a18"/>
+  ${kb}<rect x="628" y="282" width="58" height="6" rx="1.5" fill="none" stroke="#cfcac2"/>
+  <path d="M590 288 v-14" stroke="#c9c6bf" stroke-width="2"/><ellipse cx="590" cy="288" rx="7" ry="2" fill="#c9c6bf"/><path d="M576 274 q14 -22 28 0z" fill="#f2892a"/><path d="M580 270 q10 -12 20 0" stroke="rgba(255,255,255,.35)" stroke-width="2" fill="none"/>
+  <path d="M742 288 q-4 -26 6 -40 M742 288 q2 -20 -12 -32" stroke="#3f7a35" stroke-width="2" fill="none"/><path d="M734 266 q-12 -6 -6 -16 q8 6 6 16z M748 254 q8 -10 14 -4 q-6 8 -14 4z" fill="#4f8f3f"/><path d="M736 288 h14 l-2 -10 h-10z" fill="#bfe0e8" opacity=".8"/>`,g:`${glow(662,236,72,'azu',.5)}${glow(590,272,52,'lar',.95)}`}},
+'sc-estante'(it,c){const sh=[[606,130,96],[618,184,84],[606,238,100],[618,292,88]];let g=`<ellipse cx="660" cy="366" rx="70" ry="6" fill="url(#gsh)"/><rect x="694" y="118" width="12" height="246" fill="#1d1a18"/>`;
+  sh.forEach(([x,y,w])=>{g+=`<polygon points="${x},${y} ${x+w},${y} ${x+w+4},${y+5} ${x-4},${y+5}" fill="#3a3430"/><rect x="${x-4}" y="${y+5}" width="${w+8}" height="7" fill="#1d1a18"/>`});
+  g+=`<rect x="622" y="110" width="30" height="20" rx="3" fill="#ece8e1"/><circle cx="637" cy="120" r="6.5" fill="#1d1a18"/><circle cx="637" cy="120" r="3" fill="#3a5a7a"/><rect x="644" y="112" width="5" height="3" fill="#1d1a18"/>
+   <rect x="660" y="160" width="28" height="24" fill="#c0302a" rx="10"/><path d="M664 168 q10 -6 20 0" stroke="#e8e0d6" stroke-width="3" fill="none"/>
+   <rect x="626" y="166" width="24" height="18" rx="2" fill="#2a2420"/><circle cx="636" cy="175" r="5" fill="#8b8780"/>
+   ${[0,1,2,3,4,5].map(i=>`<rect x="${612+i*7}" y="${214+(i%2)*3}" width="6" height="${24-(i%2)*3}" fill="${['#c0573e','#2f5c74','#e8b52a','#3d7f8c','#c2477a','#2a2420'][i]}"/>`).join('')}
+   <path d="M664 238 q-18 -14 -24 -2 M664 238 q-6 -22 6 -24 M664 238 q14 -18 22 -6 M664 238 q20 -4 22 8 M664 238 q-20 0 -22 10" stroke="#4f8f3f" stroke-width="3" fill="none"/><rect x="656" y="226" width="16" height="12" rx="2" fill="#e9e5de"/>
+   <rect x="626" y="270" width="16" height="22" fill="#e8742c"/><rect x="646" y="274" width="16" height="18" fill="#3d7fd0"/><circle cx="676" cy="282" r="9" fill="#fbf8f2"/><circle cx="676" cy="282" r="4" fill="#1d1a18"/>
+   <path d="M720 364 v-34" stroke="#c9c6bf" stroke-width="2.4"/><ellipse cx="720" cy="364" rx="9" ry="2.6" fill="#c9c6bf"/><path d="M700 334 q20 -30 40 0z" fill="#f2892a"/><path d="M704 330 q16 -18 32 0" stroke="rgba(255,255,255,.35)" stroke-width="2" fill="none"/>`;
+  return {b:g,g:glow(720,330,58,'lar',.95)}},
+/* mesas de cabeceira (entre a secretária e a cama) */
+'cb-papel'(){return {b:cabeceira()+`<path d="M782 318 v-6" stroke="#c9c6bf" stroke-width="3"/><ellipse cx="782" cy="294" rx="17" ry="19" fill="#fbe3b8"/>${[-12,-6,0,6,12].map(d=>`<path d="M${782+d} 276 q${d*.4} 18 0 36" stroke="#e2b77a" stroke-width="1" fill="none"/>`).join('')}<path d="M768 282 h28 M766 294 h32 M768 306 h28" stroke="#e8c690" stroke-width=".8"/>`,g:glow(782,294,78,'amb',1)}},
+'cb-cogumelo'(){return {b:cabeceira()+`<rect x="778" y="296" width="8" height="22" rx="3" fill="#f2892a"/><path d="M762 300 q20 -34 40 0z" fill="#f2892a"/><path d="M768 294 q14 -18 28 0" stroke="rgba(255,255,255,.4)" stroke-width="3" fill="none"/><ellipse cx="782" cy="300" rx="20" ry="3" fill="#c76a1a"/>`,g:glow(782,300,70,'lar',1)}},
+'cb-velas'(){return {b:cabeceira()+`<rect x="762" y="310" width="26" height="8" fill="#2f5c74"/><rect x="764" y="304" width="22" height="6" fill="#c0573e"/>${[[792,18],[800,12]].map(([x,h],i)=>`<rect x="${x-3}" y="${318-h}" width="6" height="${h}" rx="1.5" fill="#f4ead6"/><path class="rm-fl" style="animation-delay:${i*.4}s" d="M${x} ${318-h-9} q4 5 0 7 q-4 -2 0 -7z" fill="#ffcf5a"/>`).join('')}`,g:`${glow(792,294,30,'amb',.9)}${glow(800,300,26,'amb',.8)}`}},
+/* pósteres de álbuns (por cima da secretária) */
+'qd-capa'(it,c){return {b:aposter(614,46,98,c.pl.px[0],'#6e4325')}},
+'qd-trio'(it,c){return {b:[0,1,2].map(i=>aposter(576+i*60,70,54,c.pl.px[i],['#1d1a18','#f3ede2','#1d1a18'][i])).join('')}},
+'qd-galeria'(it,c){return {b:aposter(574,48,72,c.pl.px[0],'#1d1a18')+aposter(656,48,46,c.pl.px[1],'#c9a46c')+aposter(656,118,46,c.pl.px[2],'#1d1a18')
+  +`<circle cx="733" cy="70" r="18" fill="#d8352a"/><circle cx="733" cy="70" r="14" fill="#fbf8f2"/>${[...Array(12)].map((_,i)=>{const a=i/12*2*Math.PI;return `<circle cx="${733+Math.sin(a)*11.5}" cy="${70-Math.cos(a)*11.5}" r=".8" fill="#1d1a18"/>`}).join('')}${clockHands(733,70,13,c.hh)}
+  <rect x="716" y="100" width="32" height="44" fill="#f3e2c4" stroke="#1d1a18" stroke-width="2"/><text x="732" y="132" text-anchor="middle" font-family="Anton,Impact" font-size="24" fill="#d24a32" transform="translate(0 0)">♥</text><rect x="574" y="152" width="22" height="22" fill="#e8742c"/><circle cx="585" cy="163" r="5" fill="#1d1a18"/>`}},
+'qd-graficos'(){let w='';for(let i=0;i<4;i++)w+=`<path d="M582 ${112+i*8} q8 -10 16 0 t16 0 t16 0" stroke="#f3e2c4" stroke-width="2.4" fill="none" opacity="${1-i*.2}"/>`;
+  return {b:`<rect x="579" y="62" width="58" height="78" fill="rgba(0,0,0,.25)" transform="translate(3 4)"/><rect x="579" y="62" width="58" height="78" fill="#1f2f52" stroke="#f3ede2" stroke-width="3"/><circle cx="622" cy="82" r="9" fill="#e5533b"/><path d="M582 104 q12 -24 30 -10 q-8 -2 -10 6 q12 -6 18 4 q-10 0 -12 8 h-26z" fill="#f3e2c4"/>${w}
+  <rect x="648" y="50" width="52" height="92" fill="rgba(0,0,0,.25)" transform="translate(3 4)"/><rect x="648" y="50" width="52" height="92" fill="#efe3cc" stroke="#1d1a18" stroke-width="3"/><text x="674" y="104" text-anchor="middle" font-family="Anton,Impact" font-size="22" fill="#b83a22" transform="translate(674 104) scale(1 2.2) translate(-674 -104)">MPB</text><text x="674" y="134" text-anchor="middle" font-family="Space Mono,monospace" font-size="4.5" fill="#1d1a18">devagar · sem pressa</text>
+  <rect x="710" y="74" width="40" height="54" fill="rgba(0,0,0,.25)" transform="translate(3 4)"/><rect x="710" y="74" width="40" height="54" fill="#f2a33a" stroke="#f3ede2" stroke-width="3"/><circle cx="730" cy="96" r="11" fill="#fff4dc"/><rect x="714" y="112" width="32" height="12" fill="#c0573e"/>`}},
+/* plantas suspensas (do teto, entre a prateleira e a janela) */
+'su-jiboia'(){let v='';[[336,92],[346,120],[356,80],[342,64]].forEach(([x,h],j)=>{v+=`<path d="M${x} 66 q${j%2?6:-6} ${h*.5} ${j%2?-2:3} ${h}" stroke="#2f5a2a" stroke-width="1.1" fill="none"/>`;for(let k=0;k<h;k+=7)v+=leaf(x+Math.sin(k/7+j)*4,66+k,(k*37+j*30)%180,4.4,(k+j)%3?'#4f8f3f':'#3f7a35')});
+  return {b:`<path d="M346 0 V48 M346 48 l-14 10 M346 48 l14 10" stroke="#d8cdbb" stroke-width="1.2"/>${v}<path d="M330 54 h32 l-3 16 h-26z" fill="#c56f4e"/><rect x="329" y="52" width="34" height="4" rx="1" fill="#d98466"/>${leaf(338,52,-30,6,'#4f8f3f')}${leaf(354,50,20,6,'#3f7a35')}`}},
+'su-macrame'(){let f='';for(let i=0;i<9;i++){const a=-150+i*15;f+=`<g transform="translate(346 84) rotate(${a})"><path d="M0 0 q-2 -18 0 -${30+i%3*6}" stroke="#4f8f3f" stroke-width="2" fill="none"/>${[6,12,18,24].map(t=>`<path d="M0 -${t} l-4 -3 M0 -${t} l4 -3" stroke="#5f9f4f" stroke-width="2"/>`).join('')}</g>`}
+  return {b:`<path d="M346 0 V30" stroke="#e8dcc6" stroke-width="2"/><circle cx="346" cy="30" r="3" fill="none" stroke="#e8dcc6" stroke-width="2"/><path d="M346 33 L326 84 M346 33 L338 84 M346 33 L354 84 M346 33 L366 84" stroke="#e8dcc6" stroke-width="1.6"/><path d="M330 62 h32 M332 70 h28" stroke="#e8dcc6" stroke-width="2.4" stroke-dasharray="3 2"/>${f}<path d="M326 84 h40 q-2 18 -20 18 q-18 0 -20 -18z" fill="#f4efe6"/><path d="M346 102 v18" stroke="#e8dcc6" stroke-width="1.6" stroke-dasharray="2 2"/>`}},
+/* luzes novas */
+'l-onair'(){return {b:`<rect x="890" y="206" width="104" height="32" rx="3" fill="#2a2420"/><rect x="893" y="209" width="98" height="26" rx="2" fill="#fff4dc"/><text x="942" y="230" text-anchor="middle" font-family="Anton,Impact" font-size="21" letter-spacing="1.5" fill="#d8352a">ON AIR</text>`,g:`${glow(942,222,90,'amb',.95)}<text x="942" y="230" text-anchor="middle" font-family="Anton,Impact" font-size="21" letter-spacing="1.5" fill="#ff5a3c">ON AIR</text>`}},
+'l-led'(){return {b:`<polygon points="0,488 130,333 130,336 0,492" fill="#3dff8a" opacity=".55"/>`,g:`${glow(40,420,150,'grn',.85)}${glow(90,300,110,'grn',.5)}<polygon points="0,488 130,333 130,336 0,492" fill="#b9ffd6"/>`}},
+/* em cima do móvel */
+'mz-camara'(it,c){const y=c.top;return {b:`<rect x="114" y="${y-24}" width="36" height="24" rx="4" fill="#ece8e1"/><rect x="114" y="${y-24}" width="36" height="7" rx="3" fill="#d6d0c6"/><circle cx="130" cy="${y-11}" r="8" fill="#2a2420"/><circle cx="130" cy="${y-11}" r="4" fill="#3a5a7a"/><circle cx="128.5" cy="${y-12.5}" r="1.2" fill="#fff" opacity=".7"/><rect x="140" y="${y-21}" width="7" height="5" rx="1" fill="#2a2420"/><rect x="116" y="${y+0}" width="18" height="3" fill="#fbf8f2"/>`}},
+'mz-peluche'(it,c){const y=c.top;return {b:`<ellipse cx="132" cy="${y-10}" rx="13" ry="11" fill="#a8703f"/><ellipse cx="132" cy="${y-8}" rx="7" ry="6" fill="#d8b085"/><circle cx="132" cy="${y-28}" r="10" fill="#a8703f"/><circle cx="123" cy="${y-36}" r="4" fill="#a8703f"/><circle cx="141" cy="${y-36}" r="4" fill="#a8703f"/><circle cx="123" cy="${y-36}" r="2" fill="#d8b085"/><circle cx="141" cy="${y-36}" r="2" fill="#d8b085"/><ellipse cx="132" cy="${y-25}" rx="4.5" ry="3.5" fill="#d8b085"/><circle cx="128" cy="${y-30}" r="1.3" fill="#1d1a18"/><circle cx="136" cy="${y-30}" r="1.3" fill="#1d1a18"/><circle cx="132" cy="${y-26}" r="1.2" fill="#1d1a18"/><path d="M126 ${y-20} q6 4 12 0" stroke="#c0302a" stroke-width="2.4" fill="none"/>`}},
+'mz-relogio'(it,c){const y=c.top;return {b:`<rect x="114" y="${y-16}" width="40" height="16" rx="3" fill="#141210"/><text x="134" y="${y-4}" text-anchor="middle" font-family="Space Mono,monospace" font-size="10" fill="#ff4b3a">${c.hh||'10:32'}</text>`,g:glow(134,y-8,24,'ver',.6)}},
+/* tapetes novos */
+'r-nuvem'(){let cl='';[[120,466,46,24],[170,452,50,22],[230,450,52,22],[282,462,46,24],[250,484,56,20],[160,486,58,20],[200,470,80,30]].forEach(([x,y,rx,ry])=>cl+=`<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="#f1ebe0"/>`);
+  let ch='';for(let i=-4;i<4;i++)for(let j=-4;j<4;j++)if((i+j)%2)ch+=`<rect x="${i*14}" y="${j*14}" width="14" height="14" fill="#1d1a18"/>`;
+  return {b:`${cl}<clipPath id="nvc"><ellipse cx="200" cy="468" rx="86" ry="22"/></clipPath><g clip-path="url(#nvc)"><g transform="translate(200 468) scale(1 .34) rotate(45)">${ch}<rect x="-14" y="-14" width="28" height="28" fill="#e8742c"/></g></g>`}},
+'r-xadrez'(){const P=(u,v)=>[70+(-40)*v+(260+80*v)*u,432+v*72];let g='';for(let i=0;i<8;i++)for(let j=0;j<4;j++){const a=P(i/8,j/4),b=P((i+1)/8,j/4),c=P((i+1)/8,(j+1)/4),d=P(i/8,(j+1)/4);g+=`<polygon points="${a} ${b} ${c} ${d}" fill="${(i+j)%2?'#1d1a18':'#efe6d6'}"/>`}return {b:g}},
+/* plantas, assentos e extras novos */
+'pl-feto'(){let f='';for(let i=0;i<13;i++){const a=-160+i*25,l=40+(i%3)*10;f+=`<g transform="translate(66 378) rotate(${a})"><path d="M0 0 q${l*.5} -6 ${l} ${l*.35}" stroke="#4f8f3f" stroke-width="2" fill="none"/>${[.2,.35,.5,.65,.8].map(t=>`<path d="M${l*t} ${-3+t*l*.3} l-3 -5 M${l*t} ${-3+t*l*.3} l2 6" stroke="#5fae4f" stroke-width="2.2" stroke-linecap="round"/>`).join('')}</g>`}
+  return {b:`${f}<circle cx="66" cy="400" r="26" fill="#f1ede6"/><path d="M48 386 a26 26 0 0 1 30 -10" stroke="#fff" stroke-width="4" fill="none" opacity=".7"/><ellipse cx="66" cy="410" rx="22" ry="12" fill="rgba(0,0,0,.08)"/><ellipse cx="66" cy="426" rx="24" ry="3" fill="url(#gsh)"/>`}},
+'a-papasan'(){return {b:`<ellipse cx="346" cy="434" rx="56" ry="7" fill="url(#gsh)"/><path d="M314 430 L346 396 L378 430 M326 432 L364 398 M366 432 L328 398" stroke="#3a2a1a" stroke-width="2.4" fill="none"/><ellipse cx="346" cy="388" rx="56" ry="26" fill="#6e4a2a"/><ellipse cx="346" cy="384" rx="50" ry="22" fill="#c0302a"/><ellipse cx="346" cy="378" rx="34" ry="12" fill="#d8443a"/><path d="M312 380 q34 12 68 0 M318 392 q28 8 56 0" stroke="#9a2420" stroke-width="2" fill="none"/><path d="M300 380 q46 -34 92 0" stroke="#e05a4a" stroke-width="3" fill="none" opacity=".5"/>`}},
+'a-sofa'(){return {b:`<ellipse cx="346" cy="436" rx="84" ry="8" fill="url(#gsh)"/><rect x="270" y="346" width="152" height="46" rx="12" fill="#8a8781"/><rect x="266" y="384" width="160" height="44" rx="10" fill="#9b9891"/><rect x="262" y="366" width="22" height="62" rx="10" fill="#8a8781"/><rect x="408" y="366" width="22" height="62" rx="10" fill="#8a8781"/><rect x="290" y="388" width="112" height="14" rx="6" fill="#a8a59e"/>
+  <g transform="rotate(-8 300 372)"><rect x="284" y="356" width="32" height="30" rx="6" fill="#efe6d6"/>${[0,1,2,3].map(i=>[0,1,2,3].map(j=>(i+j)%2?`<rect x="${286+i*7}" y="${358+j*6.5}" width="7" height="6.5" fill="#2f7d55"/>`:'').join('')).join('')}</g>
+  <circle cx="352" cy="374" r="16" fill="#141210"/><circle cx="352" cy="372" r="7" fill="#fbf8f2"/><text x="352" y="376" text-anchor="middle" font-family="Anton,Impact" font-size="9" fill="#141210">8</text>
+  <g transform="rotate(8 392 372)"><rect x="376" y="356" width="32" height="30" rx="6" fill="#efe6d6"/>${[0,1,2,3].map(i=>[0,1,2,3].map(j=>(i+j)%2?`<rect x="${378+i*7}" y="${358+j*6.5}" width="7" height="6.5" fill="#2f7d55"/>`:'').join('')).join('')}</g>
+  <path d="M274 384 q20 -10 40 4 q8 30 -6 44 h-30z" fill="#7a3a22"/><path d="M280 392 q14 -4 26 6" stroke="#5e2a16" stroke-width="2" fill="none"/>`}},
+'x-relvermelho'(it,c){let d='';for(let i=0;i<12;i++){const a=i/12*2*Math.PI;d+=`<text x="${(70+Math.sin(a)*19).toFixed(1)}" y="${(240-Math.cos(a)*19+2.5).toFixed(1)}" text-anchor="middle" font-family="Space Mono,monospace" font-size="6" fill="#1d1a18">${i||12}</text>`}
+  return {b:`<circle cx="72" cy="242" r="29" fill="rgba(0,0,0,.22)"/><circle cx="70" cy="238" r="29" fill="#d8352a"/><circle cx="70" cy="238" r="24" fill="#fbf8f2"/>${d}${clockHands(70,238,22,c.hh)}`}},
+'x-pegboard'(){let dots='';for(let x=30;x<118;x+=8)for(let y=212;y<276;y+=8)dots+=`<circle cx="${x}" cy="${y}" r=".9" fill="#c9c3b8"/>`;
+  return {b:`<rect x="27" y="211" width="96" height="70" fill="rgba(0,0,0,.2)"/><rect x="24" y="208" width="96" height="70" rx="2" fill="#f4f1ec"/>${dots}<rect x="32" y="216" width="22" height="28" fill="#fff" transform="rotate(-4 43 230)"/><rect x="35" y="219" width="16" height="16" fill="#e8742c" transform="rotate(-4 43 230)"/><rect x="60" y="214" width="20" height="26" fill="#fff" transform="rotate(5 70 227)"/><rect x="62" y="216" width="16" height="16" fill="#7fb3d1" transform="rotate(5 70 227)"/><rect x="86" y="230" width="28" height="4" fill="#1d1a18"/><rect x="90" y="220" width="8" height="10" fill="#c0302a"/><rect x="100" y="218" width="10" height="12" rx="2" fill="#2a2420"/><rect x="34" y="254" width="16" height="18" fill="#1d1a18"/><path d="M38 254 v-8 M42 254 v-10 M46 254 v-7" stroke="#e8b52a" stroke-width="1.6"/><rect x="60" y="252" width="40" height="18" fill="#ffd23f" transform="rotate(-3 80 261)"/>`}},
+'x-skate'(){return {b:`<g transform="rotate(8 70 240)"><rect x="57" y="176" width="28" height="124" rx="14" fill="rgba(0,0,0,.22)" transform="translate(3 4)"/><rect x="57" y="176" width="28" height="124" rx="14" fill="#2a2420"/><path d="M60 200 q14 20 0 40 q14 20 0 40" stroke="#9bd17a" stroke-width="6" fill="none"/><path d="M82 196 q-12 24 0 48 q-12 24 0 44" stroke="#c9a2ff" stroke-width="5" fill="none"/><text x="71" y="236" text-anchor="middle" font-family="Anton,Impact" font-size="11" fill="#ffd23f" transform="rotate(-90 71 236)">GROOVE</text><rect x="64" y="186" width="14" height="4" fill="#bbb"/><circle cx="62" cy="188" r="4" fill="#f3e2b0"/><circle cx="80" cy="188" r="4" fill="#f3e2b0"/><rect x="64" y="286" width="14" height="4" fill="#bbb"/><circle cx="62" cy="288" r="4" fill="#f3e2b0"/><circle cx="80" cy="288" r="4" fill="#f3e2b0"/></g>`}},
+'x-espelho'(){const p='M48 176 q14 -12 26 -2 q14 -8 22 6 q8 14 0 26 q10 14 2 28 q8 16 -2 28 q4 18 -14 24 q-14 8 -26 -2 q-16 4 -18 -14 q-8 -16 2 -28 q-10 -14 0 -28 q-8 -16 4 -26 q-2 -14 6 -12z';
+  return {b:`<path d="${p}" fill="rgba(0,0,0,.25)" transform="translate(3 4)"/><path d="${p}" fill="#1d1a18"/><g transform="translate(70 238) scale(.92) translate(-70 -238)"><linearGradient id="mirg" x2="1" y2="1"><stop offset="0" stop-color="#e8eef2"/><stop offset=".5" stop-color="#b9c6cf"/><stop offset="1" stop-color="#8fa0ad"/></linearGradient><path d="${p}" fill="url(#mirg)"/><path d="M54 290 q6 -30 20 -40 q-2 24 6 44z" fill="#4f8f3f" opacity=".55"/><path d="M50 200 l40 -18 l4 10 l-40 22z" fill="#fff" opacity=".35"/><path d="M48 240 l46 -22 l2 6 l-46 22z" fill="#fff" opacity=".2"/></g>`}}
+});
+const _gatoDummy=0;
+function cabeceira(){return `<ellipse cx="782" cy="366" rx="32" ry="4" fill="url(#gsh)"/><polygon points="760,318 804,318 808,323 756,323" fill="#c9a46c"/><rect x="756" y="323" width="52" height="39" fill="#b68e57"/><rect x="760" y="328" width="44" height="13" fill="#a57f4b"/><rect x="760" y="344" width="44" height="13" fill="#a57f4b"/><circle cx="782" cy="334" r="1.6" fill="#5a3a24"/><circle cx="782" cy="350" r="1.6" fill="#5a3a24"/><rect x="758" y="362" width="4" height="4" fill="#5a3a24"/><rect x="802" y="362" width="4" height="4" fill="#5a3a24"/>`}
+
 let GRAIN='';function grainUrl(){if(GRAIN)return GRAIN;try{const c=document.createElement('canvas');c.width=c.height=140;const x=c.getContext('2d'),d=x.createImageData(140,140);for(let i=0;i<d.data.length;i+=4){const v=Math.random()*255|0;d.data[i]=d.data[i+1]=d.data[i+2]=v;d.data[i+3]=22}x.putImageData(d,0,0);GRAIN=c.toDataURL()}catch(e){GRAIN='data:,'}return GRAIN}
-const ST={prat:'translate(130 -14)',extra:'translate(125 16)',poster:'translate(380 -14)',movel:'translate(260 -62)',leitor:'translate(260 -62)',mesa:'translate(260 -62)',planta2:'translate(260 -62)',planta:'translate(-6 -64) scale(1.3)',assento:'translate(-155 -32) scale(1.2)',tapete:'translate(150 -66) scale(1.1)',
-  'l-candeeiro':'translate(-235 -60)','l-neon':'translate(490 8)','l-sunset':'translate(380 -14)'};
-const RORDER=['cor','janela','cortina','luz:w','prat','poster','extra','teto','chao','tapete','#patch','luz','movel','leitor','mesa','planta2','cama','pet','planta','assento'];
-function roomSvg(w,o){o=o||{};RUID=0;const q=roomQ(w),eq={...q.eq,...(o.eq||{})};for(const k in eq)if(!eq[k])delete eq[k];const pl=discPlaces(w);
-  const top=RIT[eq.movel]?.top||352,tod=o.tod||roomTodOf(w),c={pl,top,tod,eq,music:!FX.reduced&&o.music!==false};let b='',g='';const S=SKY[tod];
+const ST={prat:'translate(130 -14)',extra:'translate(125 16)',poster:'translate(643 -14)',movel:'translate(260 -62)',leitor:'translate(260 -62)',mesa:'translate(260 -62)',planta2:'translate(260 -62)',planta:'translate(-6 -64) scale(1.3)',assento:'translate(-120 -32) scale(1.2)',tapete:'translate(300 -66) scale(1.1)',
+  'l-candeeiro':'translate(-235 -60)','l-neon':'translate(740 4)','l-sunset':'translate(640 -14)','pet-caramelo':'translate(110 0)','pet-tartaruga':'translate(170 0)'};
+const RORDER=['cor','recados','janela','cortina','luz:w','prat','quadros','poster','extra','teto','chao','tapete','#patch','luz','suspensa','secretaria','cabeceira','movel','leitor','mesa','planta2','cama','pet','planta','assento'];
+function roomSvg(w,o){o=o||{};RUID=0;const q=roomQ(),eq={...q.eq,...(o.eq||{})};for(const k in eq)if(!eq[k])delete eq[k];const pl=discPlaces(),n=lisNow();
+  const top=RIT[eq.movel]?.top||352,tod=o.tod||roomTodOf(),live=!o.tod&&!L.rTodV,c={pl,top,tod,eq,on:!!q.on&&!!pl.play,hh:n.hh,sun:live?sunPos(n):null};c.music=c.on&&!FX.reduced;let b='',g='';const S=SKY[tod];
   for(const s of RORDER){const [k,part]=s.split(':');
     if(k==='#patch'){b+=lightPatch(tod);continue}
-    const id=k==='janela'?'janela':eq[k];if(!id)continue;const it=RIT[id]||{},f=RDR[k==='cor'||k==='chao'?k:id];if(!f)continue;const r=f(it,c)||{};const T=ST[id]||ST[k];const wr=x=>x&&T?`<g transform="${T}">${x}</g>`:(x||'');
-    if(part==='w'){if(r.w&&tod==='dia')b+=wr(r.w);continue}b+=wr(r.b);if(r.g)g+=wr(r.g)}
-  const gk=GLOWK[tod];let post=GRADE[tod].map(([col,op,bl])=>`<rect width="800" height="500" fill="${col}" opacity="${op}" style="mix-blend-mode:${bl}"/>`).join('');
+    const id=k==='janela'||k==='recados'?k:eq[k];if(!id)continue;const it=RIT[id]||{},f=RDR[k==='cor'||k==='chao'?k:id];if(!f)continue;const r=f(it,c)||{};const T=ST[id]||ST[k];const wr=x=>x&&T?`<g transform="${T}">${x}</g>`:(x||'');
+    if(part==='w'){if(r.w&&tod==='dia')b+=wr(r.w);continue}b+=k==='leitor'?`<g id="rleitor">${wr(r.b)}</g>`:wr(r.b);if(r.g)g+=wr(r.g)}
+  const gk=GLOWK[tod];let post=GRADE[tod].map(([col,op,bl])=>`<rect width="${QW}" height="500" fill="${col}" opacity="${op}" style="mix-blend-mode:${bl}"/>`).join('');
   if(g&&gk)post+=`<g opacity="${gk}">${g}</g>`;
   post+=`<polygon points="${WX},${WY+WH} ${WX+WW},${WY+WH} ${patchPts(tod).join(' ')}" fill="url(#beam)" style="mix-blend-mode:screen" opacity="${tod==='dia'?.14:tod==='noite'?.1:.2}"/>`;
   post+=`<circle cx="${WX+WW/2}" cy="${WY+WH/2}" r="190" fill="url(#winglow)" style="mix-blend-mode:screen" opacity="${tod==='noite'?.25:tod==='dia'?.35:.6}"/>`;
-  post+=`<rect width="800" height="500" fill="url(#grain)" style="mix-blend-mode:multiply" opacity=".9"/><rect width="800" height="500" fill="url(#vign)"/>`;
-  return `<svg class="roomsvg" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Quarto">${roomDefs(S)}${b}${post}</svg>`}
+  post+=`<rect width="${QW}" height="500" fill="url(#grain)" style="mix-blend-mode:multiply" opacity=".9"/><rect width="${QW}" height="500" fill="url(#vign)"/>`;
+  return `<svg class="roomsvg" viewBox="0 0 ${QW} 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="O quarto do Miguel e da Clara">${roomDefs(S)}${b}${post}</svg>`}
 function patchPts(tod){const sh={manha:60,dia:0,tarde:-70,noite:-20}[tod];return [`${420+sh*1.6},470`,`${210+sh*1.6},470`]}
 function lightPatch(tod){const sh={manha:60,dia:0,tarde:-70,noite:-20}[tod],c=SKY[tod].l,op={manha:.55,dia:.45,tarde:.6,noite:.25}[tod];
   const P=(u,v)=>{const x0=300+sh+(210+sh*1.6-300-sh)*v,x1=470+sh+(420+sh*1.6-470-sh)*v;return [x0+(x1-x0)*u,372+98*v]};
@@ -2728,71 +2922,111 @@ function roomDefs(S){S=S||SKY.tarde;return roomDefsBase().replace('</defs>',`
  <linearGradient id="fsheen" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".18"/><stop offset=".6" stop-color="#fff" stop-opacity=".04"/><stop offset="1" stop-color="#000" stop-opacity=".15"/></linearGradient>
  <linearGradient id="sillsh" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".25"/><stop offset="1" stop-color="#000" stop-opacity="0"/></linearGradient>
  <linearGradient id="curt" x2="1"><stop offset="0" stop-color="#000" stop-opacity=".3"/><stop offset=".2" stop-color="#000" stop-opacity="0"/><stop offset=".8" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".3"/></linearGradient>
+ <linearGradient id="chalk" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".07"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity=".05"/></linearGradient>
+ <linearGradient id="bedlit" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".12"/><stop offset="1" stop-color="#fff" stop-opacity=".06"/></linearGradient>
+ <pattern id="knit" width="9" height="7" patternUnits="userSpaceOnUse"><path d="M0 1 l4.5 5 l4.5 -5" stroke="rgba(0,0,0,.2)" stroke-width="1.6" fill="none"/><path d="M0 0 l4.5 5" stroke="rgba(255,255,255,.12)" stroke-width="1" fill="none"/></pattern>
  <linearGradient id="beam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${S.l}" stop-opacity=".7"/><stop offset="1" stop-color="${S.l}" stop-opacity="0"/></linearGradient>
  <radialGradient id="winglow"><stop offset="0" stop-color="${S.l}" stop-opacity=".6"/><stop offset="1" stop-color="${S.l}" stop-opacity="0"/></radialGradient>
  <radialGradient id="vign" cx=".5" cy=".45" r=".75"><stop offset=".6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".35"/></radialGradient>
  <pattern id="grain" width="140" height="140" patternUnits="userSpaceOnUse"><image href="${grainUrl()}" width="140" height="140"/></pattern></defs>`)}
-const RTHUMB={cor:'0 0 800 500',chao:'0 340 800 160',prat:'14 56 196 168',poster:'214 44 176 178',teto:'0 0 800 260',luz:'150 120 250 320',mesa:'100 230 70 90',movel:'96 280 208 150',leitor:'136 240 128 76',tapete:'60 420 280 96',planta:'24 270 92 160',planta2:'246 250 56 120',assento:'282 330 120 110',extra:'14 172 116 126',cortina:'330 18 260 340',cama:'560 140 240 360',pet:''};
-const PETBOX={'pet-gato':'285 420 90 56','pet-caramelo':'400 405 135 75','pet-papagaio':'290 205 60 165','pet-peixe':'375 170 50 40','pet-tartaruga':'270 440 60 40'};
-function itemThumb(it){RUID=Math.floor(Math.random()*1e6);const c={pl:{sh:[],wl:[],play:null,box:Array(12)},top:330,music:false,tod:'tarde',eq:{}};let inner;
-  if(it.s==='cor')inner=RDR.cor(it).b;
+const RTHUMB={cor:'0 0 1080 500',chao:'0 340 1080 160',prat:'14 56 196 168',poster:'214 44 176 178',teto:'0 0 1080 260',luz:'150 120 250 320',mesa:'100 230 70 90',movel:'96 280 208 150',leitor:'136 240 128 76',tapete:'60 420 280 96',planta:'24 270 92 160',planta2:'246 250 56 120',assento:'250 330 180 110',extra:'14 172 116 130',cortina:'330 18 260 340',cama:'790 130 290 380',secretaria:'560 100 210 270',cabeceira:'740 260 80 110',quadros:'566 40 194 176',suspensa:'300 0 100 130'};
+const IBOX={'l-onair':'870 190 150 70','l-led':'0 240 260 260','pet-gato':'425 420 90 56','pet-caramelo':'400 405 135 75','pet-papagaio':'290 205 60 165','pet-peixe':'375 170 50 40','pet-tartaruga':'270 440 60 40','sc-estante':'580 100 180 270'};
+function itemThumb(it){RUID=Math.floor(Math.random()*1e6);const pl={sh:[],wl:[],px:[],play:null,box:Array(12)},c={pl,top:330,music:false,on:false,tod:'tarde',eq:{},hh:lisNow().hh};let inner;
+  if(it.s==='cor')inner=`<rect width="1080" height="500" fill="${it.c}"/><rect width="1080" height="500" fill="url(#wtex)" opacity=".6"/>`;
   else if(it.s==='chao')inner=RDR.chao(it).b;
-  else{const r=RDR[it.id](it,c)||{};const dark=it.s==='luz'||it.s==='mesa'||it.s==='teto';inner=(dark?`<rect x="-100" y="-100" width="1000" height="700" fill="#2a2030"/>`:it.s==='cortina'?RDR.janela({},c).b:'')+(r.w||'')+(r.b||'')+(r.g&&dark?`<g opacity=".7">${r.g}</g>`:'')}
-  return `<svg viewBox="${it.s==='pet'?PETBOX[it.id]:RTHUMB[it.s]}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">${roomDefs()}${inner}</svg>`}
-function roomTod(t){const s=()=>{const e=document.querySelector('.roomscene');if(e)e.innerHTML=roomSceneInner();document.querySelectorAll('.todbar button').forEach(b=>b.classList.toggle('on',b.dataset.t===t))};
-  if(!roomMine()){L.rTodV=t;s();return}const q=roomQ(myPid());q.tod=t;roomSave(q);s()}
+  else{const r=RDR[it.id](it,c)||{};const dark=it.s==='luz'||it.s==='mesa'||it.s==='teto'||it.s==='cabeceira';inner=(dark?`<rect x="-100" y="-100" width="1300" height="700" fill="#2a2030"/>`:it.s==='cortina'?RDR.janela({},c).b:'')+(r.w||'')+(r.b||'')+(r.g&&dark?`<g opacity=".7">${r.g}</g>`:'')}
+  return `<svg viewBox="${IBOX[it.id]||RTHUMB[it.s]}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">${roomDefs()}${inner}</svg>`}
 
 /* ---------- ecrã ---------- */
-function openRoom(w){L.screen='quarto';L.rWho=w||L.rWho||myPid()||'p0';L.rTab=L.rTab||'loja';L.rCat=L.rCat||'prat';L.rPrev=null;render();scrollTo(0,0);plList().forEach(p=>profLoad(pidOf(p)))}
-function roomMine(){return L.rWho===myPid()}
-function roomTry(id){const it=RIT[id],w=myPid();if(!it||!roomMine())return;
-  if(ownsItem(w,id)){const q=roomQ(w);if(q.eq[it.s]===id&&!RFIX[it.s])q.eq[it.s]=null;else q.eq[it.s]=id;L.rPrev=null;roomSave(q)}else L.rPrev=L.rPrev===id?null:id;render();roomScroll()}
-function roomBuy(id){const it=RIT[id],w=myPid();if(!it||!roomMine())return;const q=roomQ(w);if(roomCoins(w)<it.p)return;
-  q.spent+=it.p;q.own[id]=1;q.eq[it.s]=id;if(LUZES.has(id)&&!q.tod)q.tod='noite';L.rPrev=null;roomSave(q);profAdd('compras');try{celebrate(24)}catch(e){}render();roomScroll()}
+function openRoom(){L.screen='quarto';L.rNoteEd=0;if(db&&db.cloud)bdLoad();L.rTab=L.rTab||'loja';L.rCat=L.rCat||'cama';L.rPrev=null;L.rTodV=null;CASAL.forEach(w=>profLoad(w));sqPull();render();scrollTo(0,0)}
+function roomMine(){return canEdit()}
+function roomRefresh(){if(L.screen!=='quarto'||L.rNoteEd||document.querySelector('.rplayfx'))return;const a=document.activeElement;if(a&&/INPUT|TEXTAREA/.test(a.tagName))return;render()}
+function roomTod(t){L.rTodV=t||null;const s=document.querySelector('.roomscene .roomsvg');if(s)s.outerHTML=roomSceneInner();document.querySelectorAll('.todbar button').forEach(b=>b.classList.toggle('on',(b.dataset.t||'')===(t||'')))}
+function roomTry(id){const it=RIT[id];if(!it||!canEdit())return;
+  if(ownsItem(0,id)){const q=roomQ();if(q.eq[it.s]===id&&!RFIX[it.s])q.eq[it.s]=null;else q.eq[it.s]=id;L.rPrev=null;roomSave(q)}else L.rPrev=L.rPrev===id?null:id;render();roomScroll()}
+function roomBuy(id){const it=RIT[id];if(!it||!canEdit())return;const q=roomQ();if(roomCoins()<it.p)return;
+  q.spent+=it.p;q.own[id]=1;q.eq[it.s]=id;L.rPrev=null;roomSave(q);profAdd('compras');try{celebrate(24)}catch(e){}render();roomScroll()}
 function roomScroll(){const s=document.querySelector('.roomscene');if(s&&s.getBoundingClientRect().top<-80)s.scrollIntoView({behavior:'smooth',block:'start'})}
-function roomSceneInner(){const w=L.rWho;const o={};if(L.rPrev)o.eq={[RIT[L.rPrev].s]:L.rPrev};if(!roomMine()&&L.rTodV)o.tod=L.rTodV;return roomSvg(w,o)}
-/* discos */
-function discMove(k,where){const w=myPid();if(!roomMine())return;const q=roomQ(w),pl=discPlaces(w);let sh=[...pl.sh],wl=[...pl.wl];sh=sh.filter(x=>x!==k);wl=wl.filter(x=>x!==k);
-  if(where==='s'){if(sh.length>=pl.capS){L.rMsg=pl.capS?`A prateleira só leva ${pl.capS} discos. Tira um primeiro ou compra uma prateleira maior.`:'Ainda não tens prateleira.';render();return}sh.push(k)}
-  if(where==='w'){if(wl.length>=pl.capW){L.rMsg=pl.capW?'A parede já tem 3 vinis.':'Compra os “Vinis na parede” para pendurar discos.';render();return}wl.push(k)}
-  if(where==='p')q.play=k;q.sh=sh;q.wl=wl;L.rMsg='';roomSave(q);render()}
-function discBuy(k){const w=myPid();if(!roomMine())return;const q=roomQ(w);if(roomCoins(w)<DISCO_PRECO||discOwned(w).includes(k))return;q.spent+=DISCO_PRECO;q.buy=[...q.buy,k];roomSave(q);L.rNew=k;try{celebrate(20)}catch(e){}render()}
-function discSurprise(){const w=myPid();if(!roomMine())return;const q=roomQ(w),own=discOwned(w),pool=DISCOS.filter(d=>!own.includes(d.k)&&!DISC_EXCL.has(d.k));if(!pool.length||roomCoins(w)<SURPRESA_PRECO)return;
+function roomSceneInner(){const o={};if(L.rPrev)o.eq={[RIT[L.rPrev].s]:L.rPrev};if(L.rTodV)o.tod=L.rTodV;return roomSvg(0,o)}
+function roomPop(t){const sc=document.querySelector('.roomscene'),lt=document.getElementById('rleitor');if(!sc||!lt)return;const a=sc.getBoundingClientRect(),b=lt.getBoundingClientRect();const e=document.createElement('div');e.className='rpop';e.textContent=t;e.style.left=(b.left-a.left+b.width/2)+'px';e.style.top=(b.top-a.top)+'px';sc.appendChild(e);setTimeout(()=>e.remove(),1800)}
+/* animação: o disco sai da capa e vai para o gira-discos, com ondas e notas */
+function roomPlayFx(k){const sc=document.querySelector('.roomscene'),lt=document.getElementById('rleitor'),d=DISCO(k);if(!sc||!lt||!d||FX.reduced)return;const a=sc.getBoundingClientRect(),b=lt.getBoundingClientRect();
+  const x=b.left-a.left+b.width/2,y=b.top-a.top+b.height*.55,fx=document.createElement('div');fx.className='rplayfx';fx.style.setProperty('--x',x+'px');fx.style.setProperty('--y',y+'px');
+  let notes='';for(let i=0;i<10;i++){const ang=-170+i*16+Math.random()*10,dist=60+Math.random()*70;notes+=`<i style="--dx:${(Math.cos(ang*Math.PI/180)*dist).toFixed(0)}px;--dy:${(Math.sin(ang*Math.PI/180)*dist).toFixed(0)}px;animation-delay:${.9+i*.06}s">${['♪','♫','♩','♬'][i%4]}</i>`}
+  fx.innerHTML=`<div class="pfx-cover" style="background-image:url('${d.f.replace(/'/g,"\\'")}')"></div><div class="pfx-vinyl"><span style="background-image:url('${d.f.replace(/'/g,"\\'")}')"></span></div><b class="pfx-ring"></b><b class="pfx-ring r2"></b><b class="pfx-ring r3"></b>${notes}<div class="pfx-label">a tocar · ${esc(d.t)}</div>`;
+  sc.appendChild(fx);setTimeout(()=>fx.remove(),3400)}
+function roomPlay(k){if(!canEdit())return;const q=roomQ(),pl=discPlaces();k=k||pl.play;if(!k)return;const was=q.on&&q.play===k;q.play=k;q.on=1;roomSave(q);
+  if(!SND.on){sndStart();lsSet({snd:true});const h=document.getElementById('hdr');if(h)h.outerHTML=header()}else if(!was)musicNext();
+  render();requestAnimationFrame(()=>roomPlayFx(k))}
+function roomStop(){if(!canEdit())return;const q=roomQ();q.on=0;roomSave(q);render()}
+function discMove(k,where){if(!canEdit())return;if(where==='p')return roomPlay(k);const q=roomQ(),pl=discPlaces();let sh=pl.sh.filter(x=>x!==k),wl=pl.wl.filter(x=>x!==k),px=pl.px.filter(x=>x!==k);
+  if(where==='s'){if(sh.length>=pl.capS){L.rMsg=pl.capS?`A prateleira só leva ${pl.capS} discos. Tirem um primeiro ou comprem uma prateleira maior.`:'Ainda não têm prateleira.';render();return}sh.push(k)}
+  if(where==='w'){if(wl.length>=pl.capW){L.rMsg=pl.capW?'A parede já tem 3 vinis.':'Comprem os “Vinis na parede” para pendurar discos.';render();return}wl.push(k)}
+  if(where==='x'){if(px.length>=pl.capP){L.rMsg=pl.capP?`Os pósteres só levam ${pl.capP} álbum${pl.capP>1?'s':''}.`:'Comprem pósteres de álbuns na loja (Pósteres de álbuns).';render();return}px.push(k)}
+  q.sh=sh;q.wl=wl;q.px=px;L.rMsg='';roomSave(q);render()}
+function discBuy(k){if(!canEdit())return;const q=roomQ();if(roomCoins()<DISCO_PRECO||discOwned().includes(k)||DISC_EXCL.has(k))return;q.spent+=DISCO_PRECO;q.buy=[...q.buy,k];roomSave(q);L.rNew=k;try{celebrate(20)}catch(e){}render()}
+function discSurprise(){if(!canEdit())return;const q=roomQ(),own=discOwned(),pool=DISCOS.filter(d=>!own.includes(d.k)&&!DISC_EXCL.has(d.k));if(!pool.length||roomCoins()<SURPRESA_PRECO)return;
   const d=pool[Math.floor(Math.random()*pool.length)];q.spent+=SURPRESA_PRECO;q.buy=[...q.buy,d.k];roomSave(q);L.rNew=d.k;L.rMsg=`💿 Saiu: ${d.t} · ${d.a}`;try{celebrate(30)}catch(e){}render()}
-function quartoScreen(){const w=L.rWho||'p0',mine=roomMine(),who=plList().find(x=>pidOf(x)===w)||BASE_PL.miguel,coins=roomCoins(w),q=roomQ(w),pl=discPlaces(w);
-  const dono=who.id==='miguel'?'do Miguel':who.id==='clara'?'da Clara':'de '+esc(who.n);
-  const prev=L.rPrev&&RIT[L.rPrev],falta=prev?prev.p-roomCoins(myPid()):0;
-  const tod=mine?roomTodOf(w):(L.rTodV||roomTodOf(w));
-  let h=`<div class="tot-head"><div class="mono" style="color:var(--muted)">o meu quarto</div><h2>${mine?'O meu quarto':'O quarto '+dono}</h2><div class="sub">${mine?'Decora com as moedas que ganhas nas missões. Os discos que ganhas vão para a prateleira.':'Estás de visita. Só '+(who.g==='a'?'ela':'ele')+' pode mudar as coisas.'}</div></div>
-  <div class="rktabs mwho">${plList().map(x=>{const k=pidOf(x);return `<button class="${k===w?'on':''}" onclick="L.rWho='${k}';L.rPrev=null;L.rTodV=null;render()"><b class="${x.id==='miguel'?'c0':x.id==='clara'?'c1':'cg'}">${esc(x.e+' '+x.n)}</b><span>${k===myPid()?'o teu quarto':'visitar'}</span></button>`}).join('')}</div>
-  <div class="qbar">${mine?`<span class="qcoins">🪙 <b>${coins}</b> moedas</span>`:`<span class="qcoins vis">👀 de visita</span>`}<span class="rdisc">💿 ${pl.own.length} discos</span></div>
-  <div class="roomscene">${roomSceneInner()}</div><div class="todbar">${TOD.map(([k,e,n])=>`<button data-t="${k}" class="${tod===k?'on':''}" onclick="roomTod('${k}')"><span>${e}</span>${n}</button>`).join('')}</div>`;
-  if(prev)h+=`<div class="rprev"><div><span class="mono">a experimentar</span><b>${esc(prev.n)}</b><em>🪙 ${prev.p}</em></div><div class="acts">${falta>0?`<button class="btn" disabled>Faltam ${falta} 🪙</button>`:`<button class="btn" onclick="roomBuy('${prev.id}')">Comprar</button>`}<button class="btn ghost" onclick="L.rPrev=null;render()">Tirar</button></div></div>`;
-  if(!mine)return h+`<div class="actions"><button class="btn" onclick="L.screen=null;render()">← Voltar</button></div>`;
-  h+=`<div class="chips qtabs">${[['loja','🛍️ Loja'],['discos','💿 Os meus discos'],['ganhar','🪙 Como ganhar']].map(([k,t])=>`<button class="chip ${L.rTab===k?'on':''}" onclick="L.rTab='${k}';L.rMsg='';render()">${t}</button>`).join('')}</div>`;
+const TODN={manha:'amanhecer',dia:'dia',tarde:'pôr do sol',noite:'noite'};
+function quartoScreen(){const ed=canEdit(),coins=roomCoins(),q=roomQ(),pl=discPlaces(),n=lisNow(),tnow=todNow(n),prev=L.rPrev&&RIT[L.rPrev],falta=prev?prev.p-coins:0,pd=pl.play&&DISCO(pl.play),on=q.on&&pd;
+  let h=`<div class="tot-head"><div class="mono" style="color:var(--muted)">o nosso quarto</div><h2>O quarto do Miguel e da Clara</h2><div class="sub">${ed?'Decorem juntos com os BPM que os dois ganham nas missões. Com música a tocar no quarto também ganham BPM.':'Estás de visita. Só o Miguel e a Clara podem mudar as coisas.'}</div></div>
+  <div class="qbar"><span class="qcoins">♩ <b id="bpmv">${coins}</b> BPM</span><span class="rdisc">💿 ${pl.own.length} discos</span><span class="rdisc">🕰️ <b id="rclock">${n.hh}</b> em Portugal</span></div>
+  <div class="roomscene">${roomSceneInner()}</div>
+  ${pd?`<div class="rplay ${on?'on':''}"><img src="${esc(pd.f)}" alt=""><div><span class="mono">${on?'a tocar no quarto':'no gira-discos'}</span><b>${esc(pd.t)}</b><em>${esc(pd.a)}${on&&ed?` · +4 BPM por minuto com o som ligado · hoje <b id="bpmday">${bpmToday()}/${BPM_DIA}</b>`:''}</em></div>${ed?(on?`<button class="btn ghost" onclick="roomStop()">⏸ Parar</button>`:`<button class="btn" onclick="roomPlay()">▶ Tocar</button>`):''}</div>`:''}
+  ${noteBox()}
+  <div class="todbar"><button data-t="" class="${!L.rTodV?'on':''}" onclick="roomTod()"><span>🕰️</span>Agora</button>${TOD.map(([k,e,nm])=>`<button data-t="${k}" class="${L.rTodV===k?'on':''}" onclick="roomTod('${k}')"><span>${e}</span>${nm}</button>`).join('')}</div>
+  <p class="hint center todinfo">Agora é ${TODN[tnow]} em Portugal. O sol nasce às ${n.f(n.rise)} e põe-se às ${n.f(n.set)}. Os outros botões só mostram como fica.</p>`;
+  if(prev)h+=`<div class="rprev"><div><span class="mono">a experimentar</span><b>${esc(prev.n)}</b><em>♩ ${prev.p} BPM</em></div><div class="acts">${falta>0?`<button class="btn" disabled>Faltam ${falta} BPM</button>`:`<button class="btn" onclick="roomBuy('${prev.id}')">Comprar</button>`}<button class="btn ghost" onclick="L.rPrev=null;render()">Tirar</button></div></div>`;
+  if(!ed)return h+`<div class="actions"><button class="btn" onclick="L.screen=null;render()">← Voltar</button></div>`;
+  h+=`<div class="chips qtabs">${[['loja','🛍️ Loja'],['discos','💿 Discos'],['ganhar','♩ Como ganhar BPM']].map(([k,t])=>`<button class="chip ${L.rTab===k?'on':''}" onclick="L.rTab='${k}';L.rMsg='';render()">${t}</button>`).join('')}</div>`;
   if(L.rTab==='loja'){const cat=L.rCat;
-    h+=`<div class="rcats">${RSLOT.map(([k,n,e])=>`<button class="${cat===k?'on':''}" onclick="L.rCat='${k}';render()"><span>${e}</span>${n}</button>`).join('')}</div><div class="rgrid">`;
-    RITEMS.filter(x=>x.s===cat).forEach(it=>{const own=ownsItem(w,it.id),on=q.eq[it.s]===it.id,pv=L.rPrev===it.id;
-      h+=`<button class="ritem ${on?'on':''} ${pv?'pv':''}" onclick="roomTry('${it.id}')"><div class="rth">${itemThumb(it)}</div><b>${esc(it.n)}</b>${it.d?`<small>${esc(it.d)}</small>`:''}<em>${on?(RFIX[it.s]?'✓ em uso':'✓ em uso · tocar para tirar'):own?'tens · pôr':it.p>coins?`🪙 ${it.p} · faltam ${it.p-coins}`:`🪙 ${it.p}`}</em></button>`});
+    h+=`<div class="rcats">${RSLOT.map(([k,nm,e])=>`<button class="${cat===k?'on':''}" onclick="L.rCat='${k}';render()"><span>${e}</span>${nm}</button>`).join('')}</div><div class="rgrid">`;
+    RITEMS.filter(x=>x.s===cat).forEach(it=>{const own=ownsItem(0,it.id),isOn=q.eq[it.s]===it.id,pv=L.rPrev===it.id;
+      h+=`<button class="ritem ${isOn?'on':''} ${pv?'pv':''}" onclick="roomTry('${it.id}')"><div class="rth">${itemThumb(it)}</div><b>${esc(it.n)}</b>${it.d?`<small>${esc(it.d)}</small>`:''}<em>${isOn?(RFIX[it.s]?'✓ em uso':'✓ em uso · tocar para tirar'):own?'já é vosso · pôr':it.p>coins?`♩ ${it.p} · faltam ${it.p-coins}`:`♩ ${it.p} BPM`}</em></button>`});
     h+='</div>'}
-  if(L.rTab==='discos'){const art=L.rArt||'',sub=L.rDsub||'meus';h+=`<div class="chips dsub">${[['meus','Os meus ('+pl.own.length+')'],['loja','Comprar'],['excl','🔒 Só nas missões']].map(([k,t])=>`<button class="chip ${sub===k?'on':''}" onclick="L.rDsub='${k}';L.rMsg='';render()">${t}</button>`).join('')}</div>`;
-    if(sub==='meus'){h+=`${L.rMsg?`<div class="rmsg">${esc(L.rMsg)}</div>`:''}<p class="hint">Na prateleira: ${pl.sh.length}/${pl.capS} · na parede: ${pl.wl.length}/${pl.capW} · guardados no móvel: ${pl.box.length}. O que está no gira-discos toca no quarto.</p><div class="dgrid">`;
-    pl.own.forEach(k=>{const d=DISCO(k),at=pl.sh.includes(k)?'s':pl.wl.includes(k)?'w':'m';
-      h+=`<div class="dcard ${L.rNew===k?'new':''}"><img src="${esc(d.f)}" alt="" loading="lazy"><b>${esc(d.t)}</b><span>${esc(d.a)}</span><div class="dbtn"><button class="${at==='s'?'on':''}" onclick="discMove('${k}','s')" title="Prateleira">📚</button><button class="${at==='w'?'on':''}" onclick="discMove('${k}','w')" title="Parede">🖼️</button><button class="${at==='m'?'on':''}" onclick="discMove('${k}','m')" title="Guardar no móvel">📦</button><button class="${pl.play===k?'on':''}" onclick="discMove('${k}','p')" title="Pôr a tocar">▶️</button></div></div>`});
-    h+=`</div>`}
-    if(sub==='loja'){h+=`${L.rMsg?`<div class="rmsg">${esc(L.rMsg)}</div>`:''}<div class="rsurp"><div><b>💿 Caixa surpresa</b><span>Um disco ao calhas que ainda não tens.</span></div><button class="btn" ${coins<SURPRESA_PRECO?'disabled':''} onclick="discSurprise()">🪙 ${SURPRESA_PRECO}</button></div>
-    <div class="chips rart">${['',...new Set(DISCOS.map(d=>d.a))].map(a=>`<button class="chip ${art===a?'on':''}" onclick="L.rArt='${esc(a)}';render()">${a?esc(a):'Todos'}</button>`).join('')}</div><div class="dgrid">`;
-    DISCOS.filter(d=>!pl.own.includes(d.k)&&(!art||d.a===art)&&!DISC_EXCL.has(d.k)).forEach(d=>{h+=`<div class="dcard shop"><img src="${esc(d.f)}" alt="" loading="lazy"><b>${esc(d.t)}</b><span>${esc(d.a)}</span><button class="btn sm" ${coins<DISCO_PRECO?'disabled':''} onclick="discBuy('${d.k}')">🪙 ${DISCO_PRECO}</button></div>`});
-    h+=`</div>`}
-    if(sub==='excl'){h+=`<p class="hint">Estes não se compram. Há discos assim de quase todos os cantores: completa a missão para o ganhar.</p><div class="chips rart">${['',...new Set(DISCOS.map(d=>d.a))].map(a=>`<button class="chip ${art===a?'on':''}" onclick="L.rArt='${esc(a)}';render()">${a?esc(a):'Todos'}</button>`).join('')}</div><div class="dgrid">`;const pw=profGet(w);
-    DISCOS.filter(d=>DISC_EXCL.has(d.k)&&!pl.own.includes(d.k)&&(!art||d.a===art)).forEach(d=>{const m=missOfDisc(d.k),v=Math.min(stVal(pw,m.s),m.t);h+=`<div class="dcard lock"><img src="${esc(d.f)}" alt="" loading="lazy"><b>${esc(d.t)}</b><span>${esc(d.a)}</span><em class="dmiss">🎯 ${esc(m.n)}</em><div class="mbar"><i style="width:${Math.round(v/m.t*100)}%"></i></div><small>${esc(m.d)} · ${v}/${m.t}</small></div>`});
-    h+=`</div>`}}
-  if(L.rTab==='ganhar'){const p=profGet(w);
-    h+=`<p class="hint">Começas com ${BOAS_VINDAS} moedas e um disco. Cada missão paga aos bocadinhos: recebes um quarto das moedas a cada 25% do caminho. Algumas missões dão também um disco que só se consegue assim.</p><div class="mgrid">`;
-    MISSOES.map(m=>({m,r:mReward(m),v:Math.min(stVal(p,m.s),m.t),on:!!p.u[m.id]})).sort((a,b)=>(a.on-b.on)||(b.v/b.m.t-a.v/a.m.t)).slice(0,24).forEach(x=>{const d=x.r.disc&&DISCO(x.r.disc),got=Math.round(x.r.r*Math.floor(4*x.v/x.m.t)/4);
-      h+=`<div class="mcard ${x.on?'on':''}">${d?`<img class="rmc" src="${esc(d.f)}" alt="" loading="lazy" style="${x.on?'':'filter:grayscale(1) brightness(.6)'}">`:vinyl(x.m,x.on)}<div class="mtxt"><b>${esc(x.m.n)}</b><span>${esc(x.m.d)}</span><span class="rrw">🪙 ${got} de ${x.r.r}${d?` · 💿 ${esc(d.t)}`:''}</span><div class="mbar"><i style="width:${Math.round(x.v/x.m.t*100)}%"></i></div></div></div>`});
+  if(L.rTab==='discos'){const art=L.rArt||'',sub=L.rDsub||'meus',chips=`<div class="chips rart">${['',...new Set(DISCOS.map(d=>d.a))].map(a=>`<button class="chip ${art===a?'on':''}" onclick="L.rArt='${esc(a)}';render()">${a?esc(a):'Todos'}</button>`).join('')}</div>`;
+    h+=`<div class="chips dsub">${[['meus','Os nossos ('+pl.own.length+')'],['loja','Comprar'],['excl','🔒 Só nas missões']].map(([k,t])=>`<button class="chip ${sub===k?'on':''}" onclick="L.rDsub='${k}';L.rMsg='';render()">${t}</button>`).join('')}</div>${L.rMsg?`<div class="rmsg">${esc(L.rMsg)}</div>`:''}`;
+    if(sub==='meus'){h+=pl.own.length?`<p class="hint">Prateleira ${pl.sh.length}/${pl.capS} · vinis na parede ${pl.wl.length}/${pl.capW} · pósteres ${pl.px.length}/${pl.capP} · guardados ${pl.box.length}. Carreguem em ▶️ para pôr um disco a tocar.</p><div class="dgrid">`:`<p class="hint center">Ainda não há discos. Ganhem-nos nas missões ou comprem-nos com BPM.</p><div class="dgrid">`;
+      pl.own.forEach(k=>{const d=DISCO(k),at=pl.sh.includes(k)?'s':pl.wl.includes(k)?'w':pl.px.includes(k)?'x':'m';
+        h+=`<div class="dcard ${L.rNew===k?'new':''}"><img src="${esc(d.f)}" alt="" loading="lazy"><b>${esc(d.t)}</b><span>${esc(d.a)}</span><div class="dbtn five"><button class="${at==='s'?'on':''}" onclick="discMove('${k}','s')" title="Prateleira">📚</button><button class="${at==='w'?'on':''}" onclick="discMove('${k}','w')" title="Vinil na parede">💿</button><button class="${at==='x'?'on':''}" onclick="discMove('${k}','x')" title="Póster">🖼️</button><button class="${at==='m'?'on':''}" onclick="discMove('${k}','m')" title="Guardar no móvel">📦</button><button class="${q.on&&pl.play===k?'on':''}" onclick="discMove('${k}','p')" title="Pôr a tocar">▶️</button></div></div>`});
+      h+=`</div>`}
+    if(sub==='loja'){h+=`<div class="rsurp"><div><b>💿 Caixa surpresa</b><span>Um disco ao calhas que ainda não têm.</span></div><button class="btn" ${coins<SURPRESA_PRECO?'disabled':''} onclick="discSurprise()">♩ ${SURPRESA_PRECO}</button></div>${chips}<div class="dgrid">`;
+      DISCOS.filter(d=>!pl.own.includes(d.k)&&(!art||d.a===art)&&!DISC_EXCL.has(d.k)).forEach(d=>{h+=`<div class="dcard shop"><img src="${esc(d.f)}" alt="" loading="lazy"><b>${esc(d.t)}</b><span>${esc(d.a)}</span><button class="btn sm" ${coins<DISCO_PRECO?'disabled':''} onclick="discBuy('${d.k}')">♩ ${DISCO_PRECO}</button></div>`});h+=`</div>`}
+    if(sub==='excl'){h+=`<p class="hint">Estes não se compram. Há discos assim de quase todos os cantores: basta um de vocês completar a missão.</p>${chips}<div class="dgrid">`;
+      DISCOS.filter(d=>DISC_EXCL.has(d.k)&&!pl.own.includes(d.k)&&(!art||d.a===art)).forEach(d=>{const m=missOfDisc(d.k),best=Math.max(...CASAL.map(w=>Math.min(stVal(profGet(w),m.s),m.t)));h+=`<div class="dcard lock"><img src="${esc(d.f)}" alt="" loading="lazy"><b>${esc(d.t)}</b><span>${esc(d.a)}</span><em class="dmiss">🎯 ${esc(m.n)}</em><div class="mbar"><i style="width:${Math.round(best/m.t*100)}%"></i></div><small>${esc(m.d)} · ${best}/${m.t}</small></div>`});h+=`</div>`}}
+  if(L.rTab==='ganhar'){const P=CASAL.map(w=>profGet(w));
+    h+=`<p class="hint">O quarto começa com 0 BPM. As missões do Miguel e da Clara enchem a mesma conta: cada missão paga um quarto dos BPM a cada 25% do caminho. Ter um disco a tocar no quarto, com o som ligado, dá +1 BPM a cada 15 segundos (até ${BPM_DIA} por dia em cada telemóvel). Já ganharam ${q.mus||0} BPM com música.</p><div class="mgrid">`;
+    MISSOES.map(m=>{const r=mReward(m),vs=P.map(p=>Math.min(stVal(p,m.s),m.t));return {m,r,vs,got:vs.reduce((a,v)=>a+Math.round(r.r*Math.floor(4*v/m.t)/4),0),pr:Math.max(...vs)/m.t}}).sort((a,b)=>(a.pr>=1)-(b.pr>=1)||b.pr-a.pr).slice(0,24).forEach(x=>{const d=x.r.disc&&DISCO(x.r.disc),done=x.pr>=1;
+      h+=`<div class="mcard ${done?'on':''}">${d?`<img class="rmc" src="${esc(d.f)}" alt="" loading="lazy" style="${done?'':'filter:grayscale(1) brightness(.6)'}">`:vinyl(x.m,done)}<div class="mtxt"><b>${esc(x.m.n)}</b><span>${esc(x.m.d)}</span><span class="rrw">♩ ${x.got} de ${x.r.r*2} BPM${d?` · 💿 ${esc(d.t)}`:''}</span><span class="rrw who">🌴 ${x.vs[0]}/${x.m.t} · 🌻 ${x.vs[1]}/${x.m.t}</span><div class="mbar"><i style="width:${Math.round(x.pr*100)}%"></i></div></div></div>`});
     h+=`</div><div class="actions"><button class="btn ghost" onclick="openMissions()">Ver todas as missões</button></div>`}
   return h+`<div class="actions"><button class="btn" onclick="L.screen=null;render()">← Voltar</button></div>`}
+
+/* ---------- quadro de recados na parede do quarto (escreve-se, não se desenha) ---------- */
+const NOTE_MAX=120;
+function noteTxt(){return BD.img&&BD.img.startsWith('txt:')?BD.img.slice(4):''}
+function noteWrap(t,w){const out=[];let line='';for(const word of t.split(/\s+/)){if(!word)continue;if((line+' '+word).trim().length>w&&line){out.push(line);line=word}else line=(line+' '+word).trim()}if(line)out.push(line);return out}
+RDR.recados=function(it,c){const Y=(x,v)=>{const t=x*22/130,b=500-x*160/130;return (t+(b-t)*v).toFixed(1)},P=(x,v)=>`${x},${Y(x,v)}`;
+  let g=`<g class="rnote-wall" onclick="roomNoteEdit()" style="cursor:pointer"><polygon points="${P(11,.335)} ${P(114,.335)} ${P(114,.645)} ${P(11,.645)}" fill="#6e4325"/><polygon points="${P(11,.335)} ${P(114,.335)} ${P(114,.345)} ${P(11,.345)}" fill="#9a6238"/>
+  <polygon points="${P(17,.355)} ${P(109,.355)} ${P(109,.625)} ${P(17,.625)}" fill="#1f2a24"/><polygon points="${P(17,.355)} ${P(109,.355)} ${P(109,.625)} ${P(17,.625)}" fill="url(#chalk)"/>
+  <polygon points="${P(20,.628)} ${P(106,.628)} ${P(106,.64)} ${P(20,.64)}" fill="#8a5432"/><rect x="40" y="${+Y(40,.629)-3}" width="10" height="3" fill="#f3efe6" transform="rotate(-17 45 ${Y(40,.629)})"/>`;
+  const M=`matrix(.92 -.307 0 1.33 18 ${Y(18,.36)})`,t=noteTxt();
+  if(t){const L=noteWrap(t,15).slice(0,6),fs=L.length>4?9.5:L.length>2?11:13;g+=`<g transform="${M}">${L.map((l,i)=>`<text x="50" y="${10+fs*1.15*(i+1)+(6-L.length)*fs*.35}" text-anchor="middle" font-family="Fraunces,serif" font-style="italic" font-size="${fs}" fill="#f3efe6" opacity=".92">${esc(l)}</text>`).join('')}<text x="94" y="78" text-anchor="end" font-family="Space Mono,monospace" font-size="5.5" fill="#cfe3d6" opacity=".75">${esc(((BD.em||'')+' '+(BD.nm||'')).trim())}</text></g>`}
+  else if(BD.img&&BD.img.startsWith('data:image')){const id='nimg';g+=`<g transform="${M}"><image href="${BD.img}" x="2" y="2" width="96" height="74" preserveAspectRatio="none" opacity=".95"/></g>`}
+  else g+=`<g transform="${M}"><text x="50" y="40" text-anchor="middle" font-family="Fraunces,serif" font-style="italic" font-size="9" fill="#f3efe6" opacity=".55">deixa aqui</text><text x="50" y="52" text-anchor="middle" font-family="Fraunces,serif" font-style="italic" font-size="9" fill="#f3efe6" opacity=".55">um recado ✏️</text></g>`;
+  if(bdFresh())g+=`<circle cx="112" cy="${+Y(112,.34)}" r="7" fill="#e53935"/><text x="112" y="${+Y(112,.34)+3.5}" text-anchor="middle" font-size="9" fill="#fff">!</text>`;
+  return {b:g+'</g>'}};
+function noteBox(){const t=noteTxt(),ed=L.rNoteEd,has=!BD.empty&&bdPid()&&BD.at;
+  if(ed)return `<div class="rnote edit"><b>📝 Quadro de recados</b><textarea id="notein" maxlength="${NOTE_MAX}" rows="3" placeholder="Escreve um recado para quem abrir o quarto…" oninput="document.getElementById('notecnt').textContent=this.value.length+'/${NOTE_MAX}'">${esc(t)}</textarea><div class="nacts"><span id="notecnt" class="mono">${t.length}/${NOTE_MAX}</span><button class="btn ghost" onclick="L.rNoteEd=0;render()">Cancelar</button>${has?`<button class="btn ghost" onclick="noteSave('')">Apagar</button>`:''}<button class="btn" onclick="noteSave(document.getElementById('notein').value)">Guardar recado</button></div>${BD.stat?`<small>${esc(BD.stat)}</small>`:''}</div>`;
+  return `<div class="rnote ${bdFresh()?'fresh':''}" id="rnote"><div><b>📝 Quadro de recados</b><span>${has?`${bdFresh()?'<em class="bnew">💌 Novo</em> ':''}${t?'“'+esc(t)+'”':'um desenho'} · ${bdFrom(true)} · ${bdRel(BD.at)}`:'Ainda não há recado. Escreve o primeiro!'}</span></div>${ME?`<button class="btn sm" onclick="roomNoteEdit()">✏️ Escrever</button>`:''}</div>`}
+function roomNoteEdit(){if(!ME)return;L.rNoteEd=1;BD.stat='';render();setTimeout(()=>{const t=document.getElementById('notein');if(t){t.focus();t.scrollIntoView({behavior:'smooth',block:'center'})}},60)}
+async function noteSave(txt){if(!ME)return;txt=(txt||'').trim().slice(0,NOTE_MAX);const img=txt?'txt:'+txt:'',at=new Date().toISOString();BD.stat='a guardar…';
+  try{const r=await fetch(bdUrl(),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:{img:{stringValue:img},by:{integerValue:String(WHO===1?1:0)},at:{stringValue:at},nm:{stringValue:ME.n||''},em:{stringValue:ME.e||''},pid:{stringValue:myPid()||''}}})});
+    if(!r.ok)throw 0;if(txt)profAdd('board');Object.assign(BD,{img,empty:!img,by:WHO,pid:myPid(),nm:ME.n,em:ME.e,at,stat:''});lsSet({boardSeen:at});L.rNoteEd=0;render()}
+  catch(e){BD.stat='Não consegui guardar. Verifica a internet e tenta outra vez.';render()}}
+function bdGo(){openRoom();setTimeout(()=>{const b=document.getElementById('rnote');if(b){b.scrollIntoView({behavior:'smooth',block:'center'});b.classList.add('flash')}setTimeout(()=>{lsSet({boardSeen:BD.at});if(L.screen==='quarto'&&!L.rNoteEd)render()},2500)},150)}
+function bdNotice(){return bdFresh()?`<button class="bnotice" onclick="bdGo()">💌 Tens um recado novo ${esc(bdFrom(false))} no quadro do quarto — ver</button>`:''}
+setTimeout(()=>{if(db&&db.cloud)bdLoad()},1500);
+setInterval(()=>{if(!document.hidden&&db&&db.cloud&&!L.rNoteEd)bdLoad()},20000);
 
 /* casa: volta ao menu principal (a meio de um jogo pede confirmação) */
 function goHome(){const mid=MODE&&G&&G.seed&&!(phase()==='duels'&&stageKind()[0]==='result');
@@ -3168,15 +3402,13 @@ function rankingScreen(){
 function modeScreen(){
   const nv=ME?MISSOES.filter(m=>profGet(myPid()).u[m.id]).length:0;
   return `<div class="hero"><div class="kick">um jogo de música brasileira</div><h1 class="herot">Meu <em>Álbum</em></h1><div class="turntable"><div class="record"></div></div>${heroVs()}<p>Olá, ${esc(ME?ME.e+' '+ME.n:'')}! O que vamos fazer?</p><div id="bnotice">${bdNotice()}</div></div>
-  ${boardBox()}
+  <div class="modes one mt"><button class="modebtn room" onclick="openRoom()"><span class="ic">🛋️</span><b>O nosso quarto</b><span>♩ ${roomCoins()} BPM para decorar o quarto do Miguel e da Clara. O quadro de recados está lá dentro${bdFresh()?' — e há um recado novo! 💌':'.'}</span></button></div>
   <div class="modes one mt"><button class="modebtn play" onclick="L.screen='jogar';render();scrollTo(0,0)"><span class="ic">▶️</span><b>Jogar</b><span>Contra o computador ou com um amigo, cada um no seu telemóvel.</span></button></div>
   <div class="modes mt">
    <button class="modebtn" onclick="openMissions()"><span class="ic">💿</span><b>Missões e vinis</b><span>${ME?`${nv} de ${MISSOES.length} vinis conquistados. Completa missões e ganha mais.`:'Completa missões e ganha vinis personalizados.'}</span></button>
-   <button class="modebtn" onclick="openRoom()"><span class="ic">🛋️</span><b>O meu quarto</b><span>${ME?`🪙 ${roomCoins(myPid())} moedas para decorar. Põe os teus discos na prateleira.`:'Decora o teu quarto com o que ganhas nas missões.'}</span></button>
-  </div>
-  <div class="modes mt">
    <button class="modebtn" onclick="openRanking()"><span class="ic">🏆</span><b>Top 10 álbuns</b><span>Os melhores álbuns de sempre de quem joga.</span></button>
-   <button class="modebtn" onclick="L.screen='regras';render();scrollTo(0,0)"><span class="ic">📖</span><b>Regras</b><span>Como se escolhe, se ordena e se ganha. Com exemplos.</span></button></div>`;
+  </div>
+  <div class="modes one mt"><button class="modebtn" onclick="L.screen='regras';render();scrollTo(0,0)"><span class="ic">📖</span><b>Regras</b><span>Como se escolhe, se ordena e se ganha. Com exemplos.</span></button></div>`;
 }
 function playScreen(){
   return `<div class="tot-head"><div class="mono" style="color:var(--muted)">jogar</div><h2>Como queres jogar?</h2><div class="sub">Escolhe o modo. Depois escolhes quantas músicas tem cada álbum.</div></div>
