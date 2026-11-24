@@ -1643,6 +1643,22 @@ body,#app{overflow-x:clip}
 .rznote textarea{width:100%;box-sizing:border-box;min-height:84px;margin-top:8px;padding:10px 12px;border-radius:12px;border:1px solid rgba(207,227,214,.3);background:#1f2a24;color:#f3efe6;font:italic 1.05rem Fraunces,serif;resize:vertical}
 .rznote .nacts{display:flex;gap:8px;align-items:center;justify-content:flex-end;flex-wrap:wrap;margin-top:8px}.rznote .nacts .mono{margin-right:auto;font-size:.7rem;color:var(--muted)}.nerr{color:#ffb3a0}
 @media(max-width:600px){.hud-play{max-width:78%}.hud-play img{width:26px;height:26px}}
+
+.rboxes{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:4px 0 10px}
+@media(max-width:600px){.rboxes{grid-template-columns:repeat(2,1fr)}}
+.rbox{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 6px;border-radius:14px;border:1px solid var(--rc);background:linear-gradient(160deg,color-mix(in srgb,var(--rc) 28%,transparent),rgba(34,16,6,.7));color:var(--cream);font:inherit;cursor:pointer}
+.rbox span{font-size:1.5rem}.rbox b{font-size:.82rem}.rbox small{font-size:.64rem;color:var(--muted)}.rbox em{font-style:normal;font-weight:800;color:var(--rc);margin-top:2px}.rbox:disabled{opacity:.45;cursor:default}
+.r-comum{--rc:#c9c1b4}.r-raro{--rc:#4aa3ff}.r-epico{--rc:#b06bff}.r-lend{--rc:#ffcc33}
+.dcard.r-raro{border-color:rgba(74,163,255,.45)}.dcard.r-epico{border-color:rgba(176,107,255,.55)}.dcard.r-lend{border-color:rgba(255,204,51,.7);box-shadow:0 0 18px rgba(255,204,51,.15)}
+.dcard .dtags i:first-child{background:color-mix(in srgb,var(--rc,#c9c1b4) 22%,transparent);color:var(--rc,#ffd23f)}
+.rrar{margin-bottom:4px}
+/* quarto maior no telemóvel: arrasta para os lados */
+@media(max-width:700px){.roomscene{margin-left:-16px!important;margin-right:-16px!important;border-radius:0!important;max-width:none!important}
+ .roomscroll{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none}.roomscroll::-webkit-scrollbar{display:none}
+ .roomscroll .roomsvg{width:215%;max-width:none}
+ .roomhint{display:block!important}}
+.roomhint{display:none;position:absolute;right:8px;bottom:8px;padding:4px 10px;border-radius:99px;background:rgba(20,10,4,.7);color:var(--cream);font-size:.68rem;pointer-events:none;animation:rhint 4s 1s both}
+@keyframes rhint{0%,80%{opacity:1}100%{opacity:0}}
 </style>
 </head>
 <body>
@@ -2582,14 +2598,32 @@ const DISCO=k=>DISCOS.find(d=>d.k===k);
 const DISCO_PRECO=360,SURPRESA_PRECO=240,SURPRESA_MAX=400;
 /* ---------- preço de cada disco: estatuto do artista + fama do álbum + musicalidade ---------- */
 const ART_EST={'Chico Buarque':5,'Jorge Ben Jor':5,'Elis Regina':5,'Tim Maia':5,'Gal Costa':4.8,'Djavan':4.6,'Rita Lee':4.6,'Cazuza':4.3,'Toquinho':4,'Seu Jorge':3.8,'Arlindo Cruz':3.5,'Grupo Revelação':3,'Natiruts':2.8,'Jorge Vercillo':2.6,'Emmanuel Cortes':2};
-const ALB_FAMA={'Construção':5,'A Tábua de Esmeralda':5,'África Brasil':5,'Samba Esquema Novo':5,'Elis & Tom':5,'Fruto Proibido':5,'Falso Brilhante':4.6,'Luz':4.6,'Meus Caros Amigos':4.5,'Gal Costa (1969)':4.4,'Rita Lee (1979)':4.4,'Gal Tropical':4.3,'Aquarela':4.3,'Jorge Ben (1969)':4.2,'Alumbramento':4.2,'Força Bruta':4,'Ben':4,'Djavan (1978)':4,'Chico Buarque (1984)':4,'Chico Buarque de Hollanda (1966)':4,'Cru':4,'Só Se For a Dois':4,'Água Viva':4,'Babilônia':3.8,'O Poeta e o Violão':3.8,'Sambista Perfeito':3.8,'Lilás':3.8,'Seduzir':3.8,'Sinal Fechado':3.8,'Vida':3.8,'Almanaque':3.8,'Paratodos':3.8,'Calabar':3.8,'Nativus':3.6,'Caravanas':3.6,'Coisa de Acender':3.5,'Malásia':3.4,'Todos Nós Somos Um':3.2,'Índigo Cristal':3.2};
 const COLET=/ao vivo|grandes|favourites|essential|a arte de|hits|box|20 grandes|100%|acústico|mtv|coletânea|50 anos|live/i;
+/* ---------- raridade de cada álbum: conta sobretudo o álbum (fama e aclamação), não só o cantor ---------- */
+const ALB_FAMA={
+ 'Samba Esquema Novo':5,'Puro Suingue':2.5,'A Tábua de Esmeralda':5,'Força Bruta':4.3,'Jorge Ben (1969)':4.6,'África Brasil':5,'Favourites':2,'Ben':4.2,'Negro É Lindo':4,'Ben É Samba Bom':3.3,'Football & Samba Groove Association':2.5,'A Banda do Zé Pretinho':3.5,'Bem-Vinda Amizade':2.7,'Salve Simpatia':3.2,'Salve Jorge':2.7,'Sonsual':2.2,'A Arte de Jorge Ben Jor':2,'Grandes Mestres da MPB':1.8,
+ 'Djavan (1978)':4.2,'Coisa de Acender':3.3,'Djavan Ao Vivo':3.8,'Luz':4.9,'Bicho Solto – O XIII':3.2,'Grandes Sucessos':1.8,'A Voz, o Violão, a Música de Djavan':4.3,'Malásia':3.6,'Alumbramento':4.4,'Lilás':4,'Ária (Ao Vivo)':2.7,'Rua dos Amores':2.8,'Alumbramento & Cara de Índio':2.4,'Seduzir':4.1,'Vaidade':2.4,'Milagreiro':2.6,'Na Pista, etc':2.2,'Vesúvio':2.5,
+ 'Cru':3.8,
+ 'Construção':5,'Chico Buarque (1984)':3.8,'Meus Caros Amigos':4.6,'Chico Buarque de Hollanda Nº4':3.8,'Chico Buarque de Hollanda (1966)':4.3,'Chico Buarque de Hollanda Vol. 3':3.8,'Umas e Outras':2.4,'Chico 50 Anos – O Trovador':2,'Caravanas':3.2,'Carioca ao Vivo':2.6,'Sinal Fechado':3.9,'Chico 50 Anos – O Cronista':2,'Vida':4,'Almanaque':3.8,'Paratodos':3.7,'Calabar':3.9,
+ 'Só Se For a Dois':3.9,
+ 'Ao Vivo no Olimpo':3.4,'360º Ao Vivo':2.6,'100% Grupo Revelação':1.8,'Ao Vivo no Morro':3.2,'O Bom Samba Continua – Ao Vivo, Vol. 2':2.4,'Ao Vivo – Na Palma da Mão':2.6,'Aventureiro':2.8,'Velocidade da Luz':2.5,
+ 'Todos Nós Somos Um':2.7,
+ 'Box Natiruts':1.8,'Natiruts (2018)':2.4,'Acústico no Rio de Janeiro':3.4,'Reggae Brasil (Ao Vivo)':2.8,'Qu4tro':2.8,'Índigo Cristal':2.9,'Nativus':3.6,'#NOFILTER (Ao Vivo)':2.2,
+ 'Sambista Perfeito':3.8,'Pagode do Arlindo (Ao Vivo)':3.2,'Batuques e Romances':3.3,'MTV Ao Vivo Vol. 2':3,'MTV Ao Vivo CD 1':3.2,'Batuques do Meu Lugar (Ao Vivo)':3,'2 Arlindos':2.8,'Na Veia':2.8,
+ '20 Grandes Sucessos de Toquinho & Vinicius':1.8,'O Poeta e o Violão':3.8,'Toquinho (1970)':3.2,'Aquarela':4.2,
+ 'Rita Lee (1979)':4.4,'Balacobaco':2.6,'Aqui, Ali, em Qualquer Lugar':2.6,'Rita Lee 3001':3,'Reza':2.6,'Fruto Proibido':5,'Saúde':3.4,'Lança Perfume e Outras Manias':2.2,'Flerte Fatal':2.3,'Atrás do Porto Tem uma Cidade':3.6,'Rita Hits':1.8,'Acústico (Live)':3.3,'Babilônia':3.9,'Flagra':3.2,'Build Up':3.5,'Multishow Ao Vivo':2.4,
+ 'Gal Costa (1969)':4.6,'Cantar':4,'Minha Voz':3.4,'Baby Gal':3.4,'Gal Tropical':4.3,'A Pele do Futuro':3.5,'Água Viva':4,'Divino Maravilhoso':2.6,
+ 'Elis & Tom':5,'Falso Brilhante':4.8,'Vento de Maio':3,'Elis (1966)':3.6,'Essa Mulher':4,'Ela':3.8,'The Essential':1.8,'Elis por Ela':2.4,'Coletânea':2};
+const RAR=[['comum','Comum','⚪',0,'#c9c1b4',100,110],['raro','Raro','🔵',2.8,'#4aa3ff',280,260],['epico','Épico','🟣',3.8,'#b06bff',480,450],['lend','Lendário','🟡',4.5,'#ffcc33',850,820]];
+const RARK=Object.fromEntries(RAR.map(r=>[r[0],r]));
+
 const ART_MUS=(()=>{const o={},n={};SONGS.forEach((x,i)=>{const a=artistKey(x[1]);if(!EVAL[i])return;o[a]=(o[a]||0)+ev(i).nota;n[a]=(n[a]||0)+1});for(const a in o)o[a]=o[a]/n[a];return o})();
 function discInfo(k){const d=DISCO(k);if(!d)return null;if(discInfo._c&&discInfo._c[k])return discInfo._c[k];
-  const est=ART_EST[d.a]||3,col=COLET.test(d.t),fama=col?2.2:(ALB_FAMA[d.t]||3),mus=ART_MUS[d.a]||ART_MUS[d.a.split(' ')[0]]||7;
-  let p=60*fama+50*est+40*(mus-6.5)-100;if(fama>=4.5)p+=250;p=Math.max(150,Math.round(p/10)*10);
-  const tags=[];if(est>=4.6)tags.push('⭐ Lenda');if(fama>=4.5)tags.push('💎 Clássico');else if(fama>=4)tags.push('🔥 Muito famoso');if(col)tags.push('📀 Ao vivo / coletânea');
-  const r={p,est,fama,mus:Math.round(mus*10)/10,tags};(discInfo._c=discInfo._c||{})[k]=r;return r}
+  const est=ART_EST[d.a]||3,col=COLET.test(d.t),fama=ALB_FAMA[d.t]!=null?ALB_FAMA[d.t]:(col?2:3),mus=ART_MUS[d.a]||7;
+  const R=[...RAR].reverse().find(r=>fama>=r[3]),next=RAR[RAR.indexOf(R)+1],span=next?next[3]-R[3]:.5;
+  let p=R[5]+(fama-R[3])/span*(next?next[5]-R[5]:400)*.5+est*8+(mus-7)*20;p=Math.max(R[5],Math.round(p/10)*10);
+  const tags=[`${R[2]} ${R[1]}`];if(est>=4.6)tags.push('⭐ Lenda');if(fama>=4.5)tags.push('💎 Clássico');if(col)tags.push('📀 Ao vivo / coletânea');
+  const r={p,est,fama,mus:Math.round(mus*10)/10,tags,rar:R[0]};(discInfo._c=discInfo._c||{})[k]=r;return r}
 const discPrice=k=>(discInfo(k)||{p:360}).p;
 
 /* disco certo para cada missão de artista */
@@ -3110,13 +3144,13 @@ function discMove(k,where){if(!canEdit())return;if(where==='p')return roomPlay(k
   if(where==='x'){if(px.length>=pl.capP){L.rMsg=pl.capP?`Os pósteres só levam ${pl.capP} álbum${pl.capP>1?'s':''}.`:'Comprem pósteres de álbuns na loja (Pósteres de álbuns).';render();return}px.push(k)}
   q.sh=sh;q.wl=wl;q.px=px;L.rMsg='';roomSave(q);render()}
 function discBuy(k){if(!canEdit())return;const q=roomQ(),pr=discPrice(k);if(roomCoins()<pr||discOwned().includes(k)||DISC_EXCL.has(k))return;q.spent+=pr;q.buy=[...q.buy,k];roomSave(q);L.rNew=k;try{celebrate(20)}catch(e){}render();setTimeout(()=>discZoom(k),300)}
-function discSurprise(){if(!canEdit())return;const q=roomQ(),own=discOwned(),pool=DISCOS.filter(d=>!own.includes(d.k)&&!DISC_EXCL.has(d.k)&&discPrice(d.k)<=SURPRESA_MAX);if(!pool.length||roomCoins()<SURPRESA_PRECO)return;
-  const d=pool[Math.floor(Math.random()*pool.length)];q.spent+=SURPRESA_PRECO;q.buy=[...q.buy,d.k];roomSave(q);L.rNew=d.k;toast(`💿 Saiu: ${d.t} · ${d.a}`);try{celebrate(30)}catch(e){}render();setTimeout(()=>discZoom(d.k),300)}
+function discSurprise(rk){if(!canEdit())return;const R=RARK[rk||'comum'],q=roomQ(),own=discOwned(),pool=DISCOS.filter(d=>!own.includes(d.k)&&!DISC_EXCL.has(d.k)&&discInfo(d.k).rar===R[0]);if(!pool.length){toast(`Já têm todos os discos ${{comum:'comuns',raro:'raros',epico:'épicos',lend:'lendários'}[R[0]]} à venda!`);return}if(roomCoins()<R[6])return;
+  const d=pool[Math.floor(Math.random()*pool.length)];q.spent+=R[6];q.buy=[...q.buy,d.k];roomSave(q);L.rNew=d.k;toast(`${R[2]} Saiu: ${d.t} · ${d.a}`);try{celebrate(rk==='lend'?90:rk==='epico'?50:30)}catch(e){}render();setTimeout(()=>discZoom(d.k),300)}
 const TODN={manha:'amanhecer',dia:'dia',tarde:'pôr do sol',noite:'noite'};
 function quartoScreen(){const ed=canEdit(),coins=roomCoins(),q=roomQ(),pl=discPlaces(),n=lisNow(),tnow=todNow(n),prev=L.rPrev&&RIT[L.rPrev],falta=prev?prev.p-coins:0,pd=pl.play&&DISCO(pl.play),on=q.on&&pd;
   let h=`<div class="tot-head"><div class="mono" style="color:var(--muted)">o nosso quarto</div><h2>O quarto do Miguel e da Clara</h2><div class="sub">${ed?'Decorem juntos com os BPM que os dois ganham nas missões. Com música a tocar no quarto também ganham BPM.':'Estás de visita. Só o Miguel e a Clara podem mudar as coisas.'}</div></div>
   <div class="qbar"><span class="qcoins">♩ <b id="bpmv">${coins}</b> BPM</span><span class="rdisc">💿 ${pl.own.length} discos</span><span class="rdisc">🕰️ <b id="rclock">${n.hh}</b> em Portugal</span>${ed?`<button class="rdisc rbill" onclick="billsZoom()">🧾 −${billDay()} BPM/dia</button>`:''}</div>
-  <div class="roomscene">${roomSceneInner()}${sceneHud()}</div>
+  <div class="roomscene"><div class="roomscroll">${roomSceneInner()}</div>${sceneHud()}<span class="roomhint">↔ arrasta para ver o quarto</span></div>
   <p class="hint center todinfo">👆 Toquem nas coisas do quarto: gira-discos, prateleira, móvel, molduras, quadro de recados, janela, luzes, animais… Agora é ${TODN[tnow]} em Portugal: o quarto segue a hora real. O sol nasce às ${n.f(n.rise)} e põe-se às ${n.f(n.set)}.</p>`;
   if(prev)h+=`<div class="rprev"><div><span class="mono">a experimentar</span><b>${esc(prev.n)}</b><em>${prev.lock?`🔒 Só com a missão a dois “${esc(lockM(prev).n)}”: ${esc(lockM(prev).d)}`:`♩ ${prev.p} BPM`}</em></div><div class="acts">${prev.lock?'':falta>0?`<button class="btn" disabled>Faltam ${falta} BPM</button>`:`<button class="btn" onclick="roomBuy('${prev.id}')">Comprar</button>`}<button class="btn ghost" onclick="L.rPrev=null;render()">Tirar</button></div></div>`;
   if(!ed)return h+`<div class="actions"><button class="btn" onclick="L.screen=null;render()">← Voltar</button></div>`;
@@ -3132,11 +3166,14 @@ function quartoScreen(){const ed=canEdit(),coins=roomCoins(),q=roomQ(),pl=discPl
       pl.own.forEach(k=>{const d=DISCO(k),at=pl.sh.includes(k)?'s':pl.wl.includes(k)?'w':'m';
         h+=`<div class="dcard ${L.rNew===k?'new':''}"><img src="${esc(d.f)}" alt="" loading="lazy"><b>${esc(d.t)}</b><span>${esc(d.a)}</span><div class="dbtn"><button class="${at==='s'?'on':''}" onclick="discMove('${k}','s')" title="Prateleira">📚</button><button class="${at==='w'?'on':''}" onclick="discMove('${k}','w')" title="Vinil na parede">💿</button><button class="${at==='m'?'on':''}" onclick="discMove('${k}','m')" title="Guardar no móvel">📦</button><button class="${q.on&&pl.play===k?'on':''}" onclick="discMove('${k}','p')" title="Pôr a tocar">▶️</button></div></div>`});
       h+=`</div>`}
-    if(sub==='loja'){h+=`<div class="rsurp"><div><b>💿 Caixa surpresa</b><span>Um disco ao calhas que ainda não têm (dos que custam até ♩ ${SURPRESA_MAX}).</span></div><button class="btn" ${coins<SURPRESA_PRECO?'disabled':''} onclick="discSurprise()">♩ ${SURPRESA_PRECO}</button></div><p class="hint">Como na vida real, nem todos os vinis custam o mesmo: conta o estatuto do artista, a fama do álbum e a musicalidade. Os clássicos das lendas são os mais caros.</p>${chips}<div class="dgrid">`;
-      DISCOS.filter(d=>!pl.own.includes(d.k)&&(!art||d.a===art)&&!DISC_EXCL.has(d.k)).sort((a,b)=>discPrice(b.k)-discPrice(a.k)).forEach(d=>{const I=discInfo(d.k);h+=`<div class="dcard shop"><img src="${esc(d.f)}" alt="" loading="lazy"><b>${esc(d.t)}</b><span>${esc(d.a)}</span><div class="dtags">${I.tags.map(t=>`<i>${t}</i>`).join('')}</div><small class="dwhy" title="Estatuto do artista ${I.est}/5 · fama do álbum ${I.fama}/5 · musicalidade ${String(I.mus).replace('.',',')}/10">estatuto ${I.est}/5 · fama ${I.fama}/5 · música ${String(I.mus).replace('.',',')}</small><button class="btn sm" ${coins<I.p?'disabled':''} onclick="discBuy('${d.k}')">♩ ${I.p}</button></div>`});h+=`</div>`}
+    if(sub==='loja'){const rf=L.rRar||'',own=pl.own,left=rk=>DISCOS.filter(d=>!own.includes(d.k)&&!DISC_EXCL.has(d.k)&&discInfo(d.k).rar===rk).length;
+      h+=`<div class="rboxes">${RAR.map(R=>`<button class="rbox r-${R[0]}" ${coins<R[6]||!left(R[0])?'disabled':''} onclick="discSurprise('${R[0]}')"><span>📦</span><b>Caixa ${{comum:'comum',raro:'rara',epico:'épica',lend:'lendária'}[R[0]]}</b><small>${left(R[0])} disco${left(R[0])===1?'':'s'} possíve${left(R[0])===1?'l':'is'}</small><em>♩ ${R[6]}</em></button>`).join('')}</div>
+      <p class="hint">Como na vida real, cada vinil tem o seu valor: conta sobretudo o álbum (fama e aclamação), e depois o estatuto do artista e a musicalidade. Por isso, nem todos os discos de um grande artista são caros.</p>
+      <div class="chips rart rrar">${[['','Todas'],...RAR.map(R=>[R[0],R[2]+' '+R[1]])].map(([k,t])=>`<button class="chip ${rf===k?'on':''}" onclick="L.rRar='${k}';render()">${t}</button>`).join('')}</div>${chips}<div class="dgrid">`;
+      DISCOS.filter(d=>!pl.own.includes(d.k)&&(!art||d.a===art)&&!DISC_EXCL.has(d.k)&&(!rf||discInfo(d.k).rar===rf)).sort((a,b)=>discPrice(b.k)-discPrice(a.k)).forEach(d=>{const I=discInfo(d.k);h+=`<div class="dcard shop r-${I.rar}"><img src="${esc(d.f)}" alt="" loading="lazy"><b>${esc(d.t)}</b><span>${esc(d.a)}</span><div class="dtags">${I.tags.map(t=>`<i>${t}</i>`).join('')}</div><button class="btn sm" ${coins<I.p?'disabled':''} onclick="discBuy('${d.k}')">♩ ${I.p}</button></div>`});h+=`</div>`}
     if(sub==='post')h+=postersTab(coins,art,chips);
     if(sub==='excl'){h+=`<p class="hint">Estes não se compram. Há discos assim de quase todos os cantores: basta um de vocês completar a missão.</p>${chips}<div class="dgrid">`;
-      DISCOS.filter(d=>DISC_EXCL.has(d.k)&&!pl.own.includes(d.k)&&(!art||d.a===art)).forEach(d=>{const m=missOfDisc(d.k),best=Math.max(...CASAL.map(w=>Math.min(stVal(profGet(w),m.s),m.t)));h+=`<div class="dcard lock"><img src="${esc(d.f)}" alt="" loading="lazy"><b>${esc(d.t)}</b><span>${esc(d.a)}</span><em class="dmiss">🎯 ${esc(m.n)}</em><div class="mbar"><i style="width:${Math.round(best/m.t*100)}%"></i></div><small>${esc(m.d)} · ${best}/${m.t}</small></div>`});h+=`</div>`}}
+      DISCOS.filter(d=>DISC_EXCL.has(d.k)&&!pl.own.includes(d.k)&&(!art||d.a===art)).forEach(d=>{const m=missOfDisc(d.k),best=Math.max(...CASAL.map(w=>Math.min(stVal(profGet(w),m.s),m.t)));h+=`<div class="dcard lock r-${discInfo(d.k).rar}"><img src="${esc(d.f)}" alt="" loading="lazy"><b>${esc(d.t)}</b><span>${esc(d.a)}</span><em class="dmiss">🎯 ${esc(m.n)}</em><div class="mbar"><i style="width:${Math.round(best/m.t*100)}%"></i></div><small>${esc(m.d)} · ${best}/${m.t}</small></div>`});h+=`</div>`}}
   if(L.rTab==='ganhar'){const P=CASAL.map(w=>profGet(w));
     h+=`<p class="hint">O quarto começa com 0 BPM. As missões do Miguel e da Clara enchem a mesma conta: cada missão paga um quarto dos BPM a cada 25% do caminho. Ter um disco a tocar no quarto, com o som ligado, dá +1 BPM por minuto (até ${BPM_DIA} por dia em cada telemóvel). Atenção às contas do quarto: comida dos animais, luz e água são cobradas todos os dias. Já ganharam ${q.mus||0} BPM com música.</p><div class="mgrid">`;
     MISSOES.map(m=>{const r=mReward(m),vs=P.map(p=>Math.min(stVal(p,m.s),m.t)),cv=m.co?Math.min(coVal(m),m.t):0;return {m,r,vs,got:m.co?Math.round(r.r*Math.floor(4*cv/m.t)/4):vs.reduce((a,v)=>a+Math.round(r.r*Math.floor(4*v/m.t)/4),0),pr:(m.co?cv:Math.max(...vs))/m.t}}).sort((a,b)=>(a.pr>=1)-(b.pr>=1)||b.pr-a.pr).slice(0,24).forEach(x=>{const d=x.r.disc&&DISCO(x.r.disc),done=x.pr>=1;
@@ -3660,7 +3697,7 @@ function rulesBox(){
     <div class="rexp"><b>♩ Como se ganham</b><span>Missões de cada um: entre 100 e 700 BPM, pagos aos bocados (a cada 25% do caminho). Missões a dois: entre 400 e 2 500 BPM, pagas uma vez ao casal. Música a tocar no quarto: +1 BPM por minuto, só com o quarto aberto no ecrã e o som ligado (até 60 por dia em cada telemóvel).</span></div>
     <div class="rexp"><b>🧾 Contas do quarto</b><span>Todos os dias paga-se a casa (8 BPM), a comida de cada animal (5 a 20), a luz de cada candeeiro (1 a 8), a eletricidade do gira-discos e do computador e a água das plantas. Se ficarem a dever, a luz é cortada e os animais passam fome até pagarem. Se não abrirem o jogo, cobram-se no máximo 7 dias.</span></div>
     <div class="rexp"><b>🏠 Uma só conta</b><span>Os BPM do Miguel e da Clara vão todos para a conta do quarto. Os dois veem o mesmo número e qualquer um pode gastar.</span></div>
-    <div class="rexp"><b>🛍️ O que se compra</b><span>Objetos para o quarto (de 230 a 2 250 BPM), discos (de 150 a cerca de 800 BPM: o preço depende do estatuto do artista, da fama do álbum e da musicalidade) e a caixa surpresa (240). Há 41 discos que só se ganham em missões, e 5 objetos de casal que só se ganham em missões a dois. Os pósteres compram-se à parte (40% do preço do disco): podem ter o póster de um álbum sem terem o disco.</span></div>
+    <div class="rexp"><b>🛍️ O que se compra</b><span>Objetos para o quarto (de 230 a 2 250 BPM), discos com 4 raridades (⚪ Comum até ~250, 🔵 Raro ~300–450, 🟣 Épico ~500–750, 🟡 Lendário ~900–1 150 BPM: conta sobretudo o álbum, não só o cantor) e caixas surpresa de cada raridade. Há 41 discos que só se ganham em missões, e 5 objetos de casal que só se ganham em missões a dois. Os pósteres compram-se à parte (40% do preço do disco): podem ter o póster de um álbum sem terem o disco.</span></div>
     <div class="rexp"><b>💿 Vinis e discos</b><span>As missões normais são de cada um: cada um tem a sua coleção de vinis. As missões a dois aparecem nas duas coleções. Os discos do quarto nunca se repetem: basta um completar a missão.</span></div>`}
   return `<div class="panel rules2"><div class="rhead"><span class="mono">como se joga</span><span class="rstep">${k+1} / ${T.length}</span></div>
    <div class="rtabs">${T.map((t,i)=>`<button class="${i===k?'on':''}" onclick="rset(${i})" title="${t[1]}"><span>${t[0]}</span><small>${t[1]}</small></button>`).join('')}</div>
@@ -3994,7 +4031,7 @@ function body(){
 }
 function viewKey(){if(L.screen)return 'scr:'+L.screen+(L.rank?'1':'0')+(L.rankPer||'all');if(MODE==='online'&&G&&G.coop&&G.coop.seed){const c=G.coop;return ['co',c.seed,c.m,(c.tp||[]).length,!!(c.ok&&c.ok.p0&&c.ok.p1),JSON.stringify(c.fav&&Object.keys(c.fav)),JSON.stringify(c.gs&&Object.keys(c.gs)),c.r,JSON.stringify(c.hist&&c.hist[c.r])].join('|')}if(!G||!G.seed||!MODE)return [WHO,MODE,CODE,L.status,G?.joined?.p0,G?.joined?.p1,G?.seed].join('|');const ph=phase();return [MODE,G.round,ph,ph==='draft'?picks().length:'',ph==='duels'?stageKind().join(':'):'',ph==='order'?!!G.orders?.[P(WHO)]:''].join('|')}
 function render(){
-  const app=document.getElementById('app'),keep={},kx={};app.querySelectorAll('.rcats,.rart,.qtabs,.dsub').forEach((e,i)=>kx[e.className+'#'+i]=e.scrollLeft);app.querySelectorAll('input[id]').forEach(i=>keep[i.id]=i.value);
+  const app=document.getElementById('app'),keep={},kx={};app.querySelectorAll('.rcats,.rart,.qtabs,.dsub,.roomscroll').forEach((e,i)=>kx[e.className+'#'+i]=e.scrollLeft);app.querySelectorAll('input[id]').forEach(i=>keep[i.id]=i.value);
   const fid=document.activeElement&&document.activeElement.id;
   const key=viewKey(),enter=key!==L.lastKey,prevKey=L.lastKey||'';L.lastKey=key;
   /* troca suave dentro da mesma fase (duelo → duelo): só um fade, sem a página toda a reentrar */
@@ -4005,7 +4042,7 @@ function render(){
   document.body.classList.toggle('has-dock',!!document.querySelector('.odock'));document.body.classList.toggle('has-ddock',!!document.querySelector('.ddock'));{const sd=app.querySelector('main .stagedock');if(sd){if(L.hadSd)sd.style.animation='none';app.appendChild(sd)}L.hadSd=!!sd}document.body.classList.toggle('has-sdock',!!document.querySelector('.stagedock'));
   try{boardMount()}catch(e){}
   for(const k in keep){const el=document.getElementById(k);if(el)el.value=keep[k]}
-  app.querySelectorAll('.rcats,.rart,.qtabs,.dsub').forEach((e,i)=>{const v=kx[e.className+'#'+i];if(v)e.scrollLeft=v});
+  app.querySelectorAll('.rcats,.rart,.qtabs,.dsub,.roomscroll').forEach((e,i)=>{const v=kx[e.className+'#'+i];if(v)e.scrollLeft=v;else if(e.classList.contains('roomscroll')&&e.scrollWidth>e.clientWidth+4)e.scrollLeft=(e.scrollWidth-e.clientWidth)*.4});
   if(fid)document.getElementById(fid)?.focus();
   const pk=(G&&G.seed&&MODE)?(phase()==='duels'?'duels:'+(stageKind()[0]==='duel'&&stageKind()[1]<G.per?'duel':stageKind()[0]):phase()):'';
   if(pk!==L.lastPhase){const prevP=L.lastPhase;L.lastPhase=pk;if(prevP!==undefined&&pk){const T={draft:['Isto ou aquilo!','escolham as vossas músicas'],order:['Hora de ordenar','monta o teu álbum'],'duels:duel':['Duelos!','faixa contra faixa'],'duels:combos':['Combinações','como montaram os álbuns'],'duels:suspense':['E agora…','o grande final']}[pk];if(T)intertitle(T[0],T[1])}}
