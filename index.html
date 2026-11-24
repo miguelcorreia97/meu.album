@@ -2642,7 +2642,8 @@ function missionEnd(){try{if(!ME||WHO==null||!G||!G.seed)return;const done=JSON.
   let w=0,l=0;for(let d=0;d<G.per;d++){const j=judge(d);if(j.w===WHO)w++;else if(j.w===1-WHO)l++}
   profAdd('duelWin',w);if(w===G.per)profAdd('sweep');if(l===G.per)profAdd('wipe');if(won&&byCoin)profAdd('coin');
   try{const pd=pedido();const hits=rawTracks(WHO).filter(t=>pd.t(ev(t.i),t)).length;if(hits)profAdd('pedido',hits)}catch(e){}
-  if(now.getHours()<5)profAdd('night');if(now.getDay()===0)profAdd('sunday')}catch(e){}}
+  if(now.getHours()<5)profAdd('night');if(now.getDay()===0)profAdd('sunday');
+  vitBpm(won?(cpu?VIT_BPM.cpu[G.level||'normal']||15:VIT_BPM.pvp):VIT_BPM.perde,won?'vitória':'partida jogada')}catch(e){}}
 /* desenho do vinil */
 function vinyl(m,on,big){const v=m.v,lab=v.a?`<img src="${esc(ART_COVER(v.a))}" alt="" loading="lazy">`:`<span class="ve" style="--vc:${v.c}">${v.e}</span>`;
   return `<div class="vinyl ${on?'on':'off'} ${big?'big':''}"><div class="vgroove"></div><div class="vlabel" style="--vc:${v.c||'#222'}">${lab}</div><div class="vhole"></div>${on?'':'<div class="vlock">🔒</div>'}</div>`}
@@ -2749,7 +2750,13 @@ const RDEF={cor:'w-creme',chao:'f-madeira',prat:'p-simples',movel:'m-caixote',le
 const LUZES=new Set(['pf-papel','pf-pendente','pf-globo','pf-lustre','l-casal','l-lua','t-heras','t-lampadas','l-candeeiro','l-sunset','l-neon','l-onair','l-led','mz-lava','mz-velas','mz-sal','mz-relogio','cb-papel','cb-cogumelo','cb-velas','sc-madeira','sc-branca','sc-estante']);
 
 /* ---------- quarto partilhado do Miguel e da Clara (um só documento online) ---------- */
-const CASAL=['p0','p1'],CASA_ID='u-quarto-casa',BPM_DIA=60;
+const CASAL=['p0','p1'],CASA_ID='u-quarto-casa',BPM_DIA=60,VIT_DIA=100;
+/* BPM por jogar: prémio direto no fim de cada partida, com limite diário por pessoa */
+const VIT_BPM={cpu:{facil:8,normal:15,dificil:25},pvp:20,perde:3};
+function vitBpm(n,why){try{const w=myPid();if(!CASAL.includes(w)||!(n>0))return 0;const p=profGet(w),hoje=dayNum(lisNow().ymd);
+  const usados=(+p.st.vbDay===hoje)?(+p.st.vbHoje||0):0,dar=Math.max(0,Math.min(n,VIT_DIA-usados));
+  profSet('vbDay',hoje);profSet('vbHoje',usados+dar);if(dar)profAdd('vbpm',dar);
+  setTimeout(()=>toast(dar?`♩ +${dar} BPM para o quarto · ${why}${usados+dar>=VIT_DIA?' (limite de hoje atingido)':''}`:`Já ganharam o máximo de ${VIT_DIA} BPM em partidas hoje`),900);return dar}catch(e){return 0}}
 const SQ={d:null,base:null,ut:null,busy:false,again:0};
 const sqBlank=()=>({eq:{},own:{},spent:0,pst:null,buy:[],sh:null,wl:null,px:null,play:null,on:0,mus:0,custo:0,paid:null,blog:[]});
 (()=>{try{const x=JSON.parse(localStorage.getItem('quarto-casa')||'null');if(x&&x.d){SQ.d=x.d;SQ.base=JSON.parse(JSON.stringify(x.base||x.d));SQ.ut=x.ut||null}}catch(e){}if(!SQ.d){SQ.d=sqBlank();SQ.base=sqBlank()}})();
@@ -2775,7 +2782,7 @@ async function sqPull(){if(SQ.busy||!(db&&db.cloud))return;const cur=await sqFet
 function roomQ(){const d=SQ.d;d.eq=d.eq||{};d.own=d.own||{};d.buy=d.buy||[];d.spent=+d.spent||0;d.mus=+d.mus||0;return {...d,eq:{...RDEF,...d.eq}}}
 function roomSave(q,lazy){Object.assign(SQ.d,JSON.parse(JSON.stringify(q)));sqSaveLocal();clearTimeout(roomSave.t);roomSave.t=setTimeout(sqSync,lazy?20000:700)}
 const canEdit=()=>!!(ME&&(ME.id==='miguel'||ME.id==='clara'));
-function roomEarned(){const q=roomQ();let n=q.mus||0;for(const m of MISSOES){if(m.co){const v=Math.min(coVal(m),m.t);n+=Math.round(mReward(m).r*Math.floor(4*v/m.t)/4);continue}for(const w of CASAL){const v=Math.min(stVal(profGet(w),m.s),m.t);n+=Math.round(mReward(m).r*Math.floor(4*v/m.t)/4)}}return n}
+function roomEarned(){const q=roomQ();let n=(q.mus||0)+CASAL.reduce((a,w)=>a+(+profGet(w).st.vbpm||0),0);for(const m of MISSOES){if(m.co){const v=Math.min(coVal(m),m.t);n+=Math.round(mReward(m).r*Math.floor(4*v/m.t)/4);continue}for(const w of CASAL){const v=Math.min(stVal(profGet(w),m.s),m.t);n+=Math.round(mReward(m).r*Math.floor(4*v/m.t)/4)}}return n}
 const roomCoins=()=>roomEarned()-roomQ().spent-(+roomQ().custo||0);
 function discOwned(){const q=roomQ(),s=new Set;for(const m of MISSOES){const d=DISC_MISS[m.id];if(d&&CASAL.some(w=>profGet(w).u[m.id]))s.add(d)}q.buy.forEach(k=>s.add(k));return [...s].filter(DISCO)}
 const lockM=it=>it&&it.lock&&MISSOES.find(m=>m.id===it.lock);
@@ -3263,7 +3270,7 @@ function quartoScreen(){const ed=canEdit(),coins=roomCoins(),q=roomQ(),pl=discPl
     if(sub==='excl'){h+=`<p class="hint">Estes não se compram. Há discos assim de quase todos os cantores: basta um de vocês completar a missão.</p>${chips}<div class="dgrid">`;
       DISCOS.filter(d=>DISC_EXCL.has(d.k)&&!pl.own.includes(d.k)&&(!art||d.a===art)).forEach(d=>{const m=missOfDisc(d.k),best=Math.max(...CASAL.map(w=>Math.min(stVal(profGet(w),m.s),m.t)));h+=`<div class="dcard lock r-${discInfo(d.k).rar}"><img src="${esc(d.f)}" alt="" loading="lazy"><b>${esc(d.t)}</b><span>${esc(d.a)}</span><em class="dmiss">🎯 ${esc(m.n)}</em><div class="mbar"><i style="width:${Math.round(best/m.t*100)}%"></i></div><small>${esc(m.d)} · ${best}/${m.t}</small></div>`});h+=`</div>`}}
   if(L.rTab==='ganhar'){const P=CASAL.map(w=>profGet(w));
-    h+=`<p class="hint">O quarto começa com 0 BPM. As missões do Miguel e da Clara enchem a mesma conta: cada missão paga um quarto dos BPM a cada 25% do caminho. Ter um disco a tocar no quarto, com o som ligado, dá +1 BPM por minuto (até ${BPM_DIA} por dia em cada telemóvel). Atenção às contas do quarto: comida dos animais, luz e água são cobradas todos os dias. Já ganharam ${q.mus||0} BPM com música.</p><div class="mgrid">`;
+    h+=`<p class="hint">O quarto começa com 0 BPM. As missões do Miguel e da Clara enchem a mesma conta: cada missão paga um quarto dos BPM a cada 25% do caminho. Ter um disco a tocar no quarto, com o som ligado, dá +1 BPM por minuto (até ${BPM_DIA} por dia em cada telemóvel). Cada partida também paga na hora: vitória contra o computador 8/15/25 BPM (Fácil/Normal/Difícil), contra uma pessoa 20, derrota 3, até ${VIT_DIA} BPM por dia a cada um${(()=>{const u=CASAL.map(w=>{const s=profGet(w).st;return +s.vbDay===dayNum(lisNow().ymd)?+s.vbHoje||0:0});return ` (hoje: 🌴 ${u[0]}/${VIT_DIA} · 🌻 ${u[1]}/${VIT_DIA})`})()}. Atenção às contas do quarto: comida dos animais, luz e água são cobradas todos os dias. Já ganharam ${q.mus||0} BPM com música.</p><div class="mgrid">`;
     MISSOES.map(m=>{const r=mReward(m),vs=P.map(p=>Math.min(stVal(p,m.s),m.t)),cv=m.co?Math.min(coVal(m),m.t):0;return {m,r,vs,got:m.co?Math.round(r.r*Math.floor(4*cv/m.t)/4):vs.reduce((a,v)=>a+Math.round(r.r*Math.floor(4*v/m.t)/4),0),pr:(m.co?cv:Math.max(...vs))/m.t}}).sort((a,b)=>(a.pr>=1)-(b.pr>=1)||b.pr-a.pr).slice(0,24).forEach(x=>{const d=x.r.disc&&DISCO(x.r.disc),done=x.pr>=1;
       h+=`<div class="mcard ${done?'on':''}">${d?`<img class="rmc" src="${esc(d.f)}" alt="" loading="lazy" style="${done?'':'filter:grayscale(1) brightness(.6)'}">`:vinyl(x.m,done)}<div class="mtxt"><b>${esc(x.m.n)}</b><span>${esc(x.m.d)}</span><span class="rrw">♩ ${x.got} de ${x.r.r*(x.m.co?1:2)} BPM${d?` · 💿 ${esc(d.t)}`:''}${MITEM[x.m.id]?` · 🎁 ${esc(RIT[MITEM[x.m.id]].n)}`:''}</span><span class="rrw who">${x.m.co?(x.m.half?`🌴 ${coHalf(x.m)[0]}/${x.m.t/2} · 🌻 ${coHalf(x.m)[1]}/${x.m.t/2} · a meias`:`🌴🌻 a dois · ${Math.min(coVal(x.m),x.m.t)}/${x.m.t}`):`🌴 ${x.vs[0]}/${x.m.t} · 🌻 ${x.vs[1]}/${x.m.t}`}</span><div class="mbar"><i style="width:${Math.round(x.pr*100)}%"></i></div></div></div>`});
     h+=`</div><div class="actions"><button class="btn ghost" onclick="openMissions()">Ver todas as missões</button></div>`}
@@ -3437,7 +3444,8 @@ function coRecord(kind,x){try{if(!ME)return;const c=CO(),done=JSON.parse(localSt
   if(!coCasal())return;profAdd('co_jogos');juntosAdd();
   if(kind==='ab'){if(x.won){profAdd('co_win');const s=(+profGet(myPid()).st.co_seq||0)+1;profSet('co_seq',s);profMax('co_seqb',s)}else profSet('co_seq',0)}
   if(kind==='onda'){profAdd('co_ac',x.r[WHO].hits.length);profMax('co_sint',x.pct)}
-  if(kind==='noite')profMax('co_noite',x.sv)}catch(e){}}
+  if(kind==='noite')profMax('co_noite',x.sv);
+  vitBpm(kind==='ab'?(x.won?VIT_BPM.pvp:VIT_BPM.perde):kind==='onda'?Math.max(VIT_BPM.perde,Math.round((x.pct||0)/5)):Math.max(VIT_BPM.perde,Math.min(25,(x.sv||0)*4)),'modo a dois')}catch(e){}}
 /* partidas juntos (qualquer modo) e dias em que jogaram */
 function juntosAdd(){profAdd('juntos');try{const n=lisNow(),d=new Date(),dow=+new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Lisbon',weekday:'narrow'}).format(d)||0;const wd=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(new Intl.DateTimeFormat('en-US',{timeZone:'Europe/Lisbon',weekday:'short'}).format(d));
   const L2=JSON.parse(localStorage.getItem('co-dias')||'{}'),e=L2[n.ymd]||{wd};if(n.h>=6&&n.h<12)e.m=1;if(n.h>=20||n.h<5)e.n=1;L2[n.ymd]=e;
@@ -3833,7 +3841,7 @@ function rulesBox(){
     <div class="rchips">${Object.entries(CO_MODES).map(([q,x])=>`<button class="rchip ${m===q?'on':''}" onclick="L.rco='${q}';render()">${x.e} ${x.n}</button>`).join('')}</div><div class="rbody2">${X[m]}</div>
     <p class="rsmall">Quando jogam o Miguel e a Clara juntos, estas partidas contam para as <b>missões a dois</b>.</p>`}
   if(k===7){body=`<p>O <b>BPM</b> é o dinheiro do jogo. Tal como a batida dita o ritmo de uma música, os BPM ditam o que o vosso quarto pode ter.</p>
-    <div class="rexp"><b>♩ Como se ganham</b><span>Missões de cada um: entre 100 e 700 BPM, pagos aos bocados (a cada 25% do caminho). Missões a dois: entre 400 e 2 500 BPM, pagas uma vez ao casal. Música a tocar no quarto: +1 BPM por minuto, só com o quarto aberto no ecrã e o som ligado (até 60 por dia em cada telemóvel).</span></div>
+    <div class="rexp"><b>♩ Como se ganham</b><span>Missões de cada um: entre 100 e 700 BPM, pagos aos bocados (a cada 25% do caminho). Missões a dois: entre 400 e 2 500 BPM, pagas uma vez ao casal. Música a tocar no quarto: +1 BPM por minuto, só com o quarto aberto no ecrã e o som ligado (até 60 por dia em cada telemóvel). Partidas: cada vitória dá BPM na hora (contra o computador 8 no Fácil, 15 no Normal, 25 no Difícil; contra uma pessoa 20; nos modos a dois até 25) e cada derrota dá 3, até 100 BPM por dia a cada um.</span></div>
     <div class="rexp"><b>🧾 Contas do quarto</b><span>Todos os dias paga-se a casa (8 BPM), a comida de cada animal (5 a 20), a luz de cada candeeiro (1 a 8), a luz do teto (4 a 11, conforme a intensidade), a eletricidade do gira-discos e do computador e a água das plantas. Se ficarem a dever, a luz é cortada e os animais passam fome até pagarem. Se ninguém abrir o jogo durante uns dias, paga-se tudo quando voltarem, mas nunca mais do que uma semana.</span></div>
     <div class="rexp"><b>🏠 Uma só conta</b><span>Os BPM do Miguel e da Clara vão todos para a conta do quarto. Os dois veem o mesmo número e qualquer um pode gastar.</span></div>
     <div class="rexp"><b>🛍️ O que se compra</b><span>Objetos para o quarto (de 230 a 2 250 BPM), discos com 4 raridades (⚪ Comum até ~250, 🔵 Raro ~300–450, 🟣 Épico ~500–750, 🟡 Lendário ~900–1 150 BPM: conta sobretudo o álbum, não só o cantor) e caixas surpresa de cada raridade. Há 41 discos que só se ganham em missões, e 5 objetos de casal que só se ganham em missões a dois. Os pósteres compram-se à parte (40% do preço do disco): podem ter o póster de um álbum sem terem o disco.</span></div>
