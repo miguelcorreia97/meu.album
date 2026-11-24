@@ -1678,6 +1678,43 @@ body,#app{overflow-x:clip}
 .coside2.mine{border-color:rgba(255,210,63,.5)}.coshead{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}.coshead h3{margin:0;font-size:1rem}.coshead .mono{font-size:.66rem;color:#ffd23f}
 .orow.ro{opacity:.85}.cosync h3{display:flex;justify-content:space-between;align-items:center}.cosync h3 b{color:#ffd23f}
 .cosides3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}@media(max-width:800px){.cosides3{grid-template-columns:1fr}}
+
+.buyfx{position:fixed;inset:0;z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:radial-gradient(circle at 50% 45%,rgba(40,22,8,.75),rgba(8,4,2,.92));animation:rzIn .25s both;overflow:hidden;cursor:pointer}
+.buyfx.out{animation:rzOut .3s both}
+.bfrays{position:absolute;left:50%;top:45%;width:900px;height:900px;margin:-450px 0 0 -450px;background:repeating-conic-gradient(from 0deg,color-mix(in srgb,var(--c) 35%,transparent) 0 8deg,transparent 8deg 22deg);border-radius:50%;mask:radial-gradient(circle,#000 0,#000 30%,transparent 65%);-webkit-mask:radial-gradient(circle,#000 0,#000 30%,transparent 65%);animation:bfRay 8s linear infinite,bfRayIn .6s both}
+.bfrays.late{animation:bfRay 8s linear infinite,bfRayIn .6s 1.3s both}
+@keyframes bfRay{to{transform:rotate(360deg)}}@keyframes bfRayIn{from{opacity:0;transform:scale(.3)}}
+.bfcard{position:relative;width:min(56vw,260px);aspect-ratio:1;border-radius:18px;background:#2a1a10;box-shadow:0 0 0 3px var(--c),0 0 60px color-mix(in srgb,var(--c) 60%,transparent);overflow:hidden;animation:bfPop .7s cubic-bezier(.2,1.4,.4,1) both}
+.bfcard svg{width:100%;height:100%;display:block}.bfcard img{width:100%;height:100%;object-fit:cover;display:block}
+.bfcard.poster{background:none;box-shadow:none;overflow:visible;width:min(48vw,220px);aspect-ratio:auto}.bfposter{padding:10px 10px 14px;background:#f3ede2;border:6px solid #6e4325;color:#1d1a18;display:flex;flex-direction:column;gap:2px;box-shadow:0 20px 50px rgba(0,0,0,.6)}.bfposter img{aspect-ratio:1;height:auto}.bfposter b{font-family:Fraunces,serif;margin-top:6px}.bfposter small{font-family:"Space Mono",monospace;font-size:.6rem}
+@keyframes bfPop{0%{transform:scale(.2) rotate(-12deg);opacity:0}100%{transform:none;opacity:1}}
+.bftxt{position:relative;text-align:center;animation:bfTxt .5s .35s both}.bftxt.late{animation-delay:1.7s}.bftxt .mono{display:block;font-size:.72rem;color:#ffd23f;letter-spacing:.08em}.bftxt b{display:block;font:700 1.4rem Fraunces,serif;color:#fff8ea;margin-top:4px}.bftxt small{color:var(--muted)}
+@keyframes bfTxt{from{opacity:0;transform:translateY(12px)}}
+.bspark{position:absolute;left:50%;top:45%;width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 10px var(--c);opacity:0;animation:bSpark 1.1s ease-out forwards}
+@keyframes bSpark{0%{opacity:1;transform:rotate(var(--a)) translateX(0) scale(1)}100%{opacity:0;transform:rotate(var(--a)) translateX(var(--d)) scale(.3)}}
+.boxfx .bxsparks .bspark{animation-delay:1.3s!important}
+.bxwrap{position:relative;width:180px;height:200px;margin-top:40px}
+.bxbody{position:absolute;left:10px;right:10px;bottom:0;height:120px;border-radius:10px;background:linear-gradient(160deg,color-mix(in srgb,var(--c) 85%,#fff),color-mix(in srgb,var(--c) 70%,#000));box-shadow:0 20px 40px rgba(0,0,0,.5),inset 0 -10px 20px rgba(0,0,0,.2);display:grid;place-items:center;z-index:3;animation:bxShake 1.2s ease-in-out both}
+.bxbody::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:18px;margin-left:-9px;background:rgba(255,255,255,.35)}
+.bxbody span{position:relative;font-size:2rem}
+.bxlid{position:absolute;left:0;right:0;bottom:112px;height:34px;border-radius:8px;background:linear-gradient(160deg,color-mix(in srgb,var(--c) 90%,#fff),color-mix(in srgb,var(--c) 75%,#000));z-index:4;animation:bxShake 1.2s ease-in-out both,bxLid .7s 1.2s cubic-bezier(.3,.7,.3,1) forwards}
+.bxlid::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:18px;margin-left:-9px;background:rgba(255,255,255,.35)}
+@keyframes bxShake{0%,100%{transform:none}10%{transform:rotate(-4deg)}20%{transform:rotate(4deg)}30%{transform:rotate(-6deg) translateY(-3px)}40%{transform:rotate(6deg)}50%{transform:rotate(-8deg) translateY(-6px)}60%{transform:rotate(8deg)}70%{transform:rotate(-10deg) translateY(-8px)}80%{transform:rotate(10deg)}90%{transform:rotate(-4deg)}}
+@keyframes bxLid{to{transform:translate(70px,-160px) rotate(40deg);opacity:0}}
+.bxglow{position:absolute;left:50%;bottom:100px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:var(--c);box-shadow:0 0 60px 30px var(--c);opacity:0;z-index:2;animation:bxGlow 1s 1.2s ease-out forwards}
+@keyframes bxGlow{0%{opacity:0;transform:scale(.2)}40%{opacity:1;transform:scale(3)}100%{opacity:.25;transform:scale(5)}}
+.bxdisc{position:absolute;left:50%;bottom:60px;width:170px;height:170px;margin-left:-85px;z-index:2;opacity:0;animation:bxRise 1s 1.3s cubic-bezier(.2,1.2,.4,1) forwards}
+.bxdisc img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:6px;box-shadow:0 0 0 3px var(--c),0 0 50px var(--c);opacity:0;animation:bxCov .5s 2.1s ease forwards}
+.bxvinyl{position:absolute;inset:0;border-radius:50%;background:repeating-radial-gradient(#141210 0 2px,#221d1a 2px 4px);display:grid;place-items:center;animation:rmSpinCov 1s linear infinite}
+.bxvinyl span{width:36%;aspect-ratio:1;border-radius:50%;background-size:cover;border:3px solid #0b0908}
+@keyframes bxRise{0%{opacity:0;transform:translateY(80px) scale(.4)}100%{opacity:1;transform:translateY(-70px) scale(1)}}
+@keyframes bxCov{from{opacity:0;transform:scale(.6) rotate(-10deg)}to{opacity:1;transform:none}}
+.boxfx .bxbody,.boxfx .bxlid{animation-fill-mode:both}
+.boxfx .bxwrap::after{content:"";position:absolute;inset:0}
+.bxtap{position:absolute;bottom:28px;font-size:.75rem;color:var(--muted);opacity:0;animation:bfTxt .4s 2.4s forwards}
+.boxfx.r-lend .bxdisc img{box-shadow:0 0 0 4px var(--c),0 0 90px 20px var(--c)}
+.ract.rm-new .ri{animation:rmNew 2.2s ease}@keyframes rmNew{0%,100%{filter:none}20%,60%{filter:drop-shadow(0 0 10px #ffd23f) drop-shadow(0 0 22px #ffd23f) brightness(1.25)}40%,80%{filter:drop-shadow(0 0 4px #ffd23f)}}
+@media (prefers-reduced-motion:reduce){.bfrays,.bxbody,.bxlid,.bxvinyl{animation:none}}
 </style>
 </head>
 <body>
@@ -3146,7 +3183,8 @@ function roomTod(t){L.rTodV=t||null;const s=document.querySelector('.roomscene .
 function roomTry(id){const it=RIT[id];if(!it||!canEdit())return;
   if(ownsItem(0,id)){const q=roomQ();if(q.eq[it.s]===id&&!RFIX[it.s])q.eq[it.s]=null;else q.eq[it.s]=id;L.rPrev=null;roomSave(q)}else L.rPrev=L.rPrev===id?null:id;render();roomScroll()}
 function roomBuy(id){const it=RIT[id];if(!it||!canEdit()||it.lock)return;const q=roomQ();if(roomCoins()<it.p)return;
-  q.spent+=it.p;q.own[id]=1;q.eq[it.s]=id;L.rPrev=null;roomSave(q);profAdd('compras');profMax('ninho',Object.keys(q.own).length);if(it.s==='plafon')setTimeout(plafonZoom,600);try{celebrate(24)}catch(e){}render();roomScroll()}
+  q.spent+=it.p;q.own[id]=1;q.eq[it.s]=id;L.rPrev=null;roomSave(q);profAdd('compras');profMax('ninho',Object.keys(q.own).length);render();
+  buyFx({html:itemThumb(it),title:it.n,sub:'novo no quarto!',kind:'item'},()=>{const sc=document.querySelector('.roomscene');if(sc)sc.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>{roomOnce('.ract-'+it.s,'rm-new',2200);if(it.s==='plafon')setTimeout(plafonZoom,900)},450)})}
 function roomScroll(){const s=document.querySelector('.roomscene');if(s&&s.getBoundingClientRect().top<-80)s.scrollIntoView({behavior:'smooth',block:'start'})}
 function roomSceneInner(){const o={};if(L.rPrev)o.eq={[RIT[L.rPrev].s]:L.rPrev};if(L.rTodV)o.tod=L.rTodV;return roomSvg(0,o)}
 function roomPop(t){const sc=document.querySelector('.roomscene'),lt=document.getElementById('rleitor');if(!sc||!lt)return;const a=sc.getBoundingClientRect(),b=lt.getBoundingClientRect();const e=document.createElement('div');e.className='rpop';e.textContent=t;e.style.left=(b.left-a.left+b.width/2)+'px';e.style.top=(b.top-a.top)+'px';sc.appendChild(e);setTimeout(()=>e.remove(),1800)}
@@ -3165,9 +3203,9 @@ function discMove(k,where){if(!canEdit())return;if(where==='p')return roomPlay(k
   if(where==='w'){if(wl.length>=pl.capW){toast(pl.capW?'A parede já tem 3 vinis. Guardem um primeiro.':'Comprem os “Vinis na parede” (Loja → Parede da cama) para pendurar discos.');return}wl.push(k)}
   if(where==='x'){if(px.length>=pl.capP){L.rMsg=pl.capP?`Os pósteres só levam ${pl.capP} álbum${pl.capP>1?'s':''}.`:'Comprem pósteres de álbuns na loja (Pósteres de álbuns).';render();return}px.push(k)}
   q.sh=sh;q.wl=wl;q.px=px;L.rMsg='';roomSave(q);render()}
-function discBuy(k){if(!canEdit())return;const q=roomQ(),pr=discPrice(k);if(roomCoins()<pr||discOwned().includes(k)||DISC_EXCL.has(k))return;q.spent+=pr;q.buy=[...q.buy,k];roomSave(q);L.rNew=k;try{celebrate(20)}catch(e){}render();setTimeout(()=>discZoom(k),300)}
+function discBuy(k){if(!canEdit())return;const q=roomQ(),pr=discPrice(k);if(roomCoins()<pr||discOwned().includes(k)||DISC_EXCL.has(k))return;q.spent+=pr;q.buy=[...q.buy,k];roomSave(q);L.rNew=k;render();const D=DISCO(k),I=discInfo(k);buyFx({html:`<img src="${esc(D.f)}" alt="">`,title:D.t,sub:`${I.tags[0]} · novo disco!`,color:RARK[I.rar][4],kind:'cover'},()=>discZoom(k))}
 function discSurprise(rk){if(!canEdit())return;const R=RARK[rk||'comum'],q=roomQ(),own=discOwned(),pool=DISCOS.filter(d=>!own.includes(d.k)&&!DISC_EXCL.has(d.k)&&discInfo(d.k).rar===R[0]);if(!pool.length){toast(`Já têm todos os discos ${{comum:'comuns',raro:'raros',epico:'épicos',lend:'lendários'}[R[0]]} à venda!`);return}if(roomCoins()<R[6])return;
-  const d=pool[Math.floor(Math.random()*pool.length)];q.spent+=R[6];q.buy=[...q.buy,d.k];roomSave(q);L.rNew=d.k;toast(`${R[2]} Saiu: ${d.t} · ${d.a}`);try{celebrate(rk==='lend'?90:rk==='epico'?50:30)}catch(e){}render();setTimeout(()=>discZoom(d.k),300)}
+  const d=pool[Math.floor(Math.random()*pool.length)];q.spent+=R[6];q.buy=[...q.buy,d.k];roomSave(q);L.rNew=d.k;render();boxOpenFx(R,d.k,()=>discZoom(d.k))}
 const TODN={manha:'amanhecer',dia:'dia',tarde:'pôr do sol',noite:'noite'};
 function quartoScreen(){const ed=canEdit(),coins=roomCoins(),q=roomQ(),pl=discPlaces(),n=lisNow(),tnow=todNow(n),prev=L.rPrev&&RIT[L.rPrev],falta=prev?prev.p-coins:0,pd=pl.play&&DISCO(pl.play),on=q.on&&pd;
   let h=`<div class="tot-head"><div class="mono" style="color:var(--muted)">o nosso quarto</div><h2>O quarto do Miguel e da Clara</h2><div class="sub">${ed?'Decorem juntos com os BPM que os dois ganham nas missões. Com música a tocar no quarto também ganham BPM.':'Estás de visita. Só o Miguel e a Clara podem mudar as coisas.'}</div></div>
@@ -3446,7 +3484,7 @@ function boxZoom(){const pl=discPlaces();zoomOpen(`<div class="rzlist"><h3>📦 
 function posterZoom(k,ev){if(ev)ev.stopPropagation();const d=DISCO(k);if(!d)return;const ed=canEdit();
   zoomOpen(`<div class="rzposter"><div class="rzpimg"><img src="${esc(d.f)}" alt=""></div><b>${esc(d.t)}</b><small>${esc(d.a.toUpperCase())}</small></div><div class="rzinfo"><span class="mono">póster na parede</span><h3>${esc(d.t)}</h3><p>${esc(d.a)}</p>${discOwned().includes(k)?'<p class="hint">Também têm este disco. 💿</p>':'<p class="hint">Ainda não têm este disco: só o póster.</p>'}${ed?`<div class="rzacts"><button class="btn ghost" onclick="zoomClose();setTimeout(()=>posterHang('${k}'),120)">Tirar da parede</button>${discOwned().includes(k)?`<button class="btn" onclick="zoomClose();setTimeout(()=>roomPlay('${k}'),120)">▶️ Tocar o disco</button>`:''}</div>`:''}</div>`)}
 function posterHang(k){if(!canEdit())return;const q=roomQ(),pl=discPlaces();let px=pl.px.slice();if(px.includes(k))px=px.filter(x=>x!==k);else{if(px.length>=pl.capP){toast(pl.capP?`As molduras só levam ${pl.capP} póster${pl.capP>1?'es':''}. Tirem um primeiro.`:'Comprem molduras na Loja → Pósteres de álbuns.');return}px.push(k)}q.px=px;L.rMsg='';roomSave(q);render()}
-function posterBuy(k){if(!canEdit())return;const q=roomQ(),pr=posterPrice(k),own=postersOwned();if(own.includes(k)||roomCoins()<pr)return;q.spent+=pr;q.pst=[...own,k];roomSave(q);L.rNew=k;try{celebrate(16)}catch(e){}render()}
+function posterBuy(k){if(!canEdit())return;const q=roomQ(),pr=posterPrice(k),own=postersOwned();if(own.includes(k)||roomCoins()<pr)return;q.spent+=pr;q.pst=[...own,k];roomSave(q);L.rNew=k;render();const D=DISCO(k);buyFx({html:`<div class="bfposter"><img src="${esc(D.f)}" alt=""><b>${esc(D.t)}</b><small>${esc(D.a.toUpperCase())}</small></div>`,title:'Póster: '+D.t,sub:'novo póster!',kind:'poster'})}
 function postersTab(coins,art,chips){const own=postersOwned(),pl=discPlaces();let h=`<p class="hint">Os pósteres são só a capa: podem ter o póster de um álbum sem terem o disco. Pendurem-nos nas molduras (${pl.px.length}/${pl.capP}).</p>`;
   if(own.length)h+=`<h3 class="mcat">Os vossos pósteres</h3><div class="dgrid">${own.map(k=>{const d=DISCO(k);if(!d)return '';const on=pl.px.includes(k);return `<div class="dcard post ${L.rNew===k?'new':''}"><img src="${esc(d.f)}" alt="" loading="lazy"><b>${esc(d.t)}</b><span>${esc(d.a)}</span><button class="btn sm ${on?'':'ghost'}" onclick="posterHang('${k}')">${on?'✓ Na parede':'Pendurar'}</button></div>`}).join('')}</div>`;
   h+=`<h3 class="mcat">Comprar pósteres</h3>${chips}<div class="dgrid">`;
@@ -3495,6 +3533,18 @@ function plafonZoom(){const sc=document.querySelector('.roomscene');if(sc&&!docu
 const plafonCost=()=>{const L_=clGet();return 3+Math.round(L_.i*8)};
 function plafonSet(o,live){if(!canEdit())return;const q=roomQ();q.cl={...clGet(),...o};roomSave(q,0);roomRedraw();
   if(live){const v=document.getElementById('pfiv');if(v)v.textContent=Math.round(q.cl.i*100)+'%';return}plafonZoom()}
+
+/* ---------- animações de compra e da caixa surpresa ---------- */
+function fxSparks(n,col){let s='';for(let i=0;i<n;i++){const a=i/n*360+Math.random()*20,d=90+Math.random()*120;s+=`<i class="bspark" style="--a:${a}deg;--d:${d}px;--c:${col||'#ffd23f'};animation-delay:${(Math.random()*.25).toFixed(2)}s"></i>`}return s}
+function buyFx(o,cb){document.querySelectorAll('.buyfx').forEach(e=>e.remove());const d=document.createElement('div');d.className='buyfx';const c=o.color||'#ffd23f';
+  d.innerHTML=`<div class="bfrays" style="--c:${c}"></div><div class="bfcard ${o.kind||''}" style="--c:${c}">${o.html}</div>${fxSparks(22,c)}<div class="bftxt"><span class="mono">${esc(o.sub||'novo no quarto!')}</span><b>${esc(o.title)}</b></div>`;
+  let done=false;const fin=()=>{if(done)return;done=true;d.classList.add('out');setTimeout(()=>{d.remove();cb&&cb()},300)};d.addEventListener('click',fin);document.body.appendChild(d);try{celebrate(30)}catch(e){}setTimeout(fin,o.ms||2200)}
+function boxOpenFx(R,dk,cb){document.querySelectorAll('.buyfx').forEach(e=>e.remove());const d=DISCO(dk),c=R[4],big=R[0]==='lend'||R[0]==='epico',el=document.createElement('div');el.className='buyfx boxfx r-'+R[0];
+  el.innerHTML=`<div class="bfrays late" style="--c:${c}"></div><div class="bxwrap" style="--c:${c}"><div class="bxlid"></div><div class="bxbody"><span>${R[2]}</span></div><div class="bxglow"></div>
+   <div class="bxdisc"><div class="bxvinyl"><span style="background-image:url('${d.f.replace(/'/g,"\\'")}')"></span></div><img src="${esc(d.f)}" alt=""></div></div>
+   <div class="bxsparks">${fxSparks(big?40:22,c)}</div><div class="bftxt late"><span class="mono" style="color:${c}">${R[2]} ${R[1]}</span><b>${esc(d.t)}</b><small>${esc(d.a)}</small></div><div class="bxtap">toca para continuar</div>`;
+  let done=false;const fin=()=>{if(done)return;done=true;el.classList.add('out');setTimeout(()=>{el.remove();cb&&cb()},300)};
+  setTimeout(()=>el.addEventListener('click',fin),1800);document.body.appendChild(el);setTimeout(()=>{try{celebrate(big?110:40)}catch(e){}},1500);setTimeout(fin,6500)}
 
 /* casa: volta ao menu principal (a meio de um jogo pede confirmação) */
 function goHome(){const mid=MODE&&G&&G.seed&&!(phase()==='duels'&&stageKind()[0]==='result');
