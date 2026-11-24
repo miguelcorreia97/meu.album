@@ -1659,6 +1659,19 @@ body,#app{overflow-x:clip}
  .roomhint{display:block!important}}
 .roomhint{display:none;position:absolute;right:8px;bottom:8px;padding:4px 10px;border-radius:99px;background:rgba(20,10,4,.7);color:var(--cream);font-size:.68rem;pointer-events:none;animation:rhint 4s 1s both}
 @keyframes rhint{0%,80%{opacity:1}100%{opacity:0}}
+
+.pfz .pfrow{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px dashed rgba(255,214,150,.15)}.pfz .pfrow.col{flex-direction:column;align-items:stretch}
+.pfsw{width:52px;height:30px;border-radius:99px;border:0;background:rgba(255,255,255,.15);position:relative;cursor:pointer}.pfsw i{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:left .2s}.pfsw.on{background:#2f9e44}.pfsw.on i{left:25px}
+.pfcores{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.pfcores button,.pfcustom{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;border-radius:12px;border:1px solid rgba(255,214,150,.15);background:rgba(255,246,230,.05);color:var(--cream);cursor:pointer;font:inherit}
+.pfcores i{width:26px;height:26px;border-radius:50%;background:var(--c);box-shadow:0 0 14px var(--c)}.pfcores small,.pfcustom small{font-size:.62rem}.pfcores button.on{border-color:#ffd23f;background:rgba(255,210,63,.15)}
+.pfcustom input{width:28px;height:28px;border:0;padding:0;background:none;cursor:pointer}
+.pfz input[type=range]{width:100%;accent-color:#ffd23f}
+
+.rzoom.sheet{align-items:end;background:rgba(0,0,0,.15);backdrop-filter:none;-webkit-backdrop-filter:none;padding:0}
+.rzoom.sheet .rzbox{border-radius:22px 22px 0 0;max-height:52vh;animation:rzUp .35s cubic-bezier(.2,.9,.3,1) both}
+@keyframes rzUp{from{transform:translateY(100%)}}
+.rzoom.sheet .pfcores{grid-template-columns:repeat(10,1fr)}.rzoom.sheet .pfcores small{display:none}
+@media(max-width:600px){.rzoom.sheet .pfcores{grid-template-columns:repeat(5,1fr)}.rzoom.sheet .pfz .pfrow{padding:8px 0}}
 </style>
 </head>
 <body>
@@ -2640,7 +2653,7 @@ const mReward=m=>({r:MREW[m.id]||200,disc:DISC_MISS[m.id]||null});
 function rewardTxt(m){const r=mReward(m),d=r.disc&&DISCO(r.disc),it=MITEM[m.id]&&RIT[MITEM[m.id]];return `♩ ${r.r} BPM${d?` · 💿 ${d.t}`:''}${it?` · 🎁 ${it.n}`:''}`}
 
 /* ---------- catálogo ---------- */
-const RSLOT=[['cor','Paredes','🎨'],['chao','Chão','🪵'],['cama','Camas','🛏️'],['cortina','Cortinas','🪟'],['prat','Prateleiras','📚'],['quadros','Pósteres de álbuns','🖼️'],['poster','Parede da cama','🪧'],['secretaria','Secretária','🖥️'],['cabeceira','Mesa de cabeceira','🏮'],['movel','Móveis','🗄️'],['leitor','Leitores','📀'],['mesa','Em cima do móvel','🕯️'],['planta2','Plantinhas','🌵'],['teto','Luzes no teto','✨'],['luz','Candeeiros','💡'],['suspensa','Plantas suspensas','🌿'],['tapete','Tapetes','🟤'],['planta','Plantas','🪴'],['assento','Onde sentar','🛋️'],['extra','Extras','♟️'],['pet','Animais','🐾']];
+const RSLOT=[['cor','Paredes','🎨'],['chao','Chão','🪵'],['cama','Camas','🛏️'],['cortina','Cortinas','🪟'],['prat','Prateleiras','📚'],['quadros','Pósteres de álbuns','🖼️'],['poster','Parede da cama','🪧'],['secretaria','Secretária','🖥️'],['cabeceira','Mesa de cabeceira','🏮'],['movel','Móveis','🗄️'],['leitor','Leitores','📀'],['mesa','Em cima do móvel','🕯️'],['planta2','Plantinhas','🌵'],['plafon','Luz do teto','💡'],['teto','Luzes decorativas','✨'],['luz','Candeeiros','💡'],['suspensa','Plantas suspensas','🌿'],['tapete','Tapetes','🟤'],['planta','Plantas','🪴'],['assento','Onde sentar','🛋️'],['extra','Extras','♟️'],['pet','Animais','🐾']];
 const RFIX={cor:1,chao:1,movel:1,cama:1};
 const RITEMS=[
  ['w-creme','cor','Creme',0,{c:'#e6d6bb'}],['w-pessego','cor','Pêssego',260,{c:'#e8b49a'}],['w-terracota','cor','Terracota',240,{c:'#c56f4e'}],['w-oliva','cor','Verde-oliva',240,{c:'#8d905c'}],['w-mostarda','cor','Mostarda',240,{c:'#d6a03c'}],['w-rosa','cor','Rosa antigo',240,{c:'#d9a89c'}],['w-cimento','cor','Cimento',280,{c:'#9a958d'}],['w-noite','cor','Azul-noite',300,{c:'#2c3654'}],['w-floresta','cor','Verde floresta',300,{c:'#345c4a'}],['w-vinho','cor','Vinho',300,{c:'#6a2a33'}],
@@ -2656,6 +2669,7 @@ const RITEMS=[
  ['g-basico','leitor','Gira-discos preto',0],['g-madeira','leitor','Gira-discos de madeira',960],['g-mala','leitor','Gira-discos de mala',540],['g-cd','leitor','Leitor de CDs',600],['g-boombox','leitor','Rádio boombox',450],
  ['mz-lava','mesa','Lava lamp',420],['mz-velas','mesa','Velas',180],['mz-sal','mesa','Candeeiro de sal',360],['mz-livros','mesa','Livros e busto',270],['mz-relogio','mesa','Relógio digital',210,{d:'Mostra a hora de Portugal'}],['mz-camara','mesa','Máquina instantânea',330],['mz-peluche','mesa','Urso de peluche',240],
  ['pp-jiboia','planta2','Jiboia pendurada',240],['pp-cacto','planta2','Cato',150],['pp-suculenta','planta2','Suculentas',150],
+ ['pf-papel','plafon','Lanterna de papel',540,{d:'Luz suave por todo o quarto'}],['pf-pendente','plafon','Candeeiro pendente',600,{d:'Luz por todo o quarto'}],['pf-globo','plafon','Globo de vidro',720,{d:'Luz por todo o quarto'}],['pf-lustre','plafon','Lustre de cristal',1500,{d:'Luz por todo o quarto, com estilo'}],
  ['t-heras','teto','Heras com luzes',660],['t-lampadas','teto','Fio de lâmpadas',450],['t-bandeirinhas','teto','Bandeirinhas',300],
  ['l-candeeiro','luz','Candeeiro de pé',480],['l-sunset','luz','Luz pôr-do-sol',540],['l-neon','luz','Néon MPB',720],['l-onair','luz','Letreiro ON AIR',900],['l-led','luz','Luz LED verde',420,{d:'Brilho verde no canto'}],
  ['su-jiboia','suspensa','Jiboia do teto',360],['su-macrame','suspensa','Vaso de macramé',420],
@@ -2668,7 +2682,7 @@ const RITEMS=[
 ].map(([id,s,n,p,o])=>({id,s,n,p:Math.round(p*1.5/10)*10,...(o||{})}));
 const RIT=Object.fromEntries(RITEMS.map(x=>[x.id,x]));
 const RDEF={cor:'w-creme',chao:'f-madeira',prat:'p-simples',movel:'m-caixote',leitor:'g-basico',cama:'cm-casal',cortina:'c-linho'};
-const LUZES=new Set(['l-casal','l-lua','t-heras','t-lampadas','l-candeeiro','l-sunset','l-neon','l-onair','l-led','mz-lava','mz-velas','mz-sal','mz-relogio','cb-papel','cb-cogumelo','cb-velas','sc-madeira','sc-branca','sc-estante']);
+const LUZES=new Set(['pf-papel','pf-pendente','pf-globo','pf-lustre','l-casal','l-lua','t-heras','t-lampadas','l-candeeiro','l-sunset','l-neon','l-onair','l-led','mz-lava','mz-velas','mz-sal','mz-relogio','cb-papel','cb-cogumelo','cb-velas','sc-madeira','sc-branca','sc-estante']);
 
 /* ---------- quarto partilhado do Miguel e da Clara (um só documento online) ---------- */
 const CASAL=['p0','p1'],CASA_ID='u-quarto-casa',BPM_DIA=60;
@@ -2684,7 +2698,7 @@ function sqMerge(base,loc,rem){const S=x=>JSON.stringify(x),o=JSON.parse(S(rem||
   o.own={...(o.own||{}),...(loc.own||{})};o.buy=[...new Set([...(o.buy||[]),...(loc.buy||[])])];if(loc.pst||o.pst)o.pst=[...new Set([...(o.pst||[]),...(loc.pst||[])])];
   o.spent=(+o.spent||0)+((+loc.spent||0)-(+base.spent||0));o.custo=Math.max(+o.custo||0,+loc.custo||0);if(loc.paid!=null&&(o.paid==null||loc.paid>o.paid))o.paid=loc.paid;if(S(loc.blog)!==S(base.blog)&&(loc.paid||0)>=(o.paid||0))o.blog=loc.blog;o.mus=(+o.mus||0)+((+loc.mus||0)-(+base.mus||0));
   o.eq={...(o.eq||{})};for(const k of new Set([...Object.keys(loc.eq||{}),...Object.keys(base.eq||{})]))if(S(ev(loc,k))!==S(ev(base,k)))o.eq[k]=ev(loc,k);
-  for(const k of ['sh','wl','px','play','on'])if(S(loc[k])!==S(base[k]))o[k]=loc[k];return o}
+  for(const k of ['sh','wl','px','play','on','cl'])if(S(loc[k])!==S(base[k]))o[k]=loc[k];return o}
 async function sqSync(){if(!(db&&db.cloud))return;if(SQ.busy){SQ.again=1;return}SQ.busy=true;SQ.again=0;
   const snap=JSON.parse(JSON.stringify(SQ.d)),base=SQ.base;
   for(let k=0;k<8;k++){const cur=await sqFetch();if(!cur)break;const m=sqMerge(base,snap,cur.d);
@@ -3068,7 +3082,7 @@ Object.assign(RDR,{
 let GRAIN='';function grainUrl(){if(GRAIN)return GRAIN;try{const c=document.createElement('canvas');c.width=c.height=140;const x=c.getContext('2d'),d=x.createImageData(140,140);for(let i=0;i<d.data.length;i+=4){const v=Math.random()*255|0;d.data[i]=d.data[i+1]=d.data[i+2]=v;d.data[i+3]=22}x.putImageData(d,0,0);GRAIN=c.toDataURL()}catch(e){GRAIN='data:,'}return GRAIN}
 const ST={prat:'translate(130 -14)',extra:'translate(125 16)',poster:'translate(643 -14)',movel:'translate(260 -62)',leitor:'translate(260 -62)',mesa:'translate(260 -62)',planta2:'translate(260 -62)',planta:'translate(-6 -64) scale(1.3)',assento:'translate(-120 -32) scale(1.2)',tapete:'translate(300 -66) scale(1.1)',
   'l-candeeiro':'translate(-235 -60)','l-neon':'translate(740 4)','l-sunset':'translate(640 -14)','pet-caramelo':'translate(110 0)','pet-tartaruga':'translate(170 0)'};
-const RORDER=['cor','recados','janela','cortina','luz:w','prat','quadros','poster','extra','teto','chao','tapete','#patch','luz','suspensa','secretaria','cabeceira','movel','leitor','mesa','planta2','cama','pet','planta','assento'];
+const RORDER=['cor','recados','janela','cortina','luz:w','prat','quadros','poster','extra','teto','chao','tapete','#patch','luz','suspensa','secretaria','cabeceira','movel','leitor','mesa','planta2','cama','pet','planta','assento','plafon'];
 function roomSvg(w,o){o=o||{};RUID=0;const q=roomQ(),eq={...q.eq,...(o.eq||{})};for(const k in eq)if(!eq[k])delete eq[k];const pl=discPlaces(),n=lisNow();
   const top=RIT[eq.movel]?.top||352,tod=o.tod||roomTodOf(),live=!o.tod&&!L.rTodV,c={pl,top,tod,eq,on:!!q.on&&!!pl.play,hh:n.hh,sun:live?sunPos(n):null,win:!!L.rWin,debt:roomDebt()};c.music=c.on&&!FX.reduced;let b='',g='',fx='';const S=SKY[tod];
   for(const s of RORDER){const [k,part]=s.split(':');
@@ -3080,7 +3094,8 @@ function roomSvg(w,o){o=o||{};RUID=0;const q=roomQ(),eq={...q.eq,...(o.eq||{})};
     if(k==='leitor'&&c.music)fx+=`<g transform="${ST.leitor}">${musicNotes(192,top-26)}</g>`;
     if(k==='janela'&&L.rWin)fx+=breeze();
     if(r.g&&!((L.rLightsOff||c.debt)&&(LUZES.has(id))))g+=wr(r.g)}
-  const gk=GLOWK[tod];let post=GRADE[tod].map(([col,op,bl])=>`<rect width="${QW}" height="500" fill="${col}" opacity="${op}" style="mix-blend-mode:${bl}"/>`).join('');
+  const pfOn=plafonOn(eq,c),pfI=pfOn?clGet().i:0;const gk=Math.max(GLOWK[tod],pfOn?.85:0);let post=GRADE[tod].map(([col,op,bl])=>`<rect width="${QW}" height="500" fill="${col}" opacity="${(bl==='normal'?op*(1-.62*pfI):op*(1-.4*pfI)).toFixed(3)}" style="mix-blend-mode:${bl}"/>`).join('');
+  if(pfOn)post+=`<rect width="${QW}" height="500" fill="${clGet().c}" opacity="${(.1+.16*pfI).toFixed(3)}" style="mix-blend-mode:soft-light"/>`;
   if(g&&gk)post+=`<g opacity="${gk}">${g}</g>`;
   post+=`<polygon points="${WX},${WY+WH} ${WX+WW},${WY+WH} ${patchPts(tod).join(' ')}" fill="url(#beam)" style="mix-blend-mode:screen" opacity="${tod==='dia'?.14:tod==='noite'?.1:.2}"/>`;
   post+=`<circle cx="${WX+WW/2}" cy="${WY+WH/2}" r="190" fill="url(#winglow)" style="mix-blend-mode:screen" opacity="${tod==='noite'?.25:tod==='dia'?.35:.6}"/>`;
@@ -3102,13 +3117,14 @@ function roomDefs(S){S=S||SKY.tarde;return roomDefsBase().replace('</defs>',`
  <linearGradient id="sillsh" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".25"/><stop offset="1" stop-color="#000" stop-opacity="0"/></linearGradient>
  <linearGradient id="curt" x2="1"><stop offset="0" stop-color="#000" stop-opacity=".3"/><stop offset=".2" stop-color="#000" stop-opacity="0"/><stop offset=".8" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".3"/></linearGradient>
  <linearGradient id="chalk" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".07"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity=".05"/></linearGradient>
+ <radialGradient id="glob" cx=".4" cy=".35"><stop offset="0" stop-color="#fff" stop-opacity=".6"/><stop offset=".7" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".15"/></radialGradient>
  <linearGradient id="bedlit" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".12"/><stop offset="1" stop-color="#fff" stop-opacity=".06"/></linearGradient>
  <pattern id="knit" width="9" height="7" patternUnits="userSpaceOnUse"><path d="M0 1 l4.5 5 l4.5 -5" stroke="rgba(0,0,0,.2)" stroke-width="1.6" fill="none"/><path d="M0 0 l4.5 5" stroke="rgba(255,255,255,.12)" stroke-width="1" fill="none"/></pattern>
  <linearGradient id="beam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${S.l}" stop-opacity=".7"/><stop offset="1" stop-color="${S.l}" stop-opacity="0"/></linearGradient>
  <radialGradient id="winglow"><stop offset="0" stop-color="${S.l}" stop-opacity=".6"/><stop offset="1" stop-color="${S.l}" stop-opacity="0"/></radialGradient>
  <radialGradient id="vign" cx=".5" cy=".45" r=".75"><stop offset=".6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".35"/></radialGradient>
  <pattern id="grain" width="140" height="140" patternUnits="userSpaceOnUse"><image href="${grainUrl()}" width="140" height="140"/></pattern></defs>`)}
-const RTHUMB={cor:'0 0 1080 500',chao:'0 340 1080 160',prat:'14 56 196 168',poster:'214 44 176 178',teto:'0 0 1080 260',luz:'150 120 250 320',mesa:'100 230 70 90',movel:'96 280 208 150',leitor:'136 240 128 76',tapete:'60 420 280 96',planta:'24 270 92 160',planta2:'246 250 56 120',assento:'250 330 180 110',extra:'14 172 116 130',cortina:'330 18 260 340',cama:'790 130 290 380',secretaria:'560 100 210 270',cabeceira:'740 260 80 110',quadros:'566 40 194 176',suspensa:'300 0 100 130'};
+const RTHUMB={plafon:'730 0 140 130',cor:'0 0 1080 500',chao:'0 340 1080 160',prat:'14 56 196 168',poster:'214 44 176 178',teto:'0 0 1080 260',luz:'150 120 250 320',mesa:'100 230 70 90',movel:'96 280 208 150',leitor:'136 240 128 76',tapete:'60 420 280 96',planta:'24 270 92 160',planta2:'246 250 56 120',assento:'250 330 180 110',extra:'14 172 116 130',cortina:'330 18 260 340',cama:'790 130 290 380',secretaria:'560 100 210 270',cabeceira:'740 260 80 110',quadros:'566 40 194 176',suspensa:'300 0 100 130'};
 const IBOX={'l-onair':'870 190 150 70','l-led':'0 240 260 260','pet-gato':'425 420 90 56','pet-caramelo':'400 405 135 75','pet-papagaio':'290 205 60 165','pet-peixe':'375 170 50 40','pet-tartaruga':'270 440 60 40','sc-estante':'580 100 180 270'};
 function itemThumb(it){RUID=Math.floor(Math.random()*1e6);const pl={sh:[],wl:[],px:[],play:null,box:Array(12)},c={pl,top:330,music:false,on:false,tod:'tarde',eq:{},hh:lisNow().hh};let inner;
   if(it.s==='cor')inner=`<rect width="1080" height="500" fill="${it.c}"/><rect width="1080" height="500" fill="url(#wtex)" opacity=".6"/>`;
@@ -3124,7 +3140,7 @@ function roomTod(t){L.rTodV=t||null;const s=document.querySelector('.roomscene .
 function roomTry(id){const it=RIT[id];if(!it||!canEdit())return;
   if(ownsItem(0,id)){const q=roomQ();if(q.eq[it.s]===id&&!RFIX[it.s])q.eq[it.s]=null;else q.eq[it.s]=id;L.rPrev=null;roomSave(q)}else L.rPrev=L.rPrev===id?null:id;render();roomScroll()}
 function roomBuy(id){const it=RIT[id];if(!it||!canEdit()||it.lock)return;const q=roomQ();if(roomCoins()<it.p)return;
-  q.spent+=it.p;q.own[id]=1;q.eq[it.s]=id;L.rPrev=null;roomSave(q);profAdd('compras');profMax('ninho',Object.keys(q.own).length);try{celebrate(24)}catch(e){}render();roomScroll()}
+  q.spent+=it.p;q.own[id]=1;q.eq[it.s]=id;L.rPrev=null;roomSave(q);profAdd('compras');profMax('ninho',Object.keys(q.own).length);if(it.s==='plafon')setTimeout(plafonZoom,600);try{celebrate(24)}catch(e){}render();roomScroll()}
 function roomScroll(){const s=document.querySelector('.roomscene');if(s&&s.getBoundingClientRect().top<-80)s.scrollIntoView({behavior:'smooth',block:'start'})}
 function roomSceneInner(){const o={};if(L.rPrev)o.eq={[RIT[L.rPrev].s]:L.rPrev};if(L.rTodV)o.tod=L.rTodV;return roomSvg(0,o)}
 function roomPop(t){const sc=document.querySelector('.roomscene'),lt=document.getElementById('rleitor');if(!sc||!lt)return;const a=sc.getBoundingClientRect(),b=lt.getBoundingClientRect();const e=document.createElement('div');e.className='rpop';e.textContent=t;e.style.left=(b.left-a.left+b.width/2)+'px';e.style.top=(b.top-a.top)+'px';sc.appendChild(e);setTimeout(()=>e.remove(),1800)}
@@ -3353,6 +3369,7 @@ function roomOnce(sel,cls,ms){document.querySelectorAll(sel).forEach(e=>{e.class
 function roomAct(k,ev){if(ev)ev.stopPropagation();const q=roomQ(),id=q.eq[k],it=RIT[id],el=ev&&ev.currentTarget;
   if(k==='janela'||k==='cortina'){L.rWin=!L.rWin;roomRedraw();roomBubble(L.rWin?(roomTodOf()==='noite'?'🌙 Entra o ar fresco da noite':'🌊 Cheira a mar!'):'🪟 Janela fechada');return}
   if(k==='leitor'){if(!canEdit()){roomBubble('🎵 Só o Miguel e a Clara põem música aqui',el);return}if(q.on)roomStop();else roomPlay();return}
+  if(k==='plafon'){if(roomDebt()){roomBubble('🔌 A luz foi cortada: paguem as contas!');return}plafonZoom();return}
   if((k==='luz'||k==='teto'||k==='cabeceira'||(k==='mesa'&&LUZES.has(id)))&&roomDebt()){roomBubble('🔌 A luz foi cortada: paguem as contas!');return}
   if(k==='luz'||k==='teto'||k==='cabeceira'||(k==='mesa'&&LUZES.has(id))){L.rLightsOff=!L.rLightsOff;roomRedraw();roomBubble(L.rLightsOff?'💡 Luzes apagadas':'💡 Luzes acesas');return}
   if(k==='pet'){roomBubble(roomDebt()?pick1(['😿 Tenho fome…','🥺 Não há comida?','*barriga a roncar*']):pick1(PET_FALA[id]||['🐾']),el);roomOnce('.ract-pet','rm-hop',700);return}
@@ -3382,7 +3399,7 @@ const CUSTO={'pet-peixe':['🐠','Comida e aquário do peixe',5],'pet-tartaruga'
   'g-basico':['📀','Gira-discos',2],'g-madeira':['📀','Gira-discos',3],'g-mala':['📀','Gira-discos',2],'g-cd':['💿','Leitor de CDs',3],'g-boombox':['📻','Pilhas do rádio',3]};
 const CUSTO_BASE=8,CUSTO_DIAS=7;
 const dayNum=ymd=>{const [y,m,d]=ymd.split('-').map(Number);return Math.round(Date.UTC(y,m-1,d)/864e5)};
-function billRows(eq){eq=eq||roomQ().eq;const rows=[['🏠','Água, luz da casa e internet',CUSTO_BASE]];for(const k in eq){const id=eq[k];if(id&&CUSTO[id])rows.push(CUSTO[id])}
+function billRows(eq){eq=eq||roomQ().eq;const rows=[['🏠','Água, luz da casa e internet',CUSTO_BASE]];for(const k in eq){const id=eq[k];if(id&&CUSTO[id])rows.push(CUSTO[id])}if(eq.plafon&&clGet().on)rows.push(['💡',`Luz do teto (${Math.round(clGet().i*100)}%)`,plafonCost()]);
   const pl=['planta','planta2','suspensa'].filter(k=>eq[k]).length;if(pl)rows.push(['💧',`Água para ${pl} planta${pl>1?'s':''}`,pl*2]);return rows}
 const billDay=eq=>billRows(eq).reduce((a,r)=>a+r[2],0);
 /* cobra os dias que passaram (no máximo 7 de cada vez); os dois telemóveis chegam ao mesmo valor */
@@ -3434,6 +3451,30 @@ function boxZoom(){const pl=discPlaces(),sec=(t,a)=>a.length?`<h4>${t} · ${a.le
 function postersZoom(){const own=postersOwned(),pl=discPlaces();
   zoomOpen(`<div class="rzlist"><h3>🖼️ Pósteres nas molduras · ${pl.px.length}/${pl.capP}</h3><p class="hint">${!pl.capP?'Ainda não têm molduras: comprem-nas na Loja → Pósteres de álbuns.':own.length?'Toca num póster para o pendurar ou tirar.':'Ainda não têm pósteres: comprem-nos na Loja → Pósteres.'}</p>
   <div class="rzgrid">${own.map(k=>{const d=DISCO(k);if(!d)return '';const on=pl.px.includes(k);return `<button class="${on?'on':''}" onclick="posterHang('${k}');postersZoom()"><img src="${esc(d.f)}" alt="" loading="lazy"><b>${esc(d.t)}</b><small>${on?'✓ na parede':'pendurar'}</small></button>`}).join('')}</div></div>`,'wide')}
+
+/* ---------- luz do teto: ilumina o quarto todo, com cor e intensidade ---------- */
+const CL_DEF={on:1,c:'#ffd9a0',i:.7};
+const CL_CORES=[['#ffd9a0','Quente'],['#fff4e0','Branca'],['#dfefff','Fria'],['#ffb36b','Âmbar'],['#ff8fb8','Rosa'],['#c39bff','Roxa'],['#7fc8ff','Azul'],['#8ff0a8','Verde'],['#ff6a5a','Vermelha']];
+const clGet=()=>({...CL_DEF,...(roomQ().cl||{})});
+function plafonOn(eq,c){const L_=clGet();return !!eq.plafon&&L_.on&&!L.rLightsOff&&!(c&&c.debt)}
+Object.assign(RDR,{
+'pf-pendente'(it,c){const L_=clGet(),on=plafonOn(c.eq,c);return {b:`<path d="M800 0 V40" stroke="#1d1a18" stroke-width="1.6"/><rect x="796" y="38" width="8" height="8" rx="2" fill="#2a2420"/><path d="M776 70 q24 -36 48 0z" fill="#1d1a18"/><path d="M780 66 q20 -26 40 0" stroke="rgba(255,255,255,.12)" stroke-width="2" fill="none"/><ellipse cx="800" cy="70" rx="24" ry="4" fill="${on?L_.c:'#8b8780'}"/>`,g:on?plafonGlow(800,72):''}},
+'pf-papel'(it,c){const L_=clGet(),on=plafonOn(c.eq,c),f=on?L_.c:'#efe6d6';return {b:`<path d="M800 0 V44" stroke="#c9c1b4" stroke-width="1.4"/><circle cx="800" cy="70" r="26" fill="${f}"/>${[-18,-9,0,9,18].map(d=>`<path d="M${800+d} 45 q${d*.5} 25 0 50" stroke="rgba(120,80,30,.35)" stroke-width="1" fill="none"/>`).join('')}<path d="M776 62 h48 M775 72 h50 M777 82 h46" stroke="rgba(120,80,30,.25)" stroke-width=".8"/><circle cx="790" cy="62" r="8" fill="#fff" opacity=".25"/>`,g:on?plafonGlow(800,70):''}},
+'pf-globo'(it,c){const L_=clGet(),on=plafonOn(c.eq,c);return {b:`<path d="M800 0 V46" stroke="#c9a46c" stroke-width="1.6"/><rect x="794" y="44" width="12" height="6" rx="1" fill="#c9a46c"/><circle cx="800" cy="68" r="19" fill="${on?L_.c:'#f1ede6'}" opacity="${on?1:.9}"/><circle cx="800" cy="68" r="19" fill="url(#glob)"/><circle cx="792" cy="61" r="5" fill="#fff" opacity=".55"/>`,g:on?plafonGlow(800,68):''}},
+'pf-lustre'(it,c){const L_=clGet(),on=plafonOn(c.eq,c),bl=on?L_.c:'#f4ead6';let a='';[-30,-15,0,15,30].forEach((d,k)=>{const y=74-Math.abs(d)*.25;a+=`<path d="M800 56 Q${800+d*.6} ${y+6} ${800+d} ${y}" stroke="#c9a43a" stroke-width="2" fill="none"/><rect x="${800+d-2}" y="${y-9}" width="4" height="9" fill="#f4ead6"/><ellipse cx="${800+d}" cy="${y-11}" rx="2.4" ry="3.6" fill="${bl}"/><path d="M${800+d} ${y+2} l-2 6 h4z" fill="#dff3ff" opacity=".8"/>`});
+  return {b:`<path d="M800 0 V50" stroke="#c9a43a" stroke-width="1.6"/><circle cx="800" cy="54" r="5" fill="#c9a43a"/>${a}<path d="M786 78 l14 14 l14 -14" stroke="#dff3ff" stroke-width="1" fill="none" opacity=".7"/><circle cx="800" cy="92" r="3" fill="#dff3ff"/>`,g:on?plafonGlow(800,66):''}}
+});
+function plafonGlow(x,y){const L_=clGet(),i=L_.i;return `<radialGradient id="gl-pf"><stop offset="0" stop-color="${L_.c}" stop-opacity=".95"/><stop offset=".3" stop-color="${L_.c}" stop-opacity=".4"/><stop offset="1" stop-color="${L_.c}" stop-opacity="0"/></radialGradient><circle cx="${x}" cy="${y}" r="${60+i*80}" fill="url(#gl-pf)" style="mix-blend-mode:screen" opacity="${.5+i*.5}"/><path d="M${x-26} ${y+4} L${x-260} 500 L${x+260} 500 L${x+26} ${y+4}z" fill="url(#gl-pf)" style="mix-blend-mode:screen" opacity="${i*.35}"/>`}
+/* painel da luz: abre ao tocar no candeeiro do teto */
+function plafonZoom(){const sc=document.querySelector('.roomscene');if(sc&&!document.querySelector('.rzoom.sheet')){const r=sc.getBoundingClientRect();if(r.top<0||r.top>60)scrollTo({top:scrollY+r.top-60,behavior:'smooth'})}const rs=document.querySelector('.roomscroll');if(rs&&rs.scrollWidth>rs.clientWidth+4)rs.scrollTo({left:rs.scrollWidth*(800/1080)-rs.clientWidth/2,behavior:'smooth'});const L_=clGet(),ed=canEdit(),id=roomQ().eq.plafon,it=RIT[id];
+  zoomOpen(`<div class="rzlist pfz"><h3>💡 ${esc(it?it.n:'Luz do teto')}</h3>
+  ${ed?`<div class="pfrow"><span>Ligada</span><button class="pfsw ${L_.on?'on':''}" onclick="plafonSet({on:${L_.on?0:1}})"><i></i></button></div>
+  <div class="pfrow col"><span>Cor</span><div class="pfcores">${CL_CORES.map(([c,n])=>`<button class="${L_.c===c?'on':''}" style="--c:${c}" title="${n}" onclick="plafonSet({c:'${c}'})"><i></i><small>${n}</small></button>`).join('')}<label class="pfcustom" title="Outra cor"><input type="color" value="${L_.c}" oninput="plafonSet({c:this.value},1)"><small>Outra</small></label></div></div>
+  <div class="pfrow col"><span>Intensidade · <b id="pfiv">${Math.round(L_.i*100)}%</b></span><input type="range" min="10" max="100" step="5" value="${Math.round(L_.i*100)}" oninput="plafonSet({i:this.value/100},1)"></div>
+  <p class="hint">Custa ${plafonCost()} BPM por dia com esta intensidade (mais forte gasta mais).</p>`:'<p class="hint">Só o Miguel e a Clara mexem na luz.</p>'}</div>`,'sheet')}
+const plafonCost=()=>{const L_=clGet();return 3+Math.round(L_.i*8)};
+function plafonSet(o,live){if(!canEdit())return;const q=roomQ();q.cl={...clGet(),...o};roomSave(q,0);roomRedraw();
+  if(live){const v=document.getElementById('pfiv');if(v)v.textContent=Math.round(q.cl.i*100)+'%';return}plafonZoom()}
 
 /* casa: volta ao menu principal (a meio de um jogo pede confirmação) */
 function goHome(){const mid=MODE&&G&&G.seed&&!(phase()==='duels'&&stageKind()[0]==='result');
@@ -3695,7 +3736,7 @@ function rulesBox(){
     <p class="rsmall">Quando jogam o Miguel e a Clara juntos, estas partidas contam para as <b>missões a dois</b>.</p>`}
   if(k===7){body=`<p>O <b>BPM</b> é o dinheiro do jogo. Tal como a batida dita o ritmo de uma música, os BPM ditam o que o vosso quarto pode ter.</p>
     <div class="rexp"><b>♩ Como se ganham</b><span>Missões de cada um: entre 100 e 700 BPM, pagos aos bocados (a cada 25% do caminho). Missões a dois: entre 400 e 2 500 BPM, pagas uma vez ao casal. Música a tocar no quarto: +1 BPM por minuto, só com o quarto aberto no ecrã e o som ligado (até 60 por dia em cada telemóvel).</span></div>
-    <div class="rexp"><b>🧾 Contas do quarto</b><span>Todos os dias paga-se a casa (8 BPM), a comida de cada animal (5 a 20), a luz de cada candeeiro (1 a 8), a eletricidade do gira-discos e do computador e a água das plantas. Se ficarem a dever, a luz é cortada e os animais passam fome até pagarem. Se não abrirem o jogo, cobram-se no máximo 7 dias.</span></div>
+    <div class="rexp"><b>🧾 Contas do quarto</b><span>Todos os dias paga-se a casa (8 BPM), a comida de cada animal (5 a 20), a luz de cada candeeiro (1 a 8), a luz do teto (4 a 11, conforme a intensidade), a eletricidade do gira-discos e do computador e a água das plantas. Se ficarem a dever, a luz é cortada e os animais passam fome até pagarem. Se não abrirem o jogo, cobram-se no máximo 7 dias.</span></div>
     <div class="rexp"><b>🏠 Uma só conta</b><span>Os BPM do Miguel e da Clara vão todos para a conta do quarto. Os dois veem o mesmo número e qualquer um pode gastar.</span></div>
     <div class="rexp"><b>🛍️ O que se compra</b><span>Objetos para o quarto (de 230 a 2 250 BPM), discos com 4 raridades (⚪ Comum até ~250, 🔵 Raro ~300–450, 🟣 Épico ~500–750, 🟡 Lendário ~900–1 150 BPM: conta sobretudo o álbum, não só o cantor) e caixas surpresa de cada raridade. Há 41 discos que só se ganham em missões, e 5 objetos de casal que só se ganham em missões a dois. Os pósteres compram-se à parte (40% do preço do disco): podem ter o póster de um álbum sem terem o disco.</span></div>
     <div class="rexp"><b>💿 Vinis e discos</b><span>As missões normais são de cada um: cada um tem a sua coleção de vinis. As missões a dois aparecem nas duas coleções. Os discos do quarto nunca se repetem: basta um completar a missão.</span></div>`}
