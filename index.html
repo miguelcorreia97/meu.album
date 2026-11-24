@@ -1655,7 +1655,7 @@ body,#app{overflow-x:clip}
 .dcard .dtags i:first-child{background:color-mix(in srgb,var(--rc,#c9c1b4) 22%,transparent);color:var(--rc,#ffd23f)}
 .rrar{margin-bottom:4px}
 /* quarto no telemóvel: de ponta a ponta + modo ecrã inteiro deitado */
-@media(max-width:700px){.roomscene:not(.full) .hud{transform:scale(.78);transform-origin:top left;width:128%}.roomscene{margin-left:-16px!important;margin-right:-16px!important;border-radius:0!important;max-width:none!important}.rfullbtn span{display:none}.rfullbtn{padding:7px 9px!important}}
+@media(max-width:700px){.roomscene:not(.full) .hud{transform:scale(.78);transform-origin:top left;width:128%}.roomscene:not(.full){margin-left:0!important;margin-right:0!important;border-radius:14px!important;max-width:100%!important}.rfullbtn span{display:none}.rfullbtn{padding:7px 9px!important}}
 .rfullbtn{display:flex;position:absolute;right:8px;top:8px;z-index:3;align-items:center;gap:6px;padding:7px 12px;border-radius:99px;border:1px solid rgba(255,214,150,.35);background:rgba(20,10,4,.78);color:var(--cream);font:inherit;font-size:.74rem;font-weight:700;cursor:pointer;backdrop-filter:blur(4px)}
 .rfullbtn b{font-size:1rem;line-height:1}
 .roomscene.full{position:fixed!important;inset:0;z-index:150;margin:0!important;max-width:none!important;border-radius:0!important;display:grid;place-items:center;background:#0d0806}
