@@ -1382,6 +1382,12 @@ body{overflow:visible!important}
 .rxfloat.long{animation-duration:3.8s}
 body.ingame .top{position:sticky!important;top:0!important;z-index:50!important;background:rgba(34,16,6,.86)!important;backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important}
 .rxmute{border:1px solid rgba(255,214,150,.3);background:rgba(255,246,230,.08);color:var(--ink);border-radius:999px;padding:7px 12px;font:inherit;font-size:.85rem;font-weight:700;cursor:pointer}
+.vchip{position:relative}.vchip .vwho{margin-left:6px;font-size:1rem}
+.vchip.voted:not(.on){box-shadow:0 0 0 2px #ffd23f inset;animation:npulse 1.6s ease-in-out infinite}
+.vhint{margin:12px 0 0;padding:10px 12px;border-radius:12px;background:rgba(255,246,230,.07);color:var(--muted);font-size:.92rem}
+.vhint.pulse{background:rgba(255,210,63,.16);color:var(--ink);border:1px solid rgba(255,210,63,.5)}
+.vhint.ok{background:rgba(47,179,107,.18);color:var(--ink)}
+.btn.pulse{animation:npulse 1.4s ease-in-out infinite}
 </style>
 </head>
 <body>
@@ -2068,6 +2074,34 @@ function rxCheck(){if(!G||!G.seed||MODE!=='online')return;const k=P(1-WHO),r=G.r
   if(RX.seen[k]===undefined){RX.seen[k]=r.t;return}
   if(r.t>RX.seen[k]){RX.seen[k]=r.t;rxFloat(r.e,1-WHO);try{navigator.vibrate&&navigator.vibrate(30)}catch(x){}}}
 
+/* ======== acordo a dois (multijogador): modo de jogo, revanche e avançar ======== */
+const vRound=()=>G?(G.round||0):0;
+function myVote(){const v=G&&G.vote&&G.vote[P(WHO)];return v&&v.r===vRound()?v.n:null}
+function otherVote(){const v=G&&G.vote&&G.vote[P(1-WHO)];return v&&v.r===vRound()?v.n:null}
+function votersFor(n){const a=[];if(myVote()===n)a.push(WHO===0?'🌴':'🌻');if(otherVote()===n)a.push(WHO===0?'🌻':'🌴');return a.join('')}
+function voteHint(){const m=myVote(),o=otherVote(),on=nm(1-WHO);
+  if(m!=null&&o!=null&&m===o)return `<p class="vhint ok">Combinado: ${m} músicas! A começar… 🪙</p>`;
+  if(o!=null&&m==null)return `<p class="vhint pulse">${WHO===0?'🌻':'🌴'} ${esc(on)} escolheu <b>${o} músicas</b>. Toca no mesmo para começar, ou escolhe outro.</p>`;
+  if(o!=null&&m!=null)return `<p class="vhint">Tu escolheste ${m}, ${esc(on)} escolheu ${o}. Têm de escolher o mesmo para começar.</p>`;
+  if(m!=null)return `<p class="vhint">À espera que ${esc(on)} escolha… (se escolher ${m} músicas, começa logo)</p>`;
+  return `<p class="vhint">Escolham os dois o mesmo modo para começar.</p>`}
+function castVote(n){if(MODE!=='online'){L.per=n;render();return}
+  L.per=n;const k=P(WHO),v={n,r:vRound()};G.vote={...(G.vote||{}),[k]:v};render();
+  try{ref().update({vote:{[k]:v}}).then(voteCheck).catch(()=>{})}catch(e){}}
+/* quando os dois concordam, um deles (o Miguel, ou quem estiver sozinho online) arranca o jogo */
+function voteCheck(){if(MODE!=='online'||!G||L.busy)return;const m=myVote(),o=otherVote();if(m==null||m!==o)return;
+  const fresh=!G.seed||(phase()==='duels'&&stageKind()[0]==='result');if(!fresh)return;
+  const key=vRound()+':'+m;if(L.voteStarted===key)return;
+  if(WHO===0||!L.peerOnline){L.voteStarted=key;L.per=m;setTimeout(()=>{if(otherVote()===m&&myVote()===m)startGame()},WHO===0?300:2500)}}
+function mySkip(){return G&&G.skipv&&G.skipv[P(WHO)]===stage()}
+function otherSkip(){return G&&G.skipv&&G.skipv[P(1-WHO)]===stage()}
+function skipBtn(){if(MODE!=='online')return `<button class="btn ghost sm" onclick="advance()">Avançar ⏭</button>`;
+  const m=mySkip(),o=otherSkip(),on=esc(nm(1-WHO));
+  return `<button class="btn ${o&&!m?'':'ghost'} sm ${o&&!m?'pulse':''}" onclick="voteSkip()" ${m?'disabled':''}>${m?`À espera de ${on}…`:(o?`${on} quer avançar · Avançar ⏭`:'Avançar ⏭')}</button>`}
+function voteSkip(){if(MODE!=='online'){advance();return}const k=P(WHO),s=stage();G.skipv={...(G.skipv||{}),[k]:s};render();
+  try{ref().update({skipv:{[k]:s}}).then(skipCheck).catch(()=>{})}catch(e){}}
+function skipCheck(){if(MODE!=='online'||!G||!G.seed||phase()!=='duels')return;if(mySkip()&&otherSkip()&&L.lastAdv!==stage()&&(WHO===0||!L.peerOnline))advance()}
+
 /* ======== animações Two.js ======== */
 const FX={ok:false,reduced:!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)};
 const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
@@ -2312,7 +2346,7 @@ function startGame(){
     createdAt:new Date().toISOString(),ts:Date.now(),reveal:0,picks:[],orders:{},names:G.names||{},bonus:{}},true);
 }
 /* revanche: mesmo número de músicas (e mesma dificuldade contra o computador) */
-function rematch(){L.per=G.per||L.per;if(MODE==='cpu')L.level=G.level||L.level||'normal';startGame()}
+function rematch(){if(MODE==='online'){castVote(G.per);return}L.per=G.per||L.per;if(MODE==='cpu')L.level=G.level||L.level||'normal';startGame()}
 /* outro modo: volta ao ecrã de escolha, com as opções do último jogo já marcadas */
 function otherMode(){L.per=G.per||L.per;if(MODE==='cpu')L.level=G.level||L.level;L.confirmNew=false;
   if(MODE==='cpu'){G=null;saveLocal();L.round=null;render();scrollTo(0,0);return}
@@ -2431,10 +2465,10 @@ function newScreen(){
   return `<div class="hero"><div class="kick">um jogo de música brasileira</div><h1 class="herot">Meu <em>Álbum</em></h1><div class="turntable"><div class="record"></div></div>${heroVs()}
   <p>Só músicas das vossas playlists. Eu dou-vos duas de cada vez e vocês ficam com uma. No fim, sou eu que julgo: as faixas duelam entre si, mas o que mais pesa é a forma como combinaste o teu álbum.</p></div>
   <div class="panel"><div class="modeline mono">a jogar ${MODE==='cpu'?'🤖 contra o computador':'👥 com mais uma pessoa'} · <button class="linkbtn" onclick="toMenu()">trocar para ${MODE==='cpu'?'👥 com mais uma pessoa':'🤖 contra o computador'}</button></div>${MODE==='cpu'?'':'<div class="mono" style="color:var(--muted)">Músicas por álbum</div>'}
-  ${MODE==='cpu'?`<div class="mono" style="color:var(--muted)">nível do computador</div><div class="chips" style="margin:10px 0 16px">${[['facil','Fácil'],['normal','Normal'],['dificil','Difícil']].map(([k,n])=>`<button class="chip ${(L.level||'normal')===k?'on':''}" onclick="L.level='${k}';render()">${n}</button>`).join('')}</div><div class="mono" style="color:var(--muted)">Músicas por álbum</div>`:''}<div class="chips" style="margin-top:10px">${[5,8,10].map(n=>`<button class="chip ${L.per===n?'on':''}" onclick="L.per=${n};render()">${n} cada · ${n*2} no total</button>`).join('')}</div>
+  ${MODE==='cpu'?`<div class="mono" style="color:var(--muted)">nível do computador</div><div class="chips" style="margin:10px 0 16px">${[['facil','Fácil'],['normal','Normal'],['dificil','Difícil']].map(([k,n])=>`<button class="chip ${(L.level||'normal')===k?'on':''}" onclick="L.level='${k}';render()">${n}</button>`).join('')}</div><div class="mono" style="color:var(--muted)">Músicas por álbum</div>`:''}<div class="chips" style="margin-top:10px">${[5,8,10].map(n=>{const vs=MODE==='online'?votersFor(n):'';return `<button class="chip vchip ${(MODE==='online'?myVote()===n:L.per===n)?'on':''} ${vs?'voted':''}" onclick="${MODE==='online'?`castVote(${n})`:`L.per=${n};render()`}">${n} cada · ${n*2} no total${vs?`<span class="vwho">${vs}</span>`:''}</button>`}).join('')}</div>${MODE==='online'?voteHint():''}
   ${rulesBox()}
   ${L.err?`<div class="err">${esc(L.err)}</div>`:''}
-  <button class="btn full mt" ${L.busy?'disabled':''} onclick="startGame()">🪙 Atirar a moeda e começar</button></div>`;
+  ${MODE==='online'?'':`<button class="btn full mt" ${L.busy?'disabled':''} onclick="startGame()">🪙 Atirar a moeda e começar</button>`}</div>`;
 }
 function shelf(i){
   const tr=rawTracks(i),slots=Array.from({length:G.per},(_,k)=>tr[k]?mini(tr[k]):'<div class="slot"></div>');
@@ -2513,7 +2547,7 @@ function dock(){
 function duelLabel(d){return d>=G.per?'faixa bónus':`duelo ${d+1} / ${G.per}`}
 function scoreboard(sc,lbl){return `<div class="score"><div class="s"><div class="num c0" data-count="${sc[0]}" data-delay="700">${fmt(sc[0])}</div><div class="lbl">${ico(0)}${esc(nm(0))}</div></div><div class="dash">${lbl||'vs'}</div><div class="s"><div class="num c1" data-count="${sc[1]}" data-delay="700">${fmt(sc[1])}</div><div class="lbl">${ico(1)}${esc(nm(1))}</div></div></div>`}
 function partial(d){const s=[0,0];for(let k=0;k<=d;k++){const j=judge(k);if(j.w===-1){s[0]+=1;s[1]+=1}else s[j.w]+=2}return s}
-const PICK_MS=45000,ORDER_BY={5:65000,8:90000,10:120000},orderMs=()=>ORDER_BY[G&&G.per]||90000,STAGE_MS={duel:10000,combos:15000,suspense:9000};
+const PICK_MS=45000,ORDER_BY={5:65000,8:90000,10:120000},orderMs=()=>ORDER_BY[G&&G.per]||90000,STAGE_MS={duel:10000,combos:15000,suspense:10000};
 function stage(){return G.reveal||0}
 function mainTie(){const d=partial(G.per-1);return d[0]+prizePts(0)===d[1]+prizePts(1)}
 function stageKind(){const s=stage(),n=G.per;
@@ -2522,7 +2556,7 @@ function stageKind(){const s=stage(),n=G.per;
   if(s===n+1)return ['suspense'];return ['result']}
 function advance(){if(L.busy)return;const s=stage();L.lastAdv=s;W({reveal:s+1,revealAt:Date.now()})}
 function stageBar(label){const [k]=stageKind(),dur=STAGE_MS[k];if(!dur)return '';
-  return `<div class="stagebar">${timerBar((G.revealAt||Date.now())+dur,dur,label)}<button class="btn ghost sm" onclick="advance()">Avançar ⏭</button></div>
+  return `<div class="stagebar">${timerBar((G.revealAt||Date.now())+dur,dur,label)}${skipBtn()}</div>
   ${MODE==='online'?`<p class="hint center" style="margin-top:6px">Vocês os dois veem este ecrã ao mesmo tempo — quem carregar em “Avançar” avança para os dois.</p>`:''}`}
 function timerBar(deadline,total,label){const left=Math.max(0,(deadline-Date.now())/1000);
   return `<div class="timer ${left<=5?'low':''}" data-deadline="${deadline}" data-total="${total/1000}"><span class="tlab">${label||''}</span><div class="tbw"><div class="tb" style="width:${Math.min(100,left/(total/1000)*100)}%"></div></div><span class="tl">${Math.ceil(left)}s</span></div>`}
@@ -2570,7 +2604,7 @@ function result(byCoin){
   <div class="wcover"><div class="coverwrap"><div class="crown">👑</div>${albumCover(w)}</div></div>
   <div class="sumtable panel final">${sumRows(dp,[prizePts(0),prizePts(1)],sc,true)}
    <div class="sr sub"><div class="sl">duelos ganhos</div><div class="sc">${wins[0]} de ${n}</div><div class="sc">${wins[1]} de ${n}</div></div></div>
-  <div class="actions"><button class="btn" ${L.busy?'disabled':''} onclick="rematch()">🔁 Revanche <span class="rmx">· ${G.per} músicas${MODE==='cpu'?' · '+({facil:'Fácil',normal:'Normal',dificil:'Difícil'}[G.level||'normal']):''}</span></button><button class="btn ghost" ${L.busy?'disabled':''} onclick="otherMode()">🎛️ Jogar noutro modo</button><button class="btn ghost" onclick="toMenu();scrollTo(0,0)">🏠 Menu principal</button><button class="btn ghost" onclick="openRanking()">🏆 Top 10</button><button class="btn ghost" onclick="copyRes(${w})">📋 Copiar resultado</button></div>
+  <div class="actions"><button class="btn" ${L.busy?'disabled':''} onclick="rematch()">🔁 ${MODE==='online'?(myVote()===G.per?'À espera…':(votersFor(G.per)?'Aceitar revanche':'Revanche')):'Revanche'} <span class="rmx">· ${G.per} músicas${MODE==='cpu'?' · '+({facil:'Fácil',normal:'Normal',dificil:'Difícil'}[G.level||'normal']):''}</span></button><button class="btn ghost" ${L.busy?'disabled':''} onclick="otherMode()">🎛️ Jogar noutro modo</button><button class="btn ghost" onclick="toMenu();scrollTo(0,0)">🏠 Menu principal</button><button class="btn ghost" onclick="openRanking()">🏆 Top 10</button><button class="btn ghost" onclick="copyRes(${w})">📋 Copiar resultado</button></div>
   <div class="panel mt myrank"><span class="mono">pontuação do teu álbum para o ranking</span><b>${fmt(rankScore(WHO))}</b></div>
   <details class="panel more mt"><summary>Ver os duelos e os dois álbuns</summary>
    <table class="duels"><thead><tr><th class="mono">#</th><th class="c0">${esc(nm(0))}</th><th class="mono" style="text-align:center">notas</th><th class="c1">${esc(nm(1))}</th></tr></thead><tbody>${rows.join('')}</tbody></table>
@@ -2599,7 +2633,7 @@ function render(){
   const app=document.getElementById('app'),keep={};app.querySelectorAll('input[id]').forEach(i=>keep[i.id]=i.value);
   const fid=document.activeElement&&document.activeElement.id;
   const key=viewKey(),enter=key!==L.lastKey;L.lastKey=key;
-  document.body.classList.toggle('ingame',!!(G&&G.seed&&MODE));app.innerHTML=header()+`<main class="view ${enter?'enter':''}">${body()}</main>`+dock()+draftDock()+reactBar();try{rxCheck();botTick()}catch(e){}
+  document.body.classList.toggle('ingame',!!(G&&G.seed&&MODE));app.innerHTML=header()+`<main class="view ${enter?'enter':''}">${body()}</main>`+dock()+draftDock()+reactBar();try{rxCheck();botTick();voteCheck();skipCheck()}catch(e){}
   document.body.classList.toggle('has-dock',!!document.querySelector('.odock'));document.body.classList.toggle('has-ddock',!!document.querySelector('.ddock'));{const sd=app.querySelector('main .stagedock');if(sd)app.appendChild(sd)}document.body.classList.toggle('has-sdock',!!document.querySelector('.stagedock'));
   try{boardMount()}catch(e){}
   for(const k in keep){const el=document.getElementById(k);if(el)el.value=keep[k]}
