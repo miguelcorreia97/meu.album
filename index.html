@@ -1886,6 +1886,7 @@ function boardBox(){return (db&&db.cloud)?'<div id="boardSlot"></div>':''}
 function bdRel(iso){const m=Math.round((Date.now()-Date.parse(iso))/60000);if(!(m>=0))return '';if(m<1)return 'agora mesmo';if(m<60)return `há ${m} min`;const h=Math.round(m/60);if(h<24)return `há ${h} h`;const d=Math.round(h/24);return d===1?'ontem':`há ${d} dias`}
 function bdMeta(){const el=BD.el&&BD.el.querySelector('#bmeta');if(!el)return;
   if(BD.by==null||!BD.at){el.innerHTML='<span class="bmuted">ainda sem mensagem — deixa um desenho!</span>';return}
+  if(BD.empty){el.innerHTML=`<span class="bmuted">quadro em branco — deixa um desenho!</span>`;return}
   const seen=lsGet().boardSeen||'',fresh=WHO!=null&&BD.by!==WHO&&BD.at>seen;
   el.innerHTML=`${fresh?'<span class="bnew">💌 Nova</span> ':''}mensagem ${BD.by===0?'do <b class="c0">🌴 Miguel</b>':'da <b class="c1">🌻 Clara</b>'} · ${bdRel(BD.at)}`;
   if(fresh)setTimeout(()=>lsSet({boardSeen:BD.at}),4000)}
@@ -1921,12 +1922,12 @@ function boardEl(){
 async function bdSave(cleared){if(WHO==null)return;bdStat('a guardar…');
   const img=cleared?'':BD.cv.toDataURL('image/jpeg',.82),at=new Date().toISOString();
   try{const r=await fetch(bdUrl(),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:{img:{stringValue:img},by:{integerValue:String(WHO)},at:{stringValue:at}}})});
-    if(!r.ok)throw 0;BD.dirty=false;BD.by=WHO;BD.at=at;lsSet({boardSeen:at});bdStat(cleared?'quadro limpo ✓':`guardado ✓ ${WHO===0?'a Clara':'o Miguel'} vai ver quando abrir`);bdMeta()}
+    if(!r.ok)throw 0;BD.dirty=false;BD.empty=!!cleared;BD.by=WHO;BD.at=at;lsSet({boardSeen:at});bdStat(cleared?'quadro limpo ✓':`guardado ✓ ${WHO===0?'a Clara':'o Miguel'} vai ver quando abrir`);bdMeta()}
   catch(e){bdStat('não consegui guardar — tenta outra vez');BD.dirty=true}}
 async function bdLoad(){if(BD.dirty||BD.drawing)return;
   try{const r=await fetch(bdUrl(),{cache:'no-store'});if(r.status===404){BD.by=null;BD.at=null;bdMeta();return}if(!r.ok)return;
     const j=await r.json(),f=j.fields||{},at=f.at?.stringValue||'';if(at&&at===BD.at)return;
-    BD.by=f.by?+f.by.integerValue:null;BD.at=at;const img=f.img?.stringValue||'';
+    BD.by=f.by?+f.by.integerValue:null;BD.at=at;const img=f.img?.stringValue||'';BD.empty=!img;
     if(!img){bdPaper()}else{const im=new Image();im.onload=()=>{if(BD.dirty||BD.drawing)return;bdPaper();BD.cx.drawImage(im,0,0,BD_W,BD_H)};im.src=img}
     bdMeta()}catch(e){}}
 function boardMount(){const slot=document.getElementById('boardSlot');
