@@ -2005,10 +2005,13 @@ const STK=Array.from({length:46},(_,k)=>'stickers/s'+String(k+1).padStart(2,'0')
 const STK_GOZO=[1,10,11,12,16,19,21,23,24,25,26,28,29,32,37,40,41,42,43,44,45,46].map(n=>n-1);
 const STK_RAIVA=[2,5,6,7,9,13,14,17,20,22,30,31,33,34,36,39].map(n=>n-1);
 const STK_OFF=new Set([35-1]); /* fora do jogo */
+function botSet(hum){const B=RX.bot;if(B.setSeed===G.seed&&B.set)return B.set;
+  const recent=new Set(BOT_HIST.s.flat()),sh=x=>{x=x.slice();for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]]}return x};
+  const pick=(pool,n)=>{const ok=sh(pool.filter(i=>!hum.includes(i)&&!recent.has(i)));const extra=sh(pool.filter(i=>!hum.includes(i)&&!ok.includes(i)));return [...ok,...extra].slice(0,n)};
+  B.set=[...pick(STK_GOZO,3),...pick(STK_RAIVA,2)];B.setSeed=G.seed;B.stUse={};BOT_HIST.s=[...BOT_HIST.s,B.set].slice(-2);botHistSave();return B.set}
 function stkOrder(){const r=rng(hash('stk'+G.seed)),a=STK.map((_,i)=>i).filter(i=>!STK_OFF.has(i));for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function stkFor(p){if(!G||!G.seed)return [];const a=stkOrder();
-  if(MODE==='cpu'){const hum=a.slice(0,5);if(p===WHO)return hum;const rest=a.filter(i=>!hum.includes(i));
-    return [...rest.filter(i=>STK_GOZO.includes(i)).slice(0,3),...rest.filter(i=>STK_RAIVA.includes(i)).slice(0,2)]}
+  if(MODE==='cpu'){const hum=a.slice(0,5);if(p===WHO)return hum;return botSet(hum)}
   return a.slice(p*5,p*5+5)}
 const rxHtml=k=>String(k).startsWith('s:')?`<img class="rxs" src="${STK[+k.slice(2)]}" alt="sticker">`:`<span class="rxe">${k}</span>`;
 function reactBar(){if(!(G&&G.seed&&MODE))return '';
@@ -2025,24 +2028,31 @@ function react(e){const now=Date.now();if(now-RX.last<900)return;RX.last=now;RX.
     if(Math.random()<.6)setTimeout(()=>{const lead=botLead();botSay(lead>=0?'gozo':'raiva',lead>=0?BOT_TXT.resposta_gozo:BOT_TXT.resposta_raiva)},1000+Math.random()*900);return}
   try{ref().update({react:{[k]:{e,t:now}}}).catch(()=>{})}catch(x){}}
 /* ======== personalidade do computador: goza quando ganha, irrita-se quando perde ======== */
-/* frases revistas em nov/2026 com base em guias de gírias Gen Z (BR, PT e TikTok);
-   evitadas as que os próprios jovens já acham cringe (6-7, skibidi, bussin, bae, YOLO…) */
+/* frases do computador: gírias Gen Z atuais (BR/PT), muito sarcasmo e ironia.
+   {m} = música dele/escolhida, {o} = a outra música. Não se repetem entre partidas (histórico guardado). */
 const BOT_TXT={
- gozo:['Tás cooked 💀','-1000 de aura pra ti','Essa música é mid, aceita','L pra ti, W pra mim','Flopou feio 📉','Não tankou, né?','Farmei aura com esta','Old que eu ia ganhar essa','Aceita que dói menos','Sai da live, Denise 📵','Chat, vocês viram isto? 💀','Bué fraco 😂','Moggei-te 😎','Comi. 💅'],
- raiva:['Tô cooked… mas é só esta','Garçom, traz pitu também 🍺','O juiz tá delulu','Quase dei crash out agora 😤','Tás a gozar comigo?','Red flag esse resultado 🚩','Esta derrota vai ficar rent free','Ok, doeu. Não vou mentir','Lock in, robô. Lock in.','Isso não conta, o wi-fi caiu','Senhora?? 🤨'],
- mauPick:['Meteu essa? 💀','Delulu total','Isso é mid, amigo','Red flag de escolha 🚩','Tás a gozar?','Chat, olhem esta escolha 💀','A outra era melhor, só dizendo','NPC moment'],
- bomPick:['Essa é minha, obrigado 😌','Farmei aura com essa','GOAT pick 🐐','Comi.','Lock in total 🔒'],
- ganhei:['GG. Tás cooked 💀','Comi e não deixei migalha','+1000 de aura','W gigante 🏆','Era old que eu ganhava','Vai tocar na relva e volta 🌱','Servi. 💅'],
- perdi:['Revanche. AGORA. 😤','Tô cooked… desta vez','Garçom, traz pitu também 🍺','Quase crash out, mas tá na boa','Respeito… mas vou voltar','Ok, moggaste-me 😭'],
- espera:['Lock in, que o tempo tá a correr ⏰','Tás a farmar aura a pensar?','Decide aí, NPC','Chat, travou? 🥶','Tic tac… ⏰','Escolhe logo, não é exame'],
- ordem:['O meu já tá ordenado, só esperando 💅','Lock in na ordem aí 🔒','Ordena com calma… ou não ⏰'],
- random:['Jorge Ben é o GOAT, sem discussão 🐐','Esta playlist vive rent free na minha cabeça','É sobre isso 🎶','Chat, isto tá renhido','Pdp, tô confiante 😎'],
- suspense:['Tô nervoso 😬','Old que ganhei. Ou não…','Reza aí 🙏','Lock in 🔒'],
- resposta_gozo:['Manda mais, tô a rir 😂','Sticker bonito, pena o álbum','Glazing não te vai salvar'],
- resposta_raiva:['Sai da live, Denise 📵','Agora gozas?','Ainda vou virar isto']};
+ mauPick:['{m}? Ousado. Errado, mas ousado.','Deixaste {o} pra trás? Obrigado pelo presente 🎁','Escolher {m} em vez de {o} devia ser crime','Tás a jogar para perder ou é talento natural?','Parabéns, escolheste a pior. Consistência é tudo 👏','Wow. Que escolha. Que coragem. Que erro.','{o} estava ali a pedir socorro e tu ignoraste 💀','Ah sim, {m}… a escolha de quem nunca ouviu {o}','Meteu essa? 💀','Red flag de escolha 🚩','Chat, olhem isto 💀','{m} é mid, e tu sabes','Ia dizer que foi azar, mas não foi','Não sabia que dava para errar num isto-ou-aquilo. Aprendi hoje','Adoro o teu gosto musical. Para mim ganhar 😌','Delulu total','NPC moment','Tás a gozar? {o} estava mesmo ali'],
+ bomPick:['{m} é minha. Chora 😌','Peguei {m}. De nada pela aula','Farmei aura com {m}','{m}? GOAT pick 🐐','Obrigado por me deixares {m}, muito simpático','Comi. 💅','Lock in total 🔒','{m} no meu álbum. Já podes desistir'],
+ gozo:['{m} passou por cima de {o} como um camião 🚚','{o} contra {m}? Covardia 😂','Tás cooked 💀','-1000 de aura pra ti','L pra ti, W pra mim','Não tankou, né?','Aceita que dói menos','Sai da live, Denise 📵','Achei que ias dar luta. Achei mal.','Isto não é um duelo, é um tutorial','Calma, ainda podes perder por mais 😌','Queres que jogue de olhos fechados para ficar justo?','Uau, que resistência… zero','Isto foi um massacre musical','O teu Spotify Wrapped vai ter vergonha de ti','Old que ia ganhar essa','Moggei-te 😎','Até a fila do supermercado tem melhor playlist','Ponto para mim. Outra vez. Que surpresa.','{o} entrou em campo só para fazer número','Bué fraco 😂','Chat, vocês viram isto? 💀','Flopou feio 📉'],
+ raiva:['{o} ganhou a {m}?? O juiz tá delulu','Garçom, traz pitu também 🍺','Ok. Foi sorte. Repito: SORTE.','Isto não conta, estava a aquecer','Quase dei crash out agora 😤','Tás a gozar comigo?','Red flag esse resultado 🚩','Esta vai ficar rent free, obrigado','Parabéns… pela sorte 🙄','Até um relógio parado acerta duas vezes por dia','Aproveita, que não se repete','Lock in, robô. Lock in.','Senhora?? 🤨','O wi-fi caiu, só pode','Vou fingir que não vi','{m} merecia mais respeito, mas ok','Tô cooked… mas é só esta'],
+ ganhei:['GG. Tás cooked 💀','Comi e não deixei migalha','+1000 de aura para mim, -1000 para ti','Vai tocar na relva e volta 🌱','Servi. 💅','Foi tão fácil que até fiquei com pena. Mentira 😌','Queres revanche ou já aprendeste?','Podes ficar com a medalha de participação 🥉','Espero que o teu álbum tenha talão, para devolveres','Vou emoldurar este resultado 🖼️','W gigante 🏆','Era old que eu ganhava'],
+ perdi:['Revanche. AGORA. 😤','Parabéns, acho eu. Não me peças para repetir.','Ganhaste. Vou fingir que foi de propósito','Isto foi um bug. Vou reportar.','Respeito… mas volto mais forte','Ok, moggaste-me 😭','Garçom, traz pitu também 🍺','Aproveita a glória, dura pouco','Quase crash out, mas tá na boa','Ganhaste uma. Queres um troféu? 🙄'],
+ espera:['Lock in, que o tempo tá a correr ⏰','Tás a farmar aura a pensar?','Demora mais um bocadinho, que eu adoro esperar 🙃','É só escolher uma, não é o Enem','Chat, travou? 🥶','Vais escolher hoje ou amanhã?','Toma o teu tempo… todo o tempo do mundo 🙄','Decide aí, NPC','Tic tac… ⏰'],
+ ordem:['O meu já tá ordenado, só esperando 💅','Ordenar meia dúzia de músicas não devia demorar tanto, mas ok','Mexe à vontade, não vai salvar esse álbum','Lock in na ordem aí 🔒','Ordena com calma… ou não ⏰'],
+ random:['Jorge Ben é o GOAT, sem discussão 🐐','Esta playlist vive rent free na minha cabeça','Chat, isto tá renhido? Não, não tá 😌','Pdp, tô confiante 😎','Fun fact: eu nunca perco. Quer dizer… quase nunca','Tô a gostar de te ver tentar','É sobre isso 🎶'],
+ suspense:['Tô nervoso 😬 mentira','Old que ganhei. Ou não…','Reza aí 🙏 vais precisar','Já preparei o discurso de vitória','Lock in 🔒'],
+ resposta_gozo:['Manda mais, tô a rir 😂','Sticker bonito, pena o álbum','Glazing não te vai salvar','Isso é tudo o que tens?','Gozas com sticker porque com música não dá'],
+ resposta_raiva:['Agora gozas?','Ri-te, ri-te…','Ainda vou virar isto','Sai da live, Denise 📵','Calma, o jogo ainda não acabou 😤']};
+const BOT_HIST=(()=>{try{return JSON.parse(localStorage.getItem('bot-hist')||'{}')}catch(e){return {}}})();BOT_HIST.l=BOT_HIST.l||[];BOT_HIST.s=BOT_HIST.s||[];
+const botHistSave=()=>{try{localStorage.setItem('bot-hist',JSON.stringify(BOT_HIST))}catch(e){}};
 const pickOne=a=>a[Math.floor(Math.random()*a.length)];
-function botStk(mood){const a=stkFor(1-WHO),pool=a.filter(i=>(mood==='raiva'?STK_RAIVA:STK_GOZO).includes(i));return 's:'+pickOne(pool.length?pool:a)}
-function botSay(mood,lines){if(RX.mute)return;const u=RX.bot.used||(RX.bot.used=new Set()),free=lines.filter(l=>!u.has(l)),t=pickOne(free.length?free:lines);u.add(t);RX.bot.lastSay=Date.now();rxFloat(botStk(mood),1-WHO,t)}
+function botStk(mood){const a=stkFor(1-WHO),B=RX.bot,u=B.stUse||(B.stUse={});let pool=a.filter(i=>(mood==='raiva'?STK_RAIVA:STK_GOZO).includes(i));if(!pool.length)pool=a;
+  const min=Math.min(...pool.map(i=>u[i]||0)),c=pool.filter(i=>(u[i]||0)===min).filter(i=>i!==B.lastStk);const k=pickOne(c.length?c:pool);u[k]=(u[k]||0)+1;B.lastStk=k;return 's:'+k}
+function botSay(mood,lines,ctx){if(RX.mute)return;ctx=ctx||{};const u=RX.bot.used||(RX.bot.used=new Set()),h=new Set(BOT_HIST.l);
+  let ok=lines.filter(l=>(!/\{m\}/.test(l)||ctx.m)&&(!/\{o\}/.test(l)||ctx.o));if(!ok.length)ok=lines.filter(l=>!/[{]/.test(l));
+  const fresh=ok.filter(l=>!u.has(l)&&!h.has(l)),free=ok.filter(l=>!u.has(l)),t=pickOne(fresh.length?fresh:(free.length?free:ok));
+  u.add(t);BOT_HIST.l=[...BOT_HIST.l.filter(x=>x!==t),t].slice(-70);botHistSave();RX.bot.lastSay=Date.now();
+  rxFloat(botStk(mood),1-WHO,t.replace(/\{m\}/g,ctx.m||'').replace(/\{o\}/g,ctx.o||''))}
 /* quem vai à frente nos duelos já revelados (do ponto de vista do computador) */
 function botLead(){try{if(phase()!=='duels')return 0;const C=1-WHO,[k,d]=stageKind();const n=k==='duel'?d+1:G.per;let s=0;for(let x=0;x<n;x++){const j=judge(x);if(j.w===C)s++;else if(j.w===WHO)s--}return s}catch(e){return 0}}
 function botTick(){if(MODE!=='cpu'||!G||!G.seed)return;const B=RX.bot,C=1-WHO;
@@ -2051,12 +2061,12 @@ function botTick(){if(MODE!=='cpu'||!G||!G.seed)return;const B=RX.bot,C=1-WHO;
   /* escolhas */
   const n=picks().length;if(n>B.picks){const prev=B.picks;B.picks=n;
     for(let k=prev;k<n;k++){const pk=picks()[k];if(!pk||B.draft>=5)continue;const [x,y]=offer(k),other=x.i===pk.i?y:x,ch=ev(pk.i).nota,ot=ev(other.i).nota;
-      if(pk.p===WHO&&ot-ch>=.8&&Math.random()<.75){B.draft++;later(()=>botSay('gozo',BOT_TXT.mauPick),1400)}
-      else if(pk.p===C&&ch>=8.3&&Math.random()<.5){B.draft++;later(()=>botSay('gozo',BOT_TXT.bomPick),1600)}}}
+      if(pk.p===WHO&&ot-ch>=.8&&Math.random()<.75){B.draft++;const cx={m:song(pk.i).t,o:other.t};later(()=>botSay('gozo',BOT_TXT.mauPick,cx),1400)}
+      else if(pk.p===C&&ch>=8.3&&Math.random()<.5){B.draft++;const cx={m:song(pk.i).t};later(()=>botSay('gozo',BOT_TXT.bomPick,cx),1600)}}}
   /* duelos */
   if(phase()==='duels'){const s=stage();if(s!==B.stage){B.stage=s;const [k,d]=stageKind();
-    if(k==='duel'&&B.duel<7){const j=judge(d);if(j.w===C&&Math.random()<.75){B.duel++;later(()=>botSay('gozo',BOT_TXT.gozo),1500)}
-      else if(j.w===WHO&&Math.random()<.75){B.duel++;later(()=>botSay('raiva',BOT_TXT.raiva),1500)}}}}
+    if(k==='duel'&&B.duel<7){const j=judge(d),cx={m:(C===0?j.A:j.B).t,o:(C===0?j.B:j.A).t};if(j.w===C&&Math.random()<.75){B.duel++;later(()=>botSay('gozo',BOT_TXT.gozo,cx),1500)}
+      else if(j.w===WHO&&Math.random()<.75){B.duel++;later(()=>botSay('raiva',BOT_TXT.raiva,cx),1500)}}}}
   /* fim */
   const win=document.querySelector('.view .winner h1');
   if(!B.won&&win){B.won=true;const botWon=win.classList.contains('c'+C);later(()=>botSay(botWon?'gozo':'raiva',botWon?BOT_TXT.ganhei:BOT_TXT.perdi),2400)}}
