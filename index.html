@@ -1355,6 +1355,21 @@ body{overflow:visible!important}
 .btools .sz i{display:block;border-radius:50%;background:#fff6e6}
 .bsep{width:1px;height:22px;background:rgba(255,214,150,.25)}
 .bacts{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px}.bstat{font-size:.8rem;color:var(--muted)}
+.bnotice{display:block;margin:14px auto 0;max-width:100%;border:0;border-radius:999px;padding:10px 18px;font:inherit;font-weight:700;background:#ffd23f;color:#2b1d14;box-shadow:0 8px 20px rgba(0,0,0,.35);cursor:pointer;animation:bpulse 1.4s ease-in-out infinite}
+.board.flash{animation:bflash 1.6s ease}
+@keyframes bflash{0%,60%{box-shadow:0 0 0 4px #ffd23f,0 0 40px rgba(255,210,63,.6)}100%{box-shadow:none}}
+.rxwrap{position:fixed;right:12px;top:42%;z-index:60;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.rxbtn{width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,214,150,.35);background:rgba(34,16,6,.88);backdrop-filter:blur(8px);font-size:22px;cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,.4)}
+.rxpal{display:none;grid-template-columns:repeat(3,42px);gap:6px;padding:8px;border-radius:16px;background:rgba(34,16,6,.94);border:1px solid rgba(255,214,150,.3);box-shadow:0 10px 26px rgba(0,0,0,.45)}
+.rxwrap.open .rxpal{display:grid}
+.rxpal button{width:42px;height:42px;border:0;border-radius:12px;background:rgba(255,246,230,.08);font-size:24px;cursor:pointer}
+.rxpal button:active{transform:scale(.9)}
+.rxfloat{position:fixed;bottom:14%;z-index:80;display:flex;flex-direction:column;align-items:center;pointer-events:none;animation:rxup 2.6s ease-out forwards}
+.rxfloat .rxe{font-size:64px;line-height:1;filter:drop-shadow(0 6px 12px rgba(0,0,0,.45))}
+.rxfloat .rxn{margin-top:4px;font-size:.8rem;font-weight:700;padding:2px 9px;border-radius:999px;background:rgba(34,16,6,.85)}
+.rxfloat .rxn.c0{color:#6fd39a}.rxfloat .rxn.c1{color:#ffd34d}
+@keyframes rxup{0%{transform:translateY(40px) scale(.4);opacity:0}15%{transform:translateY(0) scale(1.15);opacity:1}25%{transform:scale(1)}80%{opacity:1}100%{transform:translateY(-38vh) scale(.9);opacity:0}}
+@media(prefers-reduced-motion:reduce){.rxfloat{animation:none;opacity:1}}
 </style>
 </head>
 <body>
@@ -1888,12 +1903,17 @@ const BD_PAPER='#161311',BD_W=900,BD_H=560;
 const bdUrl=()=>`${FS_DOCS}/quadro/atual?key=${FS_KEY}`;
 function boardBox(){return (db&&db.cloud)?'<div id="boardSlot"></div>':''}
 function bdRel(iso){const m=Math.round((Date.now()-Date.parse(iso))/60000);if(!(m>=0))return '';if(m<1)return 'agora mesmo';if(m<60)return `há ${m} min`;const h=Math.round(m/60);if(h<24)return `há ${h} h`;const d=Math.round(h/24);return d===1?'ontem':`há ${d} dias`}
+function bdFresh(){return !BD.empty&&BD.by!=null&&BD.at&&WHO!=null&&BD.by!==WHO&&BD.at>(lsGet().boardSeen||'')}
+function bdNotice(){return bdFresh()?`<button class="bnotice" onclick="bdGo()">💌 Tens uma mensagem nova ${BD.by===0?'do 🌴 Miguel':'da 🌻 Clara'} no quadro — ver ↓</button>`:''}
+function bdGo(){const b=document.querySelector('.board');if(!b)return;b.scrollIntoView({behavior:'smooth',block:'center'});b.classList.remove('flash');void b.offsetWidth;b.classList.add('flash');
+  setTimeout(()=>{lsSet({boardSeen:BD.at});const n=document.getElementById('bnotice');if(n)n.innerHTML='';bdMeta()},2500)}
 function bdMeta(){const el=BD.el&&BD.el.querySelector('#bmeta');if(!el)return;
   if(BD.editing){el.innerHTML='<span class="bedit">✏️ a editar — só fica guardado quando tocares em Guardar</span>';return}
   if(BD.empty||BD.by==null||!BD.at){el.innerHTML='<span class="bmuted">quadro em branco — toca em Editar e deixa um desenho!</span>';return}
   const seen=lsGet().boardSeen||'',fresh=WHO!=null&&BD.by!==WHO&&BD.at>seen;
   el.innerHTML=`${fresh?'<span class="bnew">💌 Nova</span> ':''}mensagem ${BD.by===0?'do <b class="c0">🌴 Miguel</b>':'da <b class="c1">🌻 Clara</b>'} · ${bdRel(BD.at)}`;
-  if(fresh)setTimeout(()=>lsSet({boardSeen:BD.at}),4000)}
+  const n=document.getElementById('bnotice');if(n)n.innerHTML=bdNotice();
+  if(fresh&&!BD.io&&'IntersectionObserver' in window){BD.io=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting&&e.intersectionRatio>.5)){setTimeout(()=>{if(bdFresh()){lsSet({boardSeen:BD.at});const n2=document.getElementById('bnotice');if(n2)n2.innerHTML=''}},3000)}},{threshold:[.5]});BD.io.observe(BD.el)}}
 function bdStat(t){BD.stat=t;const el=BD.el&&BD.el.querySelector('#bstat');if(el)el.textContent=t}
 function bdPaper(){BD.cx.globalCompositeOperation='source-over';BD.cx.fillStyle=BD_PAPER;BD.cx.fillRect(0,0,BD_W,BD_H)}
 function bdShow(img){bdPaper();if(!img)return;const im=new Image();im.onload=()=>{if(BD.editing)return;bdPaper();BD.cx.drawImage(im,0,0,BD_W,BD_H)};im.src=img}
@@ -1959,6 +1979,23 @@ function boardMount(){const slot=document.getElementById('boardSlot');
   if(!slot){if(BD.poll){clearInterval(BD.poll);BD.poll=null}return}
   slot.appendChild(boardEl());bdMeta();bdStat(BD.stat);
   if(!BD.poll){bdLoad();BD.poll=setInterval(()=>{if(!document.hidden)bdLoad()},15000)}}
+
+/* ======== reações com emojis durante o jogo ======== */
+const REACTS=['😍','😂','😮','😭','🔥','👏','🤔','😈','🙄','❤️','🌻','🌴'];
+const RX={open:false,last:0,seen:{}};
+function reactBar(){if(!(G&&G.seed&&MODE))return '';
+  return `<div class="rxwrap ${RX.open?'open':''}"><div class="rxpal">${REACTS.map(e=>`<button onclick="react('${e}')" aria-label="reagir ${e}">${e}</button>`).join('')}</div><button class="rxbtn" onclick="RX.open=!RX.open;document.querySelector('.rxwrap').classList.toggle('open',RX.open)" aria-label="reagir com um emoji">${RX.open?'✕':'😊'}</button></div>`}
+function rxFloat(e,who){const d=document.createElement('div');d.className='rxfloat';d.style.left=(who===WHO?18+Math.random()*25:55+Math.random()*25)+'%';
+  d.innerHTML=`<span class="rxe">${e}</span><span class="rxn c${who}">${isCpu(who)?'🤖 Computador':(who===0?'🌴 Miguel':'🌻 Clara')}</span>`;document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}
+function react(e){const now=Date.now();if(now-RX.last<900)return;RX.last=now;RX.open=false;document.querySelector('.rxwrap')?.classList.remove('open');
+  const k=P(WHO);RX.seen[k]=now;rxFloat(e,WHO);
+  if(MODE==='cpu'){G.react={...(G.react||{}),[k]:{e,t:now}};
+    if(Math.random()<.7)setTimeout(()=>{const C=1-WHO,r=['🤖','😏','🔥','🙄','😂','👏'][Math.floor(Math.random()*6)];rxFloat(r,C)},900+Math.random()*900);return}
+  try{ref().update({react:{[k]:{e,t:now}}}).catch(()=>{})}catch(x){}}
+function rxCheck(){if(!G||!G.seed||MODE!=='online')return;const k=P(1-WHO),r=G.react&&G.react[k];
+  if(!r||!r.t){if(RX.seen[k]===undefined)RX.seen[k]=0;return}
+  if(RX.seen[k]===undefined){RX.seen[k]=r.t;return}
+  if(r.t>RX.seen[k]){RX.seen[k]=r.t;rxFloat(r.e,1-WHO);try{navigator.vibrate&&navigator.vibrate(30)}catch(x){}}}
 
 /* ======== animações Two.js ======== */
 const FX={ok:false,reduced:!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)};
@@ -2307,7 +2344,7 @@ function rankingScreen(){
   <div class="actions"><button class="btn" onclick="closeRanking()">← Voltar</button></div>`;
 }
 function modeScreen(){
-  return `<div class="hero"><div class="kick">um jogo de música brasileira</div><h1 class="herot">Meu <em>Álbum</em></h1><div class="turntable"><div class="record"></div></div>${heroVs()}<p>Como queres jogar, ${WHO===0?'Miguel':'Clara'}?</p></div>
+  return `<div class="hero"><div class="kick">um jogo de música brasileira</div><h1 class="herot">Meu <em>Álbum</em></h1><div class="turntable"><div class="record"></div></div>${heroVs()}<p>Como queres jogar, ${WHO===0?'Miguel':'Clara'}?</p><div id="bnotice">${bdNotice()}</div></div>
   <div class="modes">
    <button class="modebtn" onclick="setMode('online')"><span class="ic">👥</span><b>Com mais uma pessoa</b><span>Cada um no seu telemóvel, numa sala com código.</span></button>
    <button class="modebtn" onclick="setMode('cpu')"><span class="ic">🤖</span><b>Contra o computador</b><span>Treina sozinho contra um adversário que também sabe montar álbuns.</span></button>
@@ -2491,7 +2528,7 @@ function render(){
   const app=document.getElementById('app'),keep={};app.querySelectorAll('input[id]').forEach(i=>keep[i.id]=i.value);
   const fid=document.activeElement&&document.activeElement.id;
   const key=viewKey(),enter=key!==L.lastKey;L.lastKey=key;
-  app.innerHTML=header()+`<main class="view ${enter?'enter':''}">${body()}</main>`+dock()+draftDock();
+  app.innerHTML=header()+`<main class="view ${enter?'enter':''}">${body()}</main>`+dock()+draftDock()+reactBar();try{rxCheck()}catch(e){}
   document.body.classList.toggle('has-dock',!!document.querySelector('.odock'));document.body.classList.toggle('has-ddock',!!document.querySelector('.ddock'));{const sd=app.querySelector('main .stagedock');if(sd)app.appendChild(sd)}document.body.classList.toggle('has-sdock',!!document.querySelector('.stagedock'));
   try{boardMount()}catch(e){}
   for(const k in keep){const el=document.getElementById(k);if(el)el.value=keep[k]}
