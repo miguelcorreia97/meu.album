@@ -1372,14 +1372,14 @@ body{overflow:visible!important}
 
 .rxemo button{width:42px;height:42px;border:0;border-radius:12px;background:rgba(255,246,230,.08);font-size:24px;cursor:pointer}
 .rxemo button:active{transform:scale(.9)}
-.rxfloat{position:fixed;bottom:14%;z-index:80;display:flex;flex-direction:column;align-items:center;pointer-events:none;animation:rxup 2.6s ease-out forwards}
+.rxfloat{position:fixed;bottom:14%;z-index:80;display:flex;flex-direction:column;align-items:center;pointer-events:none;animation:rxup 3.6s ease-out forwards}
 .rxfloat .rxe{font-size:64px;line-height:1;filter:drop-shadow(0 6px 12px rgba(0,0,0,.45))}
 .rxfloat .rxn{margin-top:4px;font-size:.8rem;font-weight:700;padding:2px 9px;border-radius:999px;background:rgba(34,16,6,.85)}
 .rxfloat .rxn.c0{color:#6fd39a}.rxfloat .rxn.c1{color:#ffd34d}
 @keyframes rxup{0%{transform:translateY(40px) scale(.4);opacity:0}15%{transform:translateY(0) scale(1.15);opacity:1}25%{transform:scale(1)}80%{opacity:1}100%{transform:translateY(-38vh) scale(.9);opacity:0}}
 @media(prefers-reduced-motion:reduce){.rxfloat{animation:none;opacity:1}}
 .rxfloat .rxtxt{max-width:min(70vw,260px);margin-bottom:6px;padding:8px 12px;border-radius:16px 16px 16px 4px;background:#fff6e6;color:#2b1d14;font-weight:700;font-size:.95rem;text-align:center;box-shadow:0 8px 18px rgba(0,0,0,.35)}
-.rxfloat.long{animation-duration:3.8s}
+.rxfloat.long{animation-duration:4.8s}
 body.ingame .top{position:sticky!important;top:0!important;z-index:50!important;background:rgba(34,16,6,.86)!important;backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important}
 .rxmute{border:1px solid rgba(255,214,150,.3);background:rgba(255,246,230,.08);color:var(--ink);border-radius:999px;padding:7px 12px;font:inherit;font-size:.85rem;font-weight:700;cursor:pointer}
 .vchip{position:relative}.vchip .vwho{margin-left:6px;font-size:1rem}
@@ -1388,7 +1388,7 @@ body.ingame .top{position:sticky!important;top:0!important;z-index:50!important;
 .vhint.pulse{background:rgba(255,210,63,.16);color:var(--ink);border:1px solid rgba(255,210,63,.5)}
 .vhint.ok{background:rgba(47,179,107,.18);color:var(--ink)}
 .btn.pulse{animation:npulse 1.4s ease-in-out infinite}
-@media(max-width:600px){.rxfloat .rxs{width:56px;height:56px}.rxfloat .rxtxt{font-size:.72rem;padding:5px 9px;max-width:160px}.rxfloat .rxn{font-size:.7rem}.rxfloat{bottom:22%}}
+@media(max-width:600px){.rxfloat .rxs{width:70px;height:70px}.rxfloat .rxtxt{font-size:.78rem;padding:5px 10px;max-width:170px}.rxfloat .rxn{font-size:.7rem}.rxfloat{bottom:22%}}
 </style>
 </head>
 <body>
@@ -2021,8 +2021,8 @@ function reactBar(){if(!(G&&G.seed&&MODE))return '';
 function rxMute(){RX.mute=!RX.mute;try{localStorage.setItem('stk-mute',RX.mute?'1':'0')}catch(e){}document.querySelectorAll('.rxfloat').forEach(d=>{if(RX.mute)d.remove()});RX.open=true;const h=document.getElementById('hdr');if(h)h.outerHTML=header();const w=document.querySelector('.rxwrap');if(w)w.outerHTML=reactBar()}
 function rxToggle(){RX.open=!RX.open;document.querySelector('.rxwrap')?.classList.toggle('open',RX.open)}
 document.addEventListener('pointerdown',e=>{if(RX.open&&!e.target.closest('.rxwrap,.rxtop')){RX.open=false;document.querySelector('.rxwrap')?.classList.remove('open')}});
-function rxFloat(e,who,txt){if(RX.mute&&who!==WHO)return;const d=document.createElement('div');d.className='rxfloat';{const vw=innerWidth,w=txt?Math.min(vw<600?160:230,vw*.5):(vw<600?72:160),room=Math.max(0,vw/2-w-12),x=who===WHO?12+Math.random()*room:vw-w-12-Math.random()*room;d.style.left=Math.max(8,x)+'px';d.style.width=w+'px'}
-  d.innerHTML=`${txt?`<span class="rxtxt">${esc(txt)}</span>`:''}${rxHtml(e)}<span class="rxn c${who}">${isCpu(who)?'🤖 Computador':(who===0?'🌴 Miguel':'🌻 Clara')}</span>`;if(txt)d.classList.add('long');document.body.appendChild(d);setTimeout(()=>d.remove(),txt?3800:2800)}
+function rxFloat(e,who,txt){if(RX.mute&&who!==WHO)return;const d=document.createElement('div');d.className='rxfloat';{const vw=innerWidth,w=txt?Math.min(vw<600?170:230,vw*.52):(vw<600?86:160),room=Math.max(0,vw/2-w-12),x=who===WHO?12+Math.random()*room:vw-w-12-Math.random()*room;d.style.left=Math.max(8,x)+'px';d.style.width=w+'px'}
+  d.innerHTML=`${txt?`<span class="rxtxt">${esc(txt)}</span>`:''}${rxHtml(e)}<span class="rxn c${who}">${isCpu(who)?'🤖 Computador':(who===0?'🌴 Miguel':'🌻 Clara')}</span>`;if(txt)d.classList.add('long');document.body.appendChild(d);setTimeout(()=>d.remove(),txt?4800:3800)}
 function react(e){const now=Date.now();if(now-RX.last<900)return;RX.last=now;RX.open=false;document.querySelector('.rxwrap')?.classList.remove('open');
   const k=P(WHO);RX.seen[k]=now;rxFloat(e,WHO);
   if(MODE==='cpu'){G.react={...(G.react||{}),[k]:{e,t:now}};
@@ -2044,15 +2044,15 @@ const BOT_TXT={
  suspense:['Tô nervoso 😬 mentira','Old que ganhei. Ou não…','Reza aí 🙏 vais precisar','Já preparei o discurso de vitória','Lock in 🔒'],
  resposta_gozo:['Manda mais, tô a rir 😂','Sticker bonito, pena o álbum','Glazing não te vai salvar','Isso é tudo o que tens?','Gozas com sticker porque com música não dá'],
  resposta_raiva:['Agora gozas?','Ri-te, ri-te…','Ainda vou virar isto','Sai da live, Denise 📵','Calma, o jogo ainda não acabou 😤']};
-const BOT_HIST=(()=>{try{return JSON.parse(localStorage.getItem('bot-hist')||'{}')}catch(e){return {}}})();BOT_HIST.l=BOT_HIST.l||[];BOT_HIST.s=BOT_HIST.s||[];
+const BOT_HIST=(()=>{try{return JSON.parse(localStorage.getItem('bot-hist')||'{}')}catch(e){return {}}})();BOT_HIST.g=BOT_HIST.g||[];delete BOT_HIST.l;BOT_HIST.s=BOT_HIST.s||[];
 const botHistSave=()=>{try{localStorage.setItem('bot-hist',JSON.stringify(BOT_HIST))}catch(e){}};
 const pickOne=a=>a[Math.floor(Math.random()*a.length)];
 function botStk(mood){const a=stkFor(1-WHO),B=RX.bot,u=B.stUse||(B.stUse={});let pool=a.filter(i=>(mood==='raiva'?STK_RAIVA:STK_GOZO).includes(i));if(!pool.length)pool=a;
   const min=Math.min(...pool.map(i=>u[i]||0)),c=pool.filter(i=>(u[i]||0)===min).filter(i=>i!==B.lastStk);const k=pickOne(c.length?c:pool);u[k]=(u[k]||0)+1;B.lastStk=k;return 's:'+k}
-function botSay(mood,lines,ctx){if(RX.mute)return;ctx=ctx||{};const u=RX.bot.used||(RX.bot.used=new Set()),h=new Set(BOT_HIST.l);
+function botSay(mood,lines,ctx){if(RX.mute)return;ctx=ctx||{};const u=RX.bot.used||(RX.bot.used=new Set());if(BOT_HIST.gs!==G.seed){BOT_HIST.gs=G.seed;BOT_HIST.g=[...BOT_HIST.g,[]].slice(-3)}const h=new Set(BOT_HIST.g.flat());
   let ok=lines.filter(l=>(!/\{m\}/.test(l)||ctx.m)&&(!/\{o\}/.test(l)||ctx.o));if(!ok.length)ok=lines.filter(l=>!/[{]/.test(l));
   const fresh=ok.filter(l=>!u.has(l)&&!h.has(l)),free=ok.filter(l=>!u.has(l)),t=pickOne(fresh.length?fresh:(free.length?free:ok));
-  u.add(t);BOT_HIST.l=[...BOT_HIST.l.filter(x=>x!==t),t].slice(-70);botHistSave();RX.bot.lastSay=Date.now();
+  u.add(t);BOT_HIST.g[BOT_HIST.g.length-1].push(t);botHistSave();RX.bot.lastSay=Date.now();
   rxFloat(botStk(mood),1-WHO,t.replace(/\{m\}/g,ctx.m||'').replace(/\{o\}/g,ctx.o||''))}
 /* quem vai à frente nos duelos já revelados (do ponto de vista do computador) */
 function botLead(){try{if(phase()!=='duels')return 0;const C=1-WHO,[k,d]=stageKind();const n=k==='duel'?d+1:G.per;let s=0;for(let x=0;x<n;x++){const j=judge(x);if(j.w===C)s++;else if(j.w===WHO)s--}return s}catch(e){return 0}}
