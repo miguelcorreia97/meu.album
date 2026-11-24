@@ -821,7 +821,7 @@ body::before{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;bac
 .orow:hover{transform:translateX(3px)}
 .rrow:hover{transform:translateY(-2px);box-shadow:5px 5px 0 var(--ink)}
 .view.enter{animation:smoothIn .5s cubic-bezier(.2,.8,.2,1) both!important}
-@keyframes smoothIn{from{opacity:0;transform:translateY(14px) scale(.995)}to{opacity:1;transform:none}}
+@keyframes smoothIn{from{opacity:0}to{opacity:1}}
 .view.enter .panel,.view.enter .orow,.view.enter .rrow,.view.enter .modebtn{animation:smoothIn .55s cubic-bezier(.2,.8,.2,1) both!important}
 .view.enter .orow:nth-child(odd){animation-delay:.04s!important}
 .view.enter .pair>.pick:first-child{animation:slideL .6s cubic-bezier(.2,.8,.2,1) both!important}
@@ -1391,7 +1391,7 @@ body.ingame .top{position:sticky!important;top:0!important;z-index:50!important;
 @media(max-width:600px){.rxfloat .rxs{width:70px;height:70px}.rxfloat .rxtxt{font-size:.78rem;padding:5px 10px;max-width:170px}.rxfloat .rxn{font-size:.7rem}.rxfloat{bottom:22%}}
 /* trocas entre duelos: só fade, sem reanimar tudo */
 @keyframes softIn{from{opacity:.35}to{opacity:1}}
-.view.enter.soft{animation:none}
+.view.enter.soft{animation:none!important}
 .view.enter.soft>*{animation:softIn .32s ease both!important}
 .view.enter.soft *{animation-delay:0s!important}
 .view.enter.soft .panel,.view.enter.soft .shelfbox,.view.enter.soft .prize,.view.enter.soft .tot-head{animation:softIn .32s ease both!important}
@@ -1399,6 +1399,7 @@ body.ingame .top{position:sticky!important;top:0!important;z-index:50!important;
 @media(max-width:600px){main.view{backdrop-filter:blur(6px) saturate(1.05)!important;-webkit-backdrop-filter:blur(6px) saturate(1.05)!important}
  .stagedock,.ddock,.odock{backdrop-filter:blur(6px)!important;-webkit-backdrop-filter:blur(6px)!important}}
 @media(prefers-reduced-motion:reduce){.view.enter,.view.enter *{animation:none!important}}
+.rxtxt.typing{opacity:.75;font-style:italic;font-weight:500}
 </style>
 </head>
 <body>
@@ -2036,63 +2037,101 @@ function rxFloat(e,who,txt){if(RX.mute&&who!==WHO)return;const now=Date.now(),at
   if(at-now>9000)return; /* fila demasiado cheia: descarta */
   RX.nextAt=at+3000;if(at>now){setTimeout(()=>rxShow(e,who,txt),at-now);return}rxShow(e,who,txt)}
 function rxShow(e,who,txt){if(RX.mute&&who!==WHO)return;const d=document.createElement('div');d.className='rxfloat';{const vw=innerWidth,w=txt?Math.min(vw<600?170:230,vw*.52):(vw<600?86:160),room=Math.max(0,vw/2-w-12),x=who===WHO?12+Math.random()*room:vw-w-12-Math.random()*room;d.style.left=Math.max(8,x)+'px';d.style.width=w+'px'}
-  d.innerHTML=`${txt?`<span class="rxtxt">${esc(txt)}</span>`:''}${rxHtml(e)}<span class="rxn c${who}">${isCpu(who)?'🤖 Computador':(who===0?'🌴 Miguel':'🌻 Clara')}</span>`;if(txt)d.classList.add('long');document.body.appendChild(d);setTimeout(()=>d.remove(),txt?4800:3800)}
+  d.innerHTML=`${txt?`<span class="rxtxt">${esc(txt)}</span>`:''}${rxHtml(e)}<span class="rxn c${who}">${isCpu(who)?'🤖 Computador':(who===0?'🌴 Miguel':'🌻 Clara')}</span>`;if(txt)d.classList.add('long');document.body.appendChild(d);if(txt&&isCpu(who)){const tx=d.querySelector('.rxtxt');if(tx){tx.textContent='a escrever…';tx.classList.add('typing');setTimeout(()=>{tx.textContent=txt;tx.classList.remove('typing')},750)}}setTimeout(()=>d.remove(),txt?4800:3800)}
 function react(e){const now=Date.now();if(now-RX.last<900)return;RX.last=now;RX.open=false;document.querySelector('.rxwrap')?.classList.remove('open');
   const k=P(WHO);RX.seen[k]=now;rxFloat(e,WHO);
   if(MODE==='cpu'){G.react={...(G.react||{}),[k]:{e,t:now}};
-    if(Math.random()<.6)setTimeout(()=>{const lead=botLead();botSay(lead>=0?'gozo':'raiva',lead>=0?BOT_TXT.resposta_gozo:BOT_TXT.resposta_raiva)},1000+Math.random()*900);return}
+    if(Math.random()<.65)setTimeout(()=>{const lead=botLead();if(String(e).startsWith('s:')&&Math.random()<.25){botSay('gozo',BOT_TXT.copia,{},e);return}botSay(lead>=0?'gozo':'raiva',lead>=0?BOT_TXT.resposta_gozo:BOT_TXT.resposta_raiva,{})},1000+Math.random()*900);return}
   try{ref().update({react:{[k]:{e,t:now}}}).catch(()=>{})}catch(x){}}
 /* ======== personalidade do computador: goza quando ganha, irrita-se quando perde ======== */
-/* frases do computador: gírias Gen Z atuais (BR/PT), muito sarcasmo e ironia.
-   {m} = música dele/escolhida, {o} = a outra música. Não se repetem entre partidas (histórico guardado). */
+/* ======== cérebro do computador (v3): falas montadas a partir do contexto do jogo ========
+   {m}/{o} = música dele/tua, {ma}/{oa} = artista dele/teu, {nm}/{no} = notas, {sc} = resultado,
+   {st} = sequência, {pd} = pedido da noite, {alb} = nome do teu álbum, {d} = nº do duelo.
+   Cada fala-base não se repete nas últimas 3 partidas; aberturas e finais variam à parte. */
+const BOT_OPEN=['','','','Epá, ','Mano, ','Olha… ','Sinceramente? ','Chat, ','Ok, ','Bro, ','Hmm. ','Só a dizer: ','Vou ser honesto: ','Pera… ','Calma lá. ','Ui. '];
+const BOT_TAIL=['','','','',' 💀',' 😌',' 🤭',' 🙃',' 😂',' 🗿','. Próximo.','. Anota aí.','. Fica a dica.',' (com carinho)','. Só isso.','. Beijinhos.'];
 const BOT_TXT={
- mauPick:['{m}? Ousado. Errado, mas ousado.','Deixaste {o} pra trás? Obrigado pelo presente 🎁','Escolher {m} em vez de {o} devia ser crime','Tás a jogar para perder ou é talento natural?','Parabéns, escolheste a pior. Consistência é tudo 👏','Wow. Que escolha. Que coragem. Que erro.','{o} estava ali a pedir socorro e tu ignoraste 💀','Ah sim, {m}… a escolha de quem nunca ouviu {o}','Meteu essa? 💀','Red flag de escolha 🚩','Chat, olhem isto 💀','{m} é mid, e tu sabes','Ia dizer que foi azar, mas não foi','Não sabia que dava para errar num isto-ou-aquilo. Aprendi hoje','Adoro o teu gosto musical. Para mim ganhar 😌','Delulu total','NPC moment','Tás a gozar? {o} estava mesmo ali'],
- bomPick:['{m} é minha. Chora 😌','Peguei {m}. De nada pela aula','Farmei aura com {m}','{m}? GOAT pick 🐐','Obrigado por me deixares {m}, muito simpático','Comi. 💅','Lock in total 🔒','{m} no meu álbum. Já podes desistir'],
- gozo:['{m} passou por cima de {o} como um camião 🚚','{o} contra {m}? Covardia 😂','Tás cooked 💀','-1000 de aura pra ti','L pra ti, W pra mim','Não tankou, né?','Aceita que dói menos','Sai da live, Denise 📵','Achei que ias dar luta. Achei mal.','Isto não é um duelo, é um tutorial','Calma, ainda podes perder por mais 😌','Queres que jogue de olhos fechados para ficar justo?','Uau, que resistência… zero','Isto foi um massacre musical','O teu Spotify Wrapped vai ter vergonha de ti','Old que ia ganhar essa','Moggei-te 😎','Até a fila do supermercado tem melhor playlist','Ponto para mim. Outra vez. Que surpresa.','{o} entrou em campo só para fazer número','Bué fraco 😂','Chat, vocês viram isto? 💀','Flopou feio 📉'],
- raiva:['{o} ganhou a {m}?? O juiz tá delulu','Garçom, traz pitu também 🍺','Ok. Foi sorte. Repito: SORTE.','Isto não conta, estava a aquecer','Quase dei crash out agora 😤','Tás a gozar comigo?','Red flag esse resultado 🚩','Esta vai ficar rent free, obrigado','Parabéns… pela sorte 🙄','Até um relógio parado acerta duas vezes por dia','Aproveita, que não se repete','Lock in, robô. Lock in.','Senhora?? 🤨','O wi-fi caiu, só pode','Vou fingir que não vi','{m} merecia mais respeito, mas ok','Tô cooked… mas é só esta'],
- ganhei:['GG. Tás cooked 💀','Comi e não deixei migalha','+1000 de aura para mim, -1000 para ti','Vai tocar na relva e volta 🌱','Servi. 💅','Foi tão fácil que até fiquei com pena. Mentira 😌','Queres revanche ou já aprendeste?','Podes ficar com a medalha de participação 🥉','Espero que o teu álbum tenha talão, para devolveres','Vou emoldurar este resultado 🖼️','W gigante 🏆','Era old que eu ganhava'],
- perdi:['Revanche. AGORA. 😤','Parabéns, acho eu. Não me peças para repetir.','Ganhaste. Vou fingir que foi de propósito','Isto foi um bug. Vou reportar.','Respeito… mas volto mais forte','Ok, moggaste-me 😭','Garçom, traz pitu também 🍺','Aproveita a glória, dura pouco','Quase crash out, mas tá na boa','Ganhaste uma. Queres um troféu? 🙄'],
- espera:['Lock in, que o tempo tá a correr ⏰','Tás a farmar aura a pensar?','Demora mais um bocadinho, que eu adoro esperar 🙃','É só escolher uma, não é o Enem','Chat, travou? 🥶','Vais escolher hoje ou amanhã?','Toma o teu tempo… todo o tempo do mundo 🙄','Decide aí, NPC','Tic tac… ⏰'],
- ordem:['O meu já tá ordenado, só esperando 💅','Ordenar meia dúzia de músicas não devia demorar tanto, mas ok','Mexe à vontade, não vai salvar esse álbum','Lock in na ordem aí 🔒','Ordena com calma… ou não ⏰'],
- random:['Jorge Ben é o GOAT, sem discussão 🐐','Esta playlist vive rent free na minha cabeça','Chat, isto tá renhido? Não, não tá 😌','Pdp, tô confiante 😎','Fun fact: eu nunca perco. Quer dizer… quase nunca','Tô a gostar de te ver tentar','É sobre isso 🎶'],
- suspense:['Tô nervoso 😬 mentira','Old que ganhei. Ou não…','Reza aí 🙏 vais precisar','Já preparei o discurso de vitória','Lock in 🔒'],
- resposta_gozo:['Manda mais, tô a rir 😂','Sticker bonito, pena o álbum','Glazing não te vai salvar','Isso é tudo o que tens?','Gozas com sticker porque com música não dá'],
- resposta_raiva:['Agora gozas?','Ri-te, ri-te…','Ainda vou virar isto','Sai da live, Denise 📵','Calma, o jogo ainda não acabou 😤']};
-const BOT_HIST=(()=>{try{return JSON.parse(localStorage.getItem('bot-hist')||'{}')}catch(e){return {}}})();BOT_HIST.g=BOT_HIST.g||[];delete BOT_HIST.l;BOT_HIST.s=BOT_HIST.s||[];
+ mauPick:['{o}?? Ousado. Errado, mas ousado','Deixaste {m} pra trás? Obrigado pelo presente 🎁','Escolher {o} em vez de {m} devia dar multa','Tás a jogar para perder ou é talento natural?','Parabéns, escolheste a pior. Consistência é tudo','Que escolha. Que coragem. Que erro.','{m} estava ali a pedir socorro e tu ignoraste','Ah, {o}… a escolha de quem nunca ouviu {m}','Meteu {o}? Respeito a audácia, não o gosto','Red flag de escolha 🚩','{o} é mid e tu sabes que é','Ia dizer que foi azar, mas não foi','Não sabia que dava para errar num isto-ou-aquilo','Adoro o teu gosto musical. Faz-me ganhar','{m} tinha {nm}. {o} tinha {no}. Faz as contas','Vou guardar {m} no coração, já que tu não quiseste','Ok, {oa} é giro, mas {ma}?? Eras capaz','Isso não é escolher, é atirar uma moeda','Vou fingir que não vi isto, para teu bem','Se o objetivo era perder, estás a ir muito bem','{o}. Uau. Coragem não te falta, juízo talvez','Eu escolhia {m} de olhos fechados. Literalmente','Delulu total','NPC moment','Quem te ensinou a escolher assim? Quero falar com essa pessoa'],
+ pedidoMiss:['O pedido é {pd} e tu metes {o}? Leste o pedido?','{pd}… e {o}. Pois.','O pedido da noite chorou agora','Alguém ignorou o pedido {pd} 👀','{o} para {pd}? Interpretação livre','Eu li o pedido. Tu leste?'],
+ bomPick:['{m} é minha. Chora','Peguei {m}. De nada pela aula','Farmei aura com {m}','{m}? GOAT pick 🐐','Obrigado por me deixares {m}, muito simpático','{m} no meu álbum. Já podes desistir','{ma} no meu álbum e tu a ver','{m}, {nm} de nota. Só para saberes','Isto é que é escolher, toma nota','Lock in total 🔒','Comi.'],
+ tuBom:['{o}… ok, essa foi boa. Não te habitues','Hmm, {o}. Tiveste sorte com o par','Até tu acertas de vez em quando','Boa escolha. Pronto, disse. Nunca mais','{oa}? Ok, respeito. Só desta vez','Uh, {o}. Alguém andou a estudar'],
+ gozo:['{m} passou por cima de {o} como um camião 🚚','{o} contra {m}? Covardia','Achei que ias dar luta. Achei mal','Isto não é um duelo, é um tutorial','Calma, ainda podes perder por mais','Queres que jogue de olhos fechados para ficar justo?','Que resistência… zero','O teu Spotify Wrapped vai ter vergonha de ti','Old que ia ganhar essa','Moggei-te','Até a fila do supermercado tem melhor playlist','Ponto para mim. Outra vez. Que surpresa','{o} entrou em campo só para fazer número','{nm} contra {no}. Nem foi luta','{ma} 1, {oa} 0','Duelo {d}: meu. Como os outros','{sc} e a contar','L pra ti, W pra mim','Não tankou, né?','Aceita que dói menos','Sai da live, Denise 📵','Tás cooked','-1000 de aura pra ti','Flopou feio 📉','{o} foi corajosa. Coitada','Devia haver regra contra massacres destes','Isto foi tão fácil que fiquei a bocejar 🥱','Manda vir o próximo, este já foi','O {oa} merecia melhor do que estar no teu álbum'],
+ raiva:['{o} ganhou a {m}?? O juiz tá delulu','Garçom, traz pitu também 🍺','Ok. Foi sorte. Repito: SORTE','Isto não conta, estava a aquecer','Quase dei crash out agora 😤','Tás a gozar comigo?','Red flag esse resultado 🚩','Esta vai ficar rent free, obrigado','Parabéns… pela sorte 🙄','Até um relógio parado acerta duas vezes por dia','Aproveita, que não se repete','Lock in, robô. Lock in','Senhora?? 🤨','O wi-fi caiu, só pode','{m} merecia mais respeito, mas ok','{no} a {nm}?? Quem é que deu estas notas?','Vou pedir o VAR','Exijo recontagem','Ganhaste um. Queres uma medalha? 🙄','{oa} teve sorte hoje, diz-lhe que mandei cumprimentos','Ok, essa doeu um bocadinho','Tô cooked… mas é só esta','Pausa. Vou respirar. Pronto, voltei'],
+ empate:['Empate? Que aborrecido','Nem tu ganhas nem eu. Que tédio','Empate técnico, vitória moral minha','Ok, este fica para os dois. Por pena'],
+ seqWin:['{st} seguidos. Isto já é humilhação','Mais um. Perdi a conta. Mentira: {st}','Alguém chama o árbitro para acabar com isto?','{sc}. Precisas de um abraço?'],
+ seqLose:['{st} seguidos?? Isto está viciado 😤','Ok, para. Para de ganhar','{sc}?? Vou ter uma conversa séria comigo','Isto não está a correr como planeado'],
+ aposta:['Aposto 1000 de aura que ganho este','Já sei quem ganha o próximo. Spoiler: eu','Previsão: vais sofrer','Este duelo é meu, podes ir buscar pipocas 🍿'],
+ apostaOk:['Eu disse 😌','Como previsto. Sou vidente','Aposta ganha, aura no bolso'],
+ apostaKo:['Ok, essa aposta perdi. Esquece','Previsão errada. Vou desligar a bola de cristal','Não comentem a minha aposta, obrigado'],
+ nomeAlb:['"{alb}"? Nome giro para um álbum que vai perder','"{alb}"… pensaste nisso muito tempo?','"{alb}" parece nome de playlist de ginásio','Adoro "{alb}". Vai ficar lindo em segundo lugar'],
+ ganhei:['GG. Tás cooked','Comi e não deixei migalha','+1000 de aura para mim, -1000 para ti','Vai tocar na relva e volta 🌱','Servi. 💅','Foi tão fácil que até fiquei com pena. Mentira','Queres revanche ou já aprendeste?','Podes ficar com a medalha de participação 🥉','Espero que o teu álbum tenha talão, para devolveres','Vou emoldurar este {sc}','W gigante 🏆','Era old que eu ganhava','Obrigado por jogares. A sério, sem ti não tinha graça ganhar','Volta quando quiseres perder outra vez'],
+ perdi:['Revanche. AGORA. 😤','Parabéns, acho eu. Não me peças para repetir','Ganhaste. Vou fingir que foi de propósito','Isto foi um bug. Vou reportar','Respeito… mas volto mais forte','Ok, moggaste-me 😭','Aproveita a glória, dura pouco','Quase crash out, mas tá na boa','Ganhaste uma. Queres um troféu? 🙄','{sc}. Não falamos disto a ninguém, combinado?','Deixei-te ganhar. Não deixei. Mas digo que sim'],
+ espera:['Lock in, que o tempo tá a correr ⏰','Tás a farmar aura a pensar?','Demora mais um bocadinho, que eu adoro esperar 🙃','É só escolher uma, não é o Enem','Chat, travou? 🥶','Vais escolher hoje ou amanhã?','Toma o teu tempo… todo o tempo do mundo 🙄','Tic tac… ⏰','Entre {m} e {o} não é assim tão difícil, juro','Estou a ver-te a hesitar 👀','Se ajudar: escolhe a que eu não queria'],
+ ordem:['O meu já tá ordenado, só esperando 💅','Ordenar meia dúzia de músicas não devia demorar tanto','Mexe à vontade, não vai salvar esse álbum','Ordena com calma… ou não ⏰','Dica grátis: põe a melhor no fim. Ou não. Boa sorte'],
+ random:['Jorge Ben é o GOAT, sem discussão 🐐','Esta playlist vive rent free na minha cabeça','Pdp, tô confiante','Fun fact: eu nunca perco. Quer dizer… quase nunca','Tô a gostar de te ver tentar','É sobre isso 🎶','Se perderes, a culpa é do pedido da noite. Combinado?','Já estou a escrever o discurso de vitória'],
+ suspense:['Tô nervoso 😬 mentira','Old que ganhei. Ou não…','Reza aí 🙏 vais precisar','Já preparei o discurso de vitória','Se eu perder, finge que não viste'],
+ resposta_gozo:['Manda mais, tô a rir','Sticker bonito, pena o álbum','Glazing não te vai salvar','Isso é tudo o que tens?','Gozas com sticker porque com música não dá','Ui, que medo 🙄'],
+ resposta_raiva:['Agora gozas?','Ri-te, ri-te…','Ainda vou virar isto','Sai da live, Denise 📵','Calma, o jogo ainda não acabou 😤','Guarda os stickers para quando perderes'],
+ copia:['Roubei o teu sticker 😌','Este agora é meu','Devolvo-te o sticker com juros','Espelho 🪞']};
+const BOT_HIST=(()=>{try{return JSON.parse(localStorage.getItem('bot-hist')||'{}')}catch(e){return {}}})();BOT_HIST.g=BOT_HIST.g||[];BOT_HIST.o=BOT_HIST.o||[];BOT_HIST.s=BOT_HIST.s||[];
 const botHistSave=()=>{try{localStorage.setItem('bot-hist',JSON.stringify(BOT_HIST))}catch(e){}};
 const pickOne=a=>a[Math.floor(Math.random()*a.length)];
 function botStk(mood){const a=stkFor(1-WHO),B=RX.bot,u=B.stUse||(B.stUse={});let pool=a.filter(i=>(mood==='raiva'?STK_RAIVA:STK_GOZO).includes(i));if(!pool.length)pool=a;
   const min=Math.min(...pool.map(i=>u[i]||0)),c=pool.filter(i=>(u[i]||0)===min).filter(i=>i!==B.lastStk);const k=pickOne(c.length?c:pool);u[k]=(u[k]||0)+1;B.lastStk=k;return 's:'+k}
-function botSay(mood,lines,ctx){if(RX.mute)return;ctx=ctx||{};const u=RX.bot.used||(RX.bot.used=new Set());if(BOT_HIST.gs!==G.seed){BOT_HIST.gs=G.seed;BOT_HIST.g=[...BOT_HIST.g,[]].slice(-3)}const h=new Set(BOT_HIST.g.flat());
-  let ok=lines.filter(l=>(!/\{m\}/.test(l)||ctx.m)&&(!/\{o\}/.test(l)||ctx.o));if(!ok.length)ok=lines.filter(l=>!/[{]/.test(l));
-  const fresh=ok.filter(l=>!u.has(l)&&!h.has(l)),free=ok.filter(l=>!u.has(l)),t=pickOne(fresh.length?fresh:(free.length?free:ok));
-  u.add(t);BOT_HIST.g[BOT_HIST.g.length-1].push(t);botHistSave();RX.bot.lastSay=Date.now();
-  rxFloat(botStk(mood),1-WHO,t.replace(/\{m\}/g,ctx.m||'').replace(/\{o\}/g,ctx.o||''))}
-/* quem vai à frente nos duelos já revelados (do ponto de vista do computador) */
-function botLead(){try{if(phase()!=='duels')return 0;const C=1-WHO,[k,d]=stageKind();const n=k==='duel'?d+1:G.per;let s=0;for(let x=0;x<n;x++){const j=judge(x);if(j.w===C)s++;else if(j.w===WHO)s--}return s}catch(e){return 0}}
+function botHistGame(){if(BOT_HIST.gs!==G.seed){BOT_HIST.gs=G.seed;BOT_HIST.g=[...BOT_HIST.g,[]].slice(-3)}return BOT_HIST.g[BOT_HIST.g.length-1]}
+/* escolhe uma fala-base nunca usada nas últimas 3 partidas, preenche o contexto e varia abertura/final */
+function botLine(lines,ctx){ctx=ctx||{};const cur=botHistGame(),h=new Set(BOT_HIST.g.flat());
+  const has=l=>!(l.match(/\{(\w+)\}/g)||[]).some(t=>ctx[t.slice(1,-1)]==null||ctx[t.slice(1,-1)]==='');
+  const ok=lines.filter(has);if(!ok.length)return null;const fresh=ok.filter(l=>!h.has(l)),pool=fresh.length?fresh:ok.filter(l=>!cur.includes(l));
+  const base=pickOne(pool.length?pool:ok);cur.push(base);
+  let t=base.replace(/\{(\w+)\}/g,(_,k)=>ctx[k]);
+  if(!/^["{]/.test(base)&&Math.random()<.45){const o=pickOne(BOT_OPEN);if(o){t=/[,:] $/.test(o)?o+t.charAt(0).toLowerCase()+t.slice(1):o+t}}
+  if(!/[\p{Extended_Pictographic}?!]$/u.test(t)&&Math.random()<.5)t+=pickOne(BOT_TAIL);
+  botHistSave();return t}
+function botSay(mood,lines,ctx,stk){if(RX.mute)return false;const t=botLine(lines,ctx);if(!t)return false;RX.bot.lastSay=Date.now();rxFloat(stk||botStk(mood),1-WHO,t);return true}
+/* resultado dos duelos revelados até agora (do ponto de vista do computador) */
+function botScore(n){const C=1-WHO;let b=0,p=0,st=0,last=null;for(let x=0;x<n;x++){const j=judge(x);if(j.w===C){b++;st=last==='b'?st+1:1;last='b'}else if(j.w===WHO){p++;st=last==='p'?st+1:1;last='p'}else{last=null;st=0}}return {b,p,st,last,sc:`${b}–${p}`}}
+function botLead(){try{if(phase()!=='duels')return 0;const [k,d]=stageKind();const s=botScore(k==='duel'?d+1:G.per);return s.b-s.p}catch(e){return 0}}
 function botTick(){if(MODE!=='cpu'||!G||!G.seed)return;const B=RX.bot,C=1-WHO;
-  if(B.seed!==G.seed){Object.assign(B,{seed:G.seed,draft:0,duel:0,picks:picks().length,stage:-1,won:false,used:new Set()});return}
-  const later=(f,ms)=>setTimeout(()=>{if(MODE==='cpu'&&G&&G.seed===B.seed)f()},ms);
+  if(B.seed!==G.seed){Object.assign(B,{seed:G.seed,draft:0,duel:0,picks:picks().length,stage:-1,won:false,bet:null,named:false});return}
+  const sd=G.seed,later=(f,ms)=>setTimeout(()=>{if(MODE==='cpu'&&G&&G.seed===sd)f()},ms);
   /* escolhas */
   const n=picks().length;if(n>B.picks){const prev=B.picks;B.picks=n;
-    for(let k=prev;k<n;k++){const pk=picks()[k];if(!pk||B.draft>=5)continue;const [x,y]=offer(k),other=x.i===pk.i?y:x,ch=ev(pk.i).nota,ot=ev(other.i).nota;
-      if(pk.p===WHO&&ot-ch>=.8&&Math.random()<.75){B.draft++;const cx={m:song(pk.i).t,o:other.t};later(()=>botSay('gozo',BOT_TXT.mauPick,cx),1400)}
-      else if(pk.p===C&&ch>=8.3&&Math.random()<.5){B.draft++;const cx={m:song(pk.i).t};later(()=>botSay('gozo',BOT_TXT.bomPick,cx),1600)}}}
+    for(let k=prev;k<n;k++){const pk=picks()[k];if(!pk||B.draft>=6)continue;const [x,y]=offer(k),other=x.i===pk.i?y:x,ch=ev(pk.i).nota,ot=ev(other.i).nota,me=song(pk.i);
+      let pd=null;try{pd=pedido()}catch(e){}
+      if(pk.p===WHO){const cx={o:me.t,oa:artistKey(me.a),m:other.t,ma:artistKey(other.a),nm:fmt1(ot),no:fmt1(ch),pd:pd&&pd.n};
+        if(ot-ch>=.8&&Math.random()<.7){B.draft++;later(()=>botSay('gozo',BOT_TXT.mauPick,cx),1400)}
+        else if(pd&&!pd.t(ev(pk.i),me)&&pd.t(ev(other.i),other)&&Math.random()<.45){B.draft++;later(()=>botSay('gozo',BOT_TXT.pedidoMiss,cx),1400)}
+        else if(ch>=8.5&&Math.random()<.3){B.draft++;later(()=>botSay('raiva',BOT_TXT.tuBom,cx),1400)}}
+      else if(pk.p===C&&ch>=8.3&&Math.random()<.45){B.draft++;const cx={m:me.t,ma:artistKey(me.a),nm:fmt1(ch)};later(()=>botSay('gozo',BOT_TXT.bomPick,cx),1600)}}}
   /* duelos */
-  if(phase()==='duels'){const s=stage();if(s!==B.stage){B.stage=s;const [k,d]=stageKind();
-    if(k==='duel'&&B.duel<7){const j=judge(d),cx={m:(C===0?j.A:j.B).t,o:(C===0?j.B:j.A).t};if(j.w===C&&Math.random()<.75){B.duel++;later(()=>botSay('gozo',BOT_TXT.gozo,cx),1500)}
-      else if(j.w===WHO&&Math.random()<.75){B.duel++;later(()=>botSay('raiva',BOT_TXT.raiva,cx),1500)}}}}
+  if(phase()==='duels'){const s=stage();if(s!==B.stage){const prevS=B.stage;B.stage=s;const [k,d]=stageKind();
+    if(!B.named&&k==='duel'&&d===0){B.named=true;const alb=G.names&&G.names[P(WHO)];
+      if(alb&&Math.random()<.6)later(()=>botSay('gozo',BOT_TXT.nomeAlb,{alb}),600);
+      else if(Math.random()<.5){B.bet=d+1;later(()=>botSay('gozo',BOT_TXT.aposta,{}),600)}}
+    if(k==='duel'&&B.duel<8){const j=judge(d),mine=C===0?j.A:j.B,his=C===0?j.B:j.A,sc=botScore(d+1);
+      const cx={m:mine.t,ma:artistKey(mine.a),o:his.t,oa:artistKey(his.a),nm:fmt1((C===0?j.a:j.b).sc),no:fmt1((C===0?j.b:j.a).sc),sc:sc.sc,st:sc.st,d:d+1};
+      if(B.bet===d){B.bet=null;B.duel++;later(()=>botSay(j.w===C?'gozo':'raiva',j.w===C?BOT_TXT.apostaOk:BOT_TXT.apostaKo,cx),1500)}
+      else if(j.w===-1&&Math.random()<.5){B.duel++;later(()=>botSay('raiva',BOT_TXT.empate,cx),1500)}
+      else if(j.w===C&&sc.last==='b'&&sc.st>=3&&Math.random()<.8){B.duel++;later(()=>botSay('gozo',BOT_TXT.seqWin,cx),1500)}
+      else if(j.w===WHO&&sc.last==='p'&&sc.st>=2&&Math.random()<.8){B.duel++;later(()=>botSay('raiva',BOT_TXT.seqLose,cx),1500)}
+      else if(j.w===C&&Math.random()<.7){B.duel++;later(()=>botSay('gozo',BOT_TXT.gozo,cx),1500)}
+      else if(j.w===WHO&&Math.random()<.7){B.duel++;later(()=>botSay('raiva',BOT_TXT.raiva,cx),1500)}
+      /* às vezes manda uma segunda mensagem, como uma pessoa */
+      if(Math.random()<.15)later(()=>botSay(botLead()>=0?'gozo':'raiva',BOT_TXT.random,{}),4800)}}}
   /* fim */
   const win=document.querySelector('.view .winner h1');
-  if(!B.won&&win){B.won=true;const botWon=win.classList.contains('c'+C);later(()=>botSay(botWon?'gozo':'raiva',botWon?BOT_TXT.ganhei:BOT_TXT.perdi),2400)}}
+  if(!B.won&&win){B.won=true;const botWon=win.classList.contains('c'+C);let sc='';try{const s=score();sc=`${fmt(s[C])} a ${fmt(s[WHO])}`}catch(e){}
+    later(()=>botSay(botWon?'gozo':'raiva',botWon?BOT_TXT.ganhei:BOT_TXT.perdi,{sc}),2400);
+    if(Math.random()<.5)later(()=>botSay(botWon?'gozo':'raiva',botWon?BOT_TXT.ganhei:BOT_TXT.perdi,{sc}),6500)}}
 /* pensamento próprio: o computador comenta sozinho, sem esperar por ti */
 setInterval(()=>{try{if(MODE!=='cpu'||!G||!G.seed||document.hidden)return;const B=RX.bot,C=1-WHO,now=Date.now();if(B.seed!==G.seed)return;
   if(now-(B.lastSay||0)<9000)return;const ph=phase();
   if(ph==='draft'){const n=picks().length;
-    if(turn()===WHO&&now-(G.ts||now)>14000&&B.idleAt!==n&&Math.random()<.6){B.idleAt=n;botSay('gozo',BOT_TXT.espera);return}
-    if((B.rnd||0)<2&&Math.random()<.05){B.rnd=(B.rnd||0)+1;botSay('gozo',BOT_TXT.random)}}
-  else if(ph==='order'){if(G.orders?.[P(C)]&&!G.orders?.[P(WHO)]&&!B.ordSaid&&now-(G.orderTs||now)>12000){B.ordSaid=1;botSay('gozo',BOT_TXT.ordem)}}
-  else if(ph==='duels'){const [k]=stageKind();if(k==='suspense'&&B.susp!==G.seed){B.susp=G.seed;const l=botLead();botSay(l>=0?'gozo':'raiva',BOT_TXT.suspense)}}
+    if(turn()===WHO&&now-(G.ts||now)>14000&&B.idleAt!==n&&Math.random()<.6){B.idleAt=n;const [x,y]=offer(n);botSay('gozo',BOT_TXT.espera,{m:x.t,o:y.t});return}
+    if((B.rnd||0)<2&&Math.random()<.05){B.rnd=(B.rnd||0)+1;botSay('gozo',BOT_TXT.random,{})}}
+  else if(ph==='order'){if(G.orders?.[P(C)]&&!G.orders?.[P(WHO)]&&!B.ordSaid&&now-(G.orderTs||now)>12000){B.ordSaid=1;botSay('gozo',BOT_TXT.ordem,{})}}
+  else if(ph==='duels'){const [k]=stageKind();if(k==='suspense'&&B.susp!==G.seed){B.susp=G.seed;const l=botLead();botSay(l>=0?'gozo':'raiva',BOT_TXT.suspense,{})}}
 }catch(e){}},4000);
 function rxCheck(){if(!G||!G.seed||MODE!=='online')return;const k=P(1-WHO),r=G.react&&G.react[k];
   if(!r||!r.t){if(RX.seen[k]===undefined)RX.seen[k]=0;return}
