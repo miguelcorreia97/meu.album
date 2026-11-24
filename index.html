@@ -2008,7 +2008,7 @@ function reactBar(){if(!(G&&G.seed&&MODE))return '';
   return `<div class="rxwrap ${RX.open?'open':''}"><div class="rxpal">${mine.length?`<div class="rxlab mono">os teus stickers desta partida</div><div class="rxstk">${mine.map(i=>`<button onclick="react('s:${i}')" aria-label="enviar sticker"><img src="${STK[i]}" alt="" loading="lazy"></button>`).join('')}</div>`:''}</div></div>`}
 function rxToggle(){RX.open=!RX.open;document.querySelector('.rxwrap')?.classList.toggle('open',RX.open)}
 document.addEventListener('pointerdown',e=>{if(RX.open&&!e.target.closest('.rxwrap,.rxtop')){RX.open=false;document.querySelector('.rxwrap')?.classList.remove('open')}});
-function rxFloat(e,who,txt){const d=document.createElement('div');d.className='rxfloat';d.style.left=(who===WHO?18+Math.random()*25:55+Math.random()*25)+'%';
+function rxFloat(e,who,txt){const d=document.createElement('div');d.className='rxfloat';{const vw=innerWidth,w=Math.min(260,vw*.7),room=Math.max(0,vw/2-w-12),x=who===WHO?12+Math.random()*room:vw-w-12-Math.random()*room;d.style.left=Math.max(8,x)+'px';d.style.width=w+'px'}
   d.innerHTML=`${txt?`<span class="rxtxt">${esc(txt)}</span>`:''}${rxHtml(e)}<span class="rxn c${who}">${isCpu(who)?'🤖 Computador':(who===0?'🌴 Miguel':'🌻 Clara')}</span>`;if(txt)d.classList.add('long');document.body.appendChild(d);setTimeout(()=>d.remove(),txt?3800:2800)}
 function react(e){const now=Date.now();if(now-RX.last<900)return;RX.last=now;RX.open=false;document.querySelector('.rxwrap')?.classList.remove('open');
   const k=P(WHO);RX.seen[k]=now;rxFloat(e,WHO);
