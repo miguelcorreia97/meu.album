@@ -1368,7 +1368,7 @@ body{overflow:visible!important}
 .rxstk{display:grid;grid-template-columns:repeat(3,58px);gap:8px;justify-content:center}
 .rxstk button{width:58px;height:58px;padding:2px;border:0;border-radius:12px;background:rgba(255,246,230,.08);cursor:pointer}
 .rxstk img{width:100%;height:100%;object-fit:contain;display:block}
-.rxfloat .rxs{width:150px;height:150px;object-fit:contain;filter:drop-shadow(0 8px 16px rgba(0,0,0,.5))}
+.rxfloat .rxs{width:140px;height:140px;object-fit:contain;filter:drop-shadow(0 8px 16px rgba(0,0,0,.5))}
 
 .rxemo button{width:42px;height:42px;border:0;border-radius:12px;background:rgba(255,246,230,.08);font-size:24px;cursor:pointer}
 .rxemo button:active{transform:scale(.9)}
@@ -2008,7 +2008,7 @@ function reactBar(){if(!(G&&G.seed&&MODE))return '';
   return `<div class="rxwrap ${RX.open?'open':''}"><div class="rxpal">${mine.length?`<div class="rxlab mono">os teus stickers desta partida</div><div class="rxstk">${mine.map(i=>`<button onclick="react('s:${i}')" aria-label="enviar sticker"><img src="${STK[i]}" alt="" loading="lazy"></button>`).join('')}</div>`:''}</div></div>`}
 function rxToggle(){RX.open=!RX.open;document.querySelector('.rxwrap')?.classList.toggle('open',RX.open)}
 document.addEventListener('pointerdown',e=>{if(RX.open&&!e.target.closest('.rxwrap,.rxtop')){RX.open=false;document.querySelector('.rxwrap')?.classList.remove('open')}});
-function rxFloat(e,who,txt){const d=document.createElement('div');d.className='rxfloat';{const vw=innerWidth,w=Math.min(260,vw*.7),room=Math.max(0,vw/2-w-12),x=who===WHO?12+Math.random()*room:vw-w-12-Math.random()*room;d.style.left=Math.max(8,x)+'px';d.style.width=w+'px'}
+function rxFloat(e,who,txt){const d=document.createElement('div');d.className='rxfloat';{const vw=innerWidth,w=txt?Math.min(230,vw*.6):160,room=Math.max(0,vw/2-w-12),x=who===WHO?12+Math.random()*room:vw-w-12-Math.random()*room;d.style.left=Math.max(8,x)+'px';d.style.width=w+'px'}
   d.innerHTML=`${txt?`<span class="rxtxt">${esc(txt)}</span>`:''}${rxHtml(e)}<span class="rxn c${who}">${isCpu(who)?'🤖 Computador':(who===0?'🌴 Miguel':'🌻 Clara')}</span>`;if(txt)d.classList.add('long');document.body.appendChild(d);setTimeout(()=>d.remove(),txt?3800:2800)}
 function react(e){const now=Date.now();if(now-RX.last<900)return;RX.last=now;RX.open=false;document.querySelector('.rxwrap')?.classList.remove('open');
   const k=P(WHO);RX.seen[k]=now;rxFloat(e,WHO);
