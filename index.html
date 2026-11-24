@@ -1400,6 +1400,9 @@ body.ingame .top{position:sticky!important;top:0!important;z-index:50!important;
  .stagedock,.ddock,.odock{backdrop-filter:blur(6px)!important;-webkit-backdrop-filter:blur(6px)!important}}
 @media(prefers-reduced-motion:reduce){.view.enter,.view.enter *{animation:none!important}}
 .rxtxt.typing{opacity:.75;font-style:italic;font-weight:500}
+/* nada pode sair do ecrã pela lateral (o disco a rodar criava scroll horizontal e a página 'redimensionava') */
+body,#app{overflow-x:clip}
+@supports not (overflow:clip){body{overflow-x:hidden}}
 </style>
 </head>
 <body>
