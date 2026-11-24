@@ -1672,6 +1672,12 @@ body,#app{overflow-x:clip}
 @keyframes rzUp{from{transform:translateY(100%)}}
 .rzoom.sheet .pfcores{grid-template-columns:repeat(10,1fr)}.rzoom.sheet .pfcores small{display:none}
 @media(max-width:600px){.rzoom.sheet .pfcores{grid-template-columns:repeat(5,1fr)}.rzoom.sheet .pfz .pfrow{padding:8px 0}}
+
+.coalb .coside h4{margin:6px 0;font-size:.82rem}.coalb .row{display:grid;gap:6px}
+.cosides{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:700px){.cosides{grid-template-columns:1fr}}
+.coside2.mine{border-color:rgba(255,210,63,.5)}.coshead{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}.coshead h3{margin:0;font-size:1rem}.coshead .mono{font-size:.66rem;color:#ffd23f}
+.orow.ro{opacity:.85}.cosync h3{display:flex;justify-content:space-between;align-items:center}.cosync h3 b{color:#ffd23f}
+.cosides3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}@media(max-width:800px){.cosides3{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -3243,7 +3249,7 @@ function coMyVote(){const v=G&&G.cv&&G.cv[P(WHO)];return v&&v.r===vRound()?v.m:n
 function coOtherVote(){const v=G&&G.cv&&G.cv[P(1-WHO)];return v&&v.r===vRound()?v.m:null}
 function coVote(m){if(MODE!=='online')return;W({cv:{[P(WHO)]:{m,r:vRound()}}})}
 function coVoteCheck(){if(MODE!=='online'||!G||CO()||L.busy||WHO!==0)return;const a=coMyVote(),b=coOtherVote();if(a&&a===b)coStart(a)}
-function coFresh(m){return {m,seed:newSeed(),at:Date.now(),first:Math.random()<.5?0:1,tp:[],ord:null,ok:{},fav:{},gs:{},r:0,hist:{}}}
+function coFresh(m){return {m,seed:newSeed(),at:Date.now(),first:Math.random()<.5?0:1,tp:[],ord:null,ordA:null,ordB:null,ok:{},fav:{},gs:{},r:0,hist:{}}}
 function coStart(m){const g=JSON.parse(JSON.stringify(G));g.coop=coFresh(m);g.cv={};g.round=(g.round||0)+1;W(g,true)}
 function coAgain(){coStart(CO().m)}
 function coLeave(){const g=JSON.parse(JSON.stringify(G));g.coop=null;g.cv={};g.round=(g.round||0)+1;W(g,true)}
@@ -3253,48 +3259,62 @@ function coModesBox(){if(MODE!=='online')return `<div class="panel comodes"><div
   <div class="cogrid">${Object.entries(CO_MODES).map(([k,x])=>`<button class="comode ${mv===k?'on':''}" ${L.busy?'disabled':''} onclick="coVote('${k}')"><span class="ce">${x.e}</span><b>${x.n}</b><small>${x.d}</small>${(mv===k||ov===k)?`<em>${[mv===k?emo(WHO):'',ov===k?emo(1-WHO):''].join(' ')} ${mv===k&&ov===k?'a começar…':mv===k?'à espera '+d_(1-WHO):'escolheu este · toca para aceitar'}</em>`:''}</button>`).join('')}</div>
   <p class="hint">Os dois têm de tocar no mesmo modo. ${coCasal()?'As missões a dois só contam quando jogam o Miguel e a Clara juntos.':''}</p></div>`}
 
-/* ---------- Lado A × Lado B ---------- */
+/* ---------- Lado A × Lado B: 5 músicas por lado, cada um ordena o seu ---------- */
+const AB_N=5;
 function abPicker(k){return (CO().first+k)%2}
 function abOffer(k){return [coSong(2*k),coSong(2*k+1)]}
 function abTeam(){const c=CO();return (c.tp||[]).map(x=>({...song(x.i),by:x.p}))}
-function abOrdered(){const t=abTeam(),o=CO().ord;return (o&&o.length===t.length?o:t.map((_,k)=>k)).map(k=>t[k])}
+const abSideOf=p=>p===CO().first?'A':'B';
+function abSide(S){const c=CO(),who=S==='A'?c.first:1-c.first,tr=abTeam().filter(t=>t.by===who),o=c['ord'+S];return (o&&o.length===tr.length?o:tr.map((_,k)=>k)).map(k=>tr[k])}
+function abOrdered(){return [...abSide('A'),...abSide('B')]}
 function abCpu(){const c=CO();if(abCpu._s===c.seed)return abCpu._d;const r=rng(hash(c.seed+':cpu')),tr=[];
-  for(let k=0;k<CO_PER;k++){const a=coSong(2*CO_PER+2*k),b=coSong(2*CO_PER+2*k+1),ea=ev(a.i).nota,eb=ev(b.i).nota;const best=ea>=eb?a:b,worse=ea>=eb?b:a;tr.push(r()<.72?best:worse)}
-  const o=bestOrder(tr,'mid');abCpu._s=c.seed;abCpu._d=o.map(k=>tr[k]);return abCpu._d}
+  for(let k=0;k<2*AB_N;k++){const a=coSong(4*AB_N+2*k),b=coSong(4*AB_N+2*k+1),ea=ev(a.i).nota,eb=ev(b.i).nota;const best=ea>=eb?a:b,worse=ea>=eb?b:a;tr.push(r()<.62?best:worse)}
+  const A=tr.slice(0,AB_N),B=tr.slice(AB_N),oa=bestOrder(A,'mid'),ob=bestOrder(B,'mid');abCpu._s=c.seed;abCpu._d=[...oa.map(k=>A[k]),...ob.map(k=>B[k])];return abCpu._d}
 function abPick(i){const c=CO(),k=c.tp.length;if(abPicker(k)!==WHO||L.busy)return;W({coop:{tp:[...c.tp,{p:WHO,i}]}})}
-function abMove(k,d){const c=CO(),t=abTeam();const o=(c.ord&&c.ord.length===t.length?c.ord:t.map((_,x)=>x)).slice();if(k+d<0||k+d>=o.length)return;[o[k],o[k+d]]=[o[k+d],o[k]];W({coop:{ord:o,ok:{}}})}
+function abMove(k,d){const c=CO(),S=abSideOf(WHO),n=AB_N,o=(c['ord'+S]&&c['ord'+S].length===n?c['ord'+S]:[...Array(n).keys()]).slice();if(k+d<0||k+d>=n)return;[o[k],o[k+d]]=[o[k+d],o[k]];W({coop:{['ord'+S]:o,ok:{[P(WHO)]:0}}})}
 function abReady(){W({coop:{ok:{[P(WHO)]:1}}})}
-/* química do casal: o que só existe quando os dois lados se completam */
-function abChem(tr){const out=[],A=tr.slice(0,3),B=tr.slice(3),gen=s=>{const c={};s.forEach(t=>{const g=ev(t.i).gen;c[g]=(c[g]||0)+1});return Object.entries(c).sort((x,y)=>y[1]-x[1])[0][0]},en=s=>s.reduce((a,t)=>a+ev(t.i).en,0)/s.length;
-  if(tr.length<6)return out;
-  const l=linkScore(tr[2],tr[3]);if(l.p>=.5)out.push({n:'🔄 Virar o disco',p:.5,w:`A última do Lado A e a primeira do Lado B ligam bem (${l.why.join(', ')}).`});
-  if(gen(A)===gen(B))out.push({n:'🌊 Mesma onda',p:1,w:`Os dois lados têm o mesmo estilo principal: ${GEN[gen(A)]}.`});
-  else if(Math.abs(en(A)-en(B))>=1.5)out.push({n:'☯️ Dois lados',p:1,w:`Um lado ${en(A)>en(B)?'animado e o outro calmo':'calmo e o outro animado'}: cada um com a sua cara.`});
-  if([A,B].every(s=>s.some(t=>t.by===0)&&s.some(t=>t.by===1)))out.push({n:'🤝 A meias',p:.5,w:'Cada lado tem músicas escolhidas pelos dois.'});
+/* sintonia entre os dois lados: o álbum tem de soar a um só disco */
+function abSync(A,B){const out=[];if(A.length<AB_N||B.length<AB_N)return out;const ga=new Set(A.map(t=>ev(t.i).gen)),gb=new Set(B.map(t=>ev(t.i).gen));
+  const inter=[...ga].filter(g=>gb.has(g)),near_=[...ga].some(g=>[...gb].some(h=>g!==h&&near(g,h)));
+  if(inter.length)out.push({n:'🎼 Estilos em comum',p:Math.min(1,inter.length*.5),w:`Os dois lados partilham ${inter.map(g=>GEN[g]).join(', ')}.`});else if(near_)out.push({n:'🎼 Estilos vizinhos',p:.25,w:'Os estilos dos dois lados são parecidos.'});
+  const en=s=>s.reduce((a,t)=>a+ev(t.i).en,0)/s.length,dE=Math.abs(en(A)-en(B));
+  if(dE<=1)out.push({n:'⚡ Mesma energia',p:.5,w:`Os dois lados têm uma energia parecida (${fmt1(en(A))} e ${fmt1(en(B))}).`});else if(dE>=2)out.push({n:'⚡ Energias desencontradas',p:-.5,w:`Um lado é muito mais ${en(A)>en(B)?'agitado':'calmo'} do que o outro.`});
+  const ta={},tb={};A.forEach(t=>ev(t.i).tags.forEach(x=>ta[x]=1));B.forEach(t=>ev(t.i).tags.forEach(x=>tb[x]=1));const tt=Object.keys(ta).filter(x=>tb[x]&&x!=='amor');
+  if(tt.length>=2)out.push({n:'💬 Temas em comum',p:.5,w:`Os dois lados falam de ${tt.slice(0,3).map(x=>TAGN[x]).join(', ')}.`});
+  const l=linkScore(A[AB_N-1],B[0]);if(l.p>=.5)out.push({n:'🔄 Virar o disco',p:.5,w:`A última do Lado A liga bem à primeira do Lado B (${l.why.join(', ')}).`});
+  const tot=out.reduce((a,x)=>a+x.p,0);if(tot<.5)out.push({n:'💔 Lados desencontrados',p:-1,w:'Os dois lados parecem de álbuns diferentes: quase nada em comum.'});
   return out}
+const sumP=a=>a.reduce((s,x)=>s+x.p,0);
 function abScore(){const T=abOrdered(),C=abCpu();let d=[0,0];const ds=T.map((t,k)=>{const a=ev(t.i).nota,b=ev(C[k].i).nota,w=Math.abs(a-b)<.05?-1:a>b?0:1;if(w===-1){d[0]++;d[1]++}else d[w]+=2;return {t,c:C[k],a,b,w}});
-  const ct=combos(T),cc=combos(C),ch=abChem(T),pt=ct.reduce((s,x)=>s+x.p,0)+ch.reduce((s,x)=>s+x.p,0),pc=cc.reduce((s,x)=>s+x.p,0);return {ds,d,ct,cc,ch,tot:[d[0]+pt,d[1]+pc]}}
-function abScreen(){const c=CO(),k=c.tp.length,me=WHO,lado=p=>p===c.first?'Lado A':'Lado B';
-  if(k<CO_PER){const pk=abPicker(k),mine=pk===me,[A,B]=abOffer(k),T=abTeam();
-    const card=s=>`<div ${mine?`onclick="if(!event.target.closest('a'))abPick(${s.i})"`:''} class="pick ${mine?'tappable':'waiting-pick'}">${sleeve(s)}<div class="info"><div class="tt">${esc(s.t)}</div><div class="ta">${esc(s.a)}</div>${chips(s)}<div class="dlisten">${listen(s)}</div>${mine?`<button class="btn" ${L.busy?'disabled':''} onclick="event.stopPropagation();abPick(${s.i})">Fica no ${lado(me)}</button>`:''}</div></div>`;
-    return `<div class="meta mono"><span>💿 lado a × lado b · escolha ${k+1} / ${CO_PER}</span><span>${mine?'a tua vez':'vez '+d_(pk)}</span></div><div class="progress"><div style="width:${k/CO_PER*100}%"></div></div>
-    <div class="tot-head"><h2 class="c${pk}">${mine?`Escolhe para o ${lado(me)}`:`${O_(pk)} está a escolher`}</h2><div class="sub">${ico(c.first)}${esc(nm(c.first))} faz o Lado A, ${ico(1-c.first)}${esc(nm(1-c.first))} faz o Lado B. No fim ordenam o álbum juntos e vão a duelo contra o computador.</div></div>
+  const A=T.slice(0,AB_N),B=T.slice(AB_N),CA=C.slice(0,AB_N),CB=C.slice(AB_N);
+  const r={ds,d,ca:combos(A),cb:combos(B),sy:abSync(A,B),pa:combos(CA),pb:combos(CB),ps:abSync(CA,CB)};
+  r.tot=[d[0]+sumP(r.ca)+sumP(r.cb)+sumP(r.sy),d[1]+sumP(r.pa)+sumP(r.pb)+sumP(r.ps)];return r}
+function abRows(tr,mine,S){return tr.map((t,n)=>{let link='';if(n<tr.length-1){const l=linkScore(t,tr[n+1]);link=`<div class="olink ${l.p>=1?'good':l.p>0?'ok':l.p<0?'bad':'none'}"><span class="lp">${l.p?sg(l.p):'0'}</span><span class="lw">${l.why.join(' · ')||'sem ligação'}</span></div>`}
+  return `<div class="orow ${mine?'':'ro'}"><div class="n">${S}${n+1}</div><div class="thumb">${cimg(t)}</div><div class="info"><div class="tt">${esc(t.t)}</div>${chips(t)}</div>${mine?`<div class="mvs"><button class="mv" ${n===0||L.busy?'disabled':''} onclick="abMove(${n},-1)">↑</button><button class="mv" ${n===tr.length-1||L.busy?'disabled':''} onclick="abMove(${n},1)">↓</button></div>`:''}</div>${link}`}).join('')}
+const prow=x=>`<div class="prow ${x.p<0?'neg':''}"><div><b>${x.n}</b><span>${esc(x.w)}</span></div><em>${sg(x.p)}</em></div>`;
+function abScreen(){const c=CO(),k=c.tp.length,me=WHO,mySide=abSideOf(me),N=2*AB_N;
+  if(k<N){const pk=abPicker(k),mine=pk===me,[A,B]=abOffer(k),T=abTeam(),mineN=T.filter(t=>t.by===me).length;
+    const card=s=>`<div ${mine?`onclick="if(!event.target.closest('a'))abPick(${s.i})"`:''} class="pick ${mine?'tappable':'waiting-pick'}">${sleeve(s)}<div class="info"><div class="tt">${esc(s.t)}</div><div class="ta">${esc(s.a)}</div>${chips(s)}<div class="dlisten">${listen(s)}</div>${mine?`<button class="btn" ${L.busy?'disabled':''} onclick="event.stopPropagation();abPick(${s.i})">Fica no Lado ${mySide}</button>`:''}</div></div>`;
+    const shelfS=S=>{const who=S==='A'?c.first:1-c.first,tr=T.filter(t=>t.by===who);return `<div class="coside"><h4>Lado ${S} · ${ico(who)}${esc(nm(who))} · ${tr.length}/${AB_N}</h4><div class="row" style="grid-template-columns:repeat(${AB_N},1fr)">${Array.from({length:AB_N},(_,x)=>tr[x]?mini(tr[x]):'<div class="slot"></div>').join('')}</div></div>`};
+    return `<div class="meta mono"><span>💿 lado a × lado b · escolha ${k+1} / ${N}</span><span>${mine?'a tua vez':'vez '+d_(pk)}</span></div><div class="progress"><div style="width:${k/N*100}%"></div></div>
+    <div class="tot-head"><h2 class="c${pk}">${mine?`Escolhe para o teu Lado ${mySide}`:`${O_(pk)} está a escolher`}</h2><div class="sub">Cada lado tem ${AB_N} músicas: ${ico(c.first)}${esc(nm(c.first))} faz o Lado A, ${ico(1-c.first)}${esc(nm(1-c.first))} faz o Lado B. Cada um vai ordenar o seu lado, mas os dois lados têm de combinar entre si.</div></div>
     <div class="pair">${card(A)}<div class="ou">ou</div>${card(B)}</div>
-    <div class="panel coalb"><h3>O vosso álbum · ${k}/${CO_PER}</h3><div class="row" style="grid-template-columns:repeat(6,1fr)">${Array.from({length:CO_PER},(_,x)=>T[x]?`<div class="cslot c${T[x].by}">${mini(T[x])}<small>${T[x].by===c.first?'A':'B'}</small></div>`:'<div class="slot"></div>').join('')}</div></div>
+    <div class="panel coalb">${shelfS('A')}${shelfS('B')}</div>
     <div class="actions"><button class="btn ghost sm" onclick="coLeave()">Sair deste modo</button></div>`}
   const ready=c.ok&&c.ok.p0&&c.ok.p1;
-  if(!ready){const tr=abOrdered(),cs=combos(tr),ch=abChem(tr),tot=cs.reduce((s,x)=>s+x.p,0)+ch.reduce((s,x)=>s+x.p,0),iOk=c.ok&&c.ok[P(me)],oOk=c.ok&&c.ok[P(1-me)];
-    const rows=tr.map((t,n)=>{let link='';if(n<tr.length-1){const l=linkScore(t,tr[n+1]);link=`<div class="olink ${n===2?'flip':''} ${l.p>=1?'good':l.p>0?'ok':l.p<0?'bad':'none'}"><span class="lp">${l.p?sg(l.p):'0'}</span><span class="lw">${n===2?'🔄 virar o disco · ':''}${l.why.join(' · ')||'sem ligação'}</span></div>`}
-      return `${n===0?'<div class="side mono">Lado A</div>':n===3?'<div class="side mono">Lado B</div>':''}<div class="orow"><div class="n">${n+1}</div><div class="thumb">${cimg(t)}</div><div class="info"><div class="tt">${esc(t.t)} <span class="cby c${t.by}">${emo(t.by)}</span></div>${chips(t)}</div><div class="mvs"><button class="mv" ${n===0||L.busy?'disabled':''} onclick="abMove(${n},-1)">↑</button><button class="mv" ${n===tr.length-1||L.busy?'disabled':''} onclick="abMove(${n},1)">↓</button></div></div>${link}`}).join('');
-    return `<div class="tot-head"><div class="mono" style="color:var(--muted)">💿 lado a × lado b</div><h2>Ordenem juntos</h2><div class="sub">Os dois veem a mesma lista e qualquer um pode mexer. As faixas 1 a 3 são o Lado A, as 4 a 6 o Lado B. Quando estiverem os dois prontos, vamos a duelo.</div></div>
-    <div class="panel">${rows}<div class="cototal"><span>Combinações + química do casal até agora</span><b>${sg(tot)||'0'}</b></div>${ch.length?`<div class="cochem">${ch.map(x=>`<span>${x.n} ${sg(x.p)}</span>`).join('')}</div>`:''}</div>
-    <div class="actions">${iOk?`<button class="btn" disabled>✓ Pronto · à espera ${d_(1-me)}</button>`:`<button class="btn" ${L.busy?'disabled':''} onclick="abReady()">✓ Estou pronto${PL(me).g==='a'?'a':''}</button>`}${oOk&&!iOk?`<span class="hint">${emo(1-me)} já está pronto${PL(1-me).g==='a'?'a':''}</span>`:''}</div>`}
+  if(!ready){const A=abSide('A'),B=abSide('B'),sy=abSync(A,B),ca=combos(A),cb=combos(B),iOk=c.ok&&c.ok[P(me)],oOk=c.ok&&c.ok[P(1-me)],side=S=>{const who=S==='A'?c.first:1-c.first,mine=who===me,ok=c.ok&&c.ok[P(who)];
+      return `<div class="panel coside2 ${mine?'mine':''}"><div class="coshead"><h3>Lado ${S} · ${ico(who)}${esc(nm(who))}</h3><span class="mono">${ok?'✓ pronto':mine?'és tu':'a ordenar…'}</span></div>${abRows(S==='A'?A:B,mine&&!iOk,S)}<div class="cototal"><span>Química do Lado ${S}</span><b>${sg(sumP(S==='A'?ca:cb))||'0'}</b></div></div>`};
+    return `<div class="tot-head"><div class="mono" style="color:var(--muted)">💿 lado a × lado b</div><h2>Cada um ordena o seu lado</h2><div class="sub">Tu só mexes no teu Lado ${mySide}; o lado ${d_(1-me)} aparece aqui em direto. Os lados valem pela química entre as suas músicas, e o álbum ainda ganha (ou perde) pontos pela sintonia entre os dois lados.</div></div>
+    <div class="cosides">${side(mySide)}${side(mySide==='A'?'B':'A')}</div>
+    <div class="panel cosync"><h3>🤝 Sintonia entre lados <b>${sg(sumP(sy))||'0'}</b></h3>${sy.map(prow).join('')||'<p class="hint">Ainda a montar…</p>'}<p class="hint">Estilos, energia e temas em comum entre os dois lados, e a passagem da última do Lado A para a primeira do Lado B.</p></div>
+    <div class="actions">${iOk?`<button class="btn" disabled>✓ Pronto · à espera ${d_(1-me)}</button>`:`<button class="btn" ${L.busy?'disabled':''} onclick="abReady()">✓ O meu lado está pronto</button>`}${oOk&&!iOk?`<span class="hint">${emo(1-me)} já tem o lado pronto</span>`:''}</div>`}
   const s=abScore(),won=s.tot[0]>s.tot[1],tie=s.tot[0]===s.tot[1];coRecord('ab',{won,tie});
+  const col=(t,arr)=>`<div class="panel pcard"><h3>${t}</h3>${arr.map(prow).join('')||'<p class="hint">Nada desta vez.</p>'}</div>`;
   return `<div class="winner"><div class="mono" style="color:var(--muted)">💿 lado a × lado b · resultado</div><h1 class="${won?'c0':''} wtitle">${won?'Ganharam os dois! 🎉':tie?'Empate com a máquina 🤝':'Ganhou o computador 🤖'}</h1><div class="by">${esc(nm(0))} & ${esc(nm(1))} · <b>${fmt(s.tot[0])}</b> contra <b>${fmt(s.tot[1])}</b></div></div>
-  <div class="panel"><h3>⚔️ Duelos</h3><table class="duels"><thead><tr><th class="mono">#</th><th>Vocês</th><th class="mono" style="text-align:center">notas</th><th>🤖 Computador</th></tr></thead><tbody>${s.ds.map((x,k)=>`<tr class="corow" style="animation-delay:${k*.15}s"><td class="mono">${k<3?'A':'B'}${k%3+1}</td><td class="${x.w===0?'w':''}">${esc(x.t.t)} <span class="cby">${emo(x.t.by)}</span><div class="a">${esc(x.t.a)}</div></td><td class="res"><b class="${x.w===0?'c0':''}">${fmt1(x.a)}</b> – <b>${fmt1(x.b)}</b></td><td class="${x.w===1?'w':''}">${esc(x.c.t)}<div class="a">${esc(x.c.a)}</div></td></tr>`).join('')}</tbody></table></div>
-  <div class="shelves" style="margin-top:12px"><div class="panel pcard"><h3>🧩 Vocês</h3>${[...s.ct,...s.ch].map(x=>`<div class="prow ${x.p<0?'neg':''}"><div><b>${x.n}</b><span>${esc(x.w)}</span></div><em>${sg(x.p)}</em></div>`).join('')||'<p class="hint">Sem combinações.</p>'}</div>
-  <div class="panel pcard"><h3>🧩 Computador</h3>${s.cc.map(x=>`<div class="prow ${x.p<0?'neg':''}"><div><b>${x.n}</b><span>${esc(x.w)}</span></div><em>${sg(x.p)}</em></div>`).join('')||'<p class="hint">Sem combinações.</p>'}</div></div>
-  <div class="sumtable panel final"><div class="sr head"><div></div><div class="sc c0">Vocês</div><div class="sc">🤖</div></div><div class="sr"><div class="sl">⚔️ Duelos</div><div class="sc">${fmt(s.d[0])}</div><div class="sc">${fmt(s.d[1])}</div></div><div class="sr"><div class="sl">🧩 Combinações + química</div><div class="sc">${sg(s.tot[0]-s.d[0])||'0'}</div><div class="sc">${sg(s.tot[1]-s.d[1])||'0'}</div></div><div class="sr tot"><div class="sl">Total</div><div class="sc big ${won?'lead':''}">${fmt(s.tot[0])}</div><div class="sc big ${!won&&!tie?'lead':''}">${fmt(s.tot[1])}</div></div></div>
+  <div class="panel"><h3>⚔️ Duelos</h3><table class="duels"><thead><tr><th class="mono">#</th><th>Vocês</th><th class="mono" style="text-align:center">notas</th><th>🤖 Computador</th></tr></thead><tbody>${s.ds.map((x,k)=>`<tr class="corow" style="animation-delay:${k*.1}s"><td class="mono">${k<AB_N?'A':'B'}${k%AB_N+1}</td><td class="${x.w===0?'w':''}">${esc(x.t.t)} <span class="cby">${emo(x.t.by)}</span><div class="a">${esc(x.t.a)}</div></td><td class="res"><b class="${x.w===0?'c0':''}">${fmt1(x.a)}</b> – <b>${fmt1(x.b)}</b></td><td class="${x.w===1?'w':''}">${esc(x.c.t)}<div class="a">${esc(x.c.a)}</div></td></tr>`).join('')}</tbody></table></div>
+  <div class="cosides3">${col(`🧩 Lado A · ${emo(c.first)}`,s.ca)}${col(`🧩 Lado B · ${emo(1-c.first)}`,s.cb)}${col('🤝 Sintonia entre lados',s.sy)}</div>
+  <details class="panel more mt"><summary>Ver as combinações do computador</summary><div class="cosides3">${col('🤖 Lado A',s.pa)}${col('🤖 Lado B',s.pb)}${col('🤖 Sintonia',s.ps)}</div></details>
+  <div class="sumtable panel final"><div class="sr head"><div></div><div class="sc c0">Vocês</div><div class="sc">🤖</div></div><div class="sr"><div class="sl">⚔️ Duelos</div><div class="sc">${fmt(s.d[0])}</div><div class="sc">${fmt(s.d[1])}</div></div><div class="sr"><div class="sl">🧩 Lado A + Lado B</div><div class="sc">${sg(sumP(s.ca)+sumP(s.cb))||'0'}</div><div class="sc">${sg(sumP(s.pa)+sumP(s.pb))||'0'}</div></div><div class="sr"><div class="sl">🤝 Sintonia</div><div class="sc">${sg(sumP(s.sy))||'0'}</div><div class="sc">${sg(sumP(s.ps))||'0'}</div></div><div class="sr tot"><div class="sl">Total</div><div class="sc big ${won?'lead':''}">${fmt(s.tot[0])}</div><div class="sc big ${!won&&!tie?'lead':''}">${fmt(s.tot[1])}</div></div></div>
   ${coEndActions()}`}
 
 /* ---------- Na mesma onda ---------- */
@@ -3409,7 +3429,7 @@ const roomDebt=()=>roomCoins()<0;
 function billBox(){const rows=billRows(),tot=rows.reduce((a,r)=>a+r[2],0),q=roomQ(),debt=roomDebt(),open=L.rBills;
   return `<div class="rbills ${debt?'debt':''}"><button class="rbhead" onclick="L.rBills=!L.rBills;render()"><span>🧾 Contas do quarto: <b>−${tot} BPM por dia</b></span><em>${open?'esconder':'ver'}</em></button>
   ${debt?`<p class="rbdebt">⚠️ Estão em dívida (${roomCoins()} BPM). A luz está cortada e os animais têm fome até pagarem. Joguem missões ou ponham música a tocar.</p>`:''}
-  ${open?`<div class="rbrows">${rows.map(r=>`<div><span>${r[0]} ${esc(r[1])}</span><b>−${r[2]}</b></div>`).join('')}</div><p class="hint">As contas são cobradas uma vez por dia, quando um de vocês abre o jogo (no máximo ${CUSTO_DIAS} dias de cada vez). Já pagaram ${q.custo||0} BPM no total.${q.blog&&q.blog[0]?` Última conta: −${q.blog[0].v} BPM (${q.blog[0].n} dia${q.blog[0].n>1?'s':''}).`:''}</p>`:''}</div>`}
+  ${open?`<div class="rbrows">${rows.map(r=>`<div><span>${r[0]} ${esc(r[1])}</span><b>−${r[2]}</b></div>`).join('')}</div><p class="hint">As contas são de todos os dias. Se ninguém abrir o jogo durante uns dias, paga-se tudo quando voltarem, mas nunca mais do que ${CUSTO_DIAS} dias. Já pagaram ${q.custo||0} BPM no total.${q.blog&&q.blog[0]?` Última conta: −${q.blog[0].v} BPM (${q.blog[0].n} dia${q.blog[0].n>1?'s':''}).`:''}</p>`:''}</div>`}
 
 /* ---------- discos de perto, móvel e pósteres ---------- */
 const postersOwned=()=>{const q=roomQ();return q.pst||(q.px||[])};
@@ -3440,7 +3460,7 @@ function sceneHud(){const ed=canEdit(),q=roomQ(),pl=discPlaces(),pd=pl.play&&DIS
   if(roomDebt())h+=`<button class="hud-debt" onclick="event.stopPropagation();billsZoom()">⚠️ Em dívida (${roomCoins()} BPM): luz cortada e animais com fome</button>`;
   return `<div class="hud">${h}</div>`}
 function billsZoom(){const rows=billRows(),tot=rows.reduce((a,r)=>a+r[2],0),q=roomQ();
-  zoomOpen(`<div class="rzlist"><h3>🧾 Contas do quarto</h3><p class="hint">Cobradas uma vez por dia, quando um de vocês abre o jogo (no máximo ${CUSTO_DIAS} dias de cada vez).</p><div class="rbrows">${rows.map(r=>`<div><span>${r[0]} ${esc(r[1])}</span><b>−${r[2]}</b></div>`).join('')}<div class="rbtot"><span>Por dia</span><b>−${tot} BPM</b></div></div>
+  zoomOpen(`<div class="rzlist"><h3>🧾 Contas do quarto</h3><p class="hint">As contas são de todos os dias. Se ninguém abrir o jogo durante uns dias, quando voltarem paga-se tudo de uma vez, mas nunca mais do que ${CUSTO_DIAS} dias (uma semana): o resto é perdoado.</p><div class="rbrows">${rows.map(r=>`<div><span>${r[0]} ${esc(r[1])}</span><b>−${r[2]}</b></div>`).join('')}<div class="rbtot"><span>Por dia</span><b>−${tot} BPM</b></div></div>
   ${roomDebt()?`<p class="rbdebt">⚠️ Estão em dívida (${roomCoins()} BPM). A luz está cortada e os animais têm fome até pagarem. Joguem missões ou ponham música a tocar.</p>`:''}<p class="hint">Já pagaram ${q.custo||0} BPM no total.${q.blog&&q.blog[0]?` Última conta: −${q.blog[0].v} BPM (${q.blog[0].n} dia${q.blog[0].n>1?'s':''}).`:''}</p></div>`,'wide')}
 function noteZoom(){const t=noteTxt(),has=!BD.empty&&bdPid()&&BD.at;if(bdFresh())setTimeout(()=>{lsSet({boardSeen:BD.at});if(L.screen==='quarto')render()},1500);
   zoomOpen(`<div class="rzlist rznote"><h3>📝 Quadro de recados</h3>${has?`<div class="chalk">${t?esc(t):'(um desenho)'}<small>${bdFrom(true)} · ${bdRel(BD.at)}</small></div>`:'<p class="hint">Ainda não há recado. Escreve o primeiro!</p>'}
@@ -3728,7 +3748,7 @@ function rulesBox(){
     <div class="rtie"><div>🤝 <b>Empate?</b><span>Cada um escolhe uma faixa bónus, também em isto ou aquilo.</span></div><div>🪙 <b>Ainda empatado?</b><span>Decide a moeda.</span></div></div>`}
 
   if(k===6){const m=L.rco||'ab',X={
-    ab:`<p>Vocês os dois contra o computador, com <b>um só álbum de 6 faixas</b>. À vez, cada um escolhe uma de duas músicas: um faz o <b>Lado A</b>, o outro o <b>Lado B</b>. O computador monta o álbum dele ao mesmo tempo.</p><p>Depois <b>ordenam juntos</b>: os dois veem a mesma lista e qualquer um pode mexer. As faixas 1 a 3 são o Lado A, as 4 a 6 o Lado B. Quando os dois carregarem em “Estou pronto”, há 6 duelos contra o computador e contam as combinações, como no jogo normal.</p><div class="rexp"><b>💞 Química do casal (só neste modo)</b><span>🔄 Virar o disco: a faixa 3 liga bem à 4, +0,5 · 🌊 Mesma onda: os dois lados com o mesmo estilo, +1 · ☯️ Dois lados: um lado calmo e outro animado, +1 · 🤝 A meias: cada lado tem músicas dos dois, +0,5.</span></div>`,
+    ab:`<p>Vocês os dois contra o computador, com <b>um só álbum de 10 faixas</b>: o <b>Lado A</b> (5 músicas) e o <b>Lado B</b> (5 músicas). Quem começa (é sorteado) faz o Lado A e o outro faz o Lado B. Escolhem à vez, cada um para o seu lado, uma de duas músicas. O computador monta o álbum dele ao mesmo tempo.</p><p>Depois <b>cada um ordena o seu lado</b>; o lado do outro aparece em direto, mas não se mexe. Quando os dois carregarem em “O meu lado está pronto”, há 10 duelos contra o computador.</p><div class="rexp"><b>🧩 Química de cada lado</b><span>Cada lado vale pelas combinações entre as suas 5 músicas, como no jogo normal: química, arco, tema, coesão, variedade.</span></div><div class="rexp"><b>🤝 Sintonia entre lados</b><span>Os dois lados têm de soar ao mesmo disco: estilos em comum até +1, energia parecida +0,5 (muito diferente −0,5), temas em comum +0,5, e a última do Lado A a ligar à primeira do Lado B +0,5. Se os lados não tiverem quase nada em comum: 💔 −1.</span></div>`,
     onda:`<p>Aparecem <b>12 músicas</b>. Primeiro, cada um escolhe em segredo as <b>suas 5 favoritas</b>, por ordem (a primeira que tocar é a n.º 1).</p><p>Depois, cada um tenta <b>adivinhar as 5 do outro</b>. Cada acerto vale <b>2 pontos</b> e acertar na n.º 1 do outro dá <b>+1</b>.</p><p>No fim aparece a <b>sintonia</b> do casal: a percentagem de acertos dos dois juntos, e as músicas que os dois escolheram.</p>`,
     noite:`<p>Rondas seguidas contra o computador, com <b>3 vidas para os dois</b> ❤️❤️❤️.</p><p>Em cada ronda, cada um recebe um par diferente e escolhe uma música. As duas notas somam-se, com um bónus até <b>+1</b> se as duas tiverem química entre si. O computador junta uma dupla dele.</p><p>Se a vossa soma for maior, passam; empate também passa; se for menor, perdem uma vida. <b>Cada ronda o computador escolhe melhor.</b> O objetivo é sobreviver ao maior número de rondas: o recorde do casal fica guardado.</p>`};
     body=`<p>Os modos a dois jogam-se em <b>👥 com mais uma pessoa</b>, cada um no seu telemóvel. Na sala, os dois têm de tocar no mesmo modo para começar.</p>
@@ -3736,7 +3756,7 @@ function rulesBox(){
     <p class="rsmall">Quando jogam o Miguel e a Clara juntos, estas partidas contam para as <b>missões a dois</b>.</p>`}
   if(k===7){body=`<p>O <b>BPM</b> é o dinheiro do jogo. Tal como a batida dita o ritmo de uma música, os BPM ditam o que o vosso quarto pode ter.</p>
     <div class="rexp"><b>♩ Como se ganham</b><span>Missões de cada um: entre 100 e 700 BPM, pagos aos bocados (a cada 25% do caminho). Missões a dois: entre 400 e 2 500 BPM, pagas uma vez ao casal. Música a tocar no quarto: +1 BPM por minuto, só com o quarto aberto no ecrã e o som ligado (até 60 por dia em cada telemóvel).</span></div>
-    <div class="rexp"><b>🧾 Contas do quarto</b><span>Todos os dias paga-se a casa (8 BPM), a comida de cada animal (5 a 20), a luz de cada candeeiro (1 a 8), a luz do teto (4 a 11, conforme a intensidade), a eletricidade do gira-discos e do computador e a água das plantas. Se ficarem a dever, a luz é cortada e os animais passam fome até pagarem. Se não abrirem o jogo, cobram-se no máximo 7 dias.</span></div>
+    <div class="rexp"><b>🧾 Contas do quarto</b><span>Todos os dias paga-se a casa (8 BPM), a comida de cada animal (5 a 20), a luz de cada candeeiro (1 a 8), a luz do teto (4 a 11, conforme a intensidade), a eletricidade do gira-discos e do computador e a água das plantas. Se ficarem a dever, a luz é cortada e os animais passam fome até pagarem. Se ninguém abrir o jogo durante uns dias, paga-se tudo quando voltarem, mas nunca mais do que uma semana.</span></div>
     <div class="rexp"><b>🏠 Uma só conta</b><span>Os BPM do Miguel e da Clara vão todos para a conta do quarto. Os dois veem o mesmo número e qualquer um pode gastar.</span></div>
     <div class="rexp"><b>🛍️ O que se compra</b><span>Objetos para o quarto (de 230 a 2 250 BPM), discos com 4 raridades (⚪ Comum até ~250, 🔵 Raro ~300–450, 🟣 Épico ~500–750, 🟡 Lendário ~900–1 150 BPM: conta sobretudo o álbum, não só o cantor) e caixas surpresa de cada raridade. Há 41 discos que só se ganham em missões, e 5 objetos de casal que só se ganham em missões a dois. Os pósteres compram-se à parte (40% do preço do disco): podem ter o póster de um álbum sem terem o disco.</span></div>
     <div class="rexp"><b>💿 Vinis e discos</b><span>As missões normais são de cada um: cada um tem a sua coleção de vinis. As missões a dois aparecem nas duas coleções. Os discos do quarto nunca se repetem: basta um completar a missão.</span></div>`}
