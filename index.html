@@ -1403,6 +1403,37 @@ body.ingame .top{position:sticky!important;top:0!important;z-index:50!important;
 /* nada pode sair do ecrã pela lateral (o disco a rodar criava scroll horizontal e a página 'redimensionava') */
 body,#app{overflow-x:clip}
 @supports not (overflow:clip){body{overflow-x:hidden}}
+/* ===== missões & vinis ===== */
+.vinyl{position:relative;width:110px;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,#2a2320 0 30%,#0e0b0a 31%,#1a1513 60%,#0b0908 100%);box-shadow:0 10px 24px rgba(0,0,0,.45),inset 0 0 0 2px rgba(255,255,255,.05);flex:none}
+.vinyl .vgroove{position:absolute;inset:4%;border-radius:50%;background:repeating-radial-gradient(circle,rgba(255,255,255,.06) 0 1px,transparent 1px 3px);mask:radial-gradient(circle,transparent 33%,#000 34%);-webkit-mask:radial-gradient(circle,transparent 33%,#000 34%)}
+.vinyl::after{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 30deg,transparent 0 40deg,rgba(255,255,255,.12) 55deg,transparent 70deg 210deg,rgba(255,255,255,.08) 225deg,transparent 240deg)}
+.vinyl .vlabel{position:absolute;inset:31%;border-radius:50%;overflow:hidden;background:var(--vc);display:grid;place-items:center;box-shadow:0 0 0 2px rgba(0,0,0,.4)}
+.vinyl .vlabel img{width:100%;height:100%;object-fit:cover}
+.vinyl .ve{font-size:clamp(12px,1.4em,24px);line-height:1}
+.vinyl .vhole{position:absolute;left:50%;top:50%;width:6%;aspect-ratio:1;border-radius:50%;background:#0b0908;transform:translate(-50%,-50%);z-index:2}
+.vinyl.on{animation:vspin 6s linear infinite}
+.vinyl.off{filter:grayscale(1) brightness(.55)}
+.vinyl.off .vlock{position:absolute;inset:0;display:grid;place-items:center;font-size:20px;z-index:3}
+@keyframes vspin{to{transform:rotate(360deg)}}
+.vinyl.big{width:96px}
+.mwho button span{font-size:.75rem}
+.mfil{margin:12px 0 6px;justify-content:center}
+.mprog{display:flex;flex-direction:column;gap:6px;align-items:center;margin:8px 0 6px;color:var(--muted);font-size:.85rem}
+.mbar{height:7px;width:100%;border-radius:99px;background:rgba(255,246,230,.12);overflow:hidden}.mbar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#f2a33a,#ffd23f)}
+.mbar.big{height:10px;max-width:420px}
+.mcat{margin:20px 4px 10px;font-family:"Space Mono",monospace;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.mcard{display:flex;gap:12px;align-items:center;padding:12px;border-radius:16px;background:rgba(34,16,6,.55);border:1px solid rgba(255,214,150,.15)}
+.mcard.on{border-color:rgba(255,210,63,.55);background:linear-gradient(180deg,rgba(80,50,12,.6),rgba(34,16,6,.6))}
+.mcard .vinyl{width:74px}
+.mtxt{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}.mtxt b{font-size:.98rem}.mtxt span{font-size:.8rem;color:var(--muted)}.mtxt em{font-style:normal;font-size:.72rem;color:var(--muted);font-family:"Space Mono",monospace}
+.mtxt .mdone{color:#ffd23f}
+@media(max-width:600px){.mgrid{grid-template-columns:1fr}.mcard .vinyl{width:64px}}
+.vtoast{position:fixed;left:50%;top:70px;transform:translateX(-50%);z-index:120;display:flex;gap:14px;align-items:center;padding:14px 18px;border-radius:20px;background:rgba(34,16,6,.96);border:1px solid rgba(255,210,63,.6);box-shadow:0 18px 40px rgba(0,0,0,.5);width:max-content;max-width:calc(100% - 24px);animation:vtIn .5s cubic-bezier(.2,.8,.2,1) both}
+.vtoast .mono{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:#ffd23f}.vtoast b{display:block;font-size:1.1rem;margin:2px 0}.vtoast span{font-size:.82rem;color:var(--muted)}
+.vtoast.out{animation:vtOut .5s ease both}
+@keyframes vtIn{from{opacity:0;transform:translate(-50%,-20px) scale(.9)}}@keyframes vtOut{to{opacity:0;transform:translate(-50%,-20px)}}
+.linkbtn.home{font-size:1.05rem}
 </style>
 </head>
 <body>
@@ -2000,7 +2031,7 @@ function boardEl(){
 async function bdSave(){if(WHO==null)return;const blank=BD.cleared&&!BD.touched;bdStat('a guardar…');
   const img=blank?'':BD.cv.toDataURL('image/jpeg',.85),at=new Date().toISOString();
   try{const r=await fetch(bdUrl(),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:{img:{stringValue:img},by:{integerValue:String(WHO)},at:{stringValue:at}}})});
-    if(!r.ok)throw 0;BD.img=img;BD.empty=!img;BD.by=WHO;BD.at=at;lsSet({boardSeen:at});bdMode(false);
+    if(!r.ok)throw 0;if(!blank)profAdd('board');BD.img=img;BD.empty=!img;BD.by=WHO;BD.at=at;lsSet({boardSeen:at});bdMode(false);
     bdStat(blank?'quadro limpo ✓':`enviado ✓ ${WHO===0?'a Clara':'o Miguel'} vai ver quando abrir o jogo`)}
   catch(e){bdStat('não consegui guardar — verifica a internet e tenta outra vez')}}
 async function bdLoad(){if(BD.editing)return;
@@ -2041,7 +2072,7 @@ function rxFloat(e,who,txt){if(RX.mute&&who!==WHO)return;const now=Date.now(),at
   RX.nextAt=at+3000;if(at>now){setTimeout(()=>rxShow(e,who,txt),at-now);return}rxShow(e,who,txt)}
 function rxShow(e,who,txt){if(RX.mute&&who!==WHO)return;const d=document.createElement('div');d.className='rxfloat';{const vw=innerWidth,w=txt?Math.min(vw<600?170:230,vw*.52):(vw<600?86:160),room=Math.max(0,vw/2-w-12),x=who===WHO?12+Math.random()*room:vw-w-12-Math.random()*room;d.style.left=Math.max(8,x)+'px';d.style.width=w+'px'}
   d.innerHTML=`${txt?`<span class="rxtxt">${esc(txt)}</span>`:''}${rxHtml(e)}<span class="rxn c${who}">${isCpu(who)?'🤖 Computador':(who===0?'🌴 Miguel':'🌻 Clara')}</span>`;if(txt)d.classList.add('long');document.body.appendChild(d);if(txt&&isCpu(who)){const tx=d.querySelector('.rxtxt');if(tx){tx.textContent='a escrever…';tx.classList.add('typing');setTimeout(()=>{tx.textContent=txt;tx.classList.remove('typing')},750)}}setTimeout(()=>d.remove(),txt?4800:3800)}
-function react(e){const now=Date.now();if(now-RX.last<900)return;RX.last=now;RX.open=false;document.querySelector('.rxwrap')?.classList.remove('open');
+function react(e){const now=Date.now();if(now-RX.last<900)return;RX.last=now;profAdd('stk');RX.open=false;document.querySelector('.rxwrap')?.classList.remove('open');
   const k=P(WHO);RX.seen[k]=now;rxFloat(e,WHO);
   if(MODE==='cpu'){G.react={...(G.react||{}),[k]:{e,t:now}};
     if(Math.random()<.65)setTimeout(()=>{const lead=botLead();if(String(e).startsWith('s:')&&Math.random()<.25){botSay('gozo',BOT_TXT.copia,{},e);return}botSay(lead>=0?'gozo':'raiva',lead>=0?BOT_TXT.resposta_gozo:BOT_TXT.resposta_raiva,{})},1000+Math.random()*900);return}
@@ -2168,6 +2199,148 @@ function skipBtn(){if(MODE!=='online')return `<button class="btn ghost sm" oncli
 function voteSkip(){if(MODE!=='online'){advance();return}const k=P(WHO),s=stage();G.skipv={...(G.skipv||{}),[k]:s};render();
   try{ref().update({skipv:{[k]:s}}).then(skipCheck).catch(()=>{})}catch(e){}}
 function skipCheck(){if(MODE!=='online'||!G||!G.seed||phase()!=='duels')return;if(mySkip()&&otherSkip()&&L.lastAdv!==stage()&&(WHO===0||!L.peerOnline))advance()}
+
+/* ======== missões e vinis personalizados (um perfil para o Miguel, outro para a Clara, guardado online) ======== */
+const ART_COVER=a=>{for(let i=0;i<SONGS.length;i++){if(artistKey(SONGS[i][1])===a&&HDC[i])return `https://is1-ssl.mzstatic.com/image/thumb/${HDC[i]}/300x300bb.jpg`}const i=SONGS.findIndex(x=>artistKey(x[1])===a);return i>=0?SONGS[i][2]:''};
+/* v = rótulo do vinil: {a:artista} usa a capa do artista; senão cor + emoji */
+const MISSOES=[
+ /* artistas */
+ {id:'djavan',cat:'Artistas',n:'Djavanzeira',d:'Escolhe 35 músicas do Djavan',s:'pk.a.Djavan',t:35,v:{a:'Djavan'}},
+ {id:'jorgeben',cat:'Artistas',n:'Taj Mahal na veia',d:'Escolhe 40 músicas do Jorge Ben Jor',s:'pk.a.Jorge Ben Jor',t:40,v:{a:'Jorge Ben Jor'}},
+ {id:'seujorge',cat:'Artistas',n:'Churrasco do Seu Jorge',d:'Escolhe 30 músicas do Seu Jorge',s:'pk.a.Seu Jorge',t:30,v:{a:'Seu Jorge'}},
+ {id:'chico',cat:'Artistas',n:'Poeta de Holanda',d:'Escolhe 20 músicas do Chico Buarque',s:'pk.a.Chico Buarque',t:20,v:{a:'Chico Buarque'}},
+ {id:'cazuza',cat:'Artistas',n:'Exagerado',d:'Escolhe 12 músicas do Cazuza',s:'pk.a.Cazuza',t:12,v:{a:'Cazuza'}},
+ {id:'revela',cat:'Artistas',n:'Coração radiante',d:'Escolhe 10 músicas do Grupo Revelação',s:'pk.a.Grupo Revelação',t:10,v:{a:'Grupo Revelação'}},
+ {id:'vercillo',cat:'Artistas',n:'Que nem maré',d:'Escolhe 8 músicas do Jorge Vercillo',s:'pk.a.Jorge Vercillo',t:8,v:{a:'Jorge Vercillo'}},
+ {id:'cortes',cat:'Artistas',n:'Corazón latino',d:'Escolhe 6 músicas do Emmanuel Cortes',s:'pk.a.Emmanuel Cortes',t:6,v:{a:'Emmanuel Cortes'}},
+ {id:'toquinho',cat:'Artistas',n:'Poeta e violão',d:'Escolhe 6 músicas do Toquinho ou do Vinícius',s:'pk.a.Toquinho+pk.a.Vinícius de Moraes',t:6,v:{a:'Toquinho'}},
+ {id:'gal',cat:'Artistas',n:'Divina',d:'Escolhe 5 músicas da Gal Costa',s:'pk.a.Gal Costa',t:5,v:{a:'Gal Costa'}},
+ {id:'natiruts',cat:'Artistas',n:'Reggae na areia',d:'Escolhe 5 músicas dos Natiruts',s:'pk.a.Natiruts',t:5,v:{a:'Natiruts'}},
+ {id:'arlindo',cat:'Artistas',n:'Sambista perfeito',d:'Escolhe 5 músicas do Arlindo Cruz',s:'pk.a.Arlindo Cruz',t:5,v:{a:'Arlindo Cruz'}},
+ {id:'timmaia',cat:'Artistas',n:'Síndico',d:'Escolhe 4 músicas do Tim Maia',s:'pk.a.Tim Maia',t:4,v:{a:'Tim Maia'}},
+ {id:'ecletico',cat:'Artistas',n:'Eclético',d:'Escolhe músicas de 30 artistas diferentes',s:'#artistas',t:30,v:{c:'#3d8bfd',e:'🌈'}},
+ /* estilos */
+ {id:'mpb',cat:'Estilos',n:'Alma de MPB',d:'Escolhe 80 músicas de MPB',s:'pk.g.mpb',t:80,v:{c:'#1f5c5a',e:'🎙️'}},
+ {id:'suingue',cat:'Estilos',n:'Rei do samba-rock',d:'Escolhe 60 músicas de suingue/samba-rock',s:'pk.g.suingue',t:60,v:{c:'#e8b52a',e:'🕺'}},
+ {id:'samba',cat:'Estilos',n:'Roda de samba',d:'Escolhe 40 sambas/pagodes',s:'pk.g.samba',t:40,v:{c:'#2f7d55',e:'🥁'}},
+ {id:'rock',cat:'Estilos',n:'Rock Brasil',d:'Escolhe 25 músicas de rock/pop BR',s:'pk.g.rock',t:25,v:{c:'#8e3b2e',e:'🎸'}},
+ {id:'bossa',cat:'Estilos',n:'Garota de Ipanema',d:'Escolhe 15 bossas nova',s:'pk.g.bossa',t:15,v:{c:'#3d7f8c',e:'🌊'}},
+ {id:'pop',cat:'Estilos',n:'Turista musical',d:'Escolhe 15 músicas pop/internacionais',s:'pk.g.pop',t:15,v:{c:'#c2477a',e:'✈️'}},
+ {id:'reggae',cat:'Estilos',n:'Good vibes only',d:'Escolhe 8 reggaes',s:'pk.g.reggae',t:8,v:{c:'#2fb36b',e:'🌿'}},
+ {id:'nordeste',cat:'Estilos',n:'Forró de quintal',d:'Escolhe 8 músicas do Nordeste',s:'pk.g.nordeste',t:8,v:{c:'#d9603b',e:'🌵'}},
+ /* temas */
+ {id:'amor',cat:'Temas',n:'Romântico incurável',d:'Escolhe 100 músicas de amor',s:'pk.t.amor',t:100,v:{c:'#e53935',e:'💘'}},
+ {id:'saudade',cat:'Temas',n:'Saudade portuguesa',d:'Escolhe 30 músicas de saudade',s:'pk.t.saudade',t:30,v:{c:'#4a2c5e',e:'🥀'}},
+ {id:'festa',cat:'Temas',n:'Abre a pista',d:'Escolhe 40 músicas de festa',s:'pk.t.festa',t:40,v:{c:'#ff9a3c',e:'🪩'}},
+ {id:'mar',cat:'Temas',n:'Pé na areia',d:'Escolhe 20 músicas de mar & sol',s:'pk.t.mar',t:20,v:{c:'#1f7fbf',e:'🏖️'}},
+ {id:'brasil',cat:'Temas',n:'Patriota honorário',d:'Escolhe 20 músicas sobre o Brasil',s:'pk.t.brasil',t:20,v:{c:'#2f9e44',e:'🇧🇷'}},
+ {id:'calma',cat:'Temas',n:'Modo sofá',d:'Escolhe 40 músicas calmas (energia 1 ou 2)',s:'pk.calm',t:40,v:{c:'#6e4325',e:'🛋️'}},
+ {id:'energia',cat:'Temas',n:'Bateria infinita',d:'Escolhe 40 músicas animadas (energia 4 ou 5)',s:'pk.hot',t:40,v:{c:'#ff6b00',e:'⚡'}},
+ /* jogo */
+ {id:'estreia',cat:'Jogo',n:'Primeiro disco',d:'Termina a tua primeira partida',s:'games',t:1,v:{c:'#f2a33a',e:'🎶'}},
+ {id:'maratona',cat:'Jogo',n:'Maratona',d:'Joga 25 partidas',s:'games',t:25,v:{c:'#3d8bfd',e:'🏃'}},
+ {id:'viciado',cat:'Jogo',n:'Não consigo parar',d:'Joga 100 partidas',s:'games',t:100,v:{c:'#8e44d6',e:'🌀'}},
+ {id:'vitorias',cat:'Jogo',n:'Colecionador de vitórias',d:'Ganha 20 partidas',s:'win',t:20,v:{c:'#e8b52a',e:'🏆'}},
+ {id:'tri',cat:'Jogo',n:'É tri!',d:'Ganha 3 partidas seguidas',s:'bestStreak',t:3,v:{c:'#2f7d55',e:'🔥'}},
+ {id:'penta',cat:'Jogo',n:'Penta',d:'Ganha 5 partidas seguidas',s:'bestStreak',t:5,v:{c:'#e53935',e:'🖐️'}},
+ {id:'massacre',cat:'Jogo',n:'Massacre',d:'Ganha todos os duelos de uma partida',s:'sweep',t:1,v:{c:'#111',e:'💀'}},
+ {id:'duelos',cat:'Jogo',n:'Duelista',d:'Ganha 100 duelos',s:'duelWin',t:100,v:{c:'#c2477a',e:'⚔️'}},
+ {id:'duplo',cat:'Jogo',n:'Álbum duplo',d:'Joga 10 partidas de 10 músicas',s:'g10',t:10,v:{c:'#1f5c8a',e:'💽'}},
+ {id:'pedido',cat:'Jogo',n:'Pedido atendido',d:'Cumpre o pedido da noite 50 vezes',s:'pedido',t:50,v:{c:'#ffd23f',e:'🎯'}},
+ {id:'ouvido',cat:'Jogo',n:'Ouvido de ouro',d:'Escolhe a melhor música do par 100 vezes',s:'pk.good',t:100,v:{c:'#d4a017',e:'👂'}},
+ {id:'pistoleiro',cat:'Jogo',n:'Pistoleiro',d:'Escolhe 30 músicas em menos de 3 segundos',s:'pk.fast',t:30,v:{c:'#ff9a3c',e:'🔫'}},
+ /* contra o computador */
+ {id:'robo',cat:'Contra o computador',n:'Exterminador',d:'Ganha 5 vezes ao computador no Difícil',s:'winHard',t:5,v:{c:'#3a3a3a',e:'🤖'}},
+ {id:'robo1',cat:'Contra o computador',n:'Desliga-o',d:'Ganha 10 vezes ao computador',s:'winCpu',t:10,v:{c:'#5a6270',e:'🔌'}},
+ {id:'fregues',cat:'Contra o computador',n:'Freguês do robô',d:'Perde 10 vezes contra o computador',s:'loseCpu',t:10,v:{c:'#7a7a7a',e:'🫠'}},
+ /* a dois */
+ {id:'rival',cat:'Miguel × Clara',n:'Rivalidade saudável',d:'Joga 20 partidas contra o outro',s:'gPvp',t:20,v:{c:'#e8b52a',e:'🌴🌻'}},
+ {id:'dono',cat:'Miguel × Clara',n:'Dono da casa',d:'Ganha 10 partidas ao outro',s:'winPvp',t:10,v:{c:'#2f7d55',e:'👑'}},
+ {id:'revanche',cat:'Miguel × Clara',n:'Revanche!',d:'Pede 10 revanches',s:'rematch',t:10,v:{c:'#d9603b',e:'🔁'}},
+ {id:'carta',cat:'Miguel × Clara',n:'Correio do amor',d:'Envia 10 desenhos no quadro de recados',s:'board',t:10,v:{c:'#ff6fae',e:'💌'}},
+ /* stickers */
+ {id:'stk1',cat:'Stickers',n:'Fala-barato',d:'Manda 50 stickers',s:'stk',t:50,v:{c:'#3d8bfd',e:'💬'}},
+ {id:'stk2',cat:'Stickers',n:'Spammer oficial',d:'Manda 250 stickers',s:'stk',t:250,v:{c:'#8e44d6',e:'📣'}},
+ /* para rir */
+ {id:'duvidoso',cat:'Para rir',n:'Gosto duvidoso',d:'Escolhe a música pior do par 25 vezes',s:'pk.bad',t:25,v:{c:'#6b8e23',e:'🤡'}},
+ {id:'humilde',cat:'Para rir',n:'Humildade',d:'Perde todos os duelos de uma partida',s:'wipe',t:1,v:{c:'#555',e:'🫡'}},
+ {id:'moeda',cat:'Para rir',n:'Sortudo da moeda',d:'Ganha uma partida no cara ou coroa',s:'coin',t:1,v:{c:'#d4a017',e:'🪙'}},
+ {id:'ultimo',cat:'Para rir',n:'Aos 45 do segundo tempo',d:'Escolhe 5 músicas com menos de 3 segundos no relógio',s:'pk.late',t:5,v:{c:'#e53935',e:'⏰'}},
+ {id:'coruja',cat:'Para rir',n:'Coruja',d:'Termina 5 partidas depois da meia-noite',s:'night',t:5,v:{c:'#1b1f3b',e:'🦉'}},
+ {id:'domingo',cat:'Para rir',n:'Domingão',d:'Termina 3 partidas ao domingo',s:'sunday',t:3,v:{c:'#f2a33a',e:'☀️'}}];
+const PROF_KEY=w=>'perfil-'+w;
+const PROF={0:null,1:null},PEND={0:{add:{},set:{},u:{}},1:{add:{},set:{},u:{}}};
+const profBlank=()=>({st:{},u:{}});
+function profLocal(w){try{return JSON.parse(localStorage.getItem(PROF_KEY(w))||'null')||profBlank()}catch(e){return profBlank()}}
+function profGet(w){if(!PROF[w])PROF[w]=profLocal(w);return PROF[w]}
+function stVal(p,path){return path.split('+').reduce((a,k)=>a+(+p.st[k]||0),0)}
+function profSaveLocal(w){try{localStorage.setItem(PROF_KEY(w),JSON.stringify(PROF[w]))}catch(e){}}
+/* soma ao perfil de quem está a jogar neste telemóvel */
+function profAdd(k,n){if(WHO==null)return;const p=profGet(WHO);p.st[k]=(+p.st[k]||0)+(n==null?1:n);PEND[WHO].add[k]=(PEND[WHO].add[k]||0)+(n==null?1:n);profAfter()}
+function profMax(k,v){if(WHO==null)return;const p=profGet(WHO);if(v>(+p.st[k]||0)){p.st[k]=v;PEND[WHO].set[k]=v}profAfter()}
+function profSet(k,v){if(WHO==null)return;const p=profGet(WHO);p.st[k]=v;PEND[WHO].set[k]=v;profAfter()}
+function profAfter(){const w=WHO,p=profGet(w);const novos=[];
+  p.st['#artistas']=Object.keys(p.st).filter(k=>k.startsWith('pk.a.')&&p.st[k]>0).length;
+  for(const m of MISSOES){if(!p.u[m.id]&&stVal(p,m.s)>=m.t){p.u[m.id]=new Date().toISOString();PEND[w].u[m.id]=p.u[m.id];novos.push(m)}}
+  profSaveLocal(w);clearTimeout(profAfter.t);profAfter.t=setTimeout(()=>profFlush(w),2500);
+  novos.forEach((m,k)=>setTimeout(()=>vinylToast(m),900+k*3800))}
+const PROF_URL=w=>`${FS_DOCS}/perfis/p${w}?key=${FS_KEY}`;
+async function profFetch(w){if(!(db&&db.cloud))return null;try{const r=await fetch(PROF_URL(w),{cache:'no-store'});if(r.status===404)return {d:profBlank(),ut:null};if(!r.ok)return null;const j=await r.json();return {d:JSON.parse(j.fields.d.stringValue),ut:j.updateTime}}catch(e){return null}}
+/* junta o que está online com as alterações deste telemóvel (somas, máximos e vinis) */
+function profMerge(base,pd){const d={st:{...(base.st||{})},u:{...(base.u||{})}};for(const k in pd.add)d.st[k]=(+d.st[k]||0)+pd.add[k];for(const k in pd.set){d.st[k]=k==='streak'?pd.set[k]:Math.max(+d.st[k]||0,pd.set[k])}for(const k in pd.u)if(!d.u[k])d.u[k]=pd.u[k];
+  d.st['#artistas']=Object.keys(d.st).filter(k=>k.startsWith('pk.a.')&&d.st[k]>0).length;return d}
+async function profFlush(w){if(!(db&&db.cloud))return;const pd=PEND[w];if(!Object.keys(pd.add).length&&!Object.keys(pd.set).length&&!Object.keys(pd.u).length)return;
+  PEND[w]={add:{},set:{},u:{}};
+  for(let k=0;k<6;k++){const cur=await profFetch(w);if(!cur)break;const d=profMerge(cur.d,pd);
+    try{const r=await fetch(PROF_URL(w)+(cur.ut?'&currentDocument.updateTime='+encodeURIComponent(cur.ut):'&currentDocument.exists=false'),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:{d:{stringValue:JSON.stringify(d)},at:{stringValue:new Date().toISOString()}}})});
+      if(r.ok){PROF[w]=profMerge(d,PEND[w]);profSaveLocal(w);return}}catch(e){}
+    await new Promise(z=>setTimeout(z,300+Math.random()*500))}
+  /* falhou: volta a pôr na fila */
+  const q=PEND[w];for(const k in pd.add)q.add[k]=(q.add[k]||0)+pd.add[k];Object.assign(q.set,pd.set);Object.assign(q.u,pd.u)}
+async function profLoad(w){const cur=await profFetch(w);if(cur){PROF[w]=profMerge(cur.d,PEND[w]);profSaveLocal(w);
+  /* se este telemóvel tinha progresso que nunca chegou ao servidor, envia-o */
+  if(w===WHO){const loc=profLocal(w);if(!cur.ut&&Object.keys(loc.st||{}).length){PEND[w].add={...loc.st};delete PEND[w].add['#artistas'];delete PEND[w].add.streak;delete PEND[w].add.bestStreak;PEND[w].set={streak:+loc.st.streak||0,bestStreak:+loc.st.bestStreak||0};PEND[w].u={...loc.u};profFlush(w)}}}
+  if(L.screen==='missoes')render()}
+/* registo das escolhas */
+function missionPick(i){try{if(WHO==null||!G||!G.seed)return;const n=picks().length,[x,y]=offer(n),other=x.i===i?y:x,s=song(i),e=ev(i);
+  const dt=Date.now()-(G.ts||Date.now());profAdd('pk.n');profAdd('pk.a.'+artistKey(s.a));profAdd('pk.g.'+e.gen);e.tags.forEach(t=>profAdd('pk.t.'+t));
+  if(e.en<=2)profAdd('pk.calm');if(e.en>=4)profAdd('pk.hot');
+  const d=ev(other.i).nota-e.nota;if(d>=.5)profAdd('pk.bad');else if(d<=-.5)profAdd('pk.good');
+  if(dt<3000)profAdd('pk.fast');if(PICK_MS-dt<3000&&PICK_MS-dt>=0)profAdd('pk.late')}catch(e){}}
+/* registo do fim da partida (uma vez por partida, mesmo que a página recarregue) */
+function missionEnd(){try{if(WHO==null||!G||!G.seed)return;const done=JSON.parse(localStorage.getItem('miss-done')||'[]');if(done.includes(G.seed))return;
+  const h=document.querySelector('.view .winner h1');if(!h)return;done.push(G.seed);localStorage.setItem('miss-done',JSON.stringify(done.slice(-40)));
+  const won=h.classList.contains('c'+WHO),byCoin=/moeda/.test(document.querySelector('.view .winner .mono')?.textContent||''),cpu=MODE==='cpu',now=new Date();
+  profAdd('games');if(G.per===10)profAdd('g10');
+  if(cpu){profAdd('gCpu');if(won){profAdd('winCpu');if(G.level==='dificil')profAdd('winHard')}else profAdd('loseCpu')}else{profAdd('gPvp');if(won)profAdd('winPvp')}
+  if(won){profAdd('win');const st=(+profGet(WHO).st.streak||0)+1;profSet('streak',st);profMax('bestStreak',st)}else profSet('streak',0);
+  let w=0,l=0;for(let d=0;d<G.per;d++){const j=judge(d);if(j.w===WHO)w++;else if(j.w===1-WHO)l++}
+  profAdd('duelWin',w);if(w===G.per)profAdd('sweep');if(l===G.per)profAdd('wipe');if(won&&byCoin)profAdd('coin');
+  try{const pd=pedido();const hits=rawTracks(WHO).filter(t=>pd.t(ev(t.i),t)).length;if(hits)profAdd('pedido',hits)}catch(e){}
+  if(now.getHours()<5)profAdd('night');if(now.getDay()===0)profAdd('sunday')}catch(e){}}
+/* desenho do vinil */
+function vinyl(m,on,big){const v=m.v,lab=v.a?`<img src="${esc(ART_COVER(v.a))}" alt="" loading="lazy">`:`<span class="ve" style="--vc:${v.c}">${v.e}</span>`;
+  return `<div class="vinyl ${on?'on':'off'} ${big?'big':''}"><div class="vgroove"></div><div class="vlabel" style="--vc:${v.c||'#222'}">${lab}</div><div class="vhole"></div>${on?'':'<div class="vlock">🔒</div>'}</div>`}
+function vinylToast(m){document.querySelectorAll('.vtoast').forEach(e=>e.remove());const d=document.createElement('div');d.className='vtoast';
+  d.innerHTML=`${vinyl(m,true,true)}<div><div class="mono">💿 novo vinil desbloqueado</div><b>${esc(m.n)}</b><span>${esc(m.d)}</span></div>`;document.body.appendChild(d);
+  try{celebrate(40)}catch(e){}setTimeout(()=>d.classList.add('out'),4200);setTimeout(()=>d.remove(),4800)}
+function openMissions(){L.screen='missoes';L.mWho=L.mWho??(WHO??0);L.mFil=L.mFil||'todas';render();scrollTo(0,0);profLoad(0);profLoad(1)}
+function closeMissions(){L.screen=null;render()}
+function missionsScreen(){const w=L.mWho??0,p=profGet(w),fil=L.mFil||'todas';
+  const all=MISSOES.map(m=>({m,v:Math.min(stVal(p,m.s),m.t),on:!!p.u[m.id]}));const n=all.filter(x=>x.on).length;
+  const list=all.filter(x=>fil==='todas'||(fil==='feitas'?x.on:!x.on));const cats=[...new Set(list.map(x=>x.m.cat))];
+  const card=x=>`<div class="mcard ${x.on?'on':''}">${vinyl(x.m,x.on)}<div class="mtxt"><b>${esc(x.m.n)}</b><span>${esc(x.m.d)}</span>
+    ${x.on?`<em class="mdone">✓ conquistado ${new Date(p.u[x.m.id]).toLocaleDateString('pt-PT')}</em>`:`<div class="mbar"><i style="width:${Math.round(x.v/x.m.t*100)}%"></i></div><em>${x.v} / ${x.m.t}</em>`}</div></div>`;
+  return `<div class="tot-head"><div class="mono" style="color:var(--muted)">coleção de vinis</div><h2>Missões</h2><div class="sub">Completa missões e ganha vinis personalizados. Cada um tem a sua coleção.</div></div>
+  <div class="rktabs mwho">${[0,1].map(k=>`<button class="${k===w?'on':''}" onclick="L.mWho=${k};render()"><b class="c${k}">${k===0?'🌴 Miguel':'🌻 Clara'}</b><span>${MISSOES.filter(m=>profGet(k).u[m.id]).length} / ${MISSOES.length} vinis</span></button>`).join('')}</div>
+  <div class="chips mfil">${[['todas','Todas'],['curso','Em curso'],['feitas','Concluídas']].map(([k,t])=>`<button class="chip ${fil===k?'on':''}" onclick="L.mFil='${k}';render()">${t}</button>`).join('')}</div>
+  <div class="mprog"><div class="mbar big"><i style="width:${Math.round(n/MISSOES.length*100)}%"></i></div><span>${n} de ${MISSOES.length} vinis ${w===0?'do Miguel':'da Clara'}</span></div>
+  ${list.length?cats.map(c=>`<h3 class="mcat">${esc(c)}</h3><div class="mgrid">${list.filter(x=>x.m.cat===c).map(card).join('')}</div>`).join(''):`<p class="hint center">${fil==='feitas'?'Ainda não há vinis conquistados. Bora jogar!':'Todas as missões concluídas. Lenda! 🏆'}</p>`}
+  <div class="actions"><button class="btn" onclick="closeMissions()">← Voltar</button></div>`}
+/* casa: volta ao menu principal (a meio de um jogo pede confirmação) */
+function goHome(){const mid=MODE&&G&&G.seed&&!(phase()==='duels'&&stageKind()[0]==='result');
+  if(mid&&!L.confirmHome){L.confirmHome=true;const h=document.getElementById('hdr');if(h)h.outerHTML=header();setTimeout(()=>{L.confirmHome=false;const h2=document.getElementById('hdr');if(h2)h2.outerHTML=header()},3000);return}
+  L.confirmHome=false;rankUnsub?.();rankUnsub=null;L.screen=null;if(MODE)toMenu();else render();scrollTo(0,0)}
 
 /* ======== animações Two.js ======== */
 const FX={ok:false,reduced:!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)};
@@ -2413,7 +2586,7 @@ function startGame(){
     createdAt:new Date().toISOString(),ts:Date.now(),reveal:0,picks:[],orders:{},names:G.names||{},bonus:{}},true);
 }
 /* revanche: mesmo número de músicas (e mesma dificuldade contra o computador) */
-function rematch(){if(MODE==='online'){castVote(G.per);return}L.per=G.per||L.per;if(MODE==='cpu')L.level=G.level||L.level||'normal';startGame()}
+function rematch(){profAdd('rematch');if(MODE==='online'){castVote(G.per);return}L.per=G.per||L.per;if(MODE==='cpu')L.level=G.level||L.level||'normal';startGame()}
 /* outro modo: volta ao ecrã de escolha, com as opções do último jogo já marcadas */
 function otherMode(){L.per=G.per||L.per;if(MODE==='cpu')L.level=G.level||L.level;L.confirmNew=false;
   if(MODE==='cpu'){G=null;saveLocal();L.round=null;render();scrollTo(0,0);return}
@@ -2428,7 +2601,7 @@ function flyToShelf(i,p){try{const src=document.querySelector(`.pair .sleeve[dat
   const dx=b.left-a.left,dy=b.top-a.top,sc=b.width/a.width;
   f.animate([{transform:'translate(0,0) scale(1) rotate(0)'},{transform:`translate(${dx*.5}px,${dy*.5-120}px) scale(${(1+sc)/2}) rotate(-12deg)`,offset:.5},{transform:`translate(${dx}px,${dy}px) scale(${sc}) rotate(0)`}],{duration:750,easing:'cubic-bezier(.3,.7,.3,1)',fill:'forwards'});
   setTimeout(()=>f.remove(),900)}catch(e){}}
-function choose(i){if(turn()!==WHO||L.busy||L.choosing!=null)return;try{const r=document.querySelector(`.pair .sleeve[data-i="${i}"]`).getBoundingClientRect();if(FX.ok)fxConfetti(28,r.left+r.width/2,r.top+r.height/2)}catch(e){}L.choosing=i;render();flyToShelf(i,WHO);setTimeout(()=>{L.choosing=null;if(turn()===WHO)W(pickPatch(WHO,i))},650)}
+function choose(i){if(turn()!==WHO||L.busy||L.choosing!=null)return;missionPick(i);try{const r=document.querySelector(`.pair .sleeve[data-i="${i}"]`).getBoundingClientRect();if(FX.ok)fxConfetti(28,r.left+r.width/2,r.top+r.height/2)}catch(e){}L.choosing=i;render();flyToShelf(i,WHO);setTimeout(()=>{L.choosing=null;if(turn()===WHO)W(pickPatch(WHO,i))},650)}
 function undo(){const p=picks();if(p.length&&p[p.length-1].p===WHO)W({picks:p.slice(0,-1)})}
 function mv(k,d){const o=L.order;if(k+d<0||k+d>=o.length)return;const before={};document.querySelectorAll('.orow[data-id]').forEach(el=>before[el.dataset.id]=el.getBoundingClientRect().top);
   const moved=rawTracks(WHO)[o[k]].i;[o[k],o[k+d]]=[o[k+d],o[k]];render();
@@ -2457,7 +2630,7 @@ function header(){
   ${(inRoom||MODE==='cpu')&&G?.seed?`<button class="linkbtn ${L.confirmNew?'warn':''}" onclick="resetGame()">↻<span class="lt"> Nova partida</span></button>`:''}
   ${inRoom?`<button class="linkbtn ${L.confirmLeave?'warn':''}" onclick="leaveRoom()">${L.confirmLeave?'Sair?':'✕<span class="lt"> Sair da sala</span>'}</button>`:''}
   ${WHO!=null&&L.screen!=='ranking'?`<button class="linkbtn" onclick="openRanking()">🏆<span class="lt"> top 10</span></button>`:''}
-  ${MODE&&!inRoom?`<button class="linkbtn" onclick="toMenu()">☰<span class="lt"> menu</span></button>`:''}
+  ${(MODE||L.screen)?`<button class="linkbtn home ${L.confirmHome?'warn':''}" onclick="goHome()" aria-label="menu principal">${L.confirmHome?'Sair?':'🏠<span class="lt"> menu</span>'}</button>`:''}
   ${WHO!=null&&!MODE?`<button class="linkbtn" onclick="WHO=null;lsSet({who:null});render()">⇄<span class="lt"> trocar</span></button>`:''}</div></div>`;
 }
 function roomScreen(){
@@ -2520,7 +2693,10 @@ function modeScreen(){
   <div class="modes">
    <button class="modebtn" onclick="setMode('online')"><span class="ic">👥</span><b>Com mais uma pessoa</b><span>Cada um no seu telemóvel, numa sala com código.</span></button>
    <button class="modebtn" onclick="setMode('cpu')"><span class="ic">🤖</span><b>Contra o computador</b><span>Treina sozinho contra um adversário que também sabe montar álbuns.</span></button>
-  </div>${boardBox()}<div class="center mt"><button class="btn ghost" onclick="openRanking()">🏆 Top 10 álbuns</button></div>${rulesBox()}`;
+  </div><div class="modes mt">
+   <button class="modebtn" onclick="openRanking()"><span class="ic">🏆</span><b>Top 10 álbuns</b><span>Os melhores álbuns de sempre do Miguel e da Clara.</span></button>
+   <button class="modebtn" onclick="openMissions()"><span class="ic">💿</span><b>Missões e vinis</b><span>${WHO!=null?`${MISSOES.filter(m=>profGet(WHO).u[m.id]).length} de ${MISSOES.length} vinis conquistados. Completa missões e ganha mais.`:'Completa missões e ganha vinis personalizados.'}</span></button>
+  </div>${boardBox()}${rulesBox()}`;
 }
 function whoScreen(){
   return `<div class="hero"><div class="kick">um jogo de música brasileira</div><h1 class="herot">Meu <em>Álbum</em></h1><div class="turntable"><div class="record"></div></div>${heroVs()}
@@ -2682,6 +2858,7 @@ function result(byCoin){
 function body(){
   if(WHO==null)return whoScreen();
   if(L.screen==='ranking')return rankingScreen();
+  if(L.screen==='missoes')return missionsScreen();
   if(!MODE)return modeScreen();
   if(MODE==='cpu'){if(!G||!G.seed)return newScreen();return ({draft,order,duels})[phase()]()}
   if(L.status==='boot')return `<div class="panel wait"><div class="minirecord"></div><div class="big">A pôr o disco…</div></div>`;
@@ -2704,7 +2881,7 @@ function render(){
   const soft=enter&&key.split('|').slice(0,3).join('|')===prevKey.split('|').slice(0,3).join('|')&&key.includes('|duels|')&&!/\|result/.test(key);
   /* prende a altura durante a troca, para a página não saltar */
   const h0=app.offsetHeight;if(enter&&h0){app.style.minHeight=h0+'px';clearTimeout(L.hT);L.hT=setTimeout(()=>{app.style.minHeight=''},soft?450:700)}
-  document.body.classList.toggle('ingame',!!(G&&G.seed&&MODE));app.innerHTML=header()+`<main class="view ${enter?(soft?'enter soft':'enter'):''}">${body()}</main>`+dock()+draftDock()+reactBar();try{rxCheck();botTick();voteCheck();skipCheck()}catch(e){}
+  document.body.classList.toggle('ingame',!!(G&&G.seed&&MODE));app.innerHTML=header()+`<main class="view ${enter?(soft?'enter soft':'enter'):''}">${body()}</main>`+dock()+draftDock()+reactBar();try{rxCheck();botTick();voteCheck();skipCheck();missionEnd()}catch(e){}
   document.body.classList.toggle('has-dock',!!document.querySelector('.odock'));document.body.classList.toggle('has-ddock',!!document.querySelector('.ddock'));{const sd=app.querySelector('main .stagedock');if(sd){if(L.hadSd)sd.style.animation='none';app.appendChild(sd)}L.hadSd=!!sd}document.body.classList.toggle('has-sdock',!!document.querySelector('.stagedock'));
   try{boardMount()}catch(e){}
   for(const k in keep){const el=document.getElementById(k);if(el)el.value=keep[k]}
@@ -2772,7 +2949,7 @@ try{fxInit()}catch(e){}
 (async()=>{
   const c=window.claude;
   if(!c||!c.use){
-    db=makeCloudDb();db.onPeer=v=>{if(L.peerOnline!==v){L.peerOnline=v;const h=document.getElementById('hdr');if(h)h.outerHTML=header()}}
+    db=makeCloudDb();setTimeout(()=>{profLoad(0);profLoad(1);profFlush(0);profFlush(1)},900);db.onPeer=v=>{if(L.peerOnline!==v){L.peerOnline=v;const h=document.getElementById('hdr');if(h)h.outerHTML=header()}}
     const m=lsGet().mode;if(m==='cpu'||m==='online')setMode(m);else{L.status='ok';render()}return}
   try{db=await c.use('db')}catch(e){db=null}
   if(!db){db=null}
