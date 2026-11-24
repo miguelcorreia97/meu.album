@@ -1347,7 +1347,7 @@ body{overflow:visible!important}
 .board canvas{display:block;width:100%;height:auto;aspect-ratio:900/560;background:#161311;border-radius:6px;touch-action:auto;cursor:default;box-shadow:inset 0 0 30px rgba(0,0,0,.6)}
 .board.editing canvas{touch-action:none;cursor:crosshair;outline:2px dashed rgba(255,211,77,.7);outline-offset:3px}
 .bedit-go{position:absolute;right:16px;bottom:16px;border:0;border-radius:999px;padding:8px 14px;font:inherit;font-weight:700;background:#ffd23f;color:#2b1d14;box-shadow:0 6px 16px rgba(0,0,0,.4);cursor:pointer}
-.board.editing .bedit-go,.board:not(.editing) .btools,.board:not(.editing) .bacts [data-act]{display:none}
+.board.editing [data-act=edit],.board:not(.editing) .btools,.board:not(.editing) [data-act=save],.board:not(.editing) [data-act=cancel]{display:none}
 .btools{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:12px}
 .btools .sw{width:28px;height:28px;border-radius:50%;background:var(--c);border:2px solid rgba(255,255,255,.35);cursor:pointer;padding:0}
 .btools .sw.on,.btools .sz.on,.btools .bt.on{outline:3px solid #ffd34d;outline-offset:2px}
@@ -1915,14 +1915,14 @@ function bdFill(x,y,hex){x=Math.floor(x);y=Math.floor(y);if(x<0||y<0||x>=BD_W||y
 function boardEl(){
   if(BD.el)return BD.el;
   const el=document.createElement('div');el.className='board';
-  const cols=[['#f5f1e8','giz branco'],['#2fb36b','verde do Miguel'],['#ffd23f','amarelo da Clara'],['#e53935','vermelho'],['#8e44d6','roxo'],['#3d8bfd','azul'],['#ff6fae','rosa'],['#ff9a3c','laranja']];
+  const cols=[['#f5f1e8','giz branco'],['#000000','preto'],['#2fb36b','verde do Miguel'],['#ffd23f','amarelo da Clara'],['#e53935','vermelho'],['#8e44d6','roxo'],['#3d8bfd','azul'],['#ff6fae','rosa'],['#ff9a3c','laranja']];
   el.innerHTML=`<div class="bhead"><b>✏️ Quadro de recados</b><span id="bmeta" class="bmeta"></span></div>
-   <div class="bwrap"><canvas width="${BD_W}" height="${BD_H}" aria-label="Quadro de desenho"></canvas><button class="bedit-go" data-act="edit">✏️ Editar</button></div>
+   <div class="bwrap"><canvas width="${BD_W}" height="${BD_H}" aria-label="Quadro de desenho"></canvas></div>
    <div class="btools">${cols.map(([c,n],k)=>`<button class="sw ${k?'':'on'}" style="--c:${c}" data-c="${c}" title="${n}" aria-label="${n}"></button>`).join('')}
    <span class="bsep"></span>${[[3,'fino'],[6,'médio'],[14,'grosso']].map(([z,n])=>`<button class="sz ${z===6?'on':''}" data-z="${z}" title="${n}" aria-label="traço ${n}"><i style="width:${z+2}px;height:${z+2}px"></i></button>`).join('')}
    <span class="bsep"></span><button class="bt on" data-t="pen" title="lápis" aria-label="lápis">✏️</button><button class="bt" data-t="fill" title="balde: preencher" aria-label="preencher">🪣</button><button class="bt" data-t="erase" title="borracha" aria-label="borracha">🧽</button>
    <button class="btn ghost sm" data-act="clear">🗑️ Apagar tudo</button></div>
-   <div class="bacts"><button class="btn sm" data-act="save">💾 Guardar e enviar</button><button class="btn ghost sm" data-act="cancel">Cancelar</button><span id="bstat" class="bstat mono"></span></div>`;
+   <div class="bacts"><button class="btn sm" data-act="edit">✏️ Editar</button><button class="btn sm" data-act="save">💾 Guardar e enviar</button><button class="btn ghost sm" data-act="cancel">Cancelar</button><span id="bstat" class="bstat mono"></span></div>`;
   const cv=el.querySelector('canvas'),cx=cv.getContext('2d',{willReadFrequently:true});BD.el=el;BD.cv=cv;BD.cx=cx;bdPaper();
   const pos=e=>{const r=cv.getBoundingClientRect();return [(e.clientX-r.left)*BD_W/r.width,(e.clientY-r.top)*BD_H/r.height]};
   let last=null;
