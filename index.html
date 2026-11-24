@@ -1378,6 +1378,8 @@ body{overflow:visible!important}
 .rxfloat .rxn.c0{color:#6fd39a}.rxfloat .rxn.c1{color:#ffd34d}
 @keyframes rxup{0%{transform:translateY(40px) scale(.4);opacity:0}15%{transform:translateY(0) scale(1.15);opacity:1}25%{transform:scale(1)}80%{opacity:1}100%{transform:translateY(-38vh) scale(.9);opacity:0}}
 @media(prefers-reduced-motion:reduce){.rxfloat{animation:none;opacity:1}}
+.rxfloat .rxtxt{max-width:min(70vw,260px);margin-bottom:6px;padding:8px 12px;border-radius:16px 16px 16px 4px;background:#fff6e6;color:#2b1d14;font-weight:700;font-size:.95rem;text-align:center;box-shadow:0 8px 18px rgba(0,0,0,.35)}
+.rxfloat.long{animation-duration:3.8s}
 </style>
 </head>
 <body>
@@ -1655,8 +1657,7 @@ const PEDIDOS=[
  {n:'Noite Jorge Ben 🎸',d:'+0,5 por cada faixa do Jorge Ben Jor',t:(e,s)=>/Jorge Ben/.test(s.a)},
  {n:'Noite Djavan 🌊',d:'+0,5 por cada faixa do Djavan',t:(e,s)=>/Djavan/.test(s.a)},
  {n:'Churrasco do Seu Jorge 🔥',d:'+0,5 por cada faixa do Seu Jorge',t:(e,s)=>/Seu Jorge/.test(s.a)},
-,
-{n:'Jorge Ben a dançar 🎸💃',d:'+0,75 por cada faixa do Jorge Ben Jor com energia 4 ou 5',v:.75,t:(e,s)=>/Jorge Ben/.test(s.a)&&e.en>=4},
+ {n:'Jorge Ben a dançar 🎸💃',d:'+0,75 por cada faixa do Jorge Ben Jor com energia 4 ou 5',v:.75,t:(e,s)=>/Jorge Ben/.test(s.a)&&e.en>=4},
  {n:'Djavan apaixonado 🌊💌',d:'+0,75 por cada faixa do Djavan com o tema amor',v:.75,t:(e,s)=>/Djavan/.test(s.a)&&e.tags.includes('amor')},
  {n:'Djavan ao luar 🌙',d:'+0,75 por cada faixa do Djavan com energia 1 ou 2',v:.75,t:(e,s)=>/Djavan/.test(s.a)&&e.en<=2},
  {n:'Festa do Seu Jorge 🔥🎉',d:'+0,75 por cada faixa do Seu Jorge com o tema festa',v:.75,t:(e,s)=>/Seu Jorge/.test(s.a)&&e.tags.includes('festa')},
@@ -1993,26 +1994,57 @@ const REACTS=['😍','😂','😮','😭','🔥','👏','🤔','😈','🙄','�
 const RX={open:false,last:0,seen:{},bot:{seed:null,n:0,picks:-1,won:false}};
 /* stickers do WhatsApp: em cada partida, 5 diferentes para cada jogador (nunca os mesmos entre os dois) */
 const STK=Array.from({length:46},(_,k)=>'stickers/s'+String(k+1).padStart(2,'0')+'.webp');
-function stkFor(p){if(!G||!G.seed)return [];const r=rng(hash('stk'+G.seed)),a=STK.map((_,i)=>i);for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a.slice(p*5,p*5+5)}
+const STK_GOZO=[1,10,11,12,16,19,21,23,24,25,26,28,29,32,37,40,41,42,43,44,45,46].map(n=>n-1);
+const STK_RAIVA=[2,5,6,7,9,13,14,17,20,22,30,31,33,34,36,39].map(n=>n-1);
+const STK_OFF=new Set([35-1]); /* fora do jogo */
+function stkOrder(){const r=rng(hash('stk'+G.seed)),a=STK.map((_,i)=>i).filter(i=>!STK_OFF.has(i));for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function stkFor(p){if(!G||!G.seed)return [];const a=stkOrder();
+  if(MODE==='cpu'){const hum=a.slice(0,5);if(p===WHO)return hum;const rest=a.filter(i=>!hum.includes(i));
+    return [...rest.filter(i=>STK_GOZO.includes(i)).slice(0,3),...rest.filter(i=>STK_RAIVA.includes(i)).slice(0,2)]}
+  return a.slice(p*5,p*5+5)}
 const rxHtml=k=>String(k).startsWith('s:')?`<img class="rxs" src="${STK[+k.slice(2)]}" alt="sticker">`:`<span class="rxe">${k}</span>`;
 function reactBar(){if(!(G&&G.seed&&MODE))return '';
   const mine=stkFor(WHO);
-  return `<div class="rxwrap ${RX.open?'open':''}"><div class="rxpal"><div class="rxemo">${REACTS.map(e=>`<button onclick="react('${e}')" aria-label="reagir ${e}">${e}</button>`).join('')}</div>${mine.length?`<div class="rxlab mono">os teus stickers desta partida</div><div class="rxstk">${mine.map(i=>`<button onclick="react('s:${i}')" aria-label="enviar sticker"><img src="${STK[i]}" alt="" loading="lazy"></button>`).join('')}</div>`:''}</div></div>`}
+  return `<div class="rxwrap ${RX.open?'open':''}"><div class="rxpal">${mine.length?`<div class="rxlab mono">os teus stickers desta partida</div><div class="rxstk">${mine.map(i=>`<button onclick="react('s:${i}')" aria-label="enviar sticker"><img src="${STK[i]}" alt="" loading="lazy"></button>`).join('')}</div>`:''}</div></div>`}
 function rxToggle(){RX.open=!RX.open;document.querySelector('.rxwrap')?.classList.toggle('open',RX.open)}
 document.addEventListener('pointerdown',e=>{if(RX.open&&!e.target.closest('.rxwrap,.rxtop')){RX.open=false;document.querySelector('.rxwrap')?.classList.remove('open')}});
-function rxFloat(e,who){const d=document.createElement('div');d.className='rxfloat';d.style.left=(who===WHO?18+Math.random()*25:55+Math.random()*25)+'%';
-  d.innerHTML=`${rxHtml(e)}<span class="rxn c${who}">${isCpu(who)?'🤖 Computador':(who===0?'🌴 Miguel':'🌻 Clara')}</span>`;document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}
+function rxFloat(e,who,txt){const d=document.createElement('div');d.className='rxfloat';d.style.left=(who===WHO?18+Math.random()*25:55+Math.random()*25)+'%';
+  d.innerHTML=`${txt?`<span class="rxtxt">${esc(txt)}</span>`:''}${rxHtml(e)}<span class="rxn c${who}">${isCpu(who)?'🤖 Computador':(who===0?'🌴 Miguel':'🌻 Clara')}</span>`;if(txt)d.classList.add('long');document.body.appendChild(d);setTimeout(()=>d.remove(),txt?3800:2800)}
 function react(e){const now=Date.now();if(now-RX.last<900)return;RX.last=now;RX.open=false;document.querySelector('.rxwrap')?.classList.remove('open');
   const k=P(WHO);RX.seen[k]=now;rxFloat(e,WHO);
   if(MODE==='cpu'){G.react={...(G.react||{}),[k]:{e,t:now}};
-    if(Math.random()<.7)setTimeout(()=>{const C=1-WHO;rxFloat(Math.random()<.55?botStk():['🤖','😏','🔥','🙄','😂','👏'][Math.floor(Math.random()*6)],C)},900+Math.random()*900);return}
+    if(Math.random()<.6)setTimeout(()=>{const lead=botLead();botSay(lead>=0?'gozo':'raiva',lead>=0?BOT_TXT.resposta_gozo:BOT_TXT.resposta_raiva)},1000+Math.random()*900);return}
   try{ref().update({react:{[k]:{e,t:now}}}).catch(()=>{})}catch(x){}}
-function botStk(){const a=stkFor(1-WHO);return 's:'+a[Math.floor(Math.random()*a.length)]}
-/* o computador manda stickers a meio do jogo (poucas vezes, para não chatear) */
-function botTick(){if(MODE!=='cpu'||!G||!G.seed)return;const B=RX.bot;if(B.seed!==G.seed){B.seed=G.seed;B.n=0;B.picks=picks().length;B.won=false;return}
-  const n=picks().length;if(n!==B.picks){const prev=B.picks;B.picks=n;
-    if(n>prev&&n>=2&&B.n<4&&Math.random()<.28){B.n++;setTimeout(()=>rxFloat(botStk(),1-WHO),1300+Math.random()*1200)}}
-  if(!B.won&&document.querySelector('.view .winner')){B.won=true;setTimeout(()=>rxFloat(botStk(),1-WHO),2200)}}
+/* ======== personalidade do computador: goza quando ganha, irrita-se quando perde ======== */
+const BOT_TXT={
+ gozo:['Chora mais 😂','Foi fácil demais','Volta ao Spotify a aprender 🤭','Obrigado pelos pontos 🙏','Isto é que é gosto musical? 😏','Tás a jogar de olhos fechados?','Senta e aprende','Próximo!'],
+ raiva:['Isto está viciado 😤','Sorte de principiante…','O juiz está comprado!','Não conta, estava a aquecer','Ok… esta foi tua. SÓ esta.','Mas que palhaçada é esta?','Hmpf.','Vou fingir que não vi'],
+ mauPick:['Deixaste a melhor para trás? Obrigado 😏','A sério que escolheste essa?','Essa? Corajoso…','Hmm. Interessante escolha 🤭'],
+ bomPick:['Olha o que eu apanhei 😎','Esta é minha, desculpa','Tá-se bem 😎'],
+ ganhei:['GANHEI! Revanche quando quiseres 😂','Isto foi um massacre','Volta quando souberes de música 🤭','Era previsível'],
+ perdi:['Revanche. JÁ. 😤','Isto não fica assim','Fizeste batota, só pode','Nem quero falar sobre isto'],
+ resposta_gozo:['Manda mais, que eu estou a ganhar 😂','Sticker bonito, pena o álbum','Ri-te enquanto podes'],
+ resposta_raiva:['Não me provoques 😤','Agora gozas?','Espera pela próxima…']};
+const pickOne=a=>a[Math.floor(Math.random()*a.length)];
+function botStk(mood){const a=stkFor(1-WHO),pool=a.filter(i=>(mood==='raiva'?STK_RAIVA:STK_GOZO).includes(i));return 's:'+pickOne(pool.length?pool:a)}
+function botSay(mood,lines){const u=RX.bot.used||(RX.bot.used=new Set()),free=lines.filter(l=>!u.has(l)),t=pickOne(free.length?free:lines);u.add(t);rxFloat(botStk(mood),1-WHO,t)}
+/* quem vai à frente nos duelos já revelados (do ponto de vista do computador) */
+function botLead(){try{if(phase()!=='duels')return 0;const C=1-WHO,[k,d]=stageKind();const n=k==='duel'?d+1:G.per;let s=0;for(let x=0;x<n;x++){const j=judge(x);if(j.w===C)s++;else if(j.w===WHO)s--}return s}catch(e){return 0}}
+function botTick(){if(MODE!=='cpu'||!G||!G.seed)return;const B=RX.bot,C=1-WHO;
+  if(B.seed!==G.seed){Object.assign(B,{seed:G.seed,draft:0,duel:0,picks:picks().length,stage:-1,won:false,used:new Set()});return}
+  const later=(f,ms)=>setTimeout(()=>{if(MODE==='cpu'&&G&&G.seed===B.seed)f()},ms);
+  /* escolhas */
+  const n=picks().length;if(n>B.picks){const prev=B.picks;B.picks=n;
+    for(let k=prev;k<n;k++){const pk=picks()[k];if(!pk||B.draft>=3)continue;const [x,y]=offer(k),other=x.i===pk.i?y:x,ch=ev(pk.i).nota,ot=ev(other.i).nota;
+      if(pk.p===WHO&&ot-ch>=1&&Math.random()<.6){B.draft++;later(()=>botSay('gozo',BOT_TXT.mauPick),1400)}
+      else if(pk.p===C&&ch>=8.5&&Math.random()<.35){B.draft++;later(()=>botSay('gozo',BOT_TXT.bomPick),1600)}}}
+  /* duelos */
+  if(phase()==='duels'){const s=stage();if(s!==B.stage){B.stage=s;const [k,d]=stageKind();
+    if(k==='duel'&&B.duel<4){const j=judge(d);if(j.w===C&&Math.random()<.6){B.duel++;later(()=>botSay('gozo',BOT_TXT.gozo),1500)}
+      else if(j.w===WHO&&Math.random()<.6){B.duel++;later(()=>botSay('raiva',BOT_TXT.raiva),1500)}}}}
+  /* fim */
+  const win=document.querySelector('.view .winner h1');
+  if(!B.won&&win){B.won=true;const botWon=win.classList.contains('c'+C);later(()=>botSay(botWon?'gozo':'raiva',botWon?BOT_TXT.ganhei:BOT_TXT.perdi),2400)}}
 function rxCheck(){if(!G||!G.seed||MODE!=='online')return;const k=P(1-WHO),r=G.react&&G.react[k];
   if(!r||!r.t){if(RX.seen[k]===undefined)RX.seen[k]=0;return}
   if(RX.seen[k]===undefined){RX.seen[k]=r.t;return}
@@ -2302,7 +2334,7 @@ function pedidoBox(){const pd=pedido();return `<div class="pedido"><span class="
 function header(){
   const inRoom=MODE==='online'&&CODE&&G;
   return `<div class="top" id="hdr"><div class="logo">Meu Álbum<small>${WHO!=null?'tu és '+(WHO===0?'o Miguel':'a Clara'):'Miguel & Clara'}${MODE==='cpu'?' · vs computador':''}</small></div>
-  <div class="topr">${(G&&G.seed&&MODE)?`<button class="linkbtn rxtop" onclick="rxToggle()" aria-label="reagir com um emoji">😊<span class="lt"> reagir</span></button>`:''}${sndBtn()}${inRoom?`<span><span class="dot ${L.peerOnline?'on':''}"></span>${nm(1-WHO)}</span><span class="codepill">${esc(CODE)}</span>`:''}
+  <div class="topr">${(G&&G.seed&&MODE)?`<button class="linkbtn rxtop" onclick="rxToggle()" aria-label="mandar um sticker">😊<span class="lt"> stickers</span></button>`:''}${sndBtn()}${inRoom?`<span><span class="dot ${L.peerOnline?'on':''}"></span>${nm(1-WHO)}</span><span class="codepill">${esc(CODE)}</span>`:''}
   ${(inRoom||MODE==='cpu')&&G?.seed?`<button class="linkbtn ${L.confirmNew?'warn':''}" onclick="resetGame()">↻<span class="lt"> Nova partida</span></button>`:''}
   ${inRoom?`<button class="linkbtn ${L.confirmLeave?'warn':''}" onclick="leaveRoom()">${L.confirmLeave?'Sair?':'✕<span class="lt"> Sair da sala</span>'}</button>`:''}
   ${WHO!=null&&L.screen!=='ranking'?`<button class="linkbtn" onclick="openRanking()">🏆<span class="lt"> top 10</span></button>`:''}
