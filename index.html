@@ -1550,6 +1550,29 @@ body,#app{overflow-x:clip}
 .rnote.edit{flex-direction:column;align-items:stretch}.rnote textarea{width:100%;box-sizing:border-box;min-height:84px;padding:10px 12px;border-radius:12px;border:1px solid rgba(207,227,214,.3);background:#1f2a24;color:#f3efe6;font:italic 1.05rem Fraunces,serif;resize:vertical}
 .rnote .nacts{display:flex;gap:8px;align-items:center;justify-content:flex-end;flex-wrap:wrap}.rnote .nacts .mono{margin-right:auto;font-size:.7rem;color:var(--muted)}.rnote small{color:#ffb3a0}
 .modebtn.room{background:linear-gradient(135deg,rgba(120,60,20,.75),rgba(40,20,8,.7))!important;border-color:rgba(255,210,63,.45)!important}
+
+.comodes .cogrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0 6px}
+.comode{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;padding:12px;border-radius:16px;border:1px solid rgba(255,214,150,.18);background:linear-gradient(160deg,rgba(194,71,122,.22),rgba(34,16,6,.6));color:var(--cream);font:inherit;cursor:pointer}
+.comode .ce{font-size:1.6rem}.comode b{font-size:1rem}.comode small{font-size:.76rem;color:var(--muted)}.comode em{font-style:normal;font-size:.74rem;color:#ffd23f;margin-top:4px}
+.comode.on{border-color:#ffd23f;box-shadow:0 0 0 3px rgba(255,210,63,.18)}
+@media(max-width:640px){.comodes .cogrid{grid-template-columns:1fr}}
+.coalb .row{display:grid;gap:6px}.cslot{position:relative}.cslot small{position:absolute;top:3px;left:3px;font:700 .6rem "Space Mono",monospace;background:rgba(0,0,0,.7);color:#ffd23f;padding:1px 5px;border-radius:6px}
+.side{margin:10px 0 4px;color:#ffd23f;font-size:.7rem}.olink.flip{border-color:#ffd23f}
+.cby{font-size:.85em;margin-left:4px}.cototal{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:10px;border-top:1px dashed rgba(255,214,150,.2)}.cototal b{font-size:1.3rem;color:#ffd23f}
+.cochem{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.cochem span{padding:4px 10px;border-radius:99px;background:rgba(194,71,122,.25);font-size:.78rem}
+.corow{animation:vtIn .5s both}
+.ondagrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:640px){.ondagrid{grid-template-columns:repeat(3,1fr)}}
+.ondac{position:relative;display:flex;flex-direction:column;gap:2px;padding:6px;border-radius:14px;border:1px solid rgba(255,214,150,.15);background:rgba(34,16,6,.55);color:var(--cream);font:inherit;text-align:left;cursor:pointer;min-width:0}
+.ondac img,.ondac .nocover{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px}.ondac b{font-size:.76rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ondac small{font-size:.66rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ondac.on{border-color:#7fd1ff;box-shadow:0 0 0 3px rgba(127,209,255,.2)}.ondac .onum{position:absolute;top:10px;left:10px;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:#7fd1ff;color:#0b1a2a;font-weight:800}
+.sintonia{display:flex;flex-direction:column;align-items:center;margin:8px 0}.sintonia b{font:900 3.2rem Fraunces,serif;color:#7fd1ff}.sintonia span{font-size:.8rem;color:var(--muted)}
+.orow.hit{background:rgba(47,158,68,.15);border-radius:10px}.ohit{font-size:.74rem;white-space:nowrap;color:var(--muted)}.orow.hit .ohit{color:#7fe08f}
+.nvs{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}.nx{font:900 1.2rem Fraunces,serif;color:var(--muted)}
+@media(max-width:640px){.nvs{grid-template-columns:1fr}.nx{text-align:center}}
+.nduo{display:grid;grid-template-columns:1fr 1fr;gap:8px}.ncard{position:relative;display:flex;flex-direction:column;gap:2px;min-width:0}.ncard img,.ncard .nocover{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px}.ncard b{font-size:.78rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ncard small{font-size:.66rem;color:var(--muted)}.ncard em{position:absolute;top:6px;right:6px;font-style:normal;font-weight:800;background:rgba(0,0,0,.75);color:#ffd23f;padding:2px 7px;border-radius:8px}.ncard .cby{position:absolute;top:6px;left:6px}
+.codois{font-style:normal;font-size:.7rem;color:#ff8fcf}
+.rbody2 p{margin:8px 0}
 </style>
 </head>
 <body>
@@ -2394,7 +2417,22 @@ const MISSOES=[
  {id:'moeda',cat:'Para rir',n:'Sortudo da moeda',d:'Ganha 2 partidas no cara ou coroa',s:'coin',t:2,v:{c:'#d4a017',e:'🪙'}},
  {id:'ultimo',cat:'Para rir',n:'Aos 45 do segundo tempo',d:'Escolhe 15 músicas com menos de 3 segundos no relógio',s:'pk.late',t:15,v:{c:'#e53935',e:'⏰'}},
  {id:'coruja',cat:'Para rir',n:'Coruja',d:'Termina 15 partidas depois da meia-noite',s:'night',t:15,v:{c:'#1b1f3b',e:'🦉'}},
- {id:'domingo',cat:'Para rir',n:'Domingão',d:'Termina 10 partidas ao domingo',s:'sunday',t:10,v:{c:'#f2a33a',e:'☀️'}}];
+ {id:'domingo',cat:'Para rir',n:'Domingão',d:'Termina 10 partidas ao domingo',s:'sunday',t:10,v:{c:'#f2a33a',e:'☀️'}},
+ /* a dois: só contam quando o Miguel e a Clara jogam juntos */
+ {id:'dueto',cat:'A dois',co:1,n:'Dueto',d:'Ganhem juntos 10 partidas de Lado A × Lado B',s:'co_win',t:10,v:{c:'#c2477a',e:'💞'}},
+ {id:'casal20',cat:'A dois',co:1,n:'Casal 20',d:'Ganhem 20 vezes ao computador em equipa',s:'co_win',t:20,v:{c:'#e53935',e:'💘'}},
+ {id:'semdisc',cat:'A dois',co:1,n:'Sem discussões',d:'5 vitórias seguidas em Lado A × Lado B',s:'co_seqb',t:5,v:{c:'#2f7d55',e:'🕊️'}},
+ {id:'onda',cat:'A dois',co:1,sum:1,n:'Na mesma onda',d:'Acertem 50 escolhas um do outro (somam os acertos dos dois)',s:'co_ac',t:50,v:{c:'#1f5c8a',e:'🌊'}},
+ {id:'telepatia',cat:'A dois',co:1,n:'Telepatia',d:'Cheguem a 80% de sintonia numa partida de Na mesma onda',s:'co_sint',t:80,v:{c:'#8e44d6',e:'🔮'}},
+ {id:'turno',cat:'A dois',co:1,n:'Turno da noite',d:'Sobrevivam a 10 rondas no Turno da noite',s:'co_noite',t:10,v:{c:'#1b1f3b',e:'🌙'}},
+ {id:'fds',cat:'A dois',co:1,n:'Fim de semana a dois',d:'Joguem juntos no sábado e no domingo do mesmo fim de semana',s:'co_fds',t:1,v:{c:'#f2a33a',e:'🧺'}},
+ {id:'amanhecer',cat:'A dois',co:1,n:'Do amanhecer à noite',d:'Joguem juntos de manhã e à noite no mesmo dia',s:'co_mn',t:1,v:{c:'#e8742c',e:'🌅'}},
+ {id:'recadinhos',cat:'A dois',co:1,sum:1,n:'Recadinhos',d:'Troquem 20 recados no quadro, à vez (responder ao recado do outro)',s:'rec_alt',t:20,v:{c:'#1f2a24',e:'💌'}},
+ {id:'ninho',cat:'A dois',co:1,n:'Ninho',d:'Tenham 30 objetos comprados no quarto',s:'ninho',t:30,v:{c:'#a8703f',e:'🪺'}},
+ {id:'bodas',cat:'A dois',co:1,n:'Bodas de vinil',d:'100 partidas juntos, em qualquer modo',s:'juntos',t:100,v:{c:'#c9a43a',e:'💍'}}];
+/* progresso das missões a dois: o melhor dos dois (ou a soma, nalgumas) */
+const coVal=m=>{const v=CASAL.map(w=>stVal(profGet(w),m.s));return m.sum?v[0]+v[1]:Math.max(v[0],v[1])};
+const coDone=m=>!!m&&(coVal(m)>=m.t||CASAL.some(w=>profGet(w).u[m.id]));
 const PROF_KEY=w=>'perfil-'+w;
 const PROF={},PEND={};const pend=w=>PEND[w]||(PEND[w]={add:{},set:{},u:{},q:null});
 const profBlank=()=>({st:{},u:{}});
@@ -2408,7 +2446,7 @@ function profMax(k,v){const w=myPid();if(!w)return;const p=profGet(w);if(v>(+p.s
 function profSet(k,v){const w=myPid();if(!w)return;const p=profGet(w);p.st[k]=v;pend(w).set[k]=v;profAfter()}
 function profAfter(){const w=myPid();if(!w)return;const p=profGet(w);const novos=[];
   p.st['#artistas']=Object.keys(p.st).filter(k=>k.startsWith('pk.a.')&&p.st[k]>0).length;
-  for(const m of MISSOES){if(!p.u[m.id]&&stVal(p,m.s)>=m.t){p.u[m.id]=new Date().toISOString();pend(w).u[m.id]=p.u[m.id];novos.push(m)}}
+  for(const m of MISSOES){if(m.co&&!CASAL.includes(w))continue;if(!p.u[m.id]&&(m.co?coVal(m):stVal(p,m.s))>=m.t){p.u[m.id]=new Date().toISOString();pend(w).u[m.id]=p.u[m.id];novos.push(m)}}
   profSaveLocal(w);clearTimeout(profAfter.t);profAfter.t=setTimeout(()=>profFlush(w),2500);
   novos.forEach((m,k)=>setTimeout(()=>vinylToast(m),900+k*3800))}
 const PROF_URL=w=>`${FS_DOCS}/perfis/${w}?key=${FS_KEY}`;
@@ -2439,7 +2477,7 @@ function missionEnd(){try{if(!ME||WHO==null||!G||!G.seed)return;const done=JSON.
   const h=document.querySelector('.view .winner h1');if(!h)return;done.push(G.seed);localStorage.setItem('miss-done',JSON.stringify(done.slice(-40)));
   const won=h.classList.contains('c'+WHO),byCoin=/moeda/.test(document.querySelector('.view .winner .mono')?.textContent||''),cpu=MODE==='cpu',now=new Date();
   profAdd('games');if(G.per===10)profAdd('g10');
-  if(cpu){profAdd('gCpu');if(won){profAdd('winCpu');if(G.level==='dificil')profAdd('winHard')}else profAdd('loseCpu')}else{profAdd('gPvp');if(won)profAdd('winPvp')}
+  if(cpu){profAdd('gCpu');if(won){profAdd('winCpu');if(G.level==='dificil')profAdd('winHard')}else profAdd('loseCpu')}else{profAdd('gPvp');if(won)profAdd('winPvp');if(coCasal())juntosAdd()}
   if(won){profAdd('win');const st=(+profGet(myPid()).st.streak||0)+1;profSet('streak',st);profMax('bestStreak',st)}else profSet('streak',0);
   let w=0,l=0;for(let d=0;d<G.per;d++){const j=judge(d);if(j.w===WHO)w++;else if(j.w===1-WHO)l++}
   profAdd('duelWin',w);if(w===G.per)profAdd('sweep');if(l===G.per)profAdd('wipe');if(won&&byCoin)profAdd('coin');
@@ -2454,15 +2492,15 @@ function vinylToast(m){document.querySelectorAll('.vtoast').forEach(e=>e.remove(
 function openMissions(){L.screen='missoes';L.mWho=L.mWho||myPid()||'p0';L.mFil=L.mFil||'todas';render();scrollTo(0,0);plList().forEach(p=>profLoad(pidOf(p)))}
 const plList=()=>[BASE_PL.miguel,BASE_PL.clara,...Object.values(PLAYERS).filter(p=>p.id!=='miguel'&&p.id!=='clara').sort((a,b)=>a.n.localeCompare(b.n))];
 function closeMissions(){L.screen=null;render()}
-function missionsScreen(){const w=L.mWho||'p0',p=profGet(w),fil=L.mFil||'todas',who=plList().find(x=>pidOf(x)===w)||BASE_PL.miguel;
-  const all=MISSOES.map(m=>({m,v:Math.min(stVal(p,m.s),m.t),on:!!p.u[m.id]}));const n=all.filter(x=>x.on).length;
+function missionsScreen(){const w=L.mWho||'p0',p=profGet(w),fil=L.mFil||'todas',who=plList().find(x=>pidOf(x)===w)||BASE_PL.miguel,MS=CASAL.includes(w)?MISSOES:MISSOES.filter(m=>!m.co);
+  const all=MS.map(m=>({m,v:Math.min(m.co?coVal(m):stVal(p,m.s),m.t),on:m.co?coDone(m):!!p.u[m.id]}));const n=all.filter(x=>x.on).length;
   const list=all.filter(x=>fil==='todas'||(fil==='feitas'?x.on:!x.on));const cats=[...new Set(list.map(x=>x.m.cat))];
   const card=x=>`<div class="mcard ${x.on?'on':''}">${vinyl(x.m,x.on)}<div class="mtxt"><b>${esc(x.m.n)}</b><span>${esc(x.m.d)}</span>
-    <em class="rrw">${esc(rewardTxt(x.m))}</em>${x.on?`<em class="mdone">✓ conquistado ${new Date(p.u[x.m.id]).toLocaleDateString('pt-PT')}</em>`:`<div class="mbar"><i style="width:${Math.round(x.v/x.m.t*100)}%"></i></div><em>${x.v} / ${x.m.t}</em>`}</div></div>`;
-  return `<div class="tot-head"><div class="mono" style="color:var(--muted)">coleção de vinis</div><h2>Missões</h2><div class="sub">Completa missões e ganha vinis personalizados. Cada um tem a sua coleção.</div></div>
-  <div class="rktabs mwho">${plList().map(x=>{const k=pidOf(x);return `<button class="${k===w?'on':''}" onclick="L.mWho='${k}';render()"><b class="${x.id==='miguel'?'c0':x.id==='clara'?'c1':'cg'}">${esc(x.e+' '+x.n)}</b><span>${MISSOES.filter(m=>profGet(k).u[m.id]).length} / ${MISSOES.length} vinis</span></button>`}).join('')}</div>
+    <em class="rrw">${esc(rewardTxt(x.m))}</em>${x.m.co?'<em class="codois">🌴🌻 a dois</em>':''}${x.on?`<em class="mdone">✓ conquistado ${(()=>{const u=p.u[x.m.id]||CASAL.map(k=>profGet(k).u[x.m.id]).find(Boolean);return u?new Date(u).toLocaleDateString('pt-PT'):''})()}</em>`:`<div class="mbar"><i style="width:${Math.round(x.v/x.m.t*100)}%"></i></div><em>${x.v} / ${x.m.t}</em>`}</div></div>`;
+  return `<div class="tot-head"><div class="mono" style="color:var(--muted)">coleção de vinis</div><h2>Missões</h2><div class="sub">Completa missões e ganha vinis personalizados. Cada um tem a sua coleção. As missões “A dois” fazem-se juntos e aparecem nas duas.</div></div>
+  <div class="rktabs mwho">${plList().map(x=>{const k=pidOf(x);return `<button class="${k===w?'on':''}" onclick="L.mWho='${k}';render()"><b class="${x.id==='miguel'?'c0':x.id==='clara'?'c1':'cg'}">${esc(x.e+' '+x.n)}</b><span>${(()=>{const ms=CASAL.includes(k)?MISSOES:MISSOES.filter(m=>!m.co);return ms.filter(m=>m.co?coDone(m):profGet(k).u[m.id]).length+' / '+ms.length})()} vinis</span></button>`}).join('')}</div>
   <div class="chips mfil">${[['todas','Todas'],['curso','Em curso'],['feitas','Concluídas']].map(([k,t])=>`<button class="chip ${fil===k?'on':''}" onclick="L.mFil='${k}';render()">${t}</button>`).join('')}</div>
-  <div class="mprog"><div class="mbar big"><i style="width:${Math.round(n/MISSOES.length*100)}%"></i></div><span>${n} de ${MISSOES.length} vinis ${who.id==='miguel'?'do Miguel':who.id==='clara'?'da Clara':'de '+esc(who.n)}</span></div>
+  <div class="mprog"><div class="mbar big"><i style="width:${Math.round(n/MS.length*100)}%"></i></div><span>${n} de ${MS.length} vinis ${who.id==='miguel'?'do Miguel':who.id==='clara'?'da Clara':'de '+esc(who.n)}</span></div>
   ${list.length?cats.map(c=>`<h3 class="mcat">${esc(c)}</h3><div class="mgrid">${list.filter(x=>x.m.cat===c).map(card).join('')}</div>`).join(''):`<p class="hint center">${fil==='feitas'?'Ainda não há vinis conquistados. Bora jogar!':'Todas as missões concluídas. Lenda! 🏆'}</p>`}
   <div class="actions"><button class="btn" onclick="closeMissions()">← Voltar</button></div>`}
 const DISCOS_LIB=[["jorge-ben-jor--samba-esquema-novo","Jorge Ben Jor","Samba Esquema Novo"],["jorge-ben-jor--puro-suingue","Jorge Ben Jor","Puro Suingue"],["jorge-ben-jor--a-tabua-de-esmeralda","Jorge Ben Jor","A Tábua de Esmeralda"],["jorge-ben-jor--forca-bruta","Jorge Ben Jor","Força Bruta"],["jorge-ben-jor--jorge-ben-1969","Jorge Ben Jor","Jorge Ben (1969)"],["jorge-ben-jor--africa-brasil","Jorge Ben Jor","África Brasil"],["jorge-ben-jor--favourites","Jorge Ben Jor","Favourites"],["jorge-ben-jor--ben","Jorge Ben Jor","Ben"],["jorge-ben-jor--negro-e-lindo","Jorge Ben Jor","Negro É Lindo"],["jorge-ben-jor--ben-e-samba-bom","Jorge Ben Jor","Ben É Samba Bom"],["jorge-ben-jor--football-samba-groove-association","Jorge Ben Jor","Football & Samba Groove Association"],["jorge-ben-jor--a-banda-do-ze-pretinho","Jorge Ben Jor","A Banda do Zé Pretinho"],["jorge-ben-jor--bem-vinda-amizade","Jorge Ben Jor","Bem-Vinda Amizade"],["jorge-ben-jor--salve-simpatia","Jorge Ben Jor","Salve Simpatia"],["jorge-ben-jor--salve-jorge","Jorge Ben Jor","Salve Jorge"],["jorge-ben-jor--sonsual","Jorge Ben Jor","Sonsual"],["jorge-ben-jor--a-arte-de-jorge-ben-jor","Jorge Ben Jor","A Arte de Jorge Ben Jor"],["jorge-ben-jor--grandes-mestres-da-mpb","Jorge Ben Jor","Grandes Mestres da MPB"],["djavan--djavan-1978","Djavan","Djavan (1978)"],["djavan--coisa-de-acender","Djavan","Coisa de Acender"],["djavan--djavan-ao-vivo","Djavan","Djavan Ao Vivo"],["djavan--luz","Djavan","Luz"],["djavan--bicho-solto-o-xiii","Djavan","Bicho Solto – O XIII"],["djavan--grandes-sucessos","Djavan","Grandes Sucessos"],["djavan--a-voz-o-violao-a-musica-de-djavan","Djavan","A Voz, o Violão, a Música de Djavan"],["djavan--malasia","Djavan","Malásia"],["djavan--alumbramento","Djavan","Alumbramento"],["djavan--lilas","Djavan","Lilás"],["djavan--aria-ao-vivo","Djavan","Ária (Ao Vivo)"],["djavan--rua-dos-amores","Djavan","Rua dos Amores"],["djavan--alumbramento-cara-de-indio","Djavan","Alumbramento & Cara de Índio"],["djavan--seduzir","Djavan","Seduzir"],["djavan--vaidade","Djavan","Vaidade"],["djavan--milagreiro","Djavan","Milagreiro"],["djavan--na-pista-etc","Djavan","Na Pista, etc"],["djavan--vesuvio","Djavan","Vesúvio"],["seu-jorge--cru","Seu Jorge","Cru"],["chico-buarque--construcao","Chico Buarque","Construção"],["chico-buarque--chico-buarque-1984","Chico Buarque","Chico Buarque (1984)"],["chico-buarque--meus-caros-amigos","Chico Buarque","Meus Caros Amigos"],["chico-buarque--chico-buarque-de-hollanda-no4","Chico Buarque","Chico Buarque de Hollanda Nº4"],["chico-buarque--chico-buarque-de-hollanda-1966","Chico Buarque","Chico Buarque de Hollanda (1966)"],["chico-buarque--chico-buarque-de-hollanda-vol-3","Chico Buarque","Chico Buarque de Hollanda Vol. 3"],["chico-buarque--umas-e-outras","Chico Buarque","Umas e Outras"],["chico-buarque--chico-50-anos-o-trovador","Chico Buarque","Chico 50 Anos – O Trovador"],["chico-buarque--caravanas","Chico Buarque","Caravanas"],["chico-buarque--carioca-ao-vivo","Chico Buarque","Carioca ao Vivo"],["chico-buarque--sinal-fechado","Chico Buarque","Sinal Fechado"],["chico-buarque--chico-50-anos-o-cronista","Chico Buarque","Chico 50 Anos – O Cronista"],["chico-buarque--vida","Chico Buarque","Vida"],["chico-buarque--almanaque","Chico Buarque","Almanaque"],["chico-buarque--paratodos","Chico Buarque","Paratodos"],["chico-buarque--calabar","Chico Buarque","Calabar"],["cazuza--so-se-for-a-dois","Cazuza","Só Se For a Dois"],["grupo-revelacao--ao-vivo-no-olimpo","Grupo Revelação","Ao Vivo no Olimpo"],["grupo-revelacao--360o-ao-vivo","Grupo Revelação","360º Ao Vivo"],["grupo-revelacao--100-grupo-revelacao","Grupo Revelação","100% Grupo Revelação"],["grupo-revelacao--ao-vivo-no-morro","Grupo Revelação","Ao Vivo no Morro"],["grupo-revelacao--o-bom-samba-continua-ao-vivo-vol-2","Grupo Revelação","O Bom Samba Continua – Ao Vivo, Vol. 2"],["grupo-revelacao--ao-vivo-na-palma-da-mao","Grupo Revelação","Ao Vivo – Na Palma da Mão"],["grupo-revelacao--aventureiro","Grupo Revelação","Aventureiro"],["grupo-revelacao--velocidade-da-luz","Grupo Revelação","Velocidade da Luz"],["jorge-vercillo--todos-nos-somos-um","Jorge Vercillo","Todos Nós Somos Um"],["natiruts--box-natiruts","Natiruts","Box Natiruts"],["natiruts--natiruts-2018","Natiruts","Natiruts (2018)"],["natiruts--acustico-no-rio-de-janeiro","Natiruts","Acústico no Rio de Janeiro"],["natiruts--reggae-brasil-ao-vivo","Natiruts","Reggae Brasil (Ao Vivo)"],["natiruts--qu4tro","Natiruts","Qu4tro"],["natiruts--indigo-cristal","Natiruts","Índigo Cristal"],["natiruts--nativus","Natiruts","Nativus"],["natiruts--nofilter-ao-vivo","Natiruts","#NOFILTER (Ao Vivo)"],["arlindo-cruz--sambista-perfeito","Arlindo Cruz","Sambista Perfeito"],["arlindo-cruz--pagode-do-arlindo-ao-vivo","Arlindo Cruz","Pagode do Arlindo (Ao Vivo)"],["arlindo-cruz--batuques-e-romances","Arlindo Cruz","Batuques e Romances"],["arlindo-cruz--mtv-ao-vivo-vol-2","Arlindo Cruz","MTV Ao Vivo Vol. 2"],["arlindo-cruz--mtv-ao-vivo-cd-1","Arlindo Cruz","MTV Ao Vivo CD 1"],["arlindo-cruz--batuques-do-meu-lugar-ao-vivo","Arlindo Cruz","Batuques do Meu Lugar (Ao Vivo)"],["arlindo-cruz--2-arlindos","Arlindo Cruz","2 Arlindos"],["arlindo-cruz--na-veia","Arlindo Cruz","Na Veia"],["toquinho--20-grandes-sucessos-de-toquinho-vinicius","Toquinho","20 Grandes Sucessos de Toquinho & Vinicius"],["toquinho--o-poeta-e-o-violao","Toquinho","O Poeta e o Violão"],["toquinho--toquinho-1970","Toquinho","Toquinho (1970)"],["toquinho--aquarela","Toquinho","Aquarela"],["rita-lee--rita-lee-1979","Rita Lee","Rita Lee (1979)"],["rita-lee--balacobaco","Rita Lee","Balacobaco"],["rita-lee--aqui-ali-em-qualquer-lugar","Rita Lee","Aqui, Ali, em Qualquer Lugar"],["rita-lee--rita-lee-3001","Rita Lee","Rita Lee 3001"],["rita-lee--reza","Rita Lee","Reza"],["rita-lee--fruto-proibido","Rita Lee","Fruto Proibido"],["rita-lee--saude","Rita Lee","Saúde"],["rita-lee--lanca-perfume-e-outras-manias","Rita Lee","Lança Perfume e Outras Manias"],["rita-lee--flerte-fatal","Rita Lee","Flerte Fatal"],["rita-lee--atras-do-porto-tem-uma-cidade","Rita Lee","Atrás do Porto Tem uma Cidade"],["rita-lee--rita-hits","Rita Lee","Rita Hits"],["rita-lee--acustico-live","Rita Lee","Acústico (Live)"],["rita-lee--babilonia","Rita Lee","Babilônia"],["rita-lee--flagra","Rita Lee","Flagra"],["rita-lee--build-up","Rita Lee","Build Up"],["rita-lee--multishow-ao-vivo","Rita Lee","Multishow Ao Vivo"],["gal-costa--gal-costa-1969","Gal Costa","Gal Costa (1969)"],["gal-costa--cantar","Gal Costa","Cantar"],["gal-costa--minha-voz","Gal Costa","Minha Voz"],["gal-costa--baby-gal","Gal Costa","Baby Gal"],["gal-costa--gal-tropical","Gal Costa","Gal Tropical"],["gal-costa--a-pele-do-futuro","Gal Costa","A Pele do Futuro"],["gal-costa--agua-viva","Gal Costa","Água Viva"],["gal-costa--divino-maravilhoso","Gal Costa","Divino Maravilhoso"],["elis-regina--elis-tom","Elis Regina","Elis & Tom"],["elis-regina--falso-brilhante","Elis Regina","Falso Brilhante"],["elis-regina--vento-de-maio","Elis Regina","Vento de Maio"],["elis-regina--elis-1966","Elis Regina","Elis (1966)"],["elis-regina--essa-mulher","Elis Regina","Essa Mulher"],["elis-regina--ela","Elis Regina","Ela"],["elis-regina--the-essential","Elis Regina","The Essential"],["elis-regina--elis-por-ela","Elis Regina","Elis por Ela"]];
@@ -2477,11 +2515,13 @@ const DISC_ARTISTA={djavan:'djavan--luz',jorgeben:'jorge-ben-jor--a-tabua-de-esm
 const MREW={djavan:300,jorgeben:350,seujorge:300,chico:250,cazuza:200,revela:180,vercillo:150,cortes:120,toquinho:120,gal:120,natiruts:120,arlindo:120,timmaia:100,ecletico:300,
  mpb:400,suingue:350,samba:300,rock:250,bossa:200,pop:180,reggae:150,nordeste:150,amor:450,saudade:250,festa:300,mar:220,brasil:220,calma:300,energia:300,
  estreia:150,maratona:300,viciado:700,vitorias:450,tri:250,penta:500,massacre:350,duelos:600,duplo:300,pedido:450,ouvido:550,pistoleiro:300,
- robo:450,robo1:350,fregues:200,rival:400,dono:400,revanche:250,carta:300,stk1:250,stk2:500,duvidoso:250,humilde:200,moeda:200,ultimo:200,coruja:250,domingo:200};
+ robo:450,robo1:350,fregues:200,rival:400,dono:400,revanche:250,carta:300,stk1:250,stk2:500,duvidoso:250,humilde:200,moeda:200,ultimo:200,coruja:250,domingo:200,
+ dueto:600,casal20:1000,semdisc:900,onda:800,telepatia:500,turno:1200,fds:400,amanhecer:500,recadinhos:400,ninho:1000,bodas:2500};
+const MITEM={casal20:'l-casal',onda:'x-polaroid',turno:'l-lua',ninho:'r-coracao',bodas:'cm-dourada'};
 const hashS=s=>{let h=2166136261;for(const c of s)h=Math.imul(h^c.charCodeAt(0),16777619);return h>>>0};
 /* as missões de estilo e a primeira partida dão um disco-surpresa (sempre o mesmo para cada missão) */
 const mReward=m=>({r:MREW[m.id]||200,disc:DISC_MISS[m.id]||null});
-function rewardTxt(m){const r=mReward(m),d=r.disc&&DISCO(r.disc);return `♩ ${r.r} BPM${d?` · 💿 ${d.t}`:''}`}
+function rewardTxt(m){const r=mReward(m),d=r.disc&&DISCO(r.disc),it=MITEM[m.id]&&RIT[MITEM[m.id]];return `♩ ${r.r} BPM${d?` · 💿 ${d.t}`:''}${it?` · 🎁 ${it.n}`:''}`}
 
 /* ---------- catálogo ---------- */
 const RSLOT=[['cor','Paredes','🎨'],['chao','Chão','🪵'],['cama','Camas','🛏️'],['cortina','Cortinas','🪟'],['prat','Prateleiras','📚'],['quadros','Pósteres de álbuns','🖼️'],['poster','Parede da cama','🪧'],['secretaria','Secretária','🖥️'],['cabeceira','Mesa de cabeceira','🏮'],['movel','Móveis','🗄️'],['leitor','Leitores','📀'],['mesa','Em cima do móvel','🕯️'],['planta2','Plantinhas','🌵'],['teto','Luzes no teto','✨'],['luz','Candeeiros','💡'],['suspensa','Plantas suspensas','🌿'],['tapete','Tapetes','🟤'],['planta','Plantas','🪴'],['assento','Onde sentar','🛋️'],['extra','Extras','♟️'],['pet','Animais','🐾']];
@@ -2507,11 +2547,12 @@ const RITEMS=[
  ['pl-espada','planta','Espada-de-são-jorge',270],['pl-palmeira','planta','Palmeira',390],['pl-monstera','planta','Monstera',450],['pl-figueira','planta','Figueira-lira',510],['pl-feto','planta','Feto em vaso branco',360],
  ['a-puff','assento','Puff',480],['a-cadeira','assento','Cadeira branca',420],['a-papasan','assento','Cadeira papasan',720],['a-poltrona','assento','Poltrona mostarda',780],['a-sofa','assento','Sofá com almofadas',1500,{d:'Almofadas xadrez e bola 8'}],
  ['x-xadrez','extra','Xadrez porta-chaves',600],['x-relogio','extra','Relógio de sol',270],['x-relvermelho','extra','Relógio vermelho',300,{d:'Com a hora de Portugal'}],['x-auscult','extra','Auscultadores',240],['x-cortica','extra','Quadro de cortiça',330],['x-pegboard','extra','Quadro perfurado',480],['x-skate','extra','Skate na parede',420],['x-espelho','extra','Espelho ondulado',690],['x-violao','extra','Violão na parede',780],
- ['pet-peixe','pet','Peixinho dourado',360,{d:'Nada no aquário à janela'}],['pet-tartaruga','pet','Tartaruga',540,{d:'Passeia no tapete, devagarinho'}],['pet-papagaio','pet','Papagaio',840,{d:'Abana a cabeça ao som da música'}],['pet-gato','pet','Gato laranja',960,{d:'Dorme em cima da cama'}],['pet-caramelo','pet','Vira-lata caramelo',1050,{d:'Abana o rabo no tapete'}]
+ ['pet-peixe','pet','Peixinho dourado',360,{d:'Nada no aquário à janela'}],['pet-tartaruga','pet','Tartaruga',540,{d:'Passeia no tapete, devagarinho'}],['pet-papagaio','pet','Papagaio',840,{d:'Abana a cabeça ao som da música'}],['pet-gato','pet','Gato laranja',960,{d:'Dorme em cima da cama'}],['pet-caramelo','pet','Vira-lata caramelo',1050,{d:'Abana o rabo no tapete'}],
+ ['l-casal','luz','Néon Miguel × Clara',0,{lock:'casal20'}],['l-lua','luz','Candeeiro de lua',0,{lock:'turno'}],['x-polaroid','extra','Polaroid dos dois',0,{lock:'onda'}],['r-coracao','tapete','Tapete de coração',0,{lock:'ninho'}],['cm-dourada','cama','Cama de dossel dourada',0,{lock:'bodas'}]
 ].map(([id,s,n,p,o])=>({id,s,n,p,...(o||{})}));
 const RIT=Object.fromEntries(RITEMS.map(x=>[x.id,x]));
 const RDEF={cor:'w-creme',chao:'f-madeira',prat:'p-simples',movel:'m-caixote',leitor:'g-basico',cama:'cm-casal',cortina:'c-linho'};
-const LUZES=new Set(['t-heras','t-lampadas','l-candeeiro','l-sunset','l-neon','l-onair','l-led','mz-lava','mz-velas','mz-sal','mz-relogio','cb-papel','cb-cogumelo','cb-velas','sc-madeira','sc-branca','sc-estante']);
+const LUZES=new Set(['l-casal','l-lua','t-heras','t-lampadas','l-candeeiro','l-sunset','l-neon','l-onair','l-led','mz-lava','mz-velas','mz-sal','mz-relogio','cb-papel','cb-cogumelo','cb-velas','sc-madeira','sc-branca','sc-estante']);
 
 /* ---------- quarto partilhado do Miguel e da Clara (um só documento online) ---------- */
 const CASAL=['p0','p1'],CASA_ID='u-quarto-casa',BPM_DIA=240;
@@ -2540,10 +2581,11 @@ async function sqPull(){if(SQ.busy||!(db&&db.cloud))return;const cur=await sqFet
 function roomQ(){const d=SQ.d;d.eq=d.eq||{};d.own=d.own||{};d.buy=d.buy||[];d.spent=+d.spent||0;d.mus=+d.mus||0;return {...d,eq:{...RDEF,...d.eq}}}
 function roomSave(q,lazy){Object.assign(SQ.d,JSON.parse(JSON.stringify(q)));sqSaveLocal();clearTimeout(roomSave.t);roomSave.t=setTimeout(sqSync,lazy?20000:700)}
 const canEdit=()=>!!(ME&&(ME.id==='miguel'||ME.id==='clara'));
-function roomEarned(){const q=roomQ();let n=q.mus||0;for(const w of CASAL){const p=profGet(w);for(const m of MISSOES){const v=Math.min(stVal(p,m.s),m.t);n+=Math.round(mReward(m).r*Math.floor(4*v/m.t)/4)}}return n}
+function roomEarned(){const q=roomQ();let n=q.mus||0;for(const m of MISSOES){if(m.co){const v=Math.min(coVal(m),m.t);n+=Math.round(mReward(m).r*Math.floor(4*v/m.t)/4);continue}for(const w of CASAL){const v=Math.min(stVal(profGet(w),m.s),m.t);n+=Math.round(mReward(m).r*Math.floor(4*v/m.t)/4)}}return n}
 const roomCoins=()=>roomEarned()-roomQ().spent;
 function discOwned(){const q=roomQ(),s=new Set;for(const m of MISSOES){const d=DISC_MISS[m.id];if(d&&CASAL.some(w=>profGet(w).u[m.id]))s.add(d)}q.buy.forEach(k=>s.add(k));return [...s].filter(DISCO)}
-const ownsItem=(w,id)=>RIT[id]&&(RIT[id].p===0||!!roomQ().own[id]);
+const lockM=it=>it&&it.lock&&MISSOES.find(m=>m.id===it.lock);
+const ownsItem=(w,id)=>{const it=RIT[id];if(!it)return false;if(it.lock)return coDone(lockM(it));return it.p===0||!!roomQ().own[id]};
 /* onde está cada disco: prateleira, parede, póster, gira-discos ou guardado no móvel */
 function discPlaces(){const q=roomQ(),own=discOwned(),capS=RIT[q.eq.prat]?.cap||0,capW=q.eq.poster==='po-vinis'?3:0,capP=RIT[q.eq.quadros]?.cap||0;
   const sh=(q.sh||own).filter(k=>own.includes(k)).slice(0,capS);
@@ -2691,7 +2733,7 @@ const DISC_MISS=(()=>{const o={},by={};DISCOS.forEach(d=>(by[d.a]=by[d.a]||[]).p
   const used=new Set,arts=Object.keys(by).filter(a=>cap[a]>0);let rr=0;
   const take=a=>{const k=by[a].find(x=>!used.has(x)&&x!==DISC_ARTISTA['__']);if(!k)return null;used.add(k);cap[a]--;return k};
   const next=()=>{for(let t=0;t<arts.length;t++){const a=arts[(rr++)%arts.length];if(cap[a]>0){const k=by[a].slice(1).find(x=>!used.has(x));if(k){used.add(k);cap[a]--;return k}}}return null};
-  MISSOES.forEach(m=>{const pref=DISC_ARTISTA[m.id],pa=pref&&DISCO(pref)?.a;
+  MISSOES.forEach(m=>{if(m.co)return;const pref=DISC_ARTISTA[m.id],pa=pref&&DISCO(pref)?.a;
     if(pref&&cap[pa]>0&&!used.has(pref)){used.add(pref);cap[pa]--;o[m.id]=pref;return}
     if(m.v.a||m.id==='estreia'||hashS(m.id)%3!==0){const k=next();if(k)o[m.id]=k}});return o})();
 const DISC_EXCL=new Set(Object.values(DISC_MISS));
@@ -2891,6 +2933,20 @@ chao(it){const VX=540,VY=110,fx=x=>VX+(x-VX)*(500-VY)/(340-VY);let g=`<clipPath 
 const _gatoDummy=0;
 function cabeceira(){return `<ellipse cx="782" cy="366" rx="32" ry="4" fill="url(#gsh)"/><polygon points="760,318 804,318 808,323 756,323" fill="#c9a46c"/><rect x="756" y="323" width="52" height="39" fill="#b68e57"/><rect x="760" y="328" width="44" height="13" fill="#a57f4b"/><rect x="760" y="344" width="44" height="13" fill="#a57f4b"/><circle cx="782" cy="334" r="1.6" fill="#5a3a24"/><circle cx="782" cy="350" r="1.6" fill="#5a3a24"/><rect x="758" y="362" width="4" height="4" fill="#5a3a24"/><rect x="802" y="362" width="4" height="4" fill="#5a3a24"/>`}
 
+/* ---------- objetos de casal (só com missões a dois) ---------- */
+Object.assign(RDR,{
+'l-casal'(){const t=(st,w)=>`<text x="942" y="232" text-anchor="middle" font-family="Fraunces,serif" font-style="italic" font-weight="700" font-size="25" fill="none" stroke="${st}" stroke-width="${w}">Miguel <tspan fill="none" stroke="#ffd23f">×</tspan> Clara</text>`;
+  return {b:t('#ff8fcf',1.8),g:`${t('#ffe0f2',2.2)}${glow(942,222,110,'ros',.95)}`}},
+'l-lua'(){return {b:`<ellipse cx="166" cy="364" rx="22" ry="4" fill="url(#gsh)"/><path d="M158 362 h16 l-3 -20 h-10z" fill="#c9a46c"/><circle cx="166" cy="322" r="21" fill="#f6efd9"/><circle cx="158" cy="314" r="4" fill="#e3d8bb"/><circle cx="172" cy="328" r="5.5" fill="#e3d8bb"/><circle cx="170" cy="312" r="2.5" fill="#e3d8bb"/><path d="M150 312 a20 20 0 0 1 14 -10" stroke="#fff" stroke-width="3" fill="none" opacity=".7"/>`,g:`${glow(166,322,95,'ama',1)}<circle cx="166" cy="322" r="21" fill="#fff8e6" opacity=".9"/>`}},
+'x-polaroid'(){return {b:`<rect x="29" y="208" width="84" height="76" fill="rgba(0,0,0,.25)"/><rect x="26" y="204" width="84" height="76" fill="#7a4a2a"/><rect x="30" y="208" width="76" height="68" fill="#efe6d4"/>
+  <g transform="rotate(-4 68 242)"><rect x="44" y="212" width="48" height="58" fill="#fdfbf6"/><linearGradient id="pgs" x2="0" y2="1"><stop offset="0" stop-color="#f6a65a"/><stop offset=".6" stop-color="#e8607a"/><stop offset="1" stop-color="#5a3a7a"/></linearGradient><rect x="48" y="216" width="40" height="38" fill="url(#pgs)"/><circle cx="68" cy="238" r="7" fill="#ffd98a" opacity=".9"/><path d="M48 248 h40 v6 h-40z" fill="#3a2a4a" opacity=".6"/>
+  <circle cx="61" cy="236" r="3.4" fill="#2a1a20"/><path d="M57 254 q4 -14 8 0z" fill="#2a1a20"/><circle cx="75" cy="236" r="3.4" fill="#2a1a20"/><path d="M71 254 q4 -14 8 0z" fill="#2a1a20"/><path d="M64 243 q4 -3 8 0" stroke="#2a1a20" stroke-width="1.6" fill="none"/><path d="M68 224 c-2 -3 -6 -1 -4 2 l4 4 l4 -4 c2 -3 -2 -5 -4 -2z" fill="#fff" opacity=".85"/>
+  <text x="68" y="265" text-anchor="middle" font-family="Fraunces,serif" font-style="italic" font-size="7" fill="#3a2a20">M &amp; C</text></g>
+  <text x="38" y="230" font-size="9">🌴</text><text x="92" y="272" font-size="9">🌻</text>`}},
+'r-coracao'(){const h='M0 34 C -78 -12 -62 -74 0 -36 C 62 -74 78 -12 0 34z';return {b:`<g transform="translate(200 470) scale(1.9 .62)"><path d="${h}" fill="#d94f6e"/><path d="${h}" fill="none" stroke="#f2a1b4" stroke-width="5" stroke-dasharray="1 4" stroke-linecap="round"/><path d="${h}" fill="#f07a92" transform="scale(.7)"/><path d="${h}" fill="#ffc2cf" transform="scale(.28)"/></g>`}},
+'cm-dourada'(it,c){return {b:cama(c,{head:'tecido',hc:'#c9a43a',sheet:'#fbf6ea',blk:'#f1e2b8',blk2:'#d8c48e',pc:['#fbf8f2','#c9a43a','#c9a43a','#fbf8f2'],y:448,throw:'#b8862a'})+`<g><rect x="812" y="134" width="7" height="206" fill="#b8902a"/><rect x="1058" y="134" width="7" height="206" fill="#b8902a"/><rect x="836" y="134" width="8" height="342" fill="#d4ad3e"/><rect x="836" y="134" width="3" height="342" fill="#f3d98a"/><path d="M812 136 H1068 M836 136 H1068" stroke="#d4ad3e" stroke-width="6"/><circle cx="840" cy="130" r="6" fill="#f3d98a"/><path d="M844 142 q-16 130 6 326 l28 0 q-22 -184 -10 -326z" fill="#fff6dc" opacity=".35"/><path d="M1064 142 q-34 112 -26 206 l26 0z" fill="#fff6dc" opacity=".3"/><path d="M844 142 q110 40 220 0" stroke="#f3d98a" stroke-width="2" fill="none"/></g>`}}
+});
+
 let GRAIN='';function grainUrl(){if(GRAIN)return GRAIN;try{const c=document.createElement('canvas');c.width=c.height=140;const x=c.getContext('2d'),d=x.createImageData(140,140);for(let i=0;i<d.data.length;i+=4){const v=Math.random()*255|0;d.data[i]=d.data[i+1]=d.data[i+2]=v;d.data[i+3]=22}x.putImageData(d,0,0);GRAIN=c.toDataURL()}catch(e){GRAIN='data:,'}return GRAIN}
 const ST={prat:'translate(130 -14)',extra:'translate(125 16)',poster:'translate(643 -14)',movel:'translate(260 -62)',leitor:'translate(260 -62)',mesa:'translate(260 -62)',planta2:'translate(260 -62)',planta:'translate(-6 -64) scale(1.3)',assento:'translate(-120 -32) scale(1.2)',tapete:'translate(300 -66) scale(1.1)',
   'l-candeeiro':'translate(-235 -60)','l-neon':'translate(740 4)','l-sunset':'translate(640 -14)','pet-caramelo':'translate(110 0)','pet-tartaruga':'translate(170 0)'};
@@ -2938,14 +2994,14 @@ function itemThumb(it){RUID=Math.floor(Math.random()*1e6);const pl={sh:[],wl:[],
   return `<svg viewBox="${IBOX[it.id]||RTHUMB[it.s]}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">${roomDefs()}${inner}</svg>`}
 
 /* ---------- ecrã ---------- */
-function openRoom(){L.screen='quarto';L.rNoteEd=0;if(db&&db.cloud)bdLoad();L.rTab=L.rTab||'loja';L.rCat=L.rCat||'cama';L.rPrev=null;L.rTodV=null;CASAL.forEach(w=>profLoad(w));sqPull();render();scrollTo(0,0)}
+function openRoom(){L.screen='quarto';L.rTodV=null;L.rNoteEd=0;if(db&&db.cloud)bdLoad();L.rTab=L.rTab||'loja';L.rCat=L.rCat||'cama';L.rPrev=null;L.rTodV=null;CASAL.forEach(w=>profLoad(w));sqPull();render();scrollTo(0,0)}
 function roomMine(){return canEdit()}
 function roomRefresh(){if(L.screen!=='quarto'||L.rNoteEd||document.querySelector('.rplayfx'))return;const a=document.activeElement;if(a&&/INPUT|TEXTAREA/.test(a.tagName))return;render()}
 function roomTod(t){L.rTodV=t||null;const s=document.querySelector('.roomscene .roomsvg');if(s)s.outerHTML=roomSceneInner();document.querySelectorAll('.todbar button').forEach(b=>b.classList.toggle('on',(b.dataset.t||'')===(t||'')))}
 function roomTry(id){const it=RIT[id];if(!it||!canEdit())return;
   if(ownsItem(0,id)){const q=roomQ();if(q.eq[it.s]===id&&!RFIX[it.s])q.eq[it.s]=null;else q.eq[it.s]=id;L.rPrev=null;roomSave(q)}else L.rPrev=L.rPrev===id?null:id;render();roomScroll()}
-function roomBuy(id){const it=RIT[id];if(!it||!canEdit())return;const q=roomQ();if(roomCoins()<it.p)return;
-  q.spent+=it.p;q.own[id]=1;q.eq[it.s]=id;L.rPrev=null;roomSave(q);profAdd('compras');try{celebrate(24)}catch(e){}render();roomScroll()}
+function roomBuy(id){const it=RIT[id];if(!it||!canEdit()||it.lock)return;const q=roomQ();if(roomCoins()<it.p)return;
+  q.spent+=it.p;q.own[id]=1;q.eq[it.s]=id;L.rPrev=null;roomSave(q);profAdd('compras');profMax('ninho',Object.keys(q.own).length);try{celebrate(24)}catch(e){}render();roomScroll()}
 function roomScroll(){const s=document.querySelector('.roomscene');if(s&&s.getBoundingClientRect().top<-80)s.scrollIntoView({behavior:'smooth',block:'start'})}
 function roomSceneInner(){const o={};if(L.rPrev)o.eq={[RIT[L.rPrev].s]:L.rPrev};if(L.rTodV)o.tod=L.rTodV;return roomSvg(0,o)}
 function roomPop(t){const sc=document.querySelector('.roomscene'),lt=document.getElementById('rleitor');if(!sc||!lt)return;const a=sc.getBoundingClientRect(),b=lt.getBoundingClientRect();const e=document.createElement('div');e.className='rpop';e.textContent=t;e.style.left=(b.left-a.left+b.width/2)+'px';e.style.top=(b.top-a.top)+'px';sc.appendChild(e);setTimeout(()=>e.remove(),1800)}
@@ -2974,15 +3030,14 @@ function quartoScreen(){const ed=canEdit(),coins=roomCoins(),q=roomQ(),pl=discPl
   <div class="roomscene">${roomSceneInner()}</div>
   ${pd?`<div class="rplay ${on?'on':''}"><img src="${esc(pd.f)}" alt=""><div><span class="mono">${on?'a tocar no quarto':'no gira-discos'}</span><b>${esc(pd.t)}</b><em>${esc(pd.a)}${on&&ed?` · +4 BPM por minuto com o som ligado · hoje <b id="bpmday">${bpmToday()}/${BPM_DIA}</b>`:''}</em></div>${ed?(on?`<button class="btn ghost" onclick="roomStop()">⏸ Parar</button>`:`<button class="btn" onclick="roomPlay()">▶ Tocar</button>`):''}</div>`:''}
   ${noteBox()}
-  <div class="todbar"><button data-t="" class="${!L.rTodV?'on':''}" onclick="roomTod()"><span>🕰️</span>Agora</button>${TOD.map(([k,e,nm])=>`<button data-t="${k}" class="${L.rTodV===k?'on':''}" onclick="roomTod('${k}')"><span>${e}</span>${nm}</button>`).join('')}</div>
-  <p class="hint center todinfo">Agora é ${TODN[tnow]} em Portugal. O sol nasce às ${n.f(n.rise)} e põe-se às ${n.f(n.set)}. Os outros botões só mostram como fica.</p>`;
-  if(prev)h+=`<div class="rprev"><div><span class="mono">a experimentar</span><b>${esc(prev.n)}</b><em>♩ ${prev.p} BPM</em></div><div class="acts">${falta>0?`<button class="btn" disabled>Faltam ${falta} BPM</button>`:`<button class="btn" onclick="roomBuy('${prev.id}')">Comprar</button>`}<button class="btn ghost" onclick="L.rPrev=null;render()">Tirar</button></div></div>`;
+  <p class="hint center todinfo">Agora é ${TODN[tnow]} em Portugal: o quarto segue a hora real. O sol nasce às ${n.f(n.rise)} e põe-se às ${n.f(n.set)}.</p>`;
+  if(prev)h+=`<div class="rprev"><div><span class="mono">a experimentar</span><b>${esc(prev.n)}</b><em>${prev.lock?`🔒 Só com a missão a dois “${esc(lockM(prev).n)}”: ${esc(lockM(prev).d)}`:`♩ ${prev.p} BPM`}</em></div><div class="acts">${prev.lock?'':falta>0?`<button class="btn" disabled>Faltam ${falta} BPM</button>`:`<button class="btn" onclick="roomBuy('${prev.id}')">Comprar</button>`}<button class="btn ghost" onclick="L.rPrev=null;render()">Tirar</button></div></div>`;
   if(!ed)return h+`<div class="actions"><button class="btn" onclick="L.screen=null;render()">← Voltar</button></div>`;
   h+=`<div class="chips qtabs">${[['loja','🛍️ Loja'],['discos','💿 Discos'],['ganhar','♩ Como ganhar BPM']].map(([k,t])=>`<button class="chip ${L.rTab===k?'on':''}" onclick="L.rTab='${k}';L.rMsg='';render()">${t}</button>`).join('')}</div>`;
   if(L.rTab==='loja'){const cat=L.rCat;
     h+=`<div class="rcats">${RSLOT.map(([k,nm,e])=>`<button class="${cat===k?'on':''}" onclick="L.rCat='${k}';render()"><span>${e}</span>${nm}</button>`).join('')}</div><div class="rgrid">`;
     RITEMS.filter(x=>x.s===cat).forEach(it=>{const own=ownsItem(0,it.id),isOn=q.eq[it.s]===it.id,pv=L.rPrev===it.id;
-      h+=`<button class="ritem ${isOn?'on':''} ${pv?'pv':''}" onclick="roomTry('${it.id}')"><div class="rth">${itemThumb(it)}</div><b>${esc(it.n)}</b>${it.d?`<small>${esc(it.d)}</small>`:''}<em>${isOn?(RFIX[it.s]?'✓ em uso':'✓ em uso · tocar para tirar'):own?'já é vosso · pôr':it.p>coins?`♩ ${it.p} · faltam ${it.p-coins}`:`♩ ${it.p} BPM`}</em></button>`});
+      h+=`<button class="ritem ${isOn?'on':''} ${pv?'pv':''}" onclick="roomTry('${it.id}')"><div class="rth">${itemThumb(it)}</div><b>${esc(it.n)}</b>${it.d?`<small>${esc(it.d)}</small>`:''}<em>${isOn?(RFIX[it.s]?'✓ em uso':'✓ em uso · tocar para tirar'):own?'já é vosso · pôr':it.lock?`🔒 missão a dois: ${esc(lockM(it).n)} · ${Math.min(coVal(lockM(it)),lockM(it).t)}/${lockM(it).t}`:it.p>coins?`♩ ${it.p} · faltam ${it.p-coins}`:`♩ ${it.p} BPM`}</em></button>`});
     h+='</div>'}
   if(L.rTab==='discos'){const art=L.rArt||'',sub=L.rDsub||'meus',chips=`<div class="chips rart">${['',...new Set(DISCOS.map(d=>d.a))].map(a=>`<button class="chip ${art===a?'on':''}" onclick="L.rArt='${esc(a)}';render()">${a?esc(a):'Todos'}</button>`).join('')}</div>`;
     h+=`<div class="chips dsub">${[['meus','Os nossos ('+pl.own.length+')'],['loja','Comprar'],['excl','🔒 Só nas missões']].map(([k,t])=>`<button class="chip ${sub===k?'on':''}" onclick="L.rDsub='${k}';L.rMsg='';render()">${t}</button>`).join('')}</div>${L.rMsg?`<div class="rmsg">${esc(L.rMsg)}</div>`:''}`;
@@ -2996,8 +3051,8 @@ function quartoScreen(){const ed=canEdit(),coins=roomCoins(),q=roomQ(),pl=discPl
       DISCOS.filter(d=>DISC_EXCL.has(d.k)&&!pl.own.includes(d.k)&&(!art||d.a===art)).forEach(d=>{const m=missOfDisc(d.k),best=Math.max(...CASAL.map(w=>Math.min(stVal(profGet(w),m.s),m.t)));h+=`<div class="dcard lock"><img src="${esc(d.f)}" alt="" loading="lazy"><b>${esc(d.t)}</b><span>${esc(d.a)}</span><em class="dmiss">🎯 ${esc(m.n)}</em><div class="mbar"><i style="width:${Math.round(best/m.t*100)}%"></i></div><small>${esc(m.d)} · ${best}/${m.t}</small></div>`});h+=`</div>`}}
   if(L.rTab==='ganhar'){const P=CASAL.map(w=>profGet(w));
     h+=`<p class="hint">O quarto começa com 0 BPM. As missões do Miguel e da Clara enchem a mesma conta: cada missão paga um quarto dos BPM a cada 25% do caminho. Ter um disco a tocar no quarto, com o som ligado, dá +1 BPM a cada 15 segundos (até ${BPM_DIA} por dia em cada telemóvel). Já ganharam ${q.mus||0} BPM com música.</p><div class="mgrid">`;
-    MISSOES.map(m=>{const r=mReward(m),vs=P.map(p=>Math.min(stVal(p,m.s),m.t));return {m,r,vs,got:vs.reduce((a,v)=>a+Math.round(r.r*Math.floor(4*v/m.t)/4),0),pr:Math.max(...vs)/m.t}}).sort((a,b)=>(a.pr>=1)-(b.pr>=1)||b.pr-a.pr).slice(0,24).forEach(x=>{const d=x.r.disc&&DISCO(x.r.disc),done=x.pr>=1;
-      h+=`<div class="mcard ${done?'on':''}">${d?`<img class="rmc" src="${esc(d.f)}" alt="" loading="lazy" style="${done?'':'filter:grayscale(1) brightness(.6)'}">`:vinyl(x.m,done)}<div class="mtxt"><b>${esc(x.m.n)}</b><span>${esc(x.m.d)}</span><span class="rrw">♩ ${x.got} de ${x.r.r*2} BPM${d?` · 💿 ${esc(d.t)}`:''}</span><span class="rrw who">🌴 ${x.vs[0]}/${x.m.t} · 🌻 ${x.vs[1]}/${x.m.t}</span><div class="mbar"><i style="width:${Math.round(x.pr*100)}%"></i></div></div></div>`});
+    MISSOES.map(m=>{const r=mReward(m),vs=P.map(p=>Math.min(stVal(p,m.s),m.t)),cv=m.co?Math.min(coVal(m),m.t):0;return {m,r,vs,got:m.co?Math.round(r.r*Math.floor(4*cv/m.t)/4):vs.reduce((a,v)=>a+Math.round(r.r*Math.floor(4*v/m.t)/4),0),pr:(m.co?cv:Math.max(...vs))/m.t}}).sort((a,b)=>(a.pr>=1)-(b.pr>=1)||b.pr-a.pr).slice(0,24).forEach(x=>{const d=x.r.disc&&DISCO(x.r.disc),done=x.pr>=1;
+      h+=`<div class="mcard ${done?'on':''}">${d?`<img class="rmc" src="${esc(d.f)}" alt="" loading="lazy" style="${done?'':'filter:grayscale(1) brightness(.6)'}">`:vinyl(x.m,done)}<div class="mtxt"><b>${esc(x.m.n)}</b><span>${esc(x.m.d)}</span><span class="rrw">♩ ${x.got} de ${x.r.r*(x.m.co?1:2)} BPM${d?` · 💿 ${esc(d.t)}`:''}${MITEM[x.m.id]?` · 🎁 ${esc(RIT[MITEM[x.m.id]].n)}`:''}</span><span class="rrw who">${x.m.co?`🌴🌻 a dois · ${Math.min(coVal(x.m),x.m.t)}/${x.m.t}`:`🌴 ${x.vs[0]}/${x.m.t} · 🌻 ${x.vs[1]}/${x.m.t}`}</span><div class="mbar"><i style="width:${Math.round(x.pr*100)}%"></i></div></div></div>`});
     h+=`</div><div class="actions"><button class="btn ghost" onclick="openMissions()">Ver todas as missões</button></div>`}
   return h+`<div class="actions"><button class="btn" onclick="L.screen=null;render()">← Voltar</button></div>`}
 
@@ -3019,14 +3074,145 @@ function noteBox(){const t=noteTxt(),ed=L.rNoteEd,has=!BD.empty&&bdPid()&&BD.at;
   if(ed)return `<div class="rnote edit"><b>📝 Quadro de recados</b><textarea id="notein" maxlength="${NOTE_MAX}" rows="3" placeholder="Escreve um recado para quem abrir o quarto…" oninput="document.getElementById('notecnt').textContent=this.value.length+'/${NOTE_MAX}'">${esc(t)}</textarea><div class="nacts"><span id="notecnt" class="mono">${t.length}/${NOTE_MAX}</span><button class="btn ghost" onclick="L.rNoteEd=0;render()">Cancelar</button>${has?`<button class="btn ghost" onclick="noteSave('')">Apagar</button>`:''}<button class="btn" onclick="noteSave(document.getElementById('notein').value)">Guardar recado</button></div>${BD.stat?`<small>${esc(BD.stat)}</small>`:''}</div>`;
   return `<div class="rnote ${bdFresh()?'fresh':''}" id="rnote"><div><b>📝 Quadro de recados</b><span>${has?`${bdFresh()?'<em class="bnew">💌 Novo</em> ':''}${t?'“'+esc(t)+'”':'um desenho'} · ${bdFrom(true)} · ${bdRel(BD.at)}`:'Ainda não há recado. Escreve o primeiro!'}</span></div>${ME?`<button class="btn sm" onclick="roomNoteEdit()">✏️ Escrever</button>`:''}</div>`}
 function roomNoteEdit(){if(!ME)return;L.rNoteEd=1;BD.stat='';render();setTimeout(()=>{const t=document.getElementById('notein');if(t){t.focus();t.scrollIntoView({behavior:'smooth',block:'center'})}},60)}
-async function noteSave(txt){if(!ME)return;txt=(txt||'').trim().slice(0,NOTE_MAX);const img=txt?'txt:'+txt:'',at=new Date().toISOString();BD.stat='a guardar…';
+async function noteSave(txt){if(!ME)return;txt=(txt||'').trim().slice(0,NOTE_MAX);const alt=!!txt&&!!bdPid()&&bdPid()!==myPid()&&CASAL.includes(myPid())&&CASAL.includes(bdPid());const img=txt?'txt:'+txt:'',at=new Date().toISOString();BD.stat='a guardar…';
   try{const r=await fetch(bdUrl(),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:{img:{stringValue:img},by:{integerValue:String(WHO===1?1:0)},at:{stringValue:at},nm:{stringValue:ME.n||''},em:{stringValue:ME.e||''},pid:{stringValue:myPid()||''}}})});
-    if(!r.ok)throw 0;if(txt)profAdd('board');Object.assign(BD,{img,empty:!img,by:WHO,pid:myPid(),nm:ME.n,em:ME.e,at,stat:''});lsSet({boardSeen:at});L.rNoteEd=0;render()}
+    if(!r.ok)throw 0;if(txt)profAdd('board');if(alt)profAdd('rec_alt');Object.assign(BD,{img,empty:!img,by:WHO,pid:myPid(),nm:ME.n,em:ME.e,at,stat:''});lsSet({boardSeen:at});L.rNoteEd=0;render()}
   catch(e){BD.stat='Não consegui guardar. Verifica a internet e tenta outra vez.';render()}}
 function bdGo(){openRoom();setTimeout(()=>{const b=document.getElementById('rnote');if(b){b.scrollIntoView({behavior:'smooth',block:'center'});b.classList.add('flash')}setTimeout(()=>{lsSet({boardSeen:BD.at});if(L.screen==='quarto'&&!L.rNoteEd)render()},2500)},150)}
 function bdNotice(){return bdFresh()?`<button class="bnotice" onclick="bdGo()">💌 Tens um recado novo ${esc(bdFrom(false))} no quadro do quarto — ver</button>`:''}
 setTimeout(()=>{if(db&&db.cloud)bdLoad()},1500);
 setInterval(()=>{if(!document.hidden&&db&&db.cloud&&!L.rNoteEd)bdLoad()},20000);
+
+
+/* ======== modos a dois (cooperativos): Lado A × Lado B, Na mesma onda, Turno da noite ======== */
+const CO_MODES={ab:{n:'Lado A × Lado B',e:'💿',d:'Os dois contra o computador, com um só álbum: um faz o Lado A, o outro o Lado B.'},
+  onda:{n:'Na mesma onda',e:'🌊',d:'Cada um escolhe as suas 5 favoritas em segredo e tenta adivinhar as do outro.'},
+  noite:{n:'Turno da noite',e:'🌙',d:'Rondas seguidas contra o computador, cada vez mais difícil. Têm 3 vidas para os dois.'}};
+const CO_PER=6,CO_VIDAS=3;
+const CO=()=>(G&&G.coop&&G.coop.seed)?G.coop:null;
+function cdeck(seed){if(cdeck._s===seed)return cdeck._d;const r=rng(hash(seed+':co'));const d=SONGS.map((_,i)=>i).filter(i=>!EXCL.has(i));for(let i=d.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[d[i],d[j]]=[d[j],d[i]]}cdeck._s=seed;cdeck._d=d;return d}
+const coSong=(n)=>song(cdeck(CO().seed)[n]);
+const coCasal=()=>{const a=G&&G.players&&G.players.p0&&G.players.p0.id,b=G&&G.players&&G.players.p1&&G.players.p1.id;return [a,b].sort().join()==='clara,miguel'};
+/* votação: os dois escolhem o mesmo modo para começar */
+function coMyVote(){const v=G&&G.cv&&G.cv[P(WHO)];return v&&v.r===vRound()?v.m:null}
+function coOtherVote(){const v=G&&G.cv&&G.cv[P(1-WHO)];return v&&v.r===vRound()?v.m:null}
+function coVote(m){if(MODE!=='online')return;W({cv:{[P(WHO)]:{m,r:vRound()}}})}
+function coVoteCheck(){if(MODE!=='online'||!G||CO()||L.busy||WHO!==0)return;const a=coMyVote(),b=coOtherVote();if(a&&a===b)coStart(a)}
+function coFresh(m){return {m,seed:newSeed(),at:Date.now(),first:Math.random()<.5?0:1,tp:[],ord:null,ok:{},fav:{},gs:{},r:0,hist:{}}}
+function coStart(m){const g=JSON.parse(JSON.stringify(G));g.coop=coFresh(m);g.cv={};g.round=(g.round||0)+1;W(g,true)}
+function coAgain(){coStart(CO().m)}
+function coLeave(){const g=JSON.parse(JSON.stringify(G));g.coop=null;g.cv={};g.round=(g.round||0)+1;W(g,true)}
+function coModesBox(){if(MODE!=='online')return `<div class="panel comodes"><div class="mono" style="color:var(--muted)">modos a dois</div><p class="hint">Os modos cooperativos jogam-se em <b>👥 com mais uma pessoa</b>, cada um no seu telemóvel.</p></div>`;
+  const mv=coMyVote(),ov=coOtherVote();
+  return `<div class="panel comodes"><div class="mono" style="color:var(--muted)">ou joguem em equipa · modos a dois</div>
+  <div class="cogrid">${Object.entries(CO_MODES).map(([k,x])=>`<button class="comode ${mv===k?'on':''}" ${L.busy?'disabled':''} onclick="coVote('${k}')"><span class="ce">${x.e}</span><b>${x.n}</b><small>${x.d}</small>${(mv===k||ov===k)?`<em>${[mv===k?emo(WHO):'',ov===k?emo(1-WHO):''].join(' ')} ${mv===k&&ov===k?'a começar…':mv===k?'à espera '+d_(1-WHO):'escolheu este · toca para aceitar'}</em>`:''}</button>`).join('')}</div>
+  <p class="hint">Os dois têm de tocar no mesmo modo. ${coCasal()?'As missões a dois só contam quando jogam o Miguel e a Clara juntos.':''}</p></div>`}
+
+/* ---------- Lado A × Lado B ---------- */
+function abPicker(k){return (CO().first+k)%2}
+function abOffer(k){return [coSong(2*k),coSong(2*k+1)]}
+function abTeam(){const c=CO();return (c.tp||[]).map(x=>({...song(x.i),by:x.p}))}
+function abOrdered(){const t=abTeam(),o=CO().ord;return (o&&o.length===t.length?o:t.map((_,k)=>k)).map(k=>t[k])}
+function abCpu(){const c=CO();if(abCpu._s===c.seed)return abCpu._d;const r=rng(hash(c.seed+':cpu')),tr=[];
+  for(let k=0;k<CO_PER;k++){const a=coSong(2*CO_PER+2*k),b=coSong(2*CO_PER+2*k+1),ea=ev(a.i).nota,eb=ev(b.i).nota;const best=ea>=eb?a:b,worse=ea>=eb?b:a;tr.push(r()<.72?best:worse)}
+  const o=bestOrder(tr,'mid');abCpu._s=c.seed;abCpu._d=o.map(k=>tr[k]);return abCpu._d}
+function abPick(i){const c=CO(),k=c.tp.length;if(abPicker(k)!==WHO||L.busy)return;W({coop:{tp:[...c.tp,{p:WHO,i}]}})}
+function abMove(k,d){const c=CO(),t=abTeam();const o=(c.ord&&c.ord.length===t.length?c.ord:t.map((_,x)=>x)).slice();if(k+d<0||k+d>=o.length)return;[o[k],o[k+d]]=[o[k+d],o[k]];W({coop:{ord:o,ok:{}}})}
+function abReady(){W({coop:{ok:{[P(WHO)]:1}}})}
+/* química do casal: o que só existe quando os dois lados se completam */
+function abChem(tr){const out=[],A=tr.slice(0,3),B=tr.slice(3),gen=s=>{const c={};s.forEach(t=>{const g=ev(t.i).gen;c[g]=(c[g]||0)+1});return Object.entries(c).sort((x,y)=>y[1]-x[1])[0][0]},en=s=>s.reduce((a,t)=>a+ev(t.i).en,0)/s.length;
+  if(tr.length<6)return out;
+  const l=linkScore(tr[2],tr[3]);if(l.p>=.5)out.push({n:'🔄 Virar o disco',p:.5,w:`A última do Lado A e a primeira do Lado B ligam bem (${l.why.join(', ')}).`});
+  if(gen(A)===gen(B))out.push({n:'🌊 Mesma onda',p:1,w:`Os dois lados têm o mesmo estilo principal: ${GEN[gen(A)]}.`});
+  else if(Math.abs(en(A)-en(B))>=1.5)out.push({n:'☯️ Dois lados',p:1,w:`Um lado ${en(A)>en(B)?'animado e o outro calmo':'calmo e o outro animado'}: cada um com a sua cara.`});
+  if([A,B].every(s=>s.some(t=>t.by===0)&&s.some(t=>t.by===1)))out.push({n:'🤝 A meias',p:.5,w:'Cada lado tem músicas escolhidas pelos dois.'});
+  return out}
+function abScore(){const T=abOrdered(),C=abCpu();let d=[0,0];const ds=T.map((t,k)=>{const a=ev(t.i).nota,b=ev(C[k].i).nota,w=Math.abs(a-b)<.05?-1:a>b?0:1;if(w===-1){d[0]++;d[1]++}else d[w]+=2;return {t,c:C[k],a,b,w}});
+  const ct=combos(T),cc=combos(C),ch=abChem(T),pt=ct.reduce((s,x)=>s+x.p,0)+ch.reduce((s,x)=>s+x.p,0),pc=cc.reduce((s,x)=>s+x.p,0);return {ds,d,ct,cc,ch,tot:[d[0]+pt,d[1]+pc]}}
+function abScreen(){const c=CO(),k=c.tp.length,me=WHO,lado=p=>p===c.first?'Lado A':'Lado B';
+  if(k<CO_PER){const pk=abPicker(k),mine=pk===me,[A,B]=abOffer(k),T=abTeam();
+    const card=s=>`<div ${mine?`onclick="if(!event.target.closest('a'))abPick(${s.i})"`:''} class="pick ${mine?'tappable':'waiting-pick'}">${sleeve(s)}<div class="info"><div class="tt">${esc(s.t)}</div><div class="ta">${esc(s.a)}</div>${chips(s)}<div class="dlisten">${listen(s)}</div>${mine?`<button class="btn" ${L.busy?'disabled':''} onclick="event.stopPropagation();abPick(${s.i})">Fica no ${lado(me)}</button>`:''}</div></div>`;
+    return `<div class="meta mono"><span>💿 lado a × lado b · escolha ${k+1} / ${CO_PER}</span><span>${mine?'a tua vez':'vez '+d_(pk)}</span></div><div class="progress"><div style="width:${k/CO_PER*100}%"></div></div>
+    <div class="tot-head"><h2 class="c${pk}">${mine?`Escolhe para o ${lado(me)}`:`${O_(pk)} está a escolher`}</h2><div class="sub">${ico(c.first)}${esc(nm(c.first))} faz o Lado A, ${ico(1-c.first)}${esc(nm(1-c.first))} faz o Lado B. No fim ordenam o álbum juntos e vão a duelo contra o computador.</div></div>
+    <div class="pair">${card(A)}<div class="ou">ou</div>${card(B)}</div>
+    <div class="panel coalb"><h3>O vosso álbum · ${k}/${CO_PER}</h3><div class="row" style="grid-template-columns:repeat(6,1fr)">${Array.from({length:CO_PER},(_,x)=>T[x]?`<div class="cslot c${T[x].by}">${mini(T[x])}<small>${T[x].by===c.first?'A':'B'}</small></div>`:'<div class="slot"></div>').join('')}</div></div>
+    <div class="actions"><button class="btn ghost sm" onclick="coLeave()">Sair deste modo</button></div>`}
+  const ready=c.ok&&c.ok.p0&&c.ok.p1;
+  if(!ready){const tr=abOrdered(),cs=combos(tr),ch=abChem(tr),tot=cs.reduce((s,x)=>s+x.p,0)+ch.reduce((s,x)=>s+x.p,0),iOk=c.ok&&c.ok[P(me)],oOk=c.ok&&c.ok[P(1-me)];
+    const rows=tr.map((t,n)=>{let link='';if(n<tr.length-1){const l=linkScore(t,tr[n+1]);link=`<div class="olink ${n===2?'flip':''} ${l.p>=1?'good':l.p>0?'ok':l.p<0?'bad':'none'}"><span class="lp">${l.p?sg(l.p):'0'}</span><span class="lw">${n===2?'🔄 virar o disco · ':''}${l.why.join(' · ')||'sem ligação'}</span></div>`}
+      return `${n===0?'<div class="side mono">Lado A</div>':n===3?'<div class="side mono">Lado B</div>':''}<div class="orow"><div class="n">${n+1}</div><div class="thumb">${cimg(t)}</div><div class="info"><div class="tt">${esc(t.t)} <span class="cby c${t.by}">${emo(t.by)}</span></div>${chips(t)}</div><div class="mvs"><button class="mv" ${n===0||L.busy?'disabled':''} onclick="abMove(${n},-1)">↑</button><button class="mv" ${n===tr.length-1||L.busy?'disabled':''} onclick="abMove(${n},1)">↓</button></div></div>${link}`}).join('');
+    return `<div class="tot-head"><div class="mono" style="color:var(--muted)">💿 lado a × lado b</div><h2>Ordenem juntos</h2><div class="sub">Os dois veem a mesma lista e qualquer um pode mexer. As faixas 1 a 3 são o Lado A, as 4 a 6 o Lado B. Quando estiverem os dois prontos, vamos a duelo.</div></div>
+    <div class="panel">${rows}<div class="cototal"><span>Combinações + química do casal até agora</span><b>${sg(tot)||'0'}</b></div>${ch.length?`<div class="cochem">${ch.map(x=>`<span>${x.n} ${sg(x.p)}</span>`).join('')}</div>`:''}</div>
+    <div class="actions">${iOk?`<button class="btn" disabled>✓ Pronto · à espera ${d_(1-me)}</button>`:`<button class="btn" ${L.busy?'disabled':''} onclick="abReady()">✓ Estou pronto${PL(me).g==='a'?'a':''}</button>`}${oOk&&!iOk?`<span class="hint">${emo(1-me)} já está pronto${PL(1-me).g==='a'?'a':''}</span>`:''}</div>`}
+  const s=abScore(),won=s.tot[0]>s.tot[1],tie=s.tot[0]===s.tot[1];coRecord('ab',{won,tie});
+  return `<div class="winner"><div class="mono" style="color:var(--muted)">💿 lado a × lado b · resultado</div><h1 class="${won?'c0':''} wtitle">${won?'Ganharam os dois! 🎉':tie?'Empate com a máquina 🤝':'Ganhou o computador 🤖'}</h1><div class="by">${esc(nm(0))} & ${esc(nm(1))} · <b>${fmt(s.tot[0])}</b> contra <b>${fmt(s.tot[1])}</b></div></div>
+  <div class="panel"><h3>⚔️ Duelos</h3><table class="duels"><thead><tr><th class="mono">#</th><th>Vocês</th><th class="mono" style="text-align:center">notas</th><th>🤖 Computador</th></tr></thead><tbody>${s.ds.map((x,k)=>`<tr class="corow" style="animation-delay:${k*.15}s"><td class="mono">${k<3?'A':'B'}${k%3+1}</td><td class="${x.w===0?'w':''}">${esc(x.t.t)} <span class="cby">${emo(x.t.by)}</span><div class="a">${esc(x.t.a)}</div></td><td class="res"><b class="${x.w===0?'c0':''}">${fmt1(x.a)}</b> – <b>${fmt1(x.b)}</b></td><td class="${x.w===1?'w':''}">${esc(x.c.t)}<div class="a">${esc(x.c.a)}</div></td></tr>`).join('')}</tbody></table></div>
+  <div class="shelves" style="margin-top:12px"><div class="panel pcard"><h3>🧩 Vocês</h3>${[...s.ct,...s.ch].map(x=>`<div class="prow ${x.p<0?'neg':''}"><div><b>${x.n}</b><span>${esc(x.w)}</span></div><em>${sg(x.p)}</em></div>`).join('')||'<p class="hint">Sem combinações.</p>'}</div>
+  <div class="panel pcard"><h3>🧩 Computador</h3>${s.cc.map(x=>`<div class="prow ${x.p<0?'neg':''}"><div><b>${x.n}</b><span>${esc(x.w)}</span></div><em>${sg(x.p)}</em></div>`).join('')||'<p class="hint">Sem combinações.</p>'}</div></div>
+  <div class="sumtable panel final"><div class="sr head"><div></div><div class="sc c0">Vocês</div><div class="sc">🤖</div></div><div class="sr"><div class="sl">⚔️ Duelos</div><div class="sc">${fmt(s.d[0])}</div><div class="sc">${fmt(s.d[1])}</div></div><div class="sr"><div class="sl">🧩 Combinações + química</div><div class="sc">${sg(s.tot[0]-s.d[0])||'0'}</div><div class="sc">${sg(s.tot[1]-s.d[1])||'0'}</div></div><div class="sr tot"><div class="sl">Total</div><div class="sc big ${won?'lead':''}">${fmt(s.tot[0])}</div><div class="sc big ${!won&&!tie?'lead':''}">${fmt(s.tot[1])}</div></div></div>
+  ${coEndActions()}`}
+
+/* ---------- Na mesma onda ---------- */
+const ONDA_N=12,ONDA_K=5;
+function ondaSongs(){return Array.from({length:ONDA_N},(_,k)=>coSong(k))}
+function ondaTap(i){const c=CO(),k=P(WHO),step=!(c.fav&&c.fav[k])?'fav':'gs';if(c[step]&&c[step][k])return;const sel=(L.onda&&L.onda.seed===c.seed&&L.onda.step===step)?L.onda.sel:[];
+  const j=sel.indexOf(i);if(j>=0)sel.splice(j,1);else if(sel.length<ONDA_K)sel.push(i);L.onda={seed:c.seed,step,sel};render()}
+function ondaSend(){const c=CO(),k=P(WHO),step=!(c.fav&&c.fav[k])?'fav':'gs';if(!L.onda||L.onda.sel.length!==ONDA_K)return;const sel=L.onda.sel.slice();L.onda=null;W({coop:{[step]:{[k]:sel}}})}
+function ondaRes(){const c=CO(),f=c.fav,g=c.gs,r=[0,1].map(p=>{const other=f[P(1-p)],mine=g[P(p)],hits=mine.filter(i=>other.includes(i));return {hits,top:mine.includes(other[0])}});
+  const pts=r.map(x=>x.hits.length*2+(x.top?1:0)),comum=f.p0.filter(i=>f.p1.includes(i));return {r,pts,tot:pts[0]+pts[1],pct:Math.round((r[0].hits.length+r[1].hits.length)/(2*ONDA_K)*100),comum}}
+function ondaScreen(){const c=CO(),me=WHO,k=P(me),mf=c.fav&&c.fav[k],mg=c.gs&&c.gs[k],of=c.fav&&c.fav[P(1-me)],og=c.gs&&c.gs[P(1-me)];
+  if(!(mf&&mg&&of&&og)){const step=!mf?'fav':!mg?'gs':'wait',S=ondaSongs(),sel=(L.onda&&L.onda.seed===c.seed&&L.onda.step===step)?L.onda.sel:[];
+    if(step==='wait')return `<div class="panel wait"><div class="minirecord"></div><div class="big">Feito! 🌊</div><p>À espera ${d_(1-me)}${!of?' (ainda a escolher as favoritas)':' (a adivinhar as tuas)'}.</p><div class="mt"><button class="btn ghost sm" onclick="coLeave()">Sair deste modo</button></div></div>`;
+    return `<div class="meta mono"><span>🌊 na mesma onda · passo ${step==='fav'?1:2} de 2</span><span>${sel.length}/${ONDA_K}</span></div><div class="progress"><div style="width:${(step==='fav'?0:50)+sel.length/ONDA_K*50}%"></div></div>
+    <div class="tot-head"><h2>${step==='fav'?'As tuas 5 favoritas':`O que escolheu ${o_(1-me)}?`}</h2><div class="sub">${step==='fav'?'Escolhe em segredo as 5 que preferes, pela ordem: a primeira que tocares é a tua n.º 1.':`Agora tenta adivinhar as 5 favoritas ${d_(1-me)}. Cada acerto vale 2 pontos, e acertar na n.º 1 dá mais 1.`}</div></div>
+    <div class="ondagrid">${S.map(s=>{const j=sel.indexOf(s.i);return `<button class="ondac ${j>=0?'on':''}" onclick="ondaTap(${s.i})">${cimg(s)}${j>=0?`<span class="onum">${step==='fav'?j+1:'✓'}</span>`:''}<b>${esc(s.t)}</b><small>${esc(s.a)}</small></button>`}).join('')}</div>
+    <div class="actions"><button class="btn" ${sel.length!==ONDA_K||L.busy?'disabled':''} onclick="ondaSend()">${step==='fav'?'Guardar as minhas favoritas':'Fechar a minha aposta'} (${sel.length}/${ONDA_K})</button><button class="btn ghost sm" onclick="coLeave()">Sair</button></div>`}
+  const R=ondaRes();coRecord('onda',R);const S=ondaSongs(),col=p=>{const fav=c.fav[P(p)],guess=c.gs[P(1-p)];
+    return `<div class="panel pcard"><h3 class="c${p}">${ico(p)}Favoritas ${d_(p)}</h3>${fav.map((i,n)=>{const s=song(i),hit=guess.includes(i);return `<div class="orow ${hit?'hit':''}"><div class="n">${n+1}</div><div class="thumb">${cimg(s)}</div><div class="info"><div class="tt">${esc(s.t)}</div><div class="ta">${esc(s.a)}</div></div><div class="ohit">${hit?`✓ ${emo(1-p)} acertou`:'✗'}</div></div>`}).join('')}<p class="hint">${esc(nm(1-p))} acertou ${R.r[1-p].hits.length} de ${ONDA_K}${R.r[1-p].top?' e a n.º 1! (+1)':''} · ${R.pts[1-p]} pontos</p></div>`};
+  const msg=R.pct>=80?'Telepatia pura 🔮':R.pct>=60?'Bem sintonizados 💞':R.pct>=40?'Quase lá 🎶':'Cada um na sua onda 🌊';
+  return `<div class="winner"><div class="mono" style="color:var(--muted)">🌊 na mesma onda · resultado</div><h1 class="wtitle">${msg}</h1><div class="sintonia"><b>${R.pct}%</b><span>de sintonia</span></div><div class="by">${R.tot} pontos de equipa · gostos em comum: ${R.comum.length} música${R.comum.length===1?'':'s'}</div></div>
+  <div class="shelves" style="margin-top:0">${col(0)}${col(1)}</div>${R.comum.length?`<div class="panel"><h3>💞 Escolheram os dois</h3><div class="row" style="grid-template-columns:repeat(${Math.max(3,R.comum.length)},1fr)">${R.comum.map(i=>mini(song(i))).join('')}</div></div>`:''}
+  ${coEndActions()}`}
+
+/* ---------- Turno da noite ---------- */
+function noiteOffer(r,p){return [coSong(4*r+2*p),coSong(4*r+2*p+1)]}
+function noiteCpu(r){const c=CO(),key=c.seed+':'+r;if(!noiteCpu._m)noiteCpu._m={};if(noiteCpu._m[key])return noiteCpu._m[key];
+  const all=SONGS.map((_,i)=>i).filter(i=>!EXCL.has(i)).sort((a,b)=>ev(a).nota-ev(b).nota),q=Math.min(.97,.38+.055*r),rr=rng(hash(key)),pick=()=>{const x=Math.min(all.length-1,Math.max(0,Math.round((q+(rr()-.5)*.12)*(all.length-1))));return song(all[x])};
+  let a=pick(),b=pick();if(b.i===a.i)b=song(all[Math.max(0,all.indexOf(a.i)-1)]);return noiteCpu._m[key]=[a,b]}
+function noiteRound(r){const c=CO(),h=c.hist&&c.hist[r];if(!h||h.p0==null||h.p1==null)return null;const A=song(h.p0),B=song(h.p1),C=noiteCpu(r),l=linkScore(A,B),bon=Math.max(0,Math.min(1,l.p));
+  const t=ev(A.i).nota+ev(B.i).nota+bon,cp=ev(C[0].i).nota+ev(C[1].i).nota;return {A,B,C,t:r1(t),cp:r1(cp),bon,why:l.why,res:Math.abs(t-cp)<.05?0:t>cp?1:-1}}
+function noiteState(){const c=CO();let lives=CO_VIDAS,sv=0;for(let r=0;r<c.r;r++){const x=noiteRound(r);if(!x)break;if(x.res<0)lives--;else sv++}const cur=noiteRound(c.r);if(cur){if(cur.res<0)lives--;else sv++}return {lives,sv,cur}}
+function noitePick(i){const c=CO(),r=c.r,k=P(WHO);if(c.hist&&c.hist[r]&&c.hist[r][k]!=null||L.busy)return;W({coop:{hist:{[r]:{[k]:i}}}})}
+function noiteNext(){const c=CO();W({coop:{r:c.r+1}})}
+function noiteScreen(){const c=CO(),me=WHO,r=c.r,st=noiteState(),h=(c.hist&&c.hist[r])||{},mine=h[P(me)],theirs=h[P(1-me)],hearts=n=>'❤️'.repeat(Math.max(0,n))+'🖤'.repeat(Math.max(0,CO_VIDAS-n));
+  const head=`<div class="meta mono"><span>🌙 turno da noite · ronda ${r+1}</span><span>${hearts(st.lives)}</span></div>`;
+  if(st.cur){const x=st.cur,over=st.lives<=0;if(over)coRecord('noite',{sv:st.sv});
+    const cc=(s,tag)=>`<div class="ncard">${cimg(s)}<b>${esc(s.t)}</b><small>${esc(s.a)}</small><em>${fmt1(ev(s.i).nota)}</em>${tag||''}</div>`;
+    return `${head}<div class="tot-head"><h2>${x.res>0?'Ronda ganha! 🌙':x.res===0?'Empate: safaram-se 😮‍💨':'Perderam uma vida 💔'}</h2><div class="sub">${over?`Fim do turno. Sobreviveram a <b>${st.sv}</b> ronda${st.sv===1?'':'s'}.`:`Ainda têm ${st.lives} vida${st.lives===1?'':'s'}. A próxima ronda é mais difícil.`}</div></div>
+    <div class="nvs"><div class="panel"><h3>Vocês · ${fmt1(x.t)}</h3><div class="nduo">${cc(x.A,`<span class="cby">${emo(0)}</span>`)}${cc(x.B,`<span class="cby">${emo(1)}</span>`)}</div>${x.bon?`<p class="hint">🧪 Química entre as duas: +${fmt1(x.bon)} (${esc(x.why.join(', '))})</p>`:'<p class="hint">Sem química entre as duas desta vez.</p>'}</div>
+    <div class="nx">vs</div><div class="panel"><h3>🤖 Computador · ${fmt1(x.cp)}</h3><div class="nduo">${cc(x.C[0])}${cc(x.C[1])}</div></div></div>
+    <div class="actions">${over?coEndActions(true):`<button class="btn" ${L.busy?'disabled':''} onclick="noiteNext()">Próxima ronda →</button>`}</div>`}
+  const [A,B]=noiteOffer(r,me);
+  const card=s=>`<div ${mine==null?`onclick="if(!event.target.closest('a'))noitePick(${s.i})"`:''} class="pick ${mine==null?'tappable':mine===s.i?'chosen':'dropped'}">${sleeve(s)}<div class="info"><div class="tt">${esc(s.t)}</div><div class="ta">${esc(s.a)}</div>${chips(s)}<div class="dlisten">${listen(s)}</div>${mine==null?`<button class="btn" ${L.busy?'disabled':''} onclick="event.stopPropagation();noitePick(${s.i})">Esta</button>`:''}</div></div>`;
+  return `${head}<div class="tot-head"><h2>${mine==null?'Escolhe a tua música':'Feito! À espera '+d_(1-me)}</h2><div class="sub">Cada um tem um par diferente. As vossas duas músicas somam as notas (e mais um bónus se tiverem química entre si) contra a dupla do computador. ${theirs!=null&&mine==null?`${emo(1-me)} já escolheu.`:''}</div></div>
+  <div class="pair">${card(A)}<div class="ou">ou</div>${card(B)}</div><p class="hint center">Sobreviveram a ${st.sv} ronda${st.sv===1?'':'s'} · recorde do casal: ${Math.max(...CASAL.map(w=>+profGet(w).st.co_noite||0))}</p>
+  <div class="actions"><button class="btn ghost sm" onclick="coLeave()">Desistir do turno</button></div>`}
+
+/* ---------- comum ---------- */
+function coEndActions(inline){const a=`<button class="btn" ${L.busy?'disabled':''} onclick="coAgain()">🔁 Jogar outra vez</button><button class="btn ghost" ${L.busy?'disabled':''} onclick="coLeave()">🎛️ Escolher outro modo</button><button class="btn ghost" onclick="toMenu()">🏠 Menu principal</button>`;return inline?a:`<div class="actions">${a}</div>`}
+function coScreen(){const c=CO();return c.m==='ab'?abScreen():c.m==='onda'?ondaScreen():noiteScreen()}
+/* regista uma vez por partida, no telemóvel de cada um */
+function coRecord(kind,x){try{if(!ME)return;const c=CO(),done=JSON.parse(localStorage.getItem('co-done')||'[]');if(done.includes(c.seed))return;done.push(c.seed);localStorage.setItem('co-done',JSON.stringify(done.slice(-60)));
+  if(!coCasal())return;profAdd('co_jogos');juntosAdd();
+  if(kind==='ab'){if(x.won){profAdd('co_win');const s=(+profGet(myPid()).st.co_seq||0)+1;profSet('co_seq',s);profMax('co_seqb',s)}else profSet('co_seq',0)}
+  if(kind==='onda'){profAdd('co_ac',x.r[WHO].hits.length);profMax('co_sint',x.pct)}
+  if(kind==='noite')profMax('co_noite',x.sv)}catch(e){}}
+/* partidas juntos (qualquer modo) e dias em que jogaram */
+function juntosAdd(){profAdd('juntos');try{const n=lisNow(),d=new Date(),dow=+new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Lisbon',weekday:'narrow'}).format(d)||0;const wd=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(new Intl.DateTimeFormat('en-US',{timeZone:'Europe/Lisbon',weekday:'short'}).format(d));
+  const L2=JSON.parse(localStorage.getItem('co-dias')||'{}'),e=L2[n.ymd]||{wd};if(n.h>=6&&n.h<12)e.m=1;if(n.h>=20||n.h<5)e.n=1;L2[n.ymd]=e;
+  const ks=Object.keys(L2).sort().slice(-30),o={};ks.forEach(k=>o[k]=L2[k]);localStorage.setItem('co-dias',JSON.stringify(o));
+  if(e.m&&e.n)profSet('co_mn',1);
+  if(wd===0){const sat=new Date(Date.UTC(...n.ymd.split('-').map((v,i)=>i===1?v-1:+v))-864e5),k=`${sat.getUTCFullYear()}-${sat.getUTCMonth()+1}-${sat.getUTCDate()}`;if(o[k])profSet('co_fds',1)}}catch(e){}}
 
 /* casa: volta ao menu principal (a meio de um jogo pede confirmação) */
 function goHome(){const mid=MODE&&G&&G.seed&&!(phase()==='duels'&&stageKind()[0]==='result');
@@ -3242,7 +3428,7 @@ function rset(k){L.rule=k;L.rsel=null;L.rrev=false;render();const el=document.qu
 function rmv(k,d){const o=L.rord=L.rord||RD.c.slice();if(k+d<0||k+d>=o.length)return;[o[k],o[k+d]]=[o[k+d],o[k]];render()}
 function rulesBox(){
   const k=L.rule||0,S=song;
-  const T=[['🎵','Isto ou aquilo'],['🌙','Pedido da noite'],['↕️','Ordenar'],['⚔️','Duelos'],['🧩','Combinações'],['⏱️','Tempo e desempate']];
+  const T=[['🎵','Isto ou aquilo'],['🌙','Pedido da noite'],['↕️','Ordenar'],['⚔️','Duelos'],['🧩','Combinações'],['⏱️','Tempo e desempate'],['👫','Modos a dois'],['♩','BPM e quarto']];
   let body='';
   if(k===0){const A=S(RD.a),B=S(RD.b),sel=L.rsel;
     const c=(x)=>`<button class="rcard ${sel===x.i?'on':sel!=null?'off':''}" onclick="L.rsel=${x.i};render()">${cimg(x)}<b>${esc(x.t)}</b><span>${esc(x.a)}</span></button>`;
@@ -3278,6 +3464,19 @@ function rulesBox(){
   if(k===5){body=`<div class="rtimes"><div><b>45 s</b><span>para cada escolha</span><i class="rbar"><em style="animation-duration:6s"></em></i></div><div><b>1:05 · 1:30 · 2:00</b><span>para ordenar álbuns de 5, 8 ou 10 músicas</span><i class="rbar"><em style="animation-duration:12s"></em></i></div></div>
     <p class="rsmall">Se o tempo acabar, escolho por ti ou fecho o álbum como está. Os resultados aparecem aos dois ao mesmo tempo.</p>
     <div class="rtie"><div>🤝 <b>Empate?</b><span>Cada um escolhe uma faixa bónus, também em isto ou aquilo.</span></div><div>🪙 <b>Ainda empatado?</b><span>Decide a moeda.</span></div></div>`}
+
+  if(k===6){const m=L.rco||'ab',X={
+    ab:`<p>Vocês os dois contra o computador, com <b>um só álbum de 6 faixas</b>. À vez, cada um escolhe uma de duas músicas: um faz o <b>Lado A</b>, o outro o <b>Lado B</b>. O computador monta o álbum dele ao mesmo tempo.</p><p>Depois <b>ordenam juntos</b>: os dois veem a mesma lista e qualquer um pode mexer. As faixas 1 a 3 são o Lado A, as 4 a 6 o Lado B. Quando os dois carregarem em “Estou pronto”, há 6 duelos contra o computador e contam as combinações, como no jogo normal.</p><div class="rexp"><b>💞 Química do casal (só neste modo)</b><span>🔄 Virar o disco: a faixa 3 liga bem à 4, +0,5 · 🌊 Mesma onda: os dois lados com o mesmo estilo, +1 · ☯️ Dois lados: um lado calmo e outro animado, +1 · 🤝 A meias: cada lado tem músicas dos dois, +0,5.</span></div>`,
+    onda:`<p>Aparecem <b>12 músicas</b>. Primeiro, cada um escolhe em segredo as <b>suas 5 favoritas</b>, por ordem (a primeira que tocar é a n.º 1).</p><p>Depois, cada um tenta <b>adivinhar as 5 do outro</b>. Cada acerto vale <b>2 pontos</b> e acertar na n.º 1 do outro dá <b>+1</b>.</p><p>No fim aparece a <b>sintonia</b> do casal: a percentagem de acertos dos dois juntos, e as músicas que os dois escolheram.</p>`,
+    noite:`<p>Rondas seguidas contra o computador, com <b>3 vidas para os dois</b> ❤️❤️❤️.</p><p>Em cada ronda, cada um recebe um par diferente e escolhe uma música. As duas notas somam-se, com um bónus até <b>+1</b> se as duas tiverem química entre si. O computador junta uma dupla dele.</p><p>Se a vossa soma for maior, passam; empate também passa; se for menor, perdem uma vida. <b>Cada ronda o computador escolhe melhor.</b> O objetivo é sobreviver ao maior número de rondas: o recorde do casal fica guardado.</p>`};
+    body=`<p>Os modos a dois jogam-se em <b>👥 com mais uma pessoa</b>, cada um no seu telemóvel. Na sala, os dois têm de tocar no mesmo modo para começar.</p>
+    <div class="rchips">${Object.entries(CO_MODES).map(([q,x])=>`<button class="rchip ${m===q?'on':''}" onclick="L.rco='${q}';render()">${x.e} ${x.n}</button>`).join('')}</div><div class="rbody2">${X[m]}</div>
+    <p class="rsmall">Quando jogam o Miguel e a Clara juntos, estas partidas contam para as <b>missões a dois</b>.</p>`}
+  if(k===7){body=`<p>O <b>BPM</b> é o dinheiro do jogo. Tal como a batida dita o ritmo de uma música, os BPM ditam o que o vosso quarto pode ter.</p>
+    <div class="rexp"><b>♩ Como se ganham</b><span>Missões de cada um: entre 100 e 700 BPM, pagos aos bocados (a cada 25% do caminho). Missões a dois: entre 400 e 2 500 BPM, pagas uma vez ao casal. Música a tocar no quarto: +1 BPM a cada 15 segundos, só com o quarto aberto no ecrã e o som ligado (até 240 por dia em cada telemóvel).</span></div>
+    <div class="rexp"><b>🏠 Uma só conta</b><span>Os BPM do Miguel e da Clara vão todos para a conta do quarto. Os dois veem o mesmo número e qualquer um pode gastar.</span></div>
+    <div class="rexp"><b>🛍️ O que se compra</b><span>Objetos para o quarto (de 150 a 1 500 BPM), discos (360) e a caixa surpresa (240). Há 41 discos que só se ganham em missões, e 5 objetos de casal que só se ganham em missões a dois.</span></div>
+    <div class="rexp"><b>💿 Vinis e discos</b><span>As missões normais são de cada um: cada um tem a sua coleção de vinis. As missões a dois aparecem nas duas coleções. Os discos do quarto nunca se repetem: basta um completar a missão.</span></div>`}
   return `<div class="panel rules2"><div class="rhead"><span class="mono">como se joga</span><span class="rstep">${k+1} / ${T.length}</span></div>
    <div class="rtabs">${T.map((t,i)=>`<button class="${i===k?'on':''}" onclick="rset(${i})" title="${t[1]}"><span>${t[0]}</span><small>${t[1]}</small></button>`).join('')}</div>
    <h3 class="rtitle">${T[k][0]} ${T[k][1]}</h3><div class="rbody" key="${k}">${body}</div>
@@ -3403,7 +3602,7 @@ function modeScreen(){
   const nv=ME?MISSOES.filter(m=>profGet(myPid()).u[m.id]).length:0;
   return `<div class="hero"><div class="kick">um jogo de música brasileira</div><h1 class="herot">Meu <em>Álbum</em></h1><div class="turntable"><div class="record"></div></div>${heroVs()}<p>Olá, ${esc(ME?ME.e+' '+ME.n:'')}! O que vamos fazer?</p><div id="bnotice">${bdNotice()}</div></div>
   <div class="modes one mt"><button class="modebtn room" onclick="openRoom()"><span class="ic">🛋️</span><b>O nosso quarto</b><span>♩ ${roomCoins()} BPM para decorar o quarto do Miguel e da Clara. O quadro de recados está lá dentro${bdFresh()?' — e há um recado novo! 💌':'.'}</span></button></div>
-  <div class="modes one mt"><button class="modebtn play" onclick="L.screen='jogar';render();scrollTo(0,0)"><span class="ic">▶️</span><b>Jogar</b><span>Contra o computador ou com um amigo, cada um no seu telemóvel.</span></button></div>
+  <div class="modes one mt"><button class="modebtn play" onclick="L.screen='jogar';render();scrollTo(0,0)"><span class="ic">▶️</span><b>Jogar</b><span>Contra o computador ou com um amigo, cada um no seu telemóvel. Com um amigo também podem jogar em equipa.</span></button></div>
   <div class="modes mt">
    <button class="modebtn" onclick="openMissions()"><span class="ic">💿</span><b>Missões e vinis</b><span>${ME?`${nv} de ${MISSOES.length} vinis conquistados. Completa missões e ganha mais.`:'Completa missões e ganha vinis personalizados.'}</span></button>
    <button class="modebtn" onclick="openRanking()"><span class="ic">🏆</span><b>Top 10 álbuns</b><span>Os melhores álbuns de sempre de quem joga.</span></button>
@@ -3440,6 +3639,7 @@ function newScreen(){
   <p>Só músicas das vossas playlists. Eu dou-vos duas de cada vez e vocês ficam com uma. No fim, sou eu que julgo: as faixas duelam entre si, mas o que mais pesa é a forma como combinaste o teu álbum.</p></div>
   <div class="panel"><div class="modeline mono">a jogar ${MODE==='cpu'?'🤖 contra o computador':'👥 com mais uma pessoa'} · <button class="linkbtn" onclick="toMenu()">trocar para ${MODE==='cpu'?'👥 com mais uma pessoa':'🤖 contra o computador'}</button></div>${MODE==='cpu'?'':'<div class="mono" style="color:var(--muted)">Músicas por álbum</div>'}
   ${MODE==='cpu'?`<div class="mono" style="color:var(--muted)">nível do computador</div><div class="chips" style="margin:10px 0 16px">${[['facil','Fácil'],['normal','Normal'],['dificil','Difícil']].map(([k,n])=>`<button class="chip ${(L.level||'normal')===k?'on':''}" onclick="L.level='${k}';render()">${n}</button>`).join('')}</div><div class="mono" style="color:var(--muted)">Músicas por álbum</div>`:''}<div class="chips" style="margin-top:10px">${[5,8,10].map(n=>{const vs=MODE==='online'?votersFor(n):'';return `<button class="chip vchip ${(MODE==='online'?myVote()===n:L.per===n)?'on':''} ${vs?'voted':''}" onclick="${MODE==='online'?`castVote(${n})`:`L.per=${n};render()`}">${n} cada · ${n*2} no total${vs?`<span class="vwho">${vs}</span>`:''}</button>`}).join('')}</div>${MODE==='online'?voteHint():''}
+  ${coModesBox()}
   ${rulesBox()}
   ${L.err?`<div class="err">${esc(L.err)}</div>`:''}
   ${MODE==='online'?'':`<button class="btn full mt" ${L.busy?'disabled':''} onclick="startGame()">🪙 Atirar a moeda e começar</button>`}</div>`;
@@ -3603,22 +3803,24 @@ function body(){
   if(L.status==='error')return `<div class="panel wait"><div class="big">Ups</div><p>${esc(L.err)}</p><div class="mt"><button class="btn" onclick="leaveRoom();leaveRoom()">Voltar</button></div></div>`;
   if(L.status==='gone'||!G)return `<div class="panel wait"><div class="big">${db&&db.p2p?'Não consegui ligar à sala':'Esta sala já não existe'}</div>${db&&db.p2p?'<p>Quem criou a sala tem de ter o jogo aberto no telemóvel ou no computador.</p>':''}<div class="mt"><button class="btn" onclick="leaveRoom();leaveRoom()">Voltar</button></div></div>`;
   if(!(G.joined?.p0&&G.joined?.p1))return lobby();
+  if(G.coop&&G.coop.seed)return coScreen();
   if(!G.seed)return newScreen();
   return ({draft,order,duels})[phase()]();
 }
-function viewKey(){if(L.screen)return 'scr:'+L.screen+(L.rank?'1':'0')+(L.rankPer||'all');if(!G||!G.seed||!MODE)return [WHO,MODE,CODE,L.status,G?.joined?.p0,G?.joined?.p1,G?.seed].join('|');const ph=phase();return [MODE,G.round,ph,ph==='draft'?picks().length:'',ph==='duels'?stageKind().join(':'):'',ph==='order'?!!G.orders?.[P(WHO)]:''].join('|')}
+function viewKey(){if(L.screen)return 'scr:'+L.screen+(L.rank?'1':'0')+(L.rankPer||'all');if(MODE==='online'&&G&&G.coop&&G.coop.seed){const c=G.coop;return ['co',c.seed,c.m,(c.tp||[]).length,!!(c.ok&&c.ok.p0&&c.ok.p1),JSON.stringify(c.fav&&Object.keys(c.fav)),JSON.stringify(c.gs&&Object.keys(c.gs)),c.r,JSON.stringify(c.hist&&c.hist[c.r])].join('|')}if(!G||!G.seed||!MODE)return [WHO,MODE,CODE,L.status,G?.joined?.p0,G?.joined?.p1,G?.seed].join('|');const ph=phase();return [MODE,G.round,ph,ph==='draft'?picks().length:'',ph==='duels'?stageKind().join(':'):'',ph==='order'?!!G.orders?.[P(WHO)]:''].join('|')}
 function render(){
-  const app=document.getElementById('app'),keep={};app.querySelectorAll('input[id]').forEach(i=>keep[i.id]=i.value);
+  const app=document.getElementById('app'),keep={},kx={};app.querySelectorAll('.rcats,.rart,.qtabs,.dsub').forEach((e,i)=>kx[e.className+'#'+i]=e.scrollLeft);app.querySelectorAll('input[id]').forEach(i=>keep[i.id]=i.value);
   const fid=document.activeElement&&document.activeElement.id;
   const key=viewKey(),enter=key!==L.lastKey,prevKey=L.lastKey||'';L.lastKey=key;
   /* troca suave dentro da mesma fase (duelo → duelo): só um fade, sem a página toda a reentrar */
   const soft=enter&&key.split('|').slice(0,3).join('|')===prevKey.split('|').slice(0,3).join('|')&&key.includes('|duels|')&&!/\|result/.test(key);
   /* prende a altura durante a troca, para a página não saltar */
   const h0=app.offsetHeight;if(enter&&h0){app.style.minHeight=h0+'px';clearTimeout(L.hT);L.hT=setTimeout(()=>{app.style.minHeight=''},soft?450:700)}
-  document.body.classList.toggle('ingame',!!(G&&G.seed&&MODE));app.innerHTML=header()+`<main class="view ${enter?(soft?'enter soft':'enter'):''}">${body()}</main>`+dock()+draftDock()+reactBar();try{rxCheck();botTick();voteCheck();skipCheck();missionEnd()}catch(e){}
+  document.body.classList.toggle('ingame',!!(G&&G.seed&&MODE));app.innerHTML=header()+`<main class="view ${enter?(soft?'enter soft':'enter'):''}">${body()}</main>`+dock()+draftDock()+reactBar();try{rxCheck();botTick();voteCheck();coVoteCheck();skipCheck();missionEnd()}catch(e){}
   document.body.classList.toggle('has-dock',!!document.querySelector('.odock'));document.body.classList.toggle('has-ddock',!!document.querySelector('.ddock'));{const sd=app.querySelector('main .stagedock');if(sd){if(L.hadSd)sd.style.animation='none';app.appendChild(sd)}L.hadSd=!!sd}document.body.classList.toggle('has-sdock',!!document.querySelector('.stagedock'));
   try{boardMount()}catch(e){}
   for(const k in keep){const el=document.getElementById(k);if(el)el.value=keep[k]}
+  app.querySelectorAll('.rcats,.rart,.qtabs,.dsub').forEach((e,i)=>{const v=kx[e.className+'#'+i];if(v)e.scrollLeft=v});
   if(fid)document.getElementById(fid)?.focus();
   const pk=(G&&G.seed&&MODE)?(phase()==='duels'?'duels:'+(stageKind()[0]==='duel'&&stageKind()[1]<G.per?'duel':stageKind()[0]):phase()):'';
   if(pk!==L.lastPhase){const prevP=L.lastPhase;L.lastPhase=pk;if(prevP!==undefined&&pk){const T={draft:['Isto ou aquilo!','escolham as vossas músicas'],order:['Hora de ordenar','monta o teu álbum'],'duels:duel':['Duelos!','faixa contra faixa'],'duels:combos':['Combinações','como montaram os álbuns'],'duels:suspense':['E agora…','o grande final']}[pk];if(T)intertitle(T[0],T[1])}}
