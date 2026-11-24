@@ -1380,6 +1380,7 @@ body{overflow:visible!important}
 @media(prefers-reduced-motion:reduce){.rxfloat{animation:none;opacity:1}}
 .rxfloat .rxtxt{max-width:min(70vw,260px);margin-bottom:6px;padding:8px 12px;border-radius:16px 16px 16px 4px;background:#fff6e6;color:#2b1d14;font-weight:700;font-size:.95rem;text-align:center;box-shadow:0 8px 18px rgba(0,0,0,.35)}
 .rxfloat.long{animation-duration:3.8s}
+body.ingame .top{position:sticky!important;top:0!important;z-index:50!important;background:rgba(34,16,6,.86)!important;backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important}
 </style>
 </head>
 <body>
@@ -2017,17 +2018,21 @@ function react(e){const now=Date.now();if(now-RX.last<900)return;RX.last=now;RX.
   try{ref().update({react:{[k]:{e,t:now}}}).catch(()=>{})}catch(x){}}
 /* ======== personalidade do computador: goza quando ganha, irrita-se quando perde ======== */
 const BOT_TXT={
- gozo:['Chora mais 😂','Foi fácil demais','Volta ao Spotify a aprender 🤭','Obrigado pelos pontos 🙏','Isto é que é gosto musical? 😏','Tás a jogar de olhos fechados?','Senta e aprende','Próximo!'],
- raiva:['Isto está viciado 😤','Sorte de principiante…','O juiz está comprado!','Não conta, estava a aquecer','Ok… esta foi tua. SÓ esta.','Mas que palhaçada é esta?','Hmpf.','Vou fingir que não vi'],
- mauPick:['Deixaste a melhor para trás? Obrigado 😏','A sério que escolheste essa?','Essa? Corajoso…','Hmm. Interessante escolha 🤭'],
- bomPick:['Olha o que eu apanhei 😎','Esta é minha, desculpa','Tá-se bem 😎'],
- ganhei:['GANHEI! Revanche quando quiseres 😂','Isto foi um massacre','Volta quando souberes de música 🤭','Era previsível'],
- perdi:['Revanche. JÁ. 😤','Isto não fica assim','Fizeste batota, só pode','Nem quero falar sobre isto'],
- resposta_gozo:['Manda mais, que eu estou a ganhar 😂','Sticker bonito, pena o álbum','Ri-te enquanto podes'],
- resposta_raiva:['Não me provoques 😤','Agora gozas?','Espera pela próxima…']};
+ gozo:['-1000 de aura pra ti 💀','Que tiro foi esse? 🔫','Paga nada, só observa 👀','Aceita que dói menos','Chora não, bebê 😭','Tá tranquilo, tá favorável 😎','Very demure, very mindful 💅','Isso foi brainrot puro 🧠','Ninguém liga, amigo','Bué fraco 😂','Chill guy a ganhar 😎','Senta e aprende','Volta ao Spotify a aprender 🤭','Obrigado pelos pontos 🙏','Próximo!'],
+ raiva:['Calma, calabreso 😤','Cê tá de brincadeira, né?','Que papinho, hein','Isso tá roubado, juiz!','Mercúrio retrógrado, só pode','NPC com sorte…','Nazaré confusa 🤨','Ai que ódio','Tás a gozar comigo?','Isto está viciado 😤','Sorte de principiante…','Não conta, estava a aquecer','Hmpf.','Vou fingir que não vi'],
+ mauPick:['Meteu essa? 💀','Delulu total','Senhora?? 🤨','Escolha de NPC','Hmm… cringe','Tá de sacanagem?','Deixaste a melhor pra mim? Obrigado 😏','Essa? Corajoso…'],
+ bomPick:['Mewing e escolhendo bem 😎','Rizz musical: 100','Sigma pick 🗿','Essa é minha, tchau 👋','Olha o que eu apanhei 😎'],
+ ganhei:['É O ROBÔ 🤖🔥','Para nossa alegria 🎶','+1000 de aura','GG ez','Volta pro tutorial 🤭','Isto foi um massacre','Que tiro foi esse? 🔫'],
+ perdi:['Revanche. AGORA. 😤','Isso não fica assim, ouviu?','Foi a internet que caiu','Tô de mal','Me deixa quieto 😭','Fizeste batota, só pode','Nem quero falar sobre isto'],
+ espera:['Acorda, bebê 💤','Tá pensando na morte da bezerra?','Vai demorar muito? 🥱','Rápido que eu tenho mais o que fazer','Escolhe logo, NPC','Tic tac… ⏰'],
+ ordem:['Já ordenei o meu, tô só esperando 💅','Chill guy esperando 😎','Ordena aí, sem pressa… mentira, tenho pressa','O meu já tá perfeito, só dizendo'],
+ random:['Tung tung tung sahur 🥁','6 7 🤷','Pedro pedro pedro 🦝','Sextou com MPB 🎶','Isso aqui é Brasil, irmão 🇧🇷','Tô vibrando com Jorge Ben 🕺','Que delícia, cara','Ai, que preguiça 🥱'],
+ suspense:['Tô nervoso 😬','Já sei que ganhei, só tô esperando','Reza aí 🙏','Rufem os tambores 🥁'],
+ resposta_gozo:['Manda mais que eu tô rindo 😂','Ri não, que tu tá perdendo','Sticker bonito, pena o álbum'],
+ resposta_raiva:['Calma, calabreso 😤','Agora gozas?','Ainda vou virar isso, ouviu?']};
 const pickOne=a=>a[Math.floor(Math.random()*a.length)];
 function botStk(mood){const a=stkFor(1-WHO),pool=a.filter(i=>(mood==='raiva'?STK_RAIVA:STK_GOZO).includes(i));return 's:'+pickOne(pool.length?pool:a)}
-function botSay(mood,lines){const u=RX.bot.used||(RX.bot.used=new Set()),free=lines.filter(l=>!u.has(l)),t=pickOne(free.length?free:lines);u.add(t);rxFloat(botStk(mood),1-WHO)}
+function botSay(mood,lines){const u=RX.bot.used||(RX.bot.used=new Set()),free=lines.filter(l=>!u.has(l)),t=pickOne(free.length?free:lines);u.add(t);RX.bot.lastSay=Date.now();rxFloat(botStk(mood),1-WHO,t)}
 /* quem vai à frente nos duelos já revelados (do ponto de vista do computador) */
 function botLead(){try{if(phase()!=='duels')return 0;const C=1-WHO,[k,d]=stageKind();const n=k==='duel'?d+1:G.per;let s=0;for(let x=0;x<n;x++){const j=judge(x);if(j.w===C)s++;else if(j.w===WHO)s--}return s}catch(e){return 0}}
 function botTick(){if(MODE!=='cpu'||!G||!G.seed)return;const B=RX.bot,C=1-WHO;
@@ -2035,16 +2040,25 @@ function botTick(){if(MODE!=='cpu'||!G||!G.seed)return;const B=RX.bot,C=1-WHO;
   const later=(f,ms)=>setTimeout(()=>{if(MODE==='cpu'&&G&&G.seed===B.seed)f()},ms);
   /* escolhas */
   const n=picks().length;if(n>B.picks){const prev=B.picks;B.picks=n;
-    for(let k=prev;k<n;k++){const pk=picks()[k];if(!pk||B.draft>=3)continue;const [x,y]=offer(k),other=x.i===pk.i?y:x,ch=ev(pk.i).nota,ot=ev(other.i).nota;
-      if(pk.p===WHO&&ot-ch>=1&&Math.random()<.6){B.draft++;later(()=>botSay('gozo',BOT_TXT.mauPick),1400)}
-      else if(pk.p===C&&ch>=8.5&&Math.random()<.35){B.draft++;later(()=>botSay('gozo',BOT_TXT.bomPick),1600)}}}
+    for(let k=prev;k<n;k++){const pk=picks()[k];if(!pk||B.draft>=5)continue;const [x,y]=offer(k),other=x.i===pk.i?y:x,ch=ev(pk.i).nota,ot=ev(other.i).nota;
+      if(pk.p===WHO&&ot-ch>=.8&&Math.random()<.75){B.draft++;later(()=>botSay('gozo',BOT_TXT.mauPick),1400)}
+      else if(pk.p===C&&ch>=8.3&&Math.random()<.5){B.draft++;later(()=>botSay('gozo',BOT_TXT.bomPick),1600)}}}
   /* duelos */
   if(phase()==='duels'){const s=stage();if(s!==B.stage){B.stage=s;const [k,d]=stageKind();
-    if(k==='duel'&&B.duel<4){const j=judge(d);if(j.w===C&&Math.random()<.6){B.duel++;later(()=>botSay('gozo',BOT_TXT.gozo),1500)}
-      else if(j.w===WHO&&Math.random()<.6){B.duel++;later(()=>botSay('raiva',BOT_TXT.raiva),1500)}}}}
+    if(k==='duel'&&B.duel<7){const j=judge(d);if(j.w===C&&Math.random()<.75){B.duel++;later(()=>botSay('gozo',BOT_TXT.gozo),1500)}
+      else if(j.w===WHO&&Math.random()<.75){B.duel++;later(()=>botSay('raiva',BOT_TXT.raiva),1500)}}}}
   /* fim */
   const win=document.querySelector('.view .winner h1');
   if(!B.won&&win){B.won=true;const botWon=win.classList.contains('c'+C);later(()=>botSay(botWon?'gozo':'raiva',botWon?BOT_TXT.ganhei:BOT_TXT.perdi),2400)}}
+/* pensamento próprio: o computador comenta sozinho, sem esperar por ti */
+setInterval(()=>{try{if(MODE!=='cpu'||!G||!G.seed||document.hidden)return;const B=RX.bot,C=1-WHO,now=Date.now();if(B.seed!==G.seed)return;
+  if(now-(B.lastSay||0)<9000)return;const ph=phase();
+  if(ph==='draft'){const n=picks().length;
+    if(turn()===WHO&&now-(G.ts||now)>14000&&B.idleAt!==n&&Math.random()<.6){B.idleAt=n;botSay('gozo',BOT_TXT.espera);return}
+    if((B.rnd||0)<2&&Math.random()<.05){B.rnd=(B.rnd||0)+1;botSay('gozo',BOT_TXT.random)}}
+  else if(ph==='order'){if(G.orders?.[P(C)]&&!G.orders?.[P(WHO)]&&!B.ordSaid&&now-(G.orderTs||now)>12000){B.ordSaid=1;botSay('gozo',BOT_TXT.ordem)}}
+  else if(ph==='duels'){const [k]=stageKind();if(k==='suspense'&&B.susp!==G.seed){B.susp=G.seed;const l=botLead();botSay(l>=0?'gozo':'raiva',BOT_TXT.suspense)}}
+}catch(e){}},4000);
 function rxCheck(){if(!G||!G.seed||MODE!=='online')return;const k=P(1-WHO),r=G.react&&G.react[k];
   if(!r||!r.t){if(RX.seen[k]===undefined)RX.seen[k]=0;return}
   if(RX.seen[k]===undefined){RX.seen[k]=r.t;return}
@@ -2581,7 +2595,7 @@ function render(){
   const app=document.getElementById('app'),keep={};app.querySelectorAll('input[id]').forEach(i=>keep[i.id]=i.value);
   const fid=document.activeElement&&document.activeElement.id;
   const key=viewKey(),enter=key!==L.lastKey;L.lastKey=key;
-  app.innerHTML=header()+`<main class="view ${enter?'enter':''}">${body()}</main>`+dock()+draftDock()+reactBar();try{rxCheck();botTick()}catch(e){}
+  document.body.classList.toggle('ingame',!!(G&&G.seed&&MODE));app.innerHTML=header()+`<main class="view ${enter?'enter':''}">${body()}</main>`+dock()+draftDock()+reactBar();try{rxCheck();botTick()}catch(e){}
   document.body.classList.toggle('has-dock',!!document.querySelector('.odock'));document.body.classList.toggle('has-ddock',!!document.querySelector('.ddock'));{const sd=app.querySelector('main .stagedock');if(sd)app.appendChild(sd)}document.body.classList.toggle('has-sdock',!!document.querySelector('.stagedock'));
   try{boardMount()}catch(e){}
   for(const k in keep){const el=document.getElementById(k);if(el)el.value=keep[k]}
