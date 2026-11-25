@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>/* telemóvel deitado: o site fica igual ao computador (1180px), encolhido para caber no ecrã */
-(function(){const W=1180,h=document.documentElement;function fit(){const sw=Math.min(screen.width,screen.height),phone=sw<=520&&matchMedia('(pointer:coarse)').matches,vw=document.documentElement.clientWidth||innerWidth,land=innerWidth>innerHeight;
+(function(){const W=1180,h=document.documentElement;function fit(){const sw=Math.min(screen.width,screen.height),phone=sw<=520&&!!window.matchMedia&&matchMedia('(pointer:coarse)').matches,vw=document.documentElement.clientWidth||innerWidth,land=innerWidth>innerHeight;
  const z=phone&&land&&vw<W?vw/W:1;h.style.zoom=z===1?'':String(z);h.classList.toggle('phland',z!==1)}
  fit();addEventListener('orientationchange',()=>{h.style.zoom='';setTimeout(fit,120)});addEventListener('resize',()=>{clearTimeout(fit.t);fit.t=setTimeout(()=>{h.style.zoom='';requestAnimationFrame(fit)},120)})})();</script>
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -15,7 +15,7 @@
 <meta name="apple-mobile-web-app-title" content="Meu Álbum">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#2a1205">
-<title>Meu Álbum · Miguel × Clara</title>
+<title>Meu Álbum</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Anton&family=Playfair+Display:ital,wght@0,800;0,900;1,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,700&family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
@@ -1773,6 +1773,13 @@ html.phland .reveal .sleeve{width:100px!important;max-width:100px!important}
 html.phland .ou{width:64px!important;height:64px!important;font-size:24px!important}
 html.phland .ddock{padding:8px 12px!important;bottom:6px!important}html.phland .ddock .dslots{grid-template-columns:repeat(var(--n),minmax(0,30px))!important;gap:4px!important}html.phland .ddock{transform:translateX(-50%) scale(.85)!important;transform-origin:bottom center}html.phland .pick .tt{font-size:22px!important}html.phland .pick .chips{margin:4px 0!important}
 html.phland body.has-ddock #app,html.phland.has-ddock #app{padding-bottom:150px!important}
+
+.rtopbar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:-4px 0 10px}
+.rinvite{display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center;margin:0 auto 12px;max-width:560px;padding:12px 14px;border-radius:16px;border:1px solid rgba(255,210,63,.6);background:rgba(255,210,63,.08)}
+.rinvite span{font-size:.82rem;opacity:.8}.rinvite div{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.rinvlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:8px}
+.rinvlist button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px 8px;border-radius:14px;border:1px solid rgba(255,214,150,.25);background:rgba(255,246,230,.06);color:var(--cream);font:inherit;cursor:pointer}
+.rinvlist button span{font-size:1.6rem}.rinvlist button i{font-style:normal;font-size:.72rem;opacity:.65}.rinvlist button[disabled]{opacity:.5;cursor:default}
 </style>
 </head>
 <body>
@@ -2314,7 +2321,7 @@ function makeCloudDb(){
 /* ======== quadro de recados (quadro preto partilhado no ecrã principal) ======== */
 const BD={el:null,cv:null,cx:null,by:null,at:null,img:'',empty:true,editing:false,drawing:false,poll:null,color:'#f5f1e8',size:6,tool:'pen',stat:'',cleared:false,touched:false};
 const BD_PAPER='#161311',BD_W=900,BD_H=560;
-const bdUrl=()=>`${FS_DOCS}/quadro/atual?key=${FS_KEY}`;
+const bdUrl=()=>`${FS_DOCS}/quadro/${!QID||QID===CASA_ID?'atual':QID}?key=${FS_KEY}`;
 function boardBox(){return (db&&db.cloud)?'<div id="boardSlot"></div>':''}
 function bdRel(iso){const m=Math.round((Date.now()-Date.parse(iso))/60000);if(!(m>=0))return '';if(m<1)return 'agora mesmo';if(m<60)return `há ${m} min`;const h=Math.round(m/60);if(h<24)return `há ${h} h`;const d=Math.round(h/24);return d===1?'ontem':`há ${d} dias`}
 function bdPid(){return BD.pid||(BD.by===0?'p0':BD.by===1?'p1':null)}
@@ -2384,9 +2391,9 @@ async function bdSave(){if(!ME)return;const blank=BD.cleared&&!BD.touched;bdStat
     if(!r.ok)throw 0;if(!blank)profAdd('board');BD.img=img;BD.empty=!img;BD.by=WHO;BD.pid=myPid();BD.nm=ME&&ME.n;BD.em=ME&&ME.e;BD.at=at;lsSet({boardSeen:at});bdMode(false);
     bdStat(blank?'quadro limpo ✓':'enviado ✓ quem abrir o jogo vai ver')}
   catch(e){bdStat('não consegui guardar — verifica a internet e tenta outra vez')}}
-async function bdLoad(){if(BD.editing)return;
+async function bdLoad(){if(BD.editing||!QID)return;const q0=QID;
   try{const r=await fetch(bdUrl(),{cache:'no-store'});if(r.status===404){BD.empty=true;bdMeta();return}if(!r.ok)return;
-    const j=await r.json(),f=j.fields||{},at=f.at?.stringValue||'';if(at&&at===BD.at)return;
+    const j=await r.json(),f=j.fields||{},at=f.at?.stringValue||'';if(q0!==QID)return;if(at&&at===BD.at)return;
     BD.by=f.by?+f.by.integerValue:null;BD.pid=f.pid?.stringValue||null;BD.nm=f.nm?.stringValue||'';BD.em=f.em?.stringValue||'';BD.at=at;BD.img=f.img?.stringValue||'';BD.empty=!BD.img;if(BD.cx)bdShow(BD.img);bdMeta();if(L.screen==='quarto'&&!L.rNoteEd)roomRefresh();const nb=document.getElementById('bnotice');if(nb)nb.innerHTML=bdNotice()}catch(e){}}
 function boardMount(){const slot=document.getElementById('boardSlot');
   if(!slot){if(BD.poll){clearInterval(BD.poll);BD.poll=null}return}
@@ -2604,10 +2611,10 @@ const MISSOES=[
  {id:'robo1',cat:'Contra o computador',n:'Desliga-o',d:'Ganha 30 vezes ao computador',s:'winCpu',t:30,v:{c:'#5a6270',e:'🔌'}},
  {id:'fregues',cat:'Contra o computador',n:'Freguês do robô',d:'Perde 25 vezes contra o computador',s:'loseCpu',t:25,v:{c:'#7a7a7a',e:'🫠'}},
  /* a dois */
- {id:'rival',cat:'Miguel × Clara',n:'Rivalidade saudável',d:'Joga 50 partidas contra o outro',s:'gPvp',t:50,v:{c:'#e8b52a',e:'🌴🌻'}},
- {id:'dono',cat:'Miguel × Clara',n:'Dono da casa',d:'Ganha 25 partidas ao outro',s:'winPvp',t:25,v:{c:'#2f7d55',e:'👑'}},
- {id:'revanche',cat:'Miguel × Clara',n:'Revanche!',d:'Pede 25 revanches',s:'rematch',t:25,v:{c:'#d9603b',e:'🔁'}},
- {id:'carta',cat:'Miguel × Clara',n:'Correio do amor',d:'Envia 30 desenhos no quadro de recados',s:'board',t:30,v:{c:'#ff6fae',e:'💌'}},
+ {id:'rival',cat:'Frente a frente',n:'Rivalidade saudável',d:'Joga 50 partidas contra o outro',s:'gPvp',t:50,v:{c:'#e8b52a',e:'🌴🌻'}},
+ {id:'dono',cat:'Frente a frente',n:'Dono da casa',d:'Ganha 25 partidas ao outro',s:'winPvp',t:25,v:{c:'#2f7d55',e:'👑'}},
+ {id:'revanche',cat:'Frente a frente',n:'Revanche!',d:'Pede 25 revanches',s:'rematch',t:25,v:{c:'#d9603b',e:'🔁'}},
+ {id:'carta',cat:'Frente a frente',n:'Correio do amor',d:'Envia 30 desenhos no quadro de recados',s:'board',t:30,v:{c:'#ff6fae',e:'💌'}},
  /* stickers */
  {id:'stk1',cat:'Stickers',n:'Fala-barato',d:'Manda 150 stickers',s:'stk',t:150,v:{c:'#3d8bfd',e:'💬'}},
  {id:'stk2',cat:'Stickers',n:'Spammer oficial',d:'Manda 600 stickers',s:'stk',t:600,v:{c:'#8e44d6',e:'📣'}},
@@ -2642,9 +2649,9 @@ const MISSOES=[
  {id:'m_stk',cat:'A meias',co:1,half:1,n:'Conversa de stickers',d:'Mandem 400 stickers: 200 cada um',s:'stk',t:400,v:{c:'#8e44d6',e:'💬'}},
  {id:'m_recados',cat:'A meias',co:1,half:1,n:'Correio a meias',d:'Escrevam 30 recados no quadro: 15 cada um',s:'board',t:30,v:{c:'#1f2a24',e:'📝'}}];
 /* progresso das missões a dois: o melhor dos dois (ou a soma, nalgumas) */
-const coVal=m=>{const v=CASAL.map(w=>stVal(profGet(w),m.s));if(m.half)return Math.min(v[0],m.t/2)+Math.min(v[1],m.t/2);return m.sum?v[0]+v[1]:Math.max(v[0],v[1])};
+const coVal=m=>{if(CASAL.length<2)return 0;const v=CASAL.map(w=>stVal(profGet(w),m.s));if(m.half)return Math.min(v[0],m.t/2)+Math.min(v[1],m.t/2);return m.sum?v[0]+v[1]:Math.max(v[0],v[1])};
 const coHalf=m=>CASAL.map(w=>Math.min(stVal(profGet(w),m.s),m.t/2));
-const coDone=m=>!!m&&(coVal(m)>=m.t||CASAL.some(w=>profGet(w).u[m.id]));
+const coDone=m=>!!m&&CASAL.length===2&&(coVal(m)>=m.t||CASAL.some(w=>profGet(w).u[m.id]));
 const PROF_KEY=w=>'perfil-'+w;
 const PROF={},PEND={};const pend=w=>PEND[w]||(PEND[w]={add:{},set:{},u:{},q:null});
 const profBlank=()=>({st:{},u:{}});
@@ -2658,7 +2665,7 @@ function profMax(k,v){const w=myPid();if(!w)return;const p=profGet(w);if(v>(+p.s
 function profSet(k,v){const w=myPid();if(!w)return;const p=profGet(w);p.st[k]=v;pend(w).set[k]=v;profAfter()}
 function profAfter(){const w=myPid();if(!w)return;const p=profGet(w);const novos=[];
   p.st['#artistas']=Object.keys(p.st).filter(k=>k.startsWith('pk.a.')&&p.st[k]>0).length;
-  for(const m of MISSOES){if(m.co&&!CASAL.includes(w))continue;if(!p.u[m.id]&&(m.co?coVal(m):stVal(p,m.s))>=m.t){p.u[m.id]=new Date().toISOString();pend(w).u[m.id]=p.u[m.id];novos.push(m)}}
+  for(const m of MISSOES){if(m.co&&!(CASAL.length===2&&CASAL.includes(w)))continue;if(!p.u[m.id]&&(m.co?coVal(m):stVal(p,m.s))>=m.t){p.u[m.id]=new Date().toISOString();pend(w).u[m.id]=p.u[m.id];novos.push(m)}}
   profSaveLocal(w);clearTimeout(profAfter.t);profAfter.t=setTimeout(()=>profFlush(w),2500);
   novos.forEach((m,k)=>setTimeout(()=>vinylToast(m),900+k*3800))}
 const PROF_URL=w=>`${FS_DOCS}/perfis/${w}?key=${FS_KEY}`;
@@ -2706,11 +2713,11 @@ function vinylToast(m){document.querySelectorAll('.vtoast').forEach(e=>e.remove(
 function openMissions(){L.screen='missoes';L.mWho=L.mWho||myPid()||'p0';L.mFil=L.mFil||'todas';render();scrollTo(0,0);plList().forEach(p=>profLoad(pidOf(p)))}
 const plList=()=>[BASE_PL.miguel,BASE_PL.clara,...Object.values(PLAYERS).filter(p=>p.id!=='miguel'&&p.id!=='clara').sort((a,b)=>a.n.localeCompare(b.n))];
 function closeMissions(){L.screen=null;render()}
-function missionsScreen(){const w=L.mWho||'p0',p=profGet(w),fil=L.mFil||'todas',who=plList().find(x=>pidOf(x)===w)||BASE_PL.miguel,MS=CASAL.includes(w)?MISSOES:MISSOES.filter(m=>!m.co);
+function missionsScreen(){const w=L.mWho||'p0',p=profGet(w),fil=L.mFil||'todas',who=plList().find(x=>pidOf(x)===w)||BASE_PL.miguel,MS=CASAL.length===2&&CASAL.includes(w)?MISSOES:MISSOES.filter(m=>!m.co);
   const all=MS.map(m=>({m,v:Math.min(m.co?coVal(m):stVal(p,m.s),m.t),on:m.co?coDone(m):!!p.u[m.id]}));const n=all.filter(x=>x.on).length;
   const list=all.filter(x=>fil==='todas'||(fil==='feitas'?x.on:!x.on));const cats=[...new Set(list.map(x=>x.m.cat))];
   const card=x=>`<div class="mcard ${x.on?'on':''}">${vinyl(x.m,x.on)}<div class="mtxt"><b>${esc(x.m.n)}</b><span>${esc(x.m.d)}</span>
-    <em class="rrw">${esc(rewardTxt(x.m))}</em>${x.m.co?(x.m.half?`<em class="codois">🌴 ${coHalf(x.m)[0]}/${x.m.t/2} · 🌻 ${coHalf(x.m)[1]}/${x.m.t/2} · a meias</em>`:'<em class="codois">🌴🌻 a dois</em>'):''}${x.on?`<em class="mdone">✓ conquistado ${(()=>{const u=p.u[x.m.id]||CASAL.map(k=>profGet(k).u[x.m.id]).find(Boolean);return u?new Date(u).toLocaleDateString('pt-PT'):''})()}</em>`:`<div class="mbar"><i style="width:${Math.round(x.v/x.m.t*100)}%"></i></div><em>${x.v} / ${x.m.t}</em>`}</div></div>`;
+    <em class="rrw">${esc(rewardTxt(x.m))}</em>${x.m.co?(x.m.half?`<em class="codois">${plE(CASAL[0])} ${coHalf(x.m)[0]}/${x.m.t/2} · ${plE(CASAL[1])} ${coHalf(x.m)[1]}/${x.m.t/2} · a meias</em>`:`<em class="codois">${plE(CASAL[0])}${plE(CASAL[1])} a dois</em>`):''}${x.on?`<em class="mdone">✓ conquistado ${(()=>{const u=p.u[x.m.id]||CASAL.map(k=>profGet(k).u[x.m.id]).find(Boolean);return u?new Date(u).toLocaleDateString('pt-PT'):''})()}</em>`:`<div class="mbar"><i style="width:${Math.round(x.v/x.m.t*100)}%"></i></div><em>${x.v} / ${x.m.t}</em>`}</div></div>`;
   const tema=L.mTema||'',open=L.mOpen||(L.mOpen={}),N=innerWidth<600?3:4,ord=a=>a.slice().sort((x,y)=>(x.on-y.on)||(y.v/y.m.t-x.v/x.m.t));
   const catsAll=[...new Set(MS.map(m=>m.cat))],shown=tema?cats.filter(c=>c===tema):cats;
   const bloco=c=>{const xs=ord(list.filter(x=>x.m.cat===c)),full=tema||open[c],vis=full?xs:xs.slice(0,N);return `<h3 class="mcat">${esc(c)} <small>${xs.filter(x=>x.on).length}/${xs.length}</small></h3><div class="mgrid">${vis.map(card).join('')}</div>${xs.length>N&&!tema?`<div class="mmore"><button class="btn ghost sm" onclick="L.mOpen['${esc(c)}']=${open[c]?0:1};render()">${open[c]?'Ver menos ▲':`Ver mais (${xs.length-N}) ▼`}</button></div>`:''}`};
@@ -2800,14 +2807,28 @@ const RITEMS=[
  ['a-puff','assento','Puff',480],['a-cadeira','assento','Cadeira branca',420],['a-papasan','assento','Cadeira papasan',720],['a-poltrona','assento','Poltrona mostarda',780],['a-sofa','assento','Sofá com almofadas',1500,{d:'Almofadas xadrez e bola 8'}],
  ['x-xadrez','extra','Xadrez porta-chaves',600],['x-relogio','extra','Relógio de sol',270],['x-relvermelho','extra','Relógio vermelho',300,{d:'Com a hora de Portugal'}],['x-auscult','extra','Auscultadores',240],['x-cortica','extra','Quadro de cortiça',330],['x-pegboard','extra','Quadro perfurado',480],['x-skate','extra','Skate na parede',420],['x-espelho','extra','Espelho ondulado',690],['x-violao','extra','Violão na parede',780],
  ['pet-peixe','pet','Peixinho dourado',360,{d:'Nada no aquário à janela'}],['pet-tartaruga','pet','Tartaruga',540,{d:'Passeia no tapete, devagarinho'}],['pet-papagaio','pet','Papagaio',840,{d:'Abana a cabeça ao som da música'}],['pet-gato','pet','Gato laranja',960,{d:'Dorme em cima da cama'}],['pet-caramelo','pet','Vira-lata caramelo',1050,{d:'Abana o rabo no tapete'}],
- ['l-casal','luz','Néon Miguel × Clara',0,{lock:'casal20'}],['l-lua','luz','Candeeiro de lua',0,{lock:'turno'}],['x-polaroid','extra','Polaroid dos dois',0,{lock:'onda'}],['r-coracao','tapete','Tapete de coração',0,{lock:'ninho'}],['cm-dourada','cama','Cama de dossel dourada',0,{lock:'bodas'}]
+ ['l-casal','luz','Néon com os vossos nomes',0,{lock:'casal20'}],['l-lua','luz','Candeeiro de lua',0,{lock:'turno'}],['x-polaroid','extra','Polaroid dos dois',0,{lock:'onda'}],['r-coracao','tapete','Tapete de coração',0,{lock:'ninho'}],['cm-dourada','cama','Cama de dossel dourada',0,{lock:'bodas'}]
 ].map(([id,s,n,p,o])=>({id,s,n,p:Math.round(p*1.5/10)*10,...(o||{})}));
 const RIT=Object.fromEntries(RITEMS.map(x=>[x.id,x]));
 const RDEF={cor:'w-creme',chao:'f-madeira',prat:'p-simples',movel:'m-caixote',leitor:'g-basico',cama:'cm-casal',cortina:'c-linho'};
 const LUZES=new Set(['pf-papel','pf-pendente','pf-globo','pf-lustre','l-casal','l-lua','t-heras','t-lampadas','l-candeeiro','l-sunset','l-neon','l-onair','l-led','mz-lava','mz-velas','mz-sal','mz-relogio','cb-papel','cb-cogumelo','cb-velas','sc-madeira','sc-branca','sc-estante']);
 
 /* ---------- quarto partilhado do Miguel e da Clara (um só documento online) ---------- */
-const CASAL=['p0','p1'],CASA_ID='u-quarto-casa',BPM_DIA=60,VIT_DIA=40;
+const CASA_ID='u-quarto-casa',BPM_DIA=60,VIT_DIA=40;
+/* quartos: cada jogador tem o seu; pode convidar alguém sem par para o partilhar. CASAL = quem vive no quarto que está aberto */
+const CASAL=[];let QID=null;
+const roomOf=pid=>!pid?null:(pid==='p0'||pid==='p1')?CASA_ID:((PLAYERS[pid]||{}).q||null);
+const myRoomId=()=>ME?roomOf(myPid()):null;
+const roomMembers=qid=>!qid?[]:qid===CASA_ID?['p0','p1']:Object.values(PLAYERS).filter(p=>p.q===qid).map(pidOf).slice(0,2);
+const plOf=pid=>pid==='p0'?BASE_PL.miguel:pid==='p1'?BASE_PL.clara:PLAYERS[pid]||{n:'?',e:'🙂',g:''};
+const plE=pid=>plOf(pid).e||'🙂';
+const artOf=(pid,o)=>{const g=plOf(pid).g;return g==='o'?(o==='de'?'do':'o'):g==='a'?(o==='de'?'da':'a'):(o==='de'?'de':'')};
+function roomTitle(qid){const m=roomMembers(qid||QID);if(!m.length)return 'O teu quarto';return 'O quarto '+m.map((w,i)=>`${i?(plOf(w).g?artOf(w,'de')+' ':''):artOf(w,'de')+' '}${plOf(w).n}`).join(' e ')}
+const sqKey=()=>QID===CASA_ID?'quarto-casa':'quarto-'+QID;
+function useRoom(qid){qid=qid||null;const same=qid===QID;QID=qid;CASAL.splice(0,CASAL.length,...roomMembers(qid));if(same)return;
+  SQ.d=null;SQ.ut=null;try{const x=qid&&JSON.parse(localStorage.getItem(sqKey())||'null');if(x&&x.d){SQ.d=x.d;SQ.base=JSON.parse(JSON.stringify(x.base||x.d));SQ.ut=x.ut||null}}catch(e){}
+  if(!SQ.d){SQ.d=sqBlank();if(qid&&qid!==CASA_ID)SQ.d.leg={_:1};SQ.base=sqBlank()}
+  Object.assign(BD,{at:null,img:'',empty:true,pid:null,by:null,nm:'',em:''});if(qid&&db&&db.cloud){sqPull();bdLoad()}}
 /* BPM por jogar: prémio direto no fim de cada partida, com limite diário por pessoa */
 const VIT_BPM={cpu:{facil:3,normal:6,dificil:10},pvp:8,perde:0};
 function vitBpm(n,why){try{const w=myPid();if(!CASAL.includes(w)||!(n>0))return 0;const p=profGet(w),hoje=dayNum(lisNow().ymd);
@@ -2816,10 +2837,10 @@ function vitBpm(n,why){try{const w=myPid();if(!CASAL.includes(w)||!(n>0))return 
   setTimeout(()=>toast(dar?`♩ +${dar} BPM para o quarto · ${why}${usados+dar>=VIT_DIA?' (limite de hoje atingido)':''}`:`Já ganharam o máximo de ${VIT_DIA} BPM em partidas hoje`),900);return dar}catch(e){return 0}}
 const SQ={d:null,base:null,ut:null,busy:false,again:0};
 const sqBlank=()=>({eq:{},own:{},spent:0,pst:null,buy:[],sh:null,wl:null,px:null,play:null,on:0,mus:0,custo:0,paid:null,blog:[]});
-(()=>{try{const x=JSON.parse(localStorage.getItem('quarto-casa')||'null');if(x&&x.d){SQ.d=x.d;SQ.base=JSON.parse(JSON.stringify(x.base||x.d));SQ.ut=x.ut||null}}catch(e){}if(!SQ.d){SQ.d=sqBlank();SQ.base=sqBlank()}})();
-function sqSaveLocal(){try{localStorage.setItem('quarto-casa',JSON.stringify({d:SQ.d,base:SQ.base,ut:SQ.ut}))}catch(e){}}
-const CASA_URL=()=>PROF_URL(CASA_ID);
-async function sqFetch(){if(!(db&&db.cloud))return null;try{const r=await fetch(CASA_URL(),{cache:'no-store'});if(r.status===404)return {d:sqBlank(),ut:null};if(!r.ok)return null;const j=await r.json();return {d:JSON.parse(j.fields.d.stringValue),ut:j.updateTime}}catch(e){return null}}
+SQ.d=sqBlank();SQ.base=sqBlank();
+function sqSaveLocal(){if(!QID)return;try{localStorage.setItem(sqKey(),JSON.stringify({d:SQ.d,base:SQ.base,ut:SQ.ut}))}catch(e){}}
+const CASA_URL=()=>PROF_URL(QID);
+async function sqFetch(){if(!(db&&db.cloud)||!QID)return null;const q0=QID;try{const r=await fetch(CASA_URL(),{cache:'no-store'});if(q0!==QID)return null;if(r.status===404)return {d:sqBlank(),ut:null};if(!r.ok)return null;const j=await r.json();if(q0!==QID)return null;return {d:JSON.parse(j.fields.d.stringValue),ut:j.updateTime}}catch(e){return null}}
 /* junta as mudanças dos dois: compras somam-se, o que foi mudado ganha, o resto fica como está */
 function sqMerge(base,loc,rem){const S=x=>JSON.stringify(x),o=JSON.parse(S(rem||sqBlank()));base=base||sqBlank();loc=loc||sqBlank();
   const ev=(x,k)=>x&&x.eq&&k in x.eq?x.eq[k]:(RDEF[k]||null);
@@ -2827,7 +2848,7 @@ function sqMerge(base,loc,rem){const S=x=>JSON.stringify(x),o=JSON.parse(S(rem||
   o.spent=(+o.spent||0)+((+loc.spent||0)-(+base.spent||0));o.custo=Math.max(+o.custo||0,+loc.custo||0);if(loc.paid!=null&&(o.paid==null||loc.paid>o.paid))o.paid=loc.paid;if(S(loc.blog)!==S(base.blog)&&(loc.paid||0)>=(o.paid||0))o.blog=loc.blog;o.mus=(+o.mus||0)+((+loc.mus||0)-(+base.mus||0));if(loc.leg||o.leg){const a=o.leg||{},b=loc.leg||{};o.leg={...a};for(const k in b)o.leg[k]=Math.max(+a[k]||0,+b[k]||0)}
   o.eq={...(o.eq||{})};for(const k of new Set([...Object.keys(loc.eq||{}),...Object.keys(base.eq||{})]))if(S(ev(loc,k))!==S(ev(base,k)))o.eq[k]=ev(loc,k);
   for(const k of ['sh','wl','px','play','on','cl','pos','mul','li'])if(S(loc[k])!==S(base[k]))o[k]=loc[k];return o}
-async function sqSync(){if(!(db&&db.cloud))return;if(SQ.busy){SQ.again=1;return}SQ.busy=true;SQ.again=0;
+async function sqSync(){if(!(db&&db.cloud)||!QID||!canEdit())return;if(SQ.busy){SQ.again=1;return}SQ.busy=true;SQ.again=0;
   const snap=JSON.parse(JSON.stringify(SQ.d)),base=SQ.base;
   for(let k=0;k<8;k++){const cur=await sqFetch();if(!cur)break;const m=sqMerge(base,snap,cur.d);
     try{const r=await fetch(CASA_URL()+(cur.ut?'&currentDocument.updateTime='+encodeURIComponent(cur.ut):'&currentDocument.exists=false'),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:{d:{stringValue:JSON.stringify(m)},at:{stringValue:new Date().toISOString()}}})});
@@ -2838,12 +2859,12 @@ async function sqPull(){if(SQ.busy||!(db&&db.cloud))return;const cur=await sqFet
   const mine=JSON.stringify(SQ.d)!==JSON.stringify(SQ.base);SQ.d=mine?sqMerge(SQ.base,SQ.d,cur.d):JSON.parse(JSON.stringify(cur.d));SQ.base=JSON.parse(JSON.stringify(cur.d));SQ.ut=cur.ut;sqSaveLocal();if(mine)sqSync();roomRefresh()}
 function roomQ(){const d=SQ.d;d.eq=d.eq||{};d.own=d.own||{};d.buy=d.buy||[];d.spent=+d.spent||0;d.mus=+d.mus||0;return {...d,eq:{...RDEF,...d.eq}}}
 function roomSave(q,lazy){Object.assign(SQ.d,JSON.parse(JSON.stringify(q)));sqSaveLocal();clearTimeout(roomSave.t);roomSave.t=setTimeout(sqSync,lazy?20000:700)}
-const canEdit=()=>!!(ME&&(ME.id==='miguel'||ME.id==='clara'));
+const canEdit=()=>!!(ME&&QID&&QID===myRoomId()&&CASAL.includes(myPid()));
 /* missões: só pagam quando ficam completas. O que já tinha sido pago aos quartos antes desta regra fica guardado em q.leg (não se perde nem se paga duas vezes) */
 const qPart=(m,v)=>Math.round(mReward(m).r*Math.floor(4*Math.min(v,m.t)/m.t)/4);
 function mPaid(m,v,key,leg){if(v>=m.t)return mReward(m).r;if(!leg)return qPart(m,v);return +leg[key]||0}
-function roomEarned(){const q=roomQ(),leg=SQ.d&&SQ.d.leg;let n=(q.mus||0)+CASAL.reduce((a,w)=>a+(+profGet(w).st.vbpm||0),0);for(const m of MISSOES){if(m.co){n+=mPaid(m,coVal(m),m.id,leg);continue}for(const w of CASAL)n+=mPaid(m,stVal(profGet(w),m.s),m.id+'|'+w,leg)}return n}
-async function legMigrate(){try{if(!(db&&db.cloud)||!CASAL.includes(myPid()))return;await Promise.all(CASAL.map(w=>profLoad(w)));await sqPull();if(!SQ.d||SQ.d.leg)return;
+function roomEarned(){const q=roomQ(),leg=(SQ.d&&SQ.d.leg)||(QID!==CASA_ID?{}:null);let n=(q.mus||0)+CASAL.reduce((a,w)=>a+(+profGet(w).st.vbpm||0),0);for(const m of MISSOES){if(m.co){n+=mPaid(m,coVal(m),m.id,leg);continue}for(const w of CASAL)n+=mPaid(m,stVal(profGet(w),m.s),m.id+'|'+w,leg)}return n}
+async function legMigrate(){try{if(QID!==CASA_ID||!(db&&db.cloud)||!CASAL.includes(myPid()))return;await Promise.all(CASAL.map(w=>profLoad(w)));await sqPull();if(!SQ.d||SQ.d.leg)return;
   const leg={_:1};for(const m of MISSOES){if(m.co){const v=coVal(m);if(v<m.t&&qPart(m,v))leg[m.id]=qPart(m,v);continue}for(const w of CASAL){const v=stVal(profGet(w),m.s);if(v<m.t&&qPart(m,v))leg[m.id+'|'+w]=qPart(m,v)}}
   const q=roomQ();q.leg=leg;roomSave(q)}catch(e){}}
 const roomCoins=()=>roomEarned()-roomQ().spent-(+roomQ().custo||0);
@@ -3201,7 +3222,7 @@ function cabeceira(){return `<ellipse cx="782" cy="366" rx="32" ry="4" fill="url
 
 /* ---------- objetos de casal (só com missões a dois) ---------- */
 Object.assign(RDR,{
-'l-casal'(){const t=(st,w)=>`<text x="942" y="232" text-anchor="middle" font-family="Fraunces,serif" font-style="italic" font-weight="700" font-size="25" fill="none" stroke="${st}" stroke-width="${w}">Miguel <tspan fill="none" stroke="#ffd23f">×</tspan> Clara</text>`;
+'l-casal'(){const t=(st,w)=>`<text x="942" y="232" text-anchor="middle" font-family="Fraunces,serif" font-style="italic" font-weight="700" font-size="25" fill="none" stroke="${st}" stroke-width="${w}">${esc(plOf(CASAL[0]).n||'')}${CASAL[1]?` <tspan fill="none" stroke="#ffd23f">×</tspan> ${esc(plOf(CASAL[1]).n)}`:''}</text>`;
   return {b:t('#ff8fcf',1.8),g:`${t('#ffe0f2',2.2)}${glow(942,222,110,'ros',.95)}`}},
 'l-lua'(){return {b:`<ellipse cx="166" cy="364" rx="22" ry="4" fill="url(#gsh)"/><path d="M158 362 h16 l-3 -20 h-10z" fill="#c9a46c"/><circle cx="166" cy="322" r="21" fill="#f6efd9"/><circle cx="158" cy="314" r="4" fill="#e3d8bb"/><circle cx="172" cy="328" r="5.5" fill="#e3d8bb"/><circle cx="170" cy="312" r="2.5" fill="#e3d8bb"/><path d="M150 312 a20 20 0 0 1 14 -10" stroke="#fff" stroke-width="3" fill="none" opacity=".7"/>`,g:`${glow(166,322,95,'ama',1)}<circle cx="166" cy="322" r="21" fill="#fff8e6" opacity=".9"/>`}},
 'x-polaroid'(){return {b:`<rect x="29" y="208" width="84" height="76" fill="rgba(0,0,0,.25)"/><rect x="26" y="204" width="84" height="76" fill="#7a4a2a"/><rect x="30" y="208" width="76" height="68" fill="#efe6d4"/>
@@ -3262,7 +3283,7 @@ function roomSvg(w,o){o=o||{};RUID=0;const q=roomQ(),eq={...q.eq,...(o.eq||{})};
   post+=`<polygon points="${WX},${WY+WH} ${WX+WW},${WY+WH} ${patchPts(tod).join(' ')}" fill="url(#beam)" style="mix-blend-mode:screen" opacity="${tod==='dia'?.14:tod==='noite'?.1:.2}"/>`;
   post+=`<circle cx="${WX+WW/2}" cy="${WY+WH/2}" r="190" fill="url(#winglow)" style="mix-blend-mode:screen" opacity="${tod==='noite'?.25:tod==='dia'?.35:.6}"/>`;
   post+=fx+dust(tod)+`<rect width="${QW}" height="500" fill="url(#grain)" style="mix-blend-mode:multiply" opacity=".9"/><rect width="${QW}" height="500" fill="url(#vign)"/>`;
-  return `<svg class="roomsvg" viewBox="0 0 ${QW} 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="O quarto do Miguel e da Clara">${roomDefs(S)}${b}<g style="pointer-events:none">${post}</g></svg>`}
+  return `<svg class="roomsvg" viewBox="0 0 ${QW} 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(roomTitle())}">${roomDefs(S)}${b}<g style="pointer-events:none">${post}</g></svg>`}
 function patchPts(tod){const sh={manha:60,dia:0,tarde:-70,noite:-20}[tod];return [`${420+sh*1.6},470`,`${210+sh*1.6},470`]}
 function lightPatch(tod){const sh={manha:60,dia:0,tarde:-70,noite:-20}[tod],c=SKY[tod].l,op={manha:.55,dia:.45,tarde:.6,noite:.25}[tod];
   const P=(u,v)=>{const x0=300+sh+(210+sh*1.6-300-sh)*v,x1=470+sh+(420+sh*1.6-470-sh)*v;return [x0+(x1-x0)*u,372+98*v]};
@@ -3295,7 +3316,33 @@ function itemThumb(it){RUID=Math.floor(Math.random()*1e6);const pl={sh:[],wl:[],
   return `<svg viewBox="${IBOX[it.id]||RTHUMB[it.s]}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">${roomDefs()}${inner}</svg>`}
 
 /* ---------- ecrã ---------- */
-function openRoom(){legMigrate();L.screen='quarto';L.rFull=false;document.body.classList.remove('rfull');setTimeout(roomBills,1500);L.rTodV=null;L.rNoteEd=0;if(db&&db.cloud)bdLoad();L.rTab=L.rTab||'loja';L.rCat=L.rCat||'cama';L.rPrev=null;L.rTodV=null;CASAL.forEach(w=>profLoad(w));sqPull();render();scrollTo(0,0)}
+function roomTopBar(){const mine=myRoomId(),cv=myInvite();let b='<div class="rtopbar">';
+  if(L.visit)b+=`<button class="btn sm" onclick="openRoom()">← ${mine?'Voltar ao meu quarto':'Sair da visita'}</button>`;
+  else if(mine&&CASAL.length<2&&canEdit())b+=`<button class="btn ghost sm" onclick="inviteZoom()">💌 Convidar alguém</button>`;
+  b+=`<button class="btn ghost sm" onclick="visitZoom()">👀 Ver outros quartos</button></div>`;
+  if(cv&&!L.visit)b+=inviteCard(cv);return b}
+function myInvite(){if(!ME)return null;const c=(PLAYERS[ME.id]||{}).cv||'';if(!c)return null;const [q,de]=c.split('|');if(!q||q===myRoomId())return null;return {q,de}}
+function inviteCard(cv){return `<div class="rinvite"><b>💌 ${esc(plE(cv.de)+' '+plOf(cv.de).n)} convidou-te para partilhar o quarto.</b><span>${myRoomId()?'Se aceitares, passas a viver lá e deixas o teu quarto atual.':'Vão decorar juntos com os BPM dos dois.'}</span><div><button class="btn sm" onclick="inviteAccept()">Aceitar</button><button class="btn ghost sm" onclick="inviteDecline()">Recusar</button><button class="btn ghost sm" onclick="visitRoom('${cv.q}')">Ver o quarto</button></div></div>`}
+function noRoomScreen(){const cv=myInvite();
+  return `<div class="tot-head"><div class="mono" style="color:var(--muted)">quarto</div><h2>Ainda não tens quarto</h2><div class="sub">Cria o teu quarto e decora-o com os BPM das missões. Depois podes convidar alguém para o partilhar contigo.</div></div>
+  ${cv?inviteCard(cv):''}<div class="center mt"><button class="btn" onclick="roomCreate()">🏠 Criar o meu quarto</button></div>
+  <div class="center mt"><button class="btn ghost sm" onclick="visitZoom()">👀 Ver os quartos dos outros</button></div>${backBtn()}`}
+function backBtn(){return `<div class="center mt"><button class="btn ghost" onclick="L.screen=null;render();scrollTo(0,0)">← Voltar</button></div>`}
+function roomCreate(){if(!ME||BASE_PL[ME.id])return;const q='u-quarto-'+myPid().replace(/^u-/,'');plPatch(ME.id,{q,cv:''}).then(()=>{});useRoom(q);toast('🏠 O teu quarto está pronto!');render()}
+function canInvite(pid){if(!ME||pid===myPid()||pid==='p0'||pid==='p1')return false;const r=roomOf(pid);return !r||roomMembers(r).length<2}
+function inviteZoom(){plLoad();const mine=myRoomId(),cand=Object.values(PLAYERS).filter(p=>!BASE_PL[p.id]&&canInvite(pidOf(p)));
+  zoomOpen(`<div class="rzlist"><h3>💌 Convidar para o quarto</h3><p class="hint">Escolhe alguém que ainda não partilhe quarto com ninguém. A pessoa recebe o convite quando abrir o jogo.</p>
+   ${cand.length?`<div class="rinvlist">${cand.map(p=>{const sent=(p.cv||'').startsWith(mine+'|');return `<button ${sent?'disabled':''} onclick="inviteSend('${p.id}')"><span>${esc(p.e)}</span><b>${esc(p.n)}</b><i>${sent?'convite enviado':p.q?'tem quarto sozinho':'ainda sem quarto'}</i></button>`}).join('')}</div>`:'<p class="hint">Ainda não há ninguém para convidar. Quem entrar no jogo como “Outra pessoa” aparece aqui.</p>'}</div>`,'wide')}
+async function inviteSend(id){const mine=myRoomId();if(!mine||!canEdit())return;await plPatch(id,{cv:mine+'|'+myPid()});toast(`💌 Convite enviado a ${(PLAYERS[id]||{}).n||''}`);inviteZoom()}
+async function inviteAccept(){const cv=myInvite();if(!cv)return;await plLoad();if(roomMembers(cv.q).length>=2){toast('Esse quarto já tem duas pessoas');await plPatch(ME.id,{cv:''});render();return}
+  await plPatch(ME.id,{q:cv.q,cv:''});L.visit=null;useRoom(cv.q);CASAL.forEach(w=>profLoad(w));toast('🏠 Bem-vindo ao quarto!');L.screen='quarto';render();scrollTo(0,0)}
+async function inviteDecline(){await plPatch(ME.id,{cv:''});toast('Convite recusado');render()}
+function roomList(){const m={};m[CASA_ID]=1;Object.values(PLAYERS).forEach(p=>{if(p.q)m[p.q]=1});return Object.keys(m).filter(q=>roomMembers(q).length)}
+function visitZoom(){plLoad();const mine=myRoomId(),L_=roomList().filter(q=>q!==mine);
+  zoomOpen(`<div class="rzlist"><h3>👀 Quartos dos outros</h3><p class="hint">Podes ver como os outros decoraram, mas só quem lá vive pode mudar as coisas.</p>
+   ${L_.length?`<div class="rinvlist">${L_.map(q=>{const mm=roomMembers(q);return `<button onclick="zoomClose();visitRoom('${q}')"><span>${mm.map(plE).join('')}</span><b>${esc(roomTitle(q).replace(/^O quarto /,''))}</b><i>visitar</i></button>`}).join('')}</div>`:'<p class="hint">Ainda não há outros quartos.</p>'}</div>`,'wide')}
+function visitRoom(q){L.visit=q;useRoom(q);CASAL.forEach(w=>profLoad(w).then(()=>{if(L.screen==='quarto')roomRefresh()}));L.screen='quarto';L.rTab='loja';render();scrollTo(0,0)}
+function openRoom(){L.visit=null;useRoom(myRoomId());plLoad();legMigrate();L.screen='quarto';L.rFull=false;document.body.classList.remove('rfull');setTimeout(roomBills,1500);L.rTodV=null;L.rNoteEd=0;if(db&&db.cloud)bdLoad();L.rTab=L.rTab||'loja';L.rCat=L.rCat||'cama';L.rPrev=null;L.rTodV=null;CASAL.forEach(w=>profLoad(w));sqPull();render();scrollTo(0,0)}
 function roomMine(){return canEdit()}
 function roomRefresh(){if(L.screen!=='quarto'||L.rNoteEd||document.querySelector('.rplayfx'))return;const a=document.activeElement;if(a&&/INPUT|TEXTAREA/.test(a.tagName))return;render()}
 function roomTod(t){L.rTodV=t||null;const s=document.querySelector('.roomscene .roomsvg');if(s)s.outerHTML=roomSceneInner();document.querySelectorAll('.todbar button').forEach(b=>b.classList.toggle('on',(b.dataset.t||'')===(t||'')))}
@@ -3331,8 +3378,9 @@ function discBuy(k){if(!canEdit())return;const q=roomQ(),pr=discPrice(k);if(room
 function discSurprise(rk){if(!canEdit())return;const R=RARK[rk||'comum'],q=roomQ(),own=discOwned(),pool=DISCOS.filter(d=>!own.includes(d.k)&&!DISC_EXCL.has(d.k)&&discInfo(d.k).rar===R[0]);if(!pool.length){toast(`Já têm todos os discos ${{comum:'comuns',raro:'raros',epico:'épicos',lend:'lendários'}[R[0]]} à venda!`);return}if(roomCoins()<R[6])return;
   const d=pool[Math.floor(Math.random()*pool.length)];q.spent+=R[6];q.buy=[...q.buy,d.k];roomSave(q);L.rNew=d.k;render();boxOpenFx(R,d.k,()=>discZoom(d.k))}
 const TODN={manha:'amanhecer',dia:'dia',tarde:'pôr do sol',noite:'noite'};
-function quartoScreen(){const ed=canEdit(),coins=roomCoins(),q=roomQ(),pl=discPlaces(),n=lisNow(),tnow=todNow(n),prev=L.rPrev&&RIT[L.rPrev],falta=prev?prev.p-coins:0,pd=pl.play&&DISCO(pl.play),on=q.on&&pd;
-  let h=`<div class="tot-head"><div class="mono" style="color:var(--muted)">quarto</div><h2>O quarto do Miguel e da Clara</h2><div class="sub">${ed?'Decorem juntos com os BPM que os dois ganham nas missões. Com música a tocar no quarto também ganham BPM.':'Estás de visita. Só o Miguel e a Clara podem mudar as coisas.'}</div></div>
+function quartoScreen(){if(!QID)return noRoomScreen();const ed=canEdit(),coins=roomCoins(),q=roomQ(),pl=discPlaces(),n=lisNow(),tnow=todNow(n),prev=L.rPrev&&RIT[L.rPrev],falta=prev?prev.p-coins:0,pd=pl.play&&DISCO(pl.play),on=q.on&&pd;
+  let h=`<div class="tot-head"><div class="mono" style="color:var(--muted)">${L.visit?'de visita':'quarto'}</div><h2>${esc(roomTitle())}</h2><div class="sub">${ed?(CASAL.length>1?'Decorem juntos com os BPM que os dois ganham nas missões. Com música a tocar no quarto também ganham BPM.':'Decora com os BPM que ganhas nas missões. Podes convidar alguém para partilhar o quarto contigo.'):'Estás de visita: só quem vive aqui pode mudar as coisas.'}</div></div>
+  ${roomTopBar()}
   <div class="qbar"><span class="qcoins">♩ <b id="bpmv">${coins}</b> BPM</span><span class="rdisc">💿 ${pl.own.length} discos</span><span class="rdisc">🕰️ <b id="rclock">${n.hh}</b> em Portugal</span>${ed?`<button class="rdisc rbill" onclick="billsZoom()">🧾 −${billDay()} BPM/dia</button>`:''}</div>
   <div class="roomscene${L.rFull?' full':''}"><div class="roomscroll">${roomSceneInner()}</div>${sceneHud()}<button class="rfullbtn" onclick="roomFull()">${L.rFull?'<b>✕</b><span> Sair</span>':'<b>⛶</b><span> Ecrã inteiro</span>'}</button><span class="rfullhint">📱 Vira o telemóvel para ver maior</span></div>
   <p class="hint center todinfo">👆 Toquem nas coisas do quarto: gira-discos, prateleira, móvel, molduras, quadro de recados, janela, luzes, animais… Agora é ${TODN[tnow]} em Portugal: o quarto segue a hora real. O sol nasce às ${n.f(n.rise)} e põe-se às ${n.f(n.set)}.</p>`;
@@ -3366,9 +3414,9 @@ function quartoScreen(){const ed=canEdit(),coins=roomCoins(),q=roomQ(),pl=discPl
     if(sub==='excl'){h+=`<p class="hint">Estes não se compram. Há discos assim de quase todos os cantores: basta um de vocês completar a missão.</p>${chips}<div class="dgrid">`;
       DISCOS.filter(d=>DISC_EXCL.has(d.k)&&!pl.own.includes(d.k)&&(!art||d.a===art)).forEach(d=>{const m=missOfDisc(d.k),best=Math.max(...CASAL.map(w=>Math.min(stVal(profGet(w),m.s),m.t)));h+=`<div class="dcard lock r-${discInfo(d.k).rar}"><img src="${esc(d.f)}" alt="" loading="lazy"><b>${esc(d.t)}</b><span>${esc(d.a)}</span><em class="dmiss">🎯 ${esc(m.n)}</em><div class="mbar"><i style="width:${Math.round(best/m.t*100)}%"></i></div><small>${esc(m.d)} · ${best}/${m.t}</small></div>`});h+=`</div>`}}
   if(L.rTab==='ganhar'){const P=CASAL.map(w=>profGet(w));
-    h+=`<p class="hint">O quarto começa com 0 BPM. As missões do Miguel e da Clara enchem a mesma conta: cada missão só paga os BPM quando fica completa (o que já tinham recebido antes desta regra fica vosso). Ter um disco a tocar no quarto, com o som ligado, dá +1 BPM por minuto (até ${BPM_DIA} por dia em cada telemóvel). Cada vitória também paga na hora: contra o computador 3/6/10 BPM (Fácil/Normal/Difícil), contra uma pessoa 8; perder não dá nada. Até ${VIT_DIA} BPM por dia a cada um${(()=>{const u=CASAL.map(w=>{const s=profGet(w).st;return +s.vbDay===dayNum(lisNow().ymd)?+s.vbHoje||0:0});return ` (hoje: 🌴 ${u[0]}/${VIT_DIA} · 🌻 ${u[1]}/${VIT_DIA})`})()}. Atenção às contas do quarto: comida dos animais, luz e água são cobradas todos os dias. Já ganharam ${q.mus||0} BPM com música.</p><div class="mgrid">`;
+    h+=`<p class="hint">O quarto começa com 0 BPM. As missões de quem vive no quarto enchem a mesma conta: cada missão só paga os BPM quando fica completa (o que já tinham recebido antes desta regra fica vosso). Ter um disco a tocar no quarto, com o som ligado, dá +1 BPM por minuto (até ${BPM_DIA} por dia em cada telemóvel). Cada vitória também paga na hora: contra o computador 3/6/10 BPM (Fácil/Normal/Difícil), contra uma pessoa 8; perder não dá nada. Até ${VIT_DIA} BPM por dia a cada um${(()=>{const u=CASAL.map(w=>{const s=profGet(w).st;return +s.vbDay===dayNum(lisNow().ymd)?+s.vbHoje||0:0});return ` (hoje: 🌴 ${u[0]}/${VIT_DIA} · 🌻 ${u[1]}/${VIT_DIA})`})()}. Atenção às contas do quarto: comida dos animais, luz e água são cobradas todos os dias. Já ganharam ${q.mus||0} BPM com música.</p><div class="mgrid">`;
     MISSOES.map(m=>{const r=mReward(m),vs=P.map(p=>Math.min(stVal(p,m.s),m.t)),cv=m.co?Math.min(coVal(m),m.t):0;return {m,r,vs,got:m.co?mPaid(m,coVal(m),m.id,SQ.d&&SQ.d.leg):vs.reduce((a,v,i)=>a+mPaid(m,v,m.id+'|'+CASAL[i],SQ.d&&SQ.d.leg),0),pr:(m.co?cv:Math.max(...vs))/m.t}}).sort((a,b)=>(a.pr>=1)-(b.pr>=1)||b.pr-a.pr).slice(0,24).forEach(x=>{const d=x.r.disc&&DISCO(x.r.disc),done=x.pr>=1;
-      h+=`<div class="mcard ${done?'on':''}">${d?`<img class="rmc" src="${esc(d.f)}" alt="" loading="lazy" style="${done?'':'filter:grayscale(1) brightness(.6)'}">`:vinyl(x.m,done)}<div class="mtxt"><b>${esc(x.m.n)}</b><span>${esc(x.m.d)}</span><span class="rrw">♩ ${x.got} de ${x.r.r*(x.m.co?1:2)} BPM${d?` · 💿 ${esc(d.t)}`:''}${MITEM[x.m.id]?` · 🎁 ${esc(RIT[MITEM[x.m.id]].n)}`:''}</span><span class="rrw who">${x.m.co?(x.m.half?`🌴 ${coHalf(x.m)[0]}/${x.m.t/2} · 🌻 ${coHalf(x.m)[1]}/${x.m.t/2} · a meias`:`🌴🌻 a dois · ${Math.min(coVal(x.m),x.m.t)}/${x.m.t}`):`🌴 ${x.vs[0]}/${x.m.t} · 🌻 ${x.vs[1]}/${x.m.t}`}</span><div class="mbar"><i style="width:${Math.round(x.pr*100)}%"></i></div></div></div>`});
+      h+=`<div class="mcard ${done?'on':''}">${d?`<img class="rmc" src="${esc(d.f)}" alt="" loading="lazy" style="${done?'':'filter:grayscale(1) brightness(.6)'}">`:vinyl(x.m,done)}<div class="mtxt"><b>${esc(x.m.n)}</b><span>${esc(x.m.d)}</span><span class="rrw">♩ ${x.got} de ${x.r.r*(x.m.co?1:2)} BPM${d?` · 💿 ${esc(d.t)}`:''}${MITEM[x.m.id]?` · 🎁 ${esc(RIT[MITEM[x.m.id]].n)}`:''}</span><span class="rrw who">${x.m.co?(x.m.half?`${plE(CASAL[0])} ${coHalf(x.m)[0]}/${x.m.t/2} · ${plE(CASAL[1])} ${coHalf(x.m)[1]}/${x.m.t/2} · a meias`:`${plE(CASAL[0])}${plE(CASAL[1])} a dois · ${Math.min(coVal(x.m),x.m.t)}/${x.m.t}`):`🌴 ${x.vs[0]}/${x.m.t} · 🌻 ${x.vs[1]}/${x.m.t}`}</span><div class="mbar"><i style="width:${Math.round(x.pr*100)}%"></i></div></div></div>`});
     h+=`</div><div class="actions"><button class="btn ghost" onclick="openMissions()">Ver todas as missões</button></div>`}
   return h+`<div class="actions"><button class="btn" onclick="L.screen=null;render()">← Voltar</button></div>`}
 
@@ -3393,7 +3441,7 @@ function noteBox(){const t=noteTxt(),ed=L.rNoteEd,has=!BD.empty&&bdPid()&&BD.at;
   if(ed)return `<div class="rnote edit"><b>📝 Quadro de recados</b><textarea id="notein" maxlength="${NOTE_MAX}" rows="3" placeholder="Escreve um recado para quem abrir o quarto…" oninput="document.getElementById('notecnt').textContent=this.value.length+'/${NOTE_MAX}'">${esc(t)}</textarea><div class="nacts"><span id="notecnt" class="mono">${t.length}/${NOTE_MAX}</span><button class="btn ghost" onclick="L.rNoteEd=0;render()">Cancelar</button>${has?`<button class="btn ghost" onclick="noteSave('')">Apagar</button>`:''}<button class="btn" onclick="noteSave(document.getElementById('notein').value)">Guardar recado</button></div>${BD.stat?`<small>${esc(BD.stat)}</small>`:''}</div>`;
   return `<div class="rnote ${bdFresh()?'fresh':''}" id="rnote"><div><b>📝 Quadro de recados</b><span>${has?`${bdFresh()?'<em class="bnew">💌 Novo</em> ':''}${t?'“'+esc(t)+'”':'um desenho'} · ${bdFrom(true)} · ${bdRel(BD.at)}`:'Ainda não há recado. Escreve o primeiro!'}</span></div>${ME?`<button class="btn sm" onclick="roomNoteEdit()">✏️ Escrever</button>`:''}</div>`}
 function roomNoteEdit(){if(!ME)return;noteZoom();return;L.rNoteEd=1;BD.stat='';render();setTimeout(()=>{const t=document.getElementById('notein');if(t){t.focus();t.scrollIntoView({behavior:'smooth',block:'center'})}},60)}
-async function noteSave(txt){if(!ME)return;txt=(txt||'').trim().slice(0,NOTE_MAX);const alt=!!txt&&!!bdPid()&&bdPid()!==myPid()&&CASAL.includes(myPid())&&CASAL.includes(bdPid());const img=txt?'txt:'+txt:'',at=new Date().toISOString();BD.stat='a guardar…';
+async function noteSave(txt){if(!ME||!canEdit())return;txt=(txt||'').trim().slice(0,NOTE_MAX);const alt=!!txt&&!!bdPid()&&bdPid()!==myPid()&&CASAL.includes(myPid())&&CASAL.includes(bdPid());const img=txt?'txt:'+txt:'',at=new Date().toISOString();BD.stat='a guardar…';
   try{const r=await fetch(bdUrl(),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:{img:{stringValue:img},by:{integerValue:String(WHO===1?1:0)},at:{stringValue:at},nm:{stringValue:ME.n||''},em:{stringValue:ME.e||''},pid:{stringValue:myPid()||''}}})});
     if(!r.ok)throw 0;if(txt)profAdd('board');if(alt)profAdd('rec_alt');Object.assign(BD,{img,empty:!img,by:WHO,pid:myPid(),nm:ME.n,em:ME.e,at,stat:''});lsSet({boardSeen:at});L.rNoteEd=0;zoomClose();toast(txt?'📝 Recado escrito no quadro':'🧽 Quadro apagado');render()}
   catch(e){const er=document.getElementById('noteerr');if(er)er.textContent='Não consegui guardar. Verifica a internet e tenta outra vez.'}}
@@ -3412,7 +3460,7 @@ const CO_PER=6,CO_VIDAS=3;
 const CO=()=>(G&&G.coop&&G.coop.seed)?G.coop:null;
 function cdeck(seed){if(cdeck._s===seed)return cdeck._d;const r=rng(hash(seed+':co'));const d=SONGS.map((_,i)=>i).filter(i=>!EXCL.has(i));for(let i=d.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[d[i],d[j]]=[d[j],d[i]]}cdeck._s=seed;cdeck._d=d;return d}
 const coSong=(n)=>song(cdeck(CO().seed)[n]);
-const coCasal=()=>{const a=G&&G.players&&G.players.p0&&G.players.p0.id,b=G&&G.players&&G.players.p1&&G.players.p1.id;return [a,b].sort().join()==='clara,miguel'};
+const coCasal=()=>{const a=G&&G.players&&G.players.p0,b=G&&G.players&&G.players.p1;if(!a||!b)return false;const ra=roomOf(pidOf(a)),rb=roomOf(pidOf(b));return !!ra&&ra===rb&&pidOf(a)!==pidOf(b)};
 /* votação: os dois escolhem o mesmo modo para começar */
 function coMyVote(){const v=G&&G.cv&&G.cv[P(WHO)];return v&&v.r===vRound()?v.m:null}
 function coOtherVote(){const v=G&&G.cv&&G.cv[P(1-WHO)];return v&&v.r===vRound()?v.m:null}
@@ -3426,7 +3474,7 @@ function coModesBox(){if(MODE!=='online')return `<div class="panel comodes"><div
   const mv=coMyVote(),ov=coOtherVote();
   return `<div class="panel comodes"><div class="mono" style="color:var(--muted)">ou joguem em equipa · modos a dois</div>
   <div class="cogrid">${Object.entries(CO_MODES).map(([k,x])=>`<button class="comode ${mv===k?'on':''}" ${L.busy?'disabled':''} onclick="coVote('${k}')"><span class="ce">${x.e}</span><b>${x.n}</b><small>${x.d}</small>${(mv===k||ov===k)?`<em>${[mv===k?emo(WHO):'',ov===k?emo(1-WHO):''].join(' ')} ${mv===k&&ov===k?'a começar…':mv===k?'à espera '+d_(1-WHO):'escolheu este · toca para aceitar'}</em>`:''}</button>`).join('')}</div>
-  <p class="hint">Os dois têm de tocar no mesmo modo. ${coCasal()?'As missões a dois só contam quando jogam o Miguel e a Clara juntos.':''}</p></div>`}
+  <p class="hint">Os dois têm de tocar no mesmo modo. ${coCasal()?'As missões a dois só contam quando jogam as duas pessoas do mesmo quarto.':''}</p></div>`}
 
 /* ---------- Lado A × Lado B: 5 músicas por lado, cada um ordena o seu ---------- */
 const AB_N=5;
@@ -3583,7 +3631,7 @@ function placeZoom(k,id){const q=roomQ();let opts;
   zoomOpen(`<div class="rzlist"><h3>📍 ${esc(it.n)}</h3><p class="hint">${RSINGLE.has(k)?'Escolham em que parede fica.':'Escolham onde fica. Podem ter outro do mesmo tipo noutro lugar.'}</p><div class="rplaces big">${opts}</div>${!RFIX[k]&&pi>=0?`<button class="btn ghost sm" style="margin-top:10px" onclick="roomPlace('${id}',${pi});zoomClose()">Tirar do quarto</button>`:''}</div>`,'sheet')}
 function roomAct0(k,ev){if(ev)ev.stopPropagation();const q=roomQ(),el=ev&&ev.currentTarget,id=(el&&el.dataset&&el.dataset.id)||q.eq[k],it=RIT[id];
   if(k==='janela'||k==='cortina'){L.rWin=!L.rWin;roomRedraw();roomBubble(L.rWin?(roomTodOf()==='noite'?'🌙 Entra o ar fresco da noite':'🌊 Cheira a mar!'):'🪟 Janela fechada');return}
-  if(k==='leitor'){if(!canEdit()){roomBubble('🎵 Só o Miguel e a Clara põem música aqui',el);return}if(q.on)roomStop();else roomPlay();return}
+  if(k==='leitor'){if(!canEdit()){roomBubble('🎵 Só quem vive aqui põe música',el);return}if(q.on)roomStop();else roomPlay();return}
   if(k==='plafon'){if(roomDebt()){roomBubble('🔌 A luz foi cortada: paguem as contas!');return}plafonZoom();return}
   if((k==='luz'||k==='teto'||k==='cabeceira'||(k==='mesa'&&LUZES.has(id)))&&roomDebt()){roomBubble('🔌 A luz foi cortada: paguem as contas!');return}
   if(k==='luz'||k==='teto'||k==='cabeceira'||(k==='mesa'&&LUZES.has(id))){plafonZoom();return}
@@ -3636,7 +3684,7 @@ function discZoom(k,ev){if(ev)ev.stopPropagation();const d=DISCO(k);if(!d)return
   zoomOpen(`<div class="rzsleeve"><img src="${esc(d.f)}" alt=""><div class="rzvinyl"><span style="background-image:url('${d.f.replace(/'/g,"\\'")}')"></span></div></div>
   <div class="rzinfo"><span class="mono">${at}</span><h3>${esc(d.t)}</h3><p>${esc(d.a)}</p><div class="dtags">${I.tags.map(t=>`<i>${t}</i>`).join('')}</div>
   <button class="btn ghost sm dzbtn" onclick="discDet('${k}',this)">📖 Detalhes: faixas e resumo</button><div class="dzdet" id="dzdet"></div>
-  ${ed?`<div class="rzacts">${B('p','▶️ Tocar agora',1)}${pl.sh.includes(k)?'':B('s','📚 Pôr na prateleira')}${pl.wl.includes(k)?'':B('w','💿 Pendurar na parede')}${pl.box.includes(k)?'':B('m','📦 Guardar no móvel')}</div>`:`<p class="hint">Só o Miguel e a Clara mexem nos discos.</p>`}</div>`)}
+  ${ed?`<div class="rzacts">${B('p','▶️ Tocar agora',1)}${pl.sh.includes(k)?'':B('s','📚 Pôr na prateleira')}${pl.wl.includes(k)?'':B('w','💿 Pendurar na parede')}${pl.box.includes(k)?'':B('m','📦 Guardar no móvel')}</div>`:`<p class="hint">Só quem vive neste quarto mexe nos discos.</p>`}</div>`)}
 /* detalhes do disco: faixas (Apple Music / iTunes) e resumo (Wikipédia), carregados no momento e guardados */
 function jsonp(url,ms){return new Promise((res,rej)=>{const cb='__jp'+Math.random().toString(36).slice(2),sc=document.createElement('script');let done=0;const end=()=>{done=1;clearTimeout(t);try{delete window[cb]}catch(e){window[cb]=undefined}sc.remove()},t=setTimeout(()=>{if(!done){end();rej('timeout')}},ms||9000);
   window[cb]=d=>{if(done)return;end();res(d)};sc.onerror=()=>{if(!done){end();rej('err')}};sc.src=url+(url.includes('?')?'&':'?')+'callback='+cb;document.head.appendChild(sc)})}
@@ -3684,7 +3732,7 @@ function billsZoom(){const rows=billRows(),tot=rows.reduce((a,r)=>a+r[2],0),q=ro
   ${roomDebt()?`<p class="rbdebt">⚠️ Estão em dívida (${roomCoins()} BPM). A luz está cortada e os animais têm fome até pagarem. Joguem missões ou ponham música a tocar.</p>`:''}<p class="hint">Já pagaram ${q.custo||0} BPM no total.${q.blog&&q.blog[0]?` Última conta: −${q.blog[0].v} BPM (${q.blog[0].n} dia${q.blog[0].n>1?'s':''}).`:''}</p></div>`,'wide')}
 function noteZoom(){const t=noteTxt(),has=!BD.empty&&bdPid()&&BD.at;if(bdFresh())setTimeout(()=>{lsSet({boardSeen:BD.at});if(L.screen==='quarto')render()},1500);
   zoomOpen(`<div class="rzlist rznote"><h3>📝 Quadro de recados</h3>${has?`<div class="chalk">${t?esc(t):'(um desenho)'}<small>${bdFrom(true)} · ${bdRel(BD.at)}</small></div>`:'<p class="hint">Ainda não há recado. Escreve o primeiro!</p>'}
-  ${ME?`<textarea id="notein" maxlength="${NOTE_MAX}" rows="3" placeholder="Escreve um recado para quem abrir o quarto…" oninput="document.getElementById('notecnt').textContent=this.value.length+'/${NOTE_MAX}'"></textarea><div class="nacts"><span id="notecnt" class="mono">0/${NOTE_MAX}</span>${has?`<button class="btn ghost" onclick="noteSave('')">Apagar</button>`:''}<button class="btn" onclick="noteSave(document.getElementById('notein').value)">Escrever no quadro</button></div><small id="noteerr" class="nerr"></small>`:''}</div>`,'wide')}
+  ${canEdit()?`<textarea id="notein" maxlength="${NOTE_MAX}" rows="3" placeholder="Escreve um recado para quem abrir o quarto…" oninput="document.getElementById('notecnt').textContent=this.value.length+'/${NOTE_MAX}'"></textarea><div class="nacts"><span id="notecnt" class="mono">0/${NOTE_MAX}</span>${has?`<button class="btn ghost" onclick="noteSave('')">Apagar</button>`:''}<button class="btn" onclick="noteSave(document.getElementById('notein').value)">Escrever no quadro</button></div><small id="noteerr" class="nerr"></small>`:''}</div>`,'wide')}
 function boxZoom(){const pl=discPlaces(),sec=(t,a)=>a.length?`<h4>${t} · ${a.length}</h4><div class="rzgrid">${a.map(k=>{const d=DISCO(k);return `<button onclick="discZoom('${k}')"><img src="${esc(d.f)}" alt="" loading="lazy"><b>${esc(d.t)}</b><small>${esc(d.a)}</small></button>`}).join('')}</div>`:'';
   zoomOpen(`<div class="rzlist"><h3>💿 Os vossos discos</h3>${canEdit()?`<button class="btn ghost sm" style="margin:-4px 0 8px" onclick="zoomClose();setTimeout(()=>itemZoom('movel'),250)">📍 Mudar o móvel de lugar</button>`:''}<p class="hint">${pl.own.length?'Toca num disco para o ver de perto, pôr a tocar, arrumar na prateleira ou pendurar.':'Ainda não há discos. Ganhem-nos nas missões ou comprem-nos na Loja → Discos.'}</p>
   ${sec('📦 Guardados no móvel',pl.box)}${sec('📚 Na prateleira',pl.sh)}${sec('💿 Na parede',pl.wl)}</div>`,'wide')}
@@ -3714,7 +3762,7 @@ function plafonZoom(){const sc=document.querySelector('.roomscene');if(sc&&!L.rF
   ${id?`<h3 style="margin-top:14px">${esc(it?it.n:'Luz do teto')}</h3>`:''}
   ${ed&&id?`<div class="pfrow col"><span>Cor</span><div class="pfcores">${CL_CORES.map(([c,n])=>`<button class="${L_.c===c?'on':''}" style="--c:${c}" title="${n}" onclick="plafonSet({c:'${c}'})"><i></i><small>${n}</small></button>`).join('')}<label class="pfcustom" title="Outra cor"><input type="color" value="${L_.c}" oninput="plafonSet({c:this.value},1)"><small>Outra</small></label></div></div>
   <div class="pfrow col"><span>Intensidade · <b id="pfiv">${Math.round(L_.i*100)}%</b></span><input type="range" min="10" max="100" step="5" value="${Math.round(L_.i*100)}" oninput="plafonSet({i:this.value/100},1)"></div>
-  <p class="hint">Custa ${plafonCost()} BPM por dia com esta intensidade (mais forte gasta mais).</p>`:ed?'':'<p class="hint">Só o Miguel e a Clara mexem na luz.</p>'}</div>`,'sheet')}
+  <p class="hint">Custa ${plafonCost()} BPM por dia com esta intensidade (mais forte gasta mais).</p>`:ed?'':'<p class="hint">Só quem vive neste quarto mexe na luz.</p>'}</div>`,'sheet')}
 function liSet(v){if(!canEdit())return;const q=roomQ();q.li=v;roomSave(q,0);const b=document.getElementById('liv');if(b)b.textContent=Math.round(v*100)+'%';clearTimeout(liSet.t);liSet.t=setTimeout(roomRedraw,60)}
 const plafonCost=()=>{const L_=clGet();return 3+Math.round(L_.i*8)};
 function plafonSet(o,live){if(!canEdit())return;const q=roomQ();q.cl={...clGet(),...o};roomSave(q,0);roomRedraw();
@@ -3741,10 +3789,12 @@ function goHome(){const mid=MODE&&G&&G.seed&&!(phase()==='duels'&&stageKind()[0]
 const PL_URL=()=>`${FS_DOCS}/jogadores`;
 function plCache(){const o={};for(const k in PLAYERS)if(!BASE_PL[k])o[k]=PLAYERS[k];try{localStorage.setItem('jogadores',JSON.stringify(o))}catch(e){}}
 async function plLoad(){if(!(db&&db.cloud))return;try{const r=await fetch(`${PL_URL()}?key=${FS_KEY}&pageSize=300`,{cache:'no-store'});if(!r.ok)return;const j=await r.json();let ch=false;
-  (j.documents||[]).forEach(d=>{const id=d.name.split('/').pop(),f=d.fields||{},n=f.n?.stringValue,e=f.e?.stringValue;if(!n||BASE_PL[id])return;if(!PLAYERS[id]||PLAYERS[id].n!==n||PLAYERS[id].e!==e){PLAYERS[id]={id,n,e:e||'🙂',g:''};ch=true}});
-  plCache();if(ch&&(WHO==null||L.screen==='missoes'||L.screen==='quarto'))render()}catch(e){}}
+  (j.documents||[]).forEach(d=>{const id=d.name.split('/').pop(),f=d.fields||{},n=f.n?.stringValue,e=f.e?.stringValue,q=f.q?.stringValue||'',cv=f.cv?.stringValue||'',g=f.g?.stringValue||'';if(!n||BASE_PL[id])return;const o=PLAYERS[id];if(!o||o.n!==n||o.e!==e||(o.q||'')!==q||(o.cv||'')!==cv||(o.g||'')!==g){PLAYERS[id]={id,n,e:e||'🙂',g,q,cv};ch=true}});
+  plCache();if(ch){const was=QID;if(!L.visit)useRoom(myRoomId());else CASAL.splice(0,CASAL.length,...roomMembers(QID));if(WHO==null||!L.screen||L.screen==='missoes'||L.screen==='quarto'||was!==QID)render()}}catch(e){}}
+async function plPatch(id,o){if(BASE_PL[id])return;PLAYERS[id]={...(PLAYERS[id]||{id}),...o};plCache();if(!(db&&db.cloud))return;const ks=Object.keys(o);
+  try{await fetch(`${PL_URL()}/${id}?key=${FS_KEY}&${ks.map(k=>'updateMask.fieldPaths='+k).join('&')}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:Object.fromEntries(ks.map(k=>[k,{stringValue:String(o[k]??'')}]))})})}catch(e){}}
 async function plSave(p){PLAYERS[p.id]=p;plCache();if(!(db&&db.cloud))return;
-  try{await fetch(`${PL_URL()}/${p.id}?key=${FS_KEY}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:{n:{stringValue:p.n},e:{stringValue:p.e},at:{stringValue:new Date().toISOString()}}})})}catch(e){}}
+  try{await fetch(`${PL_URL()}/${p.id}?key=${FS_KEY}&updateMask.fieldPaths=n&updateMask.fieldPaths=e&updateMask.fieldPaths=at`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:{n:{stringValue:p.n},e:{stringValue:p.e},at:{stringValue:new Date().toISOString()}}})})}catch(e){}}
 const EMOJIS=['😎','🤠','🥳','😈','👻','🤖','🦄','🐸','🐱','🐶','🦊','🐼','🐵','🦁','🐙','🦋','🌈','🔥','⚡','🌙','⭐','🍕','🍓','🥑','🍉','🎸','🥁','🎧','🎤','🏄','⚽','👑','💎','🍀','🌺','🐬'];
 function guestStart(){L.newP={e:'😎'};L.err='';render();setTimeout(()=>document.getElementById('newName')?.focus(),60)}
 function guestEmoji(e){if(!L.newP)return;L.newP.e=e;const c=document.getElementById('newEmo');if(c)c.value='';render()}
@@ -4003,11 +4053,11 @@ function rulesBox(){
     noite:`<p>Rondas seguidas contra o computador, com <b>3 vidas para os dois</b> ❤️❤️❤️.</p><p>Em cada ronda, cada um recebe um par diferente e escolhe uma música. As duas notas somam-se, com um bónus até <b>+1</b> se as duas tiverem química entre si. O computador junta uma dupla dele.</p><p>Se a vossa soma for maior, passam; empate também passa; se for menor, perdem uma vida. <b>Cada ronda o computador escolhe melhor.</b> O objetivo é sobreviver ao maior número de rondas: o recorde do casal fica guardado.</p>`};
     body=`<p>Os modos a dois jogam-se em <b>👥 com mais uma pessoa</b>, cada um no seu telemóvel. Na sala, os dois têm de tocar no mesmo modo para começar.</p>
     <div class="rchips">${Object.entries(CO_MODES).map(([q,x])=>`<button class="rchip ${m===q?'on':''}" onclick="L.rco='${q}';render()">${x.e} ${x.n}</button>`).join('')}</div><div class="rbody2">${X[m]}</div>
-    <p class="rsmall">Quando jogam o Miguel e a Clara juntos, estas partidas contam para as <b>missões a dois</b>.</p>`}
+    <p class="rsmall">Quando jogam as duas pessoas do mesmo quarto, estas partidas contam para as <b>missões a dois</b>.</p>`}
   if(k===7){body=`<p>O <b>BPM</b> é o dinheiro do jogo. Tal como a batida dita o ritmo de uma música, os BPM ditam o que o vosso quarto pode ter.</p>
     <div class="rexp"><b>♩ Como se ganham</b><span>Missões de cada um: entre 100 e 700 BPM, pagos só quando a missão fica completa. Missões a dois: entre 400 e 2 500 BPM, pagas uma vez ao casal. Música a tocar no quarto: +1 BPM por minuto, só com o quarto aberto no ecrã e o som ligado (até 60 por dia em cada telemóvel). Vitórias: cada partida ganha dá BPM na hora (contra o computador 3 no Fácil, 6 no Normal, 10 no Difícil; contra uma pessoa 8; nos modos a dois até 10). Perder não dá nada. Máximo de 40 BPM por dia a cada um.</span></div>
     <div class="rexp"><b>🧾 Contas do quarto</b><span>Todos os dias paga-se a casa (8 BPM), a comida de cada animal (5 a 20), a luz de cada candeeiro (1 a 8), a luz do teto (4 a 11, conforme a intensidade), a eletricidade do gira-discos e do computador e a água das plantas. Se ficarem a dever, a luz é cortada e os animais passam fome até pagarem. Se ninguém abrir o jogo durante uns dias, paga-se tudo quando voltarem, mas nunca mais do que uma semana.</span></div>
-    <div class="rexp"><b>🏠 Uma só conta</b><span>Os BPM do Miguel e da Clara vão todos para a conta do quarto. Os dois veem o mesmo número e qualquer um pode gastar.</span></div>
+    <div class="rexp"><b>🏠 Uma só conta</b><span>Os BPM das duas pessoas que partilham o quarto vão todos para a mesma conta. Os dois veem o mesmo número e qualquer um pode gastar.</span></div>
     <div class="rexp"><b>🛍️ O que se compra</b><span>Objetos para o quarto (de 230 a 2 250 BPM), discos com 4 raridades (⚪ Comum até ~250, 🔵 Raro ~300–450, 🟣 Épico ~500–750, 🟡 Lendário ~900–1 150 BPM: conta sobretudo o álbum, não só o cantor) e caixas surpresa de cada raridade. Há 41 discos que só se ganham em missões, e 5 objetos de casal que só se ganham em missões a dois. Os pósteres compram-se à parte (40% do preço do disco): podem ter o póster de um álbum sem terem o disco.</span></div>
     <div class="rexp"><b>💿 Vinis e discos</b><span>As missões normais são de cada um: cada um tem a sua coleção de vinis. As missões a dois e “a meias” aparecem nas duas coleções. Nas missões a meias, cada um tem de fazer metade: se um fizer tudo sozinho, só conta até 50%. Os discos do quarto nunca se repetem: basta um completar a missão.</span></div>`}
   return `<div class="panel rules2"><div class="rhead"><span class="mono">como se joga</span><span class="rstep">${k+1} / ${T.length}</span></div>
@@ -4017,7 +4067,7 @@ function rulesBox(){
 }
 
 /* ======== ações ======== */
-function setMe(id){const p=PLAYERS[id];if(!p)return;ME={...p};WHO=p.seat!=null?p.seat:0;lsSet({who:WHO,me:ME});setPresence();L.err='';L.newP=null;render();try{profLoad(myPid())}catch(e){}}
+function setMe(id){const p=PLAYERS[id];if(!p)return;ME={...p};WHO=p.seat!=null?p.seat:0;lsSet({who:WHO,me:ME});setPresence();L.err='';L.newP=null;L.visit=null;useRoom(myRoomId());render();try{profLoad(myPid())}catch(e){}}
 function setWho(i){setMe(i===0?'miguel':i===1?'clara':i)}
 function newSeed(){return Math.random().toString(36).slice(2,10)}
 const CPU_ALB=['Tropical Total','Sol de Madrugada','Brisa Digital','Bossa Binária','Groove de Silício','Saudade.exe','Algoritmo do Amor','Circuito Tropical'];
@@ -4068,7 +4118,7 @@ function legend(){return `<div class="legend"><span><b class="lg-g">estilo</b> g
 function pedidoBox(){const pd=pedido();return `<div class="pedido"><span class="mono">pedido da noite</span><b>${pd.n}</b><span>${pd.d} (máx. +2)</span></div>`}
 function header(){
   const inRoom=MODE==='online'&&CODE&&G;
-  return `<div class="top" id="hdr"><div class="logo">Meu Álbum<small>${WHO!=null&&ME?'tu és '+esc(ME.e+' '+ME.n):'Miguel & Clara'}${MODE==='cpu'?' · vs computador':''}</small></div>
+  return `<div class="top" id="hdr"><div class="logo">Meu Álbum<small>${WHO!=null&&ME?'tu és '+esc(ME.e+' '+ME.n):'jogo de música brasileira'}${MODE==='cpu'?' · vs computador':''}</small></div>
   <div class="topr">${(G&&G.seed&&MODE)?`<button class="linkbtn rxtop" onclick="rxToggle()" aria-label="stickers">${RX.mute?'🔕':'😊'}<span class="lt"> stickers</span></button>`:''}${sndBtn()}${inRoom?`<span><span class="dot ${L.peerOnline?'on':''}"></span>${nm(1-WHO)}</span><span class="codepill">${esc(CODE)}</span>`:''}
   ${(inRoom||MODE==='cpu')&&G?.seed?`<button class="linkbtn ${L.confirmNew?'warn':''}" onclick="resetGame()">↻<span class="lt"> Nova partida</span></button>`:''}
   ${inRoom?`<button class="linkbtn ${L.confirmLeave?'warn':''}" onclick="leaveRoom()">${L.confirmLeave?'Sair?':'✕<span class="lt"> Sair da sala</span>'}</button>`:''}
@@ -4095,7 +4145,7 @@ function lobby(){
 }
 const PALM='<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><path d="M20 38 C 21 30 21 22 19 14" stroke="#8a5a2b" stroke-width="2.6" fill="none" stroke-linecap="round"/><g fill="#2fbf5f"><path d="M19 14 C 12 8 5 9 2 14 C 8 12 13 13 19 14Z"/><path d="M19 14 C 26 7 33 8 38 13 C 31 11 25 12 19 14Z"/><path d="M19 14 C 15 5 18 1 22 1 C 20 6 20 9 19 14Z"/><path d="M19 14 C 11 14 6 19 5 25 C 10 19 14 17 19 14Z"/><path d="M19 14 C 27 14 32 19 34 25 C 28 19 24 17 19 14Z"/></g><circle cx="19.5" cy="15.5" r="1.8" fill="#8a5a2b"/></svg>';
 function ico(i){if(isCpu(i))return '';const p=PL(i);if(p.id==='miguel')return `<span class="nico">${PALM}</span>`;if(p.id==='clara')return `<span class="nico">${sunflower()}</span>`;return `<span class="nico ne">${esc(p.e)}</span>`}
-function heroVs(){return `<div class="vs"><span class="c0">${ico(0)}${esc(MODE?nm(0):'Miguel')}</span><span class="x">&amp;</span><span class="c1">${ico(1)}${esc(MODE?nm(1):'Clara')}</span></div>`}
+function heroVs(){if(!MODE)return '';return `<div class="vs"><span class="c0">${ico(0)}${esc(MODE?nm(0):'Miguel')}</span><span class="x">&amp;</span><span class="c1">${ico(1)}${esc(MODE?nm(1):'Clara')}</span></div>`}
 function setMode(m){MODE=m;lsSet({mode:m});L.err='';
   if(m==='cpu'){const g=lsGet().cpuGame;G=(g&&g.mode==='cpu')?g:null;L.round=G?.round??null;L.status='ok';render();cpuTick()}
   else{G=null;CODE=lsGet().code||null;if(!db){L.status='nodb';render();return}if(CODE)subscribe();else{L.status='room';render()}}}
@@ -4134,7 +4184,7 @@ function rankingScreen(){
 function modeScreen(){
   const nv=ME?MISSOES.filter(m=>profGet(myPid()).u[m.id]).length:0;
   return `<div class="hero"><div class="kick">um jogo de música brasileira</div><h1 class="herot">Meu <em>Álbum</em></h1><div class="turntable"><div class="record"></div></div>${heroVs()}<p>Olá, ${esc(ME?ME.e+' '+ME.n:'')}! O que vamos fazer?</p><div id="bnotice">${bdNotice()}</div></div>
-  <div class="modes one mt"><button class="modebtn room" onclick="openRoom()"><span class="ic">🛋️</span><b>Quarto</b><span>♩ ${roomCoins()} BPM para decorar o quarto do Miguel e da Clara. O quadro de recados está lá dentro${bdFresh()?' — e há um recado novo! 💌':'.'}</span></button></div>
+  <div class="modes one mt"><button class="modebtn room" onclick="openRoom()"><span class="ic">🛋️</span><b>Quarto</b><span>${myInvite()?`💌 ${esc(plOf(myInvite().de).n)} convidou-te para partilhar o quarto!`:QID?`♩ ${roomCoins()} BPM para decorar ${esc(roomTitle().replace(/^O /,'o '))}. O quadro de recados está lá dentro${bdFresh()?' — e há um recado novo! 💌':'.'}`:'Cria o teu quarto e decora-o com os BPM das missões.'}</span></button></div>
   <div class="modes one mt"><button class="modebtn play" onclick="L.screen='jogar';render();scrollTo(0,0)"><span class="ic">▶️</span><b>Jogar</b><span>Contra o computador ou com um amigo, cada um no seu telemóvel. Com um amigo também podem jogar em equipa.</span></button></div>
   <div class="modes mt">
    <button class="modebtn" onclick="openMissions()"><span class="ic">💿</span><b>Missões e vinis</b><span>${ME?`${nv} de ${MISSOES.length} vinis conquistados. Completa missões e ganha mais.`:'Completa missões e ganha vinis personalizados.'}</span></button>
@@ -4162,9 +4212,7 @@ function whoScreen(){
     <div class="actions"><button class="btn" onclick="guestSave()">Entrar ${esc(L.newP.e)}</button><button class="btn ghost" onclick="L.newP=null;L.err='';render()">Cancelar</button></div></div>`:'';
   return `<div class="hero"><div class="kick">um jogo de música brasileira</div><h1 class="herot">Meu <em>Álbum</em></h1><div class="turntable"><div class="record"></div></div>${heroVs()}
   <p>Quem está a jogar?</p></div>
-  <div class="who"><button class="whobtn" onclick="setMe('miguel')"><span class="n c0">🌴 Miguel</span><span class="mono">sou eu</span></button>
-  <button class="whobtn" onclick="setMe('clara')"><span class="n c1">🌻 Clara</span><span class="mono">sou eu</span></button></div>
-  ${guests.length?`<div class="mono glab">também já jogaram</div><div class="who guests">${guests.map(p=>`<button class="whobtn g" onclick="setMe('${p.id}')"><span class="n cg">${esc(p.e)} ${esc(p.n)}</span><span class="mono">sou eu</span></button>`).join('')}</div>`:''}
+  <div class="who guests">${plList().map(p=>`<button class="whobtn g" onclick="setMe('${p.id}')"><span class="n ${p.id==='miguel'?'c0':p.id==='clara'?'c1':'cg'}">${esc(p.e)} ${esc(p.n)}</span><span class="mono">sou eu</span></button>`).join('')}</div>
   ${form||`<div class="who one"><button class="whobtn other" onclick="guestStart()"><span class="n">➕ Outra pessoa</span><span class="mono">escreve o teu nome e escolhe um emoji</span></button></div>`}`;
 }
 function newScreen(){
@@ -4342,7 +4390,7 @@ function body(){
 }
 function viewKey(){if(L.screen)return 'scr:'+L.screen+(L.rank?'1':'0')+(L.rankPer||'all');if(MODE==='online'&&G&&G.coop&&G.coop.seed){const c=G.coop;return ['co',c.seed,c.m,(c.tp||[]).length,!!(c.ok&&c.ok.p0&&c.ok.p1),JSON.stringify(c.fav&&Object.keys(c.fav)),JSON.stringify(c.gs&&Object.keys(c.gs)),c.r,JSON.stringify(c.hist&&c.hist[c.r])].join('|')}if(!G||!G.seed||!MODE)return [WHO,MODE,CODE,L.status,G?.joined?.p0,G?.joined?.p1,G?.seed].join('|');const ph=phase();return [MODE,G.round,ph,ph==='draft'?picks().length:'',ph==='duels'?stageKind().join(':'):'',ph==='order'?!!G.orders?.[P(WHO)]:''].join('|')}
 function mBackSync(){let b=document.getElementById('mtopback');if(L.screen==='missoes'){if(!b){b=document.createElement('div');b.id='mtopback';b.className='mtopback';b.innerHTML='<button class="btn ghost sm" onclick="closeMissions();scrollTo(0,0)">← Voltar</button>';document.body.appendChild(b)}}else if(b)b.remove()}
-function render(){setTimeout(mBackSync,0);if(L.rFull&&L.screen!=='quarto'){L.rFull=false;document.body.classList.remove('rfull');if(document.fullscreenElement)document.exitFullscreen().catch(()=>{})}
+function render(){if(L.visit&&L.screen!=='quarto'){L.visit=null;useRoom(myRoomId())}setTimeout(mBackSync,0);if(L.rFull&&L.screen!=='quarto'){L.rFull=false;document.body.classList.remove('rfull');if(document.fullscreenElement)document.exitFullscreen().catch(()=>{})}
   const app=document.getElementById('app'),keep={},kx={};app.querySelectorAll('.rtemas,.rcats,.rart,.qtabs,.dsub,.roomscroll').forEach((e,i)=>kx[e.className+'#'+i]=e.scrollLeft);app.querySelectorAll('input[id]').forEach(i=>keep[i.id]=i.value);
   const fid=document.activeElement&&document.activeElement.id;
   const key=viewKey(),enter=key!==L.lastKey,prevKey=L.lastKey||'';L.lastKey=key;
@@ -4409,6 +4457,7 @@ let _bgW=0;window.addEventListener('resize',()=>{const n=Math.ceil(window.innerW
 /* ======== arranque ======== */
 buildBg();
 {const ls=lsGet(),fresh=ls.alive&&Date.now()-ls.alive<120000;if(fresh&&ls.me&&(ls.who===0||ls.who===1)){ME=ls.me;WHO=ls.who}else{WHO=null;ME=null}}
+useRoom(myRoomId());
 /* abrir o site de novo começa sempre no menu principal (mantém quem és);
    só um recarregar acidental a meio do jogo (menos de 2 min) continua onde estava */
 {const ls=lsGet();if(!(ls.alive&&Date.now()-ls.alive<120000))lsSet({mode:null,code:null,cpuGame:null})}
@@ -4428,7 +4477,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795601649';
+const BUILD='1795602239';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
