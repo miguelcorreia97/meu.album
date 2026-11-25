@@ -4427,5 +4427,11 @@ try{fxInit()}catch(e){}
   const m=lsGet().mode;if(m==='online'||m==='cpu')setMode(m);else{L.status='ok';render()}
 })();
 </script>
+<script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
+const BUILD='1795598739';
+(function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
+ if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
+ setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
+<style>.newver{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:300;padding:10px 16px;border-radius:99px;border:2px solid #ffd23f;background:#2b1d14;color:#fff6e6;font:inherit;font-weight:700;font-size:.85rem;box-shadow:0 8px 24px rgba(0,0,0,.5);cursor:pointer;white-space:nowrap}</style>
 </body>
 </html>
