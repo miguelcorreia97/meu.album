@@ -7,9 +7,9 @@
 (function(){const W=1180,h=document.documentElement;function fit(){const sw=Math.min(screen.width,screen.height),phone=sw<=520&&!!window.matchMedia&&matchMedia('(pointer:coarse)').matches,vw=document.documentElement.clientWidth||innerWidth,land=innerWidth>innerHeight;
  const z=phone&&land&&vw<W?vw/W:1;h.style.zoom=z===1?'':String(z);h.classList.toggle('phland',z!==1)}
  fit();addEventListener('orientationchange',()=>{h.style.zoom='';setTimeout(fit,120)});addEventListener('resize',()=>{clearTimeout(fit.t);fit.t=setTimeout(()=>{h.style.zoom='';requestAnimationFrame(fit)},120)})})();</script>
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="icon" type="image/png" href="icon-192.png">
-<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
+<link rel="icon" type="image/png" href="icon-192.png?v=2">
+<link rel="manifest" href="manifest.webmanifest?v=2">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Meu Álbum">
@@ -4678,7 +4678,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795613893';
+const BUILD='1795614013';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
