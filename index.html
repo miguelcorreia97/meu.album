@@ -2,7 +2,11 @@
 <html lang="pt-PT">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta id="vpm" name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>/* telemóvel deitado: mostrar o site como no computador (1180px de largura), só que mais pequeno */
+(function(){const m=document.getElementById('vpm'),W=1180;function fit(){const land=innerWidth>innerHeight||(screen.orientation&&/landscape/.test(screen.orientation.type)),phone=Math.min(screen.width,screen.height)<=520&&matchMedia('(pointer:coarse)').matches;
+ const c=land&&phone?`width=${W}, viewport-fit=cover`:'width=device-width, initial-scale=1, viewport-fit=cover';if(m.content!==c)m.content=c}
+ fit();addEventListener('orientationchange',()=>setTimeout(fit,60));addEventListener('resize',()=>setTimeout(fit,60))})();</script>
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
