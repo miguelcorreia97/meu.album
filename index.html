@@ -2990,7 +2990,7 @@ function bpmZoom(){const q=roomQ(),me=myPid(),hoje=dayNum(lisNow().ymd),mem=CASA
   zoomOpen(`<div class="rzlist bpmz"><h3>♩ BPM de hoje</h3><p class="hint">Hoje o quarto já ganhou <b>${tot}</b> de ${max} BPM possíveis hoje.</p>
    <h4>🎵 Música a tocar (1 BPM a cada ${BPM_MIN} min)</h4>${mus}
    <h4>🎮 Partidas ganhas</h4>${jog}
-   <p class="hint" style="margin-top:12px">🎟️ Bilhetes de visitas a este quarto: ${SQ.tix!=null?SQ.tix:tixLocalN(QID)} (+${TIX} BPM cada). <a href="#" onclick="event.preventDefault();zoomClose();setTimeout(agendaZoom,200)">📅 Ver a agenda</a></p>
+   <p class="hint" style="margin-top:12px">🎟️ Bilhetes de visitas a este quarto: ${SQ.tix!=null?SQ.tix:tixLocalN(QID)} (+${TIX} BPM cada). <a href="#" style="color:#ffd23f;font-weight:700;text-decoration:none" onclick="event.preventDefault();zoomClose();setTimeout(agendaZoom,200)">📅 Ver a agenda</a></p>
    <h4>🎯 Jogar ${PART_META} partidas no dia (+${PART_BPM} BPM)</h4>${mem.map(w=>{const st=profGet(w).st||{},v=Math.min(PART_META,+st.pdDay===hoje?(+st.pdHoje||0):0);return row(w,v,PART_META,v>=PART_META?`+${PART_BPM} BPM ganhos hoje`:'Contam todas as partidas, ganhas ou perdidas')}).join('')}
 </div>`,'sheet')}
 function musWho(){const q=roomQ();return CASAL.map(w=>`${plE(w)} ${bpmOf(w,q)>=BPM_DIA?'✓':bpmOf(w,q)+'/'+BPM_DIA}`).join(' · ')}
@@ -4946,7 +4946,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795617445';
+const BUILD='1795617929';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
