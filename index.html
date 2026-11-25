@@ -2,11 +2,11 @@
 <html lang="pt-PT">
 <head>
 <meta charset="utf-8">
-<meta id="vpm" name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<script>/* telemóvel deitado: mostrar o site como no computador (1180px de largura), só que mais pequeno */
-(function(){const m=document.getElementById('vpm'),W=1180;function fit(){const land=innerWidth>innerHeight||(screen.orientation&&/landscape/.test(screen.orientation.type)),phone=Math.min(screen.width,screen.height)<=520&&matchMedia('(pointer:coarse)').matches;
- const c=land&&phone?`width=${W}, viewport-fit=cover`:'width=device-width, initial-scale=1, viewport-fit=cover';if(m.content!==c)m.content=c}
- fit();addEventListener('orientationchange',()=>setTimeout(fit,60));addEventListener('resize',()=>setTimeout(fit,60))})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>/* telemóvel deitado: o site fica igual ao computador (1180px), encolhido para caber no ecrã */
+(function(){const W=1180,h=document.documentElement;function fit(){const sw=Math.min(screen.width,screen.height),phone=sw<=520&&matchMedia('(pointer:coarse)').matches,vw=document.documentElement.clientWidth||innerWidth,land=innerWidth>innerHeight;
+ const z=phone&&land&&vw<W?vw/W:1;h.style.zoom=z===1?'':String(z);h.classList.toggle('phland',z!==1)}
+ fit();addEventListener('orientationchange',()=>{h.style.zoom='';setTimeout(fit,120)});addEventListener('resize',()=>{clearTimeout(fit.t);fit.t=setTimeout(()=>{h.style.zoom='';requestAnimationFrame(fit)},120)})})();</script>
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
