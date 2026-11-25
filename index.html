@@ -1714,6 +1714,7 @@ body,#app{overflow-x:clip}
 .bkmcount{text-align:center;font-family:Anton,sans-serif;font-size:2.4rem;color:#ffd23f;margin:16px 0;animation:spPulse 1s ease-in-out infinite}
 .bkmlive{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}.bkmlive span{padding:4px 10px;border-radius:99px;background:rgba(255,255,255,.07);font-size:.78rem}.bkmlive span.me{background:rgba(255,210,63,.18)}.bkmlive b{color:#7cffb2}
 .bkmmenu{max-width:640px;margin-left:auto;margin-right:auto}.bkmjoin{display:flex;gap:8px;margin-top:10px}.bkmjoin .inp{max-width:140px;text-transform:uppercase;letter-spacing:.2em;font-weight:800;text-align:center}
+.freq,.fwhisper{transition:margin .2s}
 .rszchip{display:flex;gap:4px;padding:4px!important;cursor:default!important}.rszchip button{border:0;border-radius:99px;padding:5px 9px;background:rgba(255,255,255,.1);color:var(--cream);font:inherit;font-size:.74rem;font-weight:700;cursor:pointer}.rszchip button.on{background:var(--cream);color:#2a1608}
 .rplacechip{position:absolute;transform:translate(-50%,0);z-index:4;padding:7px 12px;border-radius:99px;border:1px solid rgba(255,214,150,.5);background:rgba(20,10,4,.88);color:var(--cream);font:inherit;font-size:.78rem;font-weight:700;cursor:pointer;white-space:nowrap;box-shadow:0 6px 18px rgba(0,0,0,.4);animation:rzIn .2s ease}
 .rplaces.big button{font-size:.9rem;padding:11px 12px}
@@ -4687,7 +4688,7 @@ function feTick(){const F=L.fe;if(!F||L.screen!=='festa'){clearInterval(L.feT);r
   {const nx=document.querySelector('.fnextin');if(nx&&F.ph==='play'){const t=Math.max(0,Math.ceil((left-30000)/1000));nx.textContent=F.lastTrack?`🌙 última música da noite`:t>0?`⏳ prepara a próxima daqui a ${t}s`:''}}
   if(left>0){if(el){el.classList.remove('sil');el.innerHTML=`⏱ <b>${Math.ceil((F.ph==='play'&&!F.lastTrack?left-30000:left)/1000)}s</b><small>${F.round===1&&!F.last?'até abrir a pista':F.ph==='play'?'até preparares a próxima':'até a música acabar'}</small>`;el.style.setProperty('--p',(left/(F.ph==='play'||F.ph==='pick'?(F.dur||30000):30000)*100)+'%')}st&&st.classList.remove('silence');if(FA.el&&!FA.el.paused&&left<300){try{FA.el.pause()}catch(e){}}}
   else{const sil=Math.floor(-left/1000);if(el){el.classList.add('sil');el.innerHTML=`🔇 <b>${sil}s</b><small>de silêncio!</small>`;el.style.setProperty('--p','0%')}st&&st.classList.add('silence');
-    if(sil>(F.silT||0)){F.silT=sil;F.crowd.forEach(c=>{c.h=Math.max(0,c.h-3);if(c.h<18)c.on=false});const live=Math.max(0,(F.nota-Math.min(3,.12*sil))*2);const pf=document.querySelector('.fnl b');if(pf)pf.textContent=live.toFixed(1);if(sil%3===0&&F.ph==='pick'){const sc=document.querySelector('.ffloor');if(sc){const tmp=document.createElement('div');tmp.innerHTML=feScene(F);const nf=tmp.querySelector('.ffloor');if(nf)sc.replaceWith(nf)}}}}}
+    if(sil>(F.silT||0)){F.silT=sil;F.crowd.forEach(c=>{c.h=Math.max(0,c.h-3);if(c.h<18)c.on=false});const live=Math.max(0,(F.nota-Math.min(3,.12*sil))*2);const pf=document.querySelector('.fnl b');if(pf)pf.textContent=live.toFixed(1);if(sil%3===0&&F.ph==='pick'){const sc=document.querySelector('.ffloor');if(sc){const tmp=document.createElement('div');tmp.innerHTML=feScene(F);const nf=tmp.querySelector('.ffloor');if(nf){sc.replaceWith(nf);requestAnimationFrame(feBubbles)}}}}}}
 function feRound(){const F=L.fe;if(!F)return;if(F.round>FE_ROUNDS){feEnd();return}const N=FEN[F.i],E=N.evs[F.round];F.ev=E||null;if(E&&E.rain!=null)F.rain=E.rain;if(E&&E.add){for(let k=0;k<E.add;k++){const p=rndPerson('t'+F.round+k+Date.now());p.acc='hat cam';F.crowd.push({p,pref:['bossa','samba'][k%2],h:50,on:true,x:10+k*20,y:2,d:(k*.2).toFixed(2),nw:1})}}
   /* um pedido de alguém na pista */
   const on=F.crowd.filter(c=>c.on);F.req=Math.random()<.75&&on.length?(()=>{const c=on[(Math.random()*on.length)|0];return {c:F.crowd.indexOf(c),g:c.pref}})():null;
@@ -4729,7 +4730,12 @@ function feEnd(){const F=L.fe;if(!F||F.ph==='end')return;F.ph='end';setTimeout((
   if(won&&i>=carDone()){profSet('carN',i+1);const b=CAR_BPM[i]||5;if(CASAL.includes(myPid()))profAdd('vbpm',b);F.newWin=b}
   feDraw();if(won){confetti(50);if(F.newWin)setTimeout(()=>bigFx(`<div class="carwin"><span>${c.e}</span><b>Noite conquistada!</b><small>${esc(c.lugar)} é teu. +${F.newWin} BPM${i+1<CAR.length?` · próxima: ${esc(CAR[i+1].lugar)}`:' · és o rei do samba! 👑'}</small><i class="carstamp big">✓</i></div>`,4200,'carwinfx'),900)}}
 function feDraw(){const w=document.querySelector('.festa');if(w)w.outerHTML=festaHtml();else render();feFit()}
-function feFit(){const w=document.querySelector('.fstagew'),st=w&&w.querySelector('.fstage');if(!st)return;const R=innerWidth<600?1.3:1000/525,W=innerWidth<600?w.clientWidth:Math.min(w.clientWidth,Math.max(140,w.clientHeight)*R);st.style.width=W+'px';st.style.height=(W/R)+'px'}
+function feBubbles(){const els=[...document.querySelectorAll('.ffloor .freq,.ffloor .fwhisper')];els.forEach(e=>{e.style.marginBottom='0px';e.style.visibility=''});const placed=[];
+  els.sort((a,b)=>(b.classList.contains('freq')?1:0)-(a.classList.contains('freq')?1:0));
+  for(const e of els){let r=e.getBoundingClientRect(),shift=0,tries=0;const hit=()=>placed.some(p=>r.left<p.right+4&&r.right>p.left-4&&r.top<p.bottom+3&&r.bottom>p.top-3);
+    while(hit()&&tries<5){shift+=r.height+4;e.style.marginBottom=shift+'px';r=e.getBoundingClientRect();tries++}
+    if(hit()||r.top<(document.querySelector('.fstage')||{getBoundingClientRect:()=>({top:-1e9})}).getBoundingClientRect().top+40){e.style.visibility='hidden';continue}placed.push(r)}}
+function feFit(){const w=document.querySelector('.fstagew'),st=w&&w.querySelector('.fstage');if(!st)return;const R=innerWidth<600?1.3:1000/525,W=innerWidth<600?w.clientWidth:Math.min(w.clientWidth,Math.max(140,w.clientHeight)*R);st.style.width=W+'px';st.style.height=(W/R)+'px';requestAnimationFrame(feBubbles)}
 addEventListener('resize',()=>{if(L.screen==='festa')feFit()});
 /* ---- música a sério na festa: pré-visualizações de 30 s ---- */
 const FA={el:null,pre:null,url:{},i:null};
@@ -5690,7 +5696,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795642575';
+const BUILD='1795642653';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
