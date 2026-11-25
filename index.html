@@ -3490,7 +3490,7 @@ function roomFull(on){on=on===undefined?!L.rFull:on;L.rFull=on;document.body.cla
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&L.rFull)roomFull(false)});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&L.rFull&&!document.querySelector('.rzoom'))roomFull(false)});
 /* ---------- editar posições: arrastar (x,y) e profundidade (z) ---------- */
-const BACKY={cama:14,movel:8,secretaria:10,cabeceira:10};
+const BACKY={cama:7,movel:4,secretaria:5,cabeceira:5};
 const NOEDIT=new Set(['cor','chao','janela','recados','cortina','teto','moldura','lencol']);
 const FOLLOW={mesa:'movel',planta2:'movel',fita:'prat'};
 function offKey(k,id){if(FOLLOW[k]){const q=roomQ(),f=FOLLOW[k];if(k==='mesa'||k==='planta2'){const a=mulGet(q,k);if(a.indexOf(id)>0)return 'o:'+id}return 'o:'+(f==='prat'?(mulGet(q,'prat').find(Boolean)||q.eq.prat):q.eq[f])}return 'o:'+id}
@@ -4713,7 +4713,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795614493';
+const BUILD='1795614648';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
