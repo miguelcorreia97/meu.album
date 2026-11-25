@@ -3197,13 +3197,13 @@ function aposter(x,y,w,k,fr){const d=k&&DISCO(k),h=Math.round(w*1.36),cs=w-10,fs
   return g+'</g>'}
 function screenArt(x,y,w,h,c,id){const k=c.on&&c.pl.play,d=k&&DISCO(k);if(d)return `<clipPath id="${id}"><rect x="${x}" y="${y}" width="${w}" height="${h}"/></clipPath><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#0d0b0a"/><image href="${esc(d.f)}" x="${x+w/2-h/2}" y="${y}" width="${h}" height="${h}" preserveAspectRatio="xMidYMid slice" clip-path="url(#${id})"/><rect x="${x+3}" y="${y+h-5}" width="${w-6}" height="2" fill="rgba(255,255,255,.25)"/><rect x="${x+3}" y="${y+h-5}" width="${(w-6)*.4}" height="2" fill="#ffd23f"/>`;
   return `<linearGradient id="${id}g" x2="1" y2="1"><stop offset="0" stop-color="#f3e2c4"/><stop offset="1" stop-color="#e9c9a0"/></linearGradient><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="url(#${id}g)"/><path d="M${x+6} ${y+h*.7} q${w*.2} ${-h*.5} ${w*.4} ${-h*.1} t${w*.4} ${-h*.2}" stroke="#d24a32" stroke-width="${h*.12}" fill="none" stroke-linecap="round"/><circle cx="${x+w*.75}" cy="${y+h*.35}" r="${h*.14}" fill="#1d1a18"/>`}
-const LEN=c=>({...((RIT[(c&&c.eq&&c.eq.lencol)||roomQ().eq.lencol]||RIT['le-azul']||{}).bed||{})});
+const LEN=c=>({...((RIT[(c&&c.eq&&c.eq.lencol)||L.lenLook||roomQ().eq.lencol]||RIT['le-azul']||{}).bed||{})});
 Object.assign(RDR,{
 'cm-estofada'(it,c){return {b:cama(c,{...LEN(c),head:'tecido',hc:'#e2d6c4',y:448})}},
 'cm-luz'(it,c){return {b:cama(c,{...LEN(c),head:'tecido',hc:'#e9e6df',y:448}),g:`<rect x="812" y="236" width="256" height="4" rx="2" fill="#fff0a8"/>${glow(940,230,170,'ama',.85)}`}},
 'cm-ferro'(it,c){let h=`<rect x="812" y="246" width="6" height="96" fill="#1d1a18"/><rect x="1062" y="246" width="6" height="96" fill="#1d1a18"/><path d="M815 252 H1065 M815 300 H1065" stroke="#1d1a18" stroke-width="4"/><circle cx="815" cy="244" r="5" fill="#1d1a18"/><circle cx="1065" cy="244" r="5" fill="#1d1a18"/>`;for(let x=840;x<1060;x+=22)h+=`<path d="M${x} 252 V330" stroke="#2a2624" stroke-width="2.4"/><circle cx="${x}" cy="276" r="3" fill="none" stroke="#2a2624" stroke-width="1.6"/>`;return {b:h+cama(c,{...LEN(c),head:'none',y:448})}},
 });
-Object.assign(RDR,Object.fromEntries(RITEMS.filter(x=>x.s==='lencol').map(x=>[x.id,(it,c)=>({b:cama({...c,eq:{...(c.eq||{}),lencol:x.id}},{...x.bed,head:'wood',y:448})})])));
+Object.assign(RDR,Object.fromEntries(RITEMS.filter(x=>x.s==='lencol').map(x=>[x.id,(it,c)=>{const bd=L.bedLook||roomQ().eq.cama||'cm-casal',f=RDR[bd];return f&&bd!==x.id?f(RIT[bd],{...c,eq:{...(c.eq||{}),cama:bd,lencol:x.id}}):{b:cama({...c,eq:{...(c.eq||{}),lencol:x.id}},{...x.bed,head:'wood',y:448})}}])));
 function cama(c,o){const y=o.y,low=o.low,bk=low?362:328,BL=820,FL=842,R=1060,FR=1074,W=R-BL;let g=`<ellipse cx="${(FL+FR)/2}" cy="${y+28}" rx="${(FR-FL)/2+24}" ry="13" fill="url(#gsh)"/>`;
   if(o.head==='wood')g+=`<rect x="${BL-8}" y="250" width="${W+16}" height="${bk-238}" rx="4" fill="#7a4a2a"/><rect x="${BL-8}" y="250" width="${W+16}" height="8" rx="3" fill="#9a6238"/><rect x="${BL+4}" y="264" width="${W-8}" height="${bk-266}" fill="#6a3e22" opacity=".5"/>`;
   if(o.head==='tecido')g+=`<path d="M${BL-8} ${bk+10} V262 q0 -20 20 -20 h${W-24} q20 0 20 20 V${bk+10}z" fill="${o.hc}"/>${[...Array(7)].map((_,i)=>`<path d="M${BL+12+i*(W-24)/6} 246 V${bk+6}" stroke="rgba(0,0,0,.13)" stroke-width="2"/>`).join('')}<path d="M${BL-4} 262 q0 -16 16 -16 h${W-24} q16 0 16 16" stroke="rgba(255,255,255,.3)" stroke-width="3" fill="none"/>`;
@@ -3449,11 +3449,11 @@ function posterRefund(){bedMigrate();if(!canEdit())return;const q=roomQ();if(q.r
   for(const id in q.own){if(PO_OLD[id])v+=Math.round(PO_OLD[id]*1.5/10)*10;else if(RIT[id]&&RIT[id].s==='quadros')v+=RIT[id].p}
   (q.pst||[]).forEach(k=>{if(DISCO(k))v+=posterPrice(k)});
   q.rf1=1;q.spent=Math.max(0,q.spent-v);if(PO_OLD[q.eq.poster])q.eq.poster=null;if(q.mul&&q.mul.poster)q.mul.poster=q.mul.poster.map(x=>PO_OLD[x]?null:x);roomSave(q);if(v)setTimeout(()=>toast(`♩ +${v} BPM devolvidos pelos pósteres que saíram da loja`),1200)}
-function openRoom(){setTimeout(posterRefund,2500);L.visit=null;useRoom(myRoomId());plLoad();legMigrate();L.screen='quarto';L.rFull=false;document.body.classList.remove('rfull');setTimeout(roomBills,1500);L.rTodV=null;L.rNoteEd=0;if(db&&db.cloud)bdLoad();L.rTab=L.rTab||'loja';L.rCat=(L.rCat==='posteres'||L.rCat==='quadros'?'poster':L.rCat)||'cama';L.rPrev=null;L.rTodV=null;CASAL.forEach(w=>profLoad(w));sqPull();render();scrollTo(0,0)}
+function openRoom(){L.bedLook=null;L.lenLook=null;setTimeout(posterRefund,2500);L.visit=null;useRoom(myRoomId());plLoad();legMigrate();L.screen='quarto';L.rFull=false;document.body.classList.remove('rfull');setTimeout(roomBills,1500);L.rTodV=null;L.rNoteEd=0;if(db&&db.cloud)bdLoad();L.rTab=L.rTab||'loja';L.rCat=(L.rCat==='posteres'||L.rCat==='quadros'?'poster':L.rCat)||'cama';L.rPrev=null;L.rTodV=null;CASAL.forEach(w=>profLoad(w));sqPull();render();scrollTo(0,0)}
 function roomMine(){return canEdit()}
 function roomRefresh(){if(L.screen!=='quarto'||L.rNoteEd||document.querySelector('.rplayfx'))return;const a=document.activeElement;if(a&&/INPUT|TEXTAREA/.test(a.tagName))return;render()}
 function roomTod(t){L.rTodV=t||null;const s=document.querySelector('.roomscene .roomsvg');if(s)s.outerHTML=roomSceneInner();document.querySelectorAll('.todbar button').forEach(b=>b.classList.toggle('on',(b.dataset.t||'')===(t||'')))}
-function roomTry(id){const it=RIT[id];if(!it||!canEdit())return;
+function roomTry(id){const it=RIT[id];if(!it||!canEdit())return;if(it.s==='cama')L.bedLook=id;if(it.s==='lencol')L.lenLook=id;
   if(ownsItem(0,id)){const q=roomQ();if(RPOS[it.s]){const a=mulGet(q,it.s),j=a.indexOf(id);if(j>=0){if(!RFIX[it.s]){a[j]=null;mulSet(q,it.s,a)}}else mulAuto(q,id)}else if(q.eq[it.s]===id&&!RFIX[it.s])q.eq[it.s]=null;else q.eq[it.s]=id;L.rPrev=null;roomSave(q)}else L.rPrev=L.rPrev===id?null:id;render();roomScroll()}
 function roomBuy(id){const it=RIT[id];if(!it||!canEdit()||it.lock)return;const q=roomQ();if(roomCoins()<it.p)return;
   q.spent+=it.p;q.own[id]=1;if(RPOS[it.s])mulAuto(q,id);else q.eq[it.s]=id;L.rPrev=null;roomSave(q);profAdd('compras');profMax('ninho',Object.keys(q.own).length);render();
@@ -3489,7 +3489,7 @@ function edPointerDown(e){if(!L.edit)return;const g=e.target.closest&&e.target.c
   const up=()=>{removeEventListener('pointermove',mv);removeEventListener('pointerup',up);removeEventListener('pointercancel',up)};
   addEventListener('pointermove',mv);addEventListener('pointerup',up);addEventListener('pointercancel',up)}
 document.addEventListener('pointerdown',edPointerDown,true);
-function roomSceneInner(){const o={};if(L.rPrev)o.eq={[RIT[L.rPrev].s]:L.rPrev};if(L.rTodV)o.tod=L.rTodV;return roomSvg(0,o)}
+function roomSceneInner(){const o={};if(L.rPrev){const ps=RIT[L.rPrev].s;o.eq={[ps]:L.rPrev};if(ps==='lencol'&&L.bedLook)o.eq.cama=L.bedLook;if(ps==='cama'&&L.lenLook)o.eq.lencol=L.lenLook}if(L.rTodV)o.tod=L.rTodV;return roomSvg(0,o)}
 function roomPop(t){const sc=document.querySelector('.roomscene'),lt=document.getElementById('rleitor');if(!sc||!lt)return;const a=sc.getBoundingClientRect(),b=lt.getBoundingClientRect();const e=document.createElement('div');e.className='rpop';e.textContent=t;e.style.left=(b.left-a.left+b.width/2)+'px';e.style.top=(b.top-a.top)+'px';sc.appendChild(e);setTimeout(()=>e.remove(),1800)}
 /* animação: o disco sai da capa e vai para o gira-discos, com ondas e notas */
 function roomPlayFx(k){const sc=document.querySelector('.roomscene'),lt=document.getElementById('rleitor'),d=DISCO(k);if(!sc||!lt||!d||FX.reduced)return;const a=sc.getBoundingClientRect(),b=lt.getBoundingClientRect();
@@ -4640,7 +4640,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795612532';
+const BUILD='1795612642';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
