@@ -2627,7 +2627,7 @@ async function profLoad(w){if(!w)return;const cur=await profFetch(w);if(cur){PRO
   if(w===myPid()){const loc=profLocal(w);if(!cur.ut&&Object.keys(loc.st||{}).length){PEND[w].add={...loc.st};delete PEND[w].add['#artistas'];delete PEND[w].add.streak;delete PEND[w].add.bestStreak;PEND[w].set={streak:+loc.st.streak||0,bestStreak:+loc.st.bestStreak||0};PEND[w].u={...loc.u};if(loc.q)PEND[w].q=loc.q;profFlush(w)}}}
   if(L.screen==='missoes'||L.screen==='quarto')render()}
 /* registo das escolhas */
-function missionPick(i){try{if(!ME||!G||!G.seed)return;const n=picks().length,[x,y]=offer(n),other=x.i===i?y:x,s=song(i),e=ev(i);
+function missionPick(i){try{if(!ME||!G||!G.seed)return;if(L.eSeed!==G.seed){L.eSeed=G.seed;try{L.e0=roomEarned()}catch(e){L.e0=null}}const n=picks().length,[x,y]=offer(n),other=x.i===i?y:x,s=song(i),e=ev(i);
   const dt=Date.now()-(G.ts||Date.now());profAdd('pk.n');profAdd('pk.a.'+artistKey(s.a));profAdd('pk.g.'+e.gen);e.tags.forEach(t=>profAdd('pk.t.'+t));
   if(e.en<=2)profAdd('pk.calm');if(e.en>=4)profAdd('pk.hot');
   const d=ev(other.i).nota-e.nota;if(d>=.5)profAdd('pk.bad');else if(d<=-.5)profAdd('pk.good');
@@ -2643,7 +2643,8 @@ function missionEnd(){try{if(!ME||WHO==null||!G||!G.seed)return;const done=JSON.
   profAdd('duelWin',w);if(w===G.per)profAdd('sweep');if(l===G.per)profAdd('wipe');if(won&&byCoin)profAdd('coin');
   try{const pd=pedido();const hits=rawTracks(WHO).filter(t=>pd.t(ev(t.i),t)).length;if(hits)profAdd('pedido',hits)}catch(e){}
   if(now.getHours()<5)profAdd('night');if(now.getDay()===0)profAdd('sunday');
-  if(won)vitBpm(cpu?VIT_BPM.cpu[G.level||'normal']||6:VIT_BPM.pvp,'vitória')}catch(e){}}
+  const vb=won?vitBpm(cpu?VIT_BPM.cpu[G.level||'normal']||6:VIT_BPM.pvp,'vitória'):0;
+  if(CASAL.includes(myPid())&&L.eSeed===G.seed&&L.e0!=null){const dm=roomEarned()-L.e0-vb;if(dm>0)setTimeout(()=>toast(`🎯 +${dm} BPM das missões${won?'':' (perdeste, mas as missões avançaram)'}`),won?3900:900)}}catch(e){}}
 /* desenho do vinil */
 function vinyl(m,on,big){const v=m.v,lab=v.a?`<img src="${esc(ART_COVER(v.a))}" alt="" loading="lazy">`:`<span class="ve" style="--vc:${v.c}">${v.e}</span>`;
   return `<div class="vinyl ${on?'on':'off'} ${big?'big':''}"><div class="vgroove"></div><div class="vlabel" style="--vc:${v.c||'#222'}">${lab}</div><div class="vhole"></div>${on?'':'<div class="vlock">🔒</div>'}</div>`}
@@ -3445,7 +3446,7 @@ function coRecord(kind,x){try{if(!ME)return;const c=CO(),done=JSON.parse(localSt
   if(kind==='ab'){if(x.won){profAdd('co_win');const s=(+profGet(myPid()).st.co_seq||0)+1;profSet('co_seq',s);profMax('co_seqb',s)}else profSet('co_seq',0)}
   if(kind==='onda'){profAdd('co_ac',x.r[WHO].hits.length);profMax('co_sint',x.pct)}
   if(kind==='noite')profMax('co_noite',x.sv);
-  vitBpm(kind==='ab'?(x.won?VIT_BPM.pvp:0):kind==='onda'?((x.pct||0)>=50?Math.min(10,Math.round((x.pct||0)/10)):0):Math.min(10,Math.max(0,(x.sv||0)-1)*2),'modo a dois')}catch(e){}}
+  vitBpm(kind==='ab'?(x.won?VIT_BPM.pvp:0):kind==='onda'?((x.pct||0)>=70?8:0):((x.sv||0)>=4?Math.min(10,(x.sv-3)*3):0),'modo a dois')}catch(e){}}
 /* partidas juntos (qualquer modo) e dias em que jogaram */
 function juntosAdd(){profAdd('juntos');try{const n=lisNow(),d=new Date(),dow=+new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Lisbon',weekday:'narrow'}).format(d)||0;const wd=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(new Intl.DateTimeFormat('en-US',{timeZone:'Europe/Lisbon',weekday:'short'}).format(d));
   const L2=JSON.parse(localStorage.getItem('co-dias')||'{}'),e=L2[n.ymd]||{wd};if(n.h>=6&&n.h<12)e.m=1;if(n.h>=20||n.h<5)e.n=1;L2[n.ymd]=e;
