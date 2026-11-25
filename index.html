@@ -4783,7 +4783,7 @@ function ambSet(on){try{if(!SND.master||!SND.ctx)return;const c=SND.ctx;if(on){i
 function feBgPause(){ambSet(false);try{if(MUS.el&&!MUS.el.paused){musFade(0,.6);const el=MUS.el;setTimeout(()=>{try{el.pause()}catch(e){}},650)}}catch(e){}}
 const FE_FULLF={"36": "festa/trem-das-onze.mp3", "136": "festa/meu-lugar.mp3", "60": "festa/voce-me-vira-a-cabeca.mp3", "120": "festa/deixa-acontecer.mp3", "134": "festa/pe-na-areia.mp3", "126": "festa/sera-que-e-amor.mp3", "102": "festa/taj-mahal.mp3", "37": "festa/menina-mulher-da-pele-preta.mp3", "129": "festa/carolina.mp3", "20": "festa/oceano.mp3", "24": "festa/meu-bem-querer.mp3", "3": "festa/samurai.mp3", "22": "festa/se.mp3", "38": "festa/construcao.mp3", "95": "festa/eu-sei-que-vou-te-amar.mp3"};
 function feFull(i){if(!feFull.m){feFull.m={...FE_FULLF};feFull.d={};const by={};PLAYLIST.forEach(p=>by[nrm(p.t)]=p.src);songPool().forEach(k=>{const t=nrm(song(k).t);if(by[t])feFull.m[k]=by[t]})}return feFull.m[i]||null}
-function fePlay(i,q,dur){if(!SND.on)return;const fu=feFull(i);const go=u=>{if(!u||!L.fe||L.screen!=='festa')return;feBgPause();const old=FA.el,n=new Audio(u);n.loop=!fu&&(dur||30000)>30000;if(fu)n.addEventListener('loadedmetadata',()=>{feFull.d[i]=n.duration});n.volume=0;n.setAttribute('playsinline','');FA.el=n;FA.i=i;n._vt=[.45,.75,1][L.fe&&L.fe.vol!=null?L.fe.vol:1];
+function fePlay(i,q,dur){if(!SND.on)return;const fu=feFull(i);const go=u=>{if(!u||!L.fe||L.screen!=='festa')return;feBgPause();const old=FA.el,n=new Audio(u);n.loop=!fu&&(dur||30000)>30000;if(fu)n.addEventListener('loadedmetadata',()=>{feFull.d[i]=n.duration});n.volume=0;n.setAttribute('playsinline','');if(fu)try{feDistWire(n)}catch(e){}FA.el=n;FA.i=i;n._vt=[.45,.75,1][L.fe&&L.fe.vol!=null?L.fe.vol:1];
     const smooth=q==='perfeito'?6:q==='bom'?4:0;
     if(smooth||!old||old.paused){n.play().then(()=>{if(IS_IOS)n.volume=1;else faFade(n,n._vt||.85,smooth||2)}).catch(()=>{});if(old){if(IS_IOS)old.pause();else faFade(old,0,smooth||.8,()=>old.pause())}}
     else{/* transição simples: a anterior desaparece e só depois entra a nova */if(IS_IOS){old.pause();n.play().then(()=>n.volume=1).catch(()=>{})}else{faFade(old,0,2.6,()=>{old.pause();n.play().then(()=>faFade(n,n._vt||.85,2.6)).catch(()=>{})})}}};
@@ -4888,12 +4888,21 @@ function fsSfx(k){if(!SND.on)return;const c=fsCtx();if(!c)return;const o=c.creat
  if(k==='luzoff'){fsNoise(t,.03,'highpass',3000,1,.12);fsTone(t,'sine',500,90,.5,.05)}
  if(k==='boing'){fsTone(t,'sine',300,900,.25,.08);fsTone(t+.2,'sine',900,200,.3,.06)}
  }catch(e){}FSX.out=null;setTimeout(()=>{try{o.disconnect()}catch(e){}},3500)}
+
+/* distorção da música quando bêbedo (só nos ficheiros do site, mesma origem) */
+function feCurve(k){const n=1024,c=new Float32Array(n);for(let i=0;i<n;i++){const x=i*2/n-1;c[i]=(1+k)*x/(1+k*Math.abs(x))}return c}
+function feDistWire(n){const c=fsCtx();if(!c)return;const src=c.createMediaElementSource(n),dry=c.createGain(),wet=c.createGain(),sh=c.createWaveShaper(),bp=c.createBiquadFilter();bp.type='lowpass';bp.frequency.value=18000;sh.oversample='2x';sh.curve=feCurve(0);wet.gain.value=0;
+  src.connect(dry);src.connect(sh);sh.connect(wet);dry.connect(bp);wet.connect(bp);bp.connect(c.destination);n._dist={dry,wet,sh,bp,k:-1}}
+function feDistUpd(F,now){const el=FA.el;if(!el)return;const a=F.alc||0,x=Math.min(1,a/FE_ALC_MAX);
+  if(a>=.3){el.preservesPitch=false;el.mozPreservesPitch=false;el.webkitPreservesPitch=false;el.playbackRate=Math.max(.5,1+x*.38+Math.sin(now/700)*.07*x+Math.sin(now/230)*.025*x)}else if(el.playbackRate!==1)el.playbackRate=1;
+  const d=el._dist;if(d){const k=Math.round(x*x*60);if(k!==d.k){d.k=k;d.sh.curve=feCurve(k)}const t=FSX.ctx.currentTime;d.wet.gain.setTargetAtTime(x*.9,t,.4);d.dry.gain.setTargetAtTime(1-x*.55,t,.4);d.bp.frequency.setTargetAtTime(18000-x*15000+Math.sin(now/500)*1200*x,t,.2)}
+  if(a>=.5&&SND.on&&FSX.ctx&&Math.random()<.5*x){const o=FSX.out;FSX.out=FSX.ctx.destination;try{for(let j=0;j<3;j++)fsNoise(FSX.ctx.currentTime+Math.random()*.25,.006+Math.random()*.01,'highpass',2500,1,.06*x)}catch(e){}FSX.out=o}}
 function feDesk(F){const v=F.vol==null?1:F.vol,u=k=>F.used2&&F.used2[k+':'+F.round];
   return `<div class="fdesk2"><div class="fdrow"><span class="fdl">🎛️ Mesa</span><button class="fdb" onclick="feAct('horn')">📣 Buzina</button><button class="fdb ${F.lights?'on':''}" onclick="feAct('luz')">💡 Luzes ${F.lights?'on':'off'}</button><button class="fdb" ${u('mic')?'disabled':''} onclick="feAct('mic')">🎤 Falar</button><button class="fdb" ${u('ded')?'disabled':''} onclick="feAct('ded')">💞 Dedicar</button></div>
    <div class="fdrow"><span class="fdl">Volume</span>${VOLN.map((n,k)=>`<button class="fdv ${v===k?'on':''}" onclick="feVol(${k})">${n}</button>`).join('')}</div>
    ${F.ask?`<div class="fask"><span>${feDz(F.ask.t)}</span><button class="btn sm" onclick="feAsk(1)">Sim</button><button class="btn ghost sm" onclick="feAsk(0)">Agora não</button><i style="animation-duration:${Math.max(1,(F.ask.until-Date.now())/1000)}s"></i></div>`:''}</div>`}
 function feDeskTick(F){const now=Date.now();if(F.ph!=='play'&&F.ph!=='pick')return;const playing=F.tEnd&&now<F.tEnd;
-  if((F.alc||0)>=.45&&Math.random()<.012*F.alc*4){try{fsSfx('hic')}catch(e){}}try{if(FA.el){if((F.alc||0)>=.4){FA.el.preservesPitch=false;FA.el.playbackRate=1+Math.sin(now/1100)*.035*F.alc}else if(FA.el.playbackRate!==1)FA.el.playbackRate=1}if(FSX.lp)FSX.lp.frequency.setTargetAtTime(Math.max(900,18000-(F.alc||0)*14000),FSX.ctx.currentTime,.5)}catch(e){}
+  if((F.alc||0)>=.45&&Math.random()<.012*F.alc*4){try{fsSfx('hic')}catch(e){}}try{feDistUpd(F,now);if(FSX.lp)FSX.lp.frequency.setTargetAtTime(Math.max(900,18000-(F.alc||0)*14000),FSX.ctx.currentTime,.5)}catch(e){}
   if(F.alc>0){const dt=(now-(F.alcT||now))/60000;F.alc=Math.max(0,F.alc-dt*(L20[F.i].h[1]-L20[F.i].h[0])/10*.15);if(!F.aU||now-F.aU>1500){F.aU=now;feAlcUpd(F)}}F.alcT=now;
   if(feFracT(F)>.15&&F.nota<2){if(!F.badT){F.badT=now;feToastF('⚠️ O dono está a olhar para ti de lado…',false)}else if(now-F.badT>12000&&!F.badW){F.badW=1;feToastF('😠 "Mais uma destas e vais para a rua!"',false)}else if(now-F.badT>25000){feExpel('mau');return}}else{F.badT=0;F.badW=0}
   if(playing&&(!F.vT||now-F.vT>5000)){F.vT=now;const off=Math.abs((F.vol==null?1:F.vol)-L20[F.i].vol);if(off===0)feBump(.04,'',false);else{feBump(off===1?-.05:-.12,'',false);if(Math.random()<.45)feToastF(L20[F.i].vol>(F.vol==null?1:F.vol)?'🔈 "Não se ouve nada!"':'🔊 "Está alto demais!"',false)}}
@@ -5812,7 +5821,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795645453';
+const BUILD='1795645622';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
