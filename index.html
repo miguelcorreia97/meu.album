@@ -1127,9 +1127,10 @@ body.fx-on #beach .glints,body.fx-on #beach .gull{display:none}
 html,body{overflow-x:hidden!important;overflow-y:auto!important;position:static!important;height:auto!important}
 #fxbg canvas{position:fixed!important;inset:0}
 /* fundo: só a foto de Piúma */
-#beach .ph1{background-image:url(fundo/igreja.jpg)!important;opacity:1!important;animation:kb1 40s ease-in-out infinite alternate!important;background-position:63% 40%}
+#beach .ph1{background-image:url(fundo/vitoria.jpg)!important;opacity:1!important;animation:kb1 40s ease-in-out infinite alternate!important;background-position:30% 62%}
+#beach .seashim{display:none!important}
 @keyframes kb1{from{transform:scale(1.04) translate(0,0)}to{transform:scale(1.16) translate(-2%,1.5%)}}
-#beach .sunbloom{position:absolute;left:63%;top:30%;width:60vmax;height:60vmax;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(255,230,140,.55),rgba(255,180,60,.18) 30%,transparent 60%);mix-blend-mode:screen;animation:bloom 7s ease-in-out infinite}
+#beach .sunbloom{position:absolute;left:24%;top:62%;width:60vmax;height:60vmax;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(255,230,140,.55),rgba(255,180,60,.18) 30%,transparent 60%);mix-blend-mode:screen;animation:bloom 7s ease-in-out infinite}
 @keyframes bloom{50%{opacity:.6;transform:translate(-50%,-50%) scale(1.08)}}
 #beach .seashim{position:absolute;left:52%;width:24%;top:45%;bottom:0;background:repeating-linear-gradient(180deg,rgba(255,225,130,.0) 0 6px,rgba(255,225,130,.35) 6px 8px,rgba(255,225,130,0) 8px 16px);mix-blend-mode:screen;filter:blur(1.5px);-webkit-mask:radial-gradient(ellipse 50% 60% at 50% 20%,#000,transparent 75%);mask:radial-gradient(ellipse 50% 60% at 50% 20%,#000,transparent 75%);animation:shim 3s linear infinite}
 @keyframes shim{to{background-position:0 16px}}
@@ -2568,12 +2569,18 @@ function voteCheck(){if(MODE!=='online'||!G||L.busy)return;const m=myVote(),o=ot
   if(WHO===0||!L.peerOnline){L.voteStarted=key;L.per=m;setTimeout(()=>{if(otherVote()===m&&myVote()===m)startGame()},WHO===0?300:2500)}}
 function mySkip(){return G&&G.skipv&&G.skipv[P(WHO)]===stage()}
 function otherSkip(){return G&&G.skipv&&G.skipv[P(1-WHO)]===stage()}
-function skipBtn(){if(MODE!=='online')return `<button class="btn ghost sm" onclick="advance()">Avançar ⏭</button>`;
+function allTarget(){const n=G.per;if(mainTie())return bonusDone()?n+3:n+1;return n+2}
+function skipAll(){if(L.busy||!G)return;const t=allTarget();if(t>stage()){L.lastAdv=t-1;W({reveal:t,revealAt:Date.now()})}}
+function allBtn(){if(stage()>=allTarget()-1)return '';if(MODE!=='online')return `<button class="btn ghost sm" onclick="skipAll()">Avançar tudo ⏭⏭</button>`;
+  const k=P(WHO),me=G.skall&&G.skall[k]===G.seed,ot=G.skall&&G.skall[P(1-WHO)]===G.seed;
+  return `<button class="btn ${ot&&!me?'':'ghost'} sm" onclick="voteAll()" ${me?'disabled':''}>${me?'À espera para avançar tudo…':ot?`${esc(nm(1-WHO))} quer avançar tudo · Avançar tudo ⏭⏭`:'Avançar tudo ⏭⏭'}</button>`}
+function voteAll(){const k=P(WHO);G.skall={...(G.skall||{}),[k]:G.seed};render();try{ref().update({skall:{[k]:G.seed}}).then(skipCheck).catch(()=>{})}catch(e){}}
+function skipBtn(){if(MODE!=='online')return `<button class="btn ghost sm" onclick="advance()">Avançar ⏭</button>${allBtn()}`;
   const m=mySkip(),o=otherSkip(),on=esc(nm(1-WHO));
-  return `<button class="btn ${o&&!m?'':'ghost'} sm ${o&&!m?'pulse':''}" onclick="voteSkip()" ${m?'disabled':''}>${m?`À espera de ${on}…`:(o?`${on} quer avançar · Avançar ⏭`:'Avançar ⏭')}</button>`}
+  return `<button class="btn ${o&&!m?'':'ghost'} sm ${o&&!m?'pulse':''}" onclick="voteSkip()" ${m?'disabled':''}>${m?`À espera de ${on}…`:(o?`${on} quer avançar · Avançar ⏭`:'Avançar ⏭')}</button>${allBtn()}`}
 function voteSkip(){if(MODE!=='online'){advance();return}const k=P(WHO),s=stage();G.skipv={...(G.skipv||{}),[k]:s};render();
   try{ref().update({skipv:{[k]:s}}).then(skipCheck).catch(()=>{})}catch(e){}}
-function skipCheck(){if(MODE!=='online'||!G||!G.seed||phase()!=='duels')return;if(mySkip()&&otherSkip()&&L.lastAdv!==stage()&&(WHO===0||!L.peerOnline))advance()}
+function skipCheck(){if(MODE!=='online'||!G||!G.seed||phase()!=='duels')return;if(G.skall&&G.skall.p0===G.seed&&G.skall.p1===G.seed&&stage()<allTarget()&&(WHO===0||!L.peerOnline)){skipAll();return}if(mySkip()&&otherSkip()&&L.lastAdv!==stage()&&(WHO===0||!L.peerOnline))advance()}
 
 /* ======== missões e vinis personalizados (um perfil para o Miguel, outro para a Clara, guardado online) ======== */
 const ART_COVER=a=>{for(let i=0;i<SONGS.length;i++){if(artistKey(SONGS[i][1])===a&&HDC[i])return `https://is1-ssl.mzstatic.com/image/thumb/${HDC[i]}/300x300bb.jpg`}const i=SONGS.findIndex(x=>artistKey(x[1])===a);return i>=0?SONGS[i][2]:''};
@@ -4489,7 +4496,7 @@ function dock(){
 function duelLabel(d){return d>=G.per?'faixa bónus':`duelo ${d+1} / ${G.per}`}
 function scoreboard(sc,lbl){return `<div class="score"><div class="s"><div class="num c0" data-count="${sc[0]}" data-delay="700">${fmt(sc[0])}</div><div class="lbl">${ico(0)}${esc(nm(0))}</div></div><div class="dash">${lbl||'vs'}</div><div class="s"><div class="num c1" data-count="${sc[1]}" data-delay="700">${fmt(sc[1])}</div><div class="lbl">${ico(1)}${esc(nm(1))}</div></div></div>`}
 function partial(d){const s=[0,0];for(let k=0;k<=d;k++){const j=judge(k);if(j.w===-1){s[0]+=1;s[1]+=1}else s[j.w]+=2}return s}
-const PICK_MS=45000,ORDER_BY={5:65000,8:90000,10:120000},orderMs=()=>ORDER_BY[G&&G.per]||90000,STAGE_MS={duel:10000,combos:15000,suspense:10000};
+const PICK_MS=45000,ORDER_BY={5:65000,8:90000,10:120000},orderMs=()=>ORDER_BY[G&&G.per]||90000,STAGE_MS={duel:5000,combos:8000,suspense:5000};
 function stage(){return G.reveal||0}
 function mainTie(){const d=partial(G.per-1);return d[0]+prizePts(0)===d[1]+prizePts(1)}
 function stageKind(){const s=stage(),n=G.per;
@@ -4664,7 +4671,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795613196';
+const BUILD='1795613453';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
