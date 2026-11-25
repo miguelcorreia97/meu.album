@@ -3502,7 +3502,7 @@ function itemThumb(it){RUID=Math.floor(Math.random()*1e6);const pl={sh:[],wl:[],
 function roomTopBar(){const mine=myRoomId(),cv=myInvite();let b='<div class="rtopbar">';if(canEdit()&&!L.edit)b+=`<button class="btn ghost sm" onclick="editStart()">✏️ Editar posições</button>`;
   if(L.visit)b+=`<button class="btn sm" onclick="openRoom()">← ${mine?'Voltar ao meu quarto':'Sair da visita'}</button>`;
   else if(mine&&CASAL.length<2&&canEdit())b+=`<button class="btn ghost sm" onclick="inviteZoom()">💌 Convidar alguém</button>`;
-  b+=`<button class="btn ghost sm" onclick="visitZoom()">👀 Ver outros quartos</button></div>`;
+  b+=`<button class="btn ghost sm" onclick="visitZoom()">👀 Ver outros quartos</button><button class="btn ghost sm" onclick="agendaZoom()">📅 Agenda</button></div>`;
   if(cv&&!L.visit)b+=inviteCard(cv);return b}
 function myInvite(){if(!ME)return null;const c=(PLAYERS[ME.id]||{}).cv||'';if(!c)return null;const [q,de]=c.split('|');if(!q||q===myRoomId())return null;return {q,de}}
 function inviteCard(cv){return `<div class="rinvite"><b>💌 ${esc(plE(cv.de)+' '+plOf(cv.de).n)} convidou-te para partilhar o quarto.</b><span>${myRoomId()?'Se aceitares, passas a viver lá e deixas o teu quarto atual.':'Vão decorar juntos com os BPM dos dois.'}</span><div><button class="btn sm" onclick="inviteAccept()">Aceitar</button><button class="btn ghost sm" onclick="inviteDecline()">Recusar</button><button class="btn ghost sm" onclick="visitRoom('${cv.q}')">Ver o quarto</button></div></div>`}
@@ -3632,7 +3632,7 @@ const TODN={manha:'amanhecer',dia:'dia',tarde:'pôr do sol',noite:'noite'};
 function quartoScreen(){if(!QID)return noRoomScreen();const ed=canEdit(),coins=roomCoins(),q=roomQ(),pl=discPlaces(),n=lisNow(),tnow=todNow(n),prev=L.rPrev&&RIT[L.rPrev],falta=prev?prev.p-coins:0,pd=pl.play&&DISCO(pl.play),on=q.on&&pd;
   let h=`<div class="tot-head"><div class="mono" style="color:var(--muted)">${L.visit?'de visita':'quarto'}</div><h2>${esc(roomTitle())}</h2><div class="sub">${ed?(CASAL.length>1?'Decorem juntos com os BPM que os dois ganham nas missões. Com música a tocar no quarto também ganham BPM.':'Decora com os BPM que ganhas nas missões. Podes convidar alguém para partilhar o quarto contigo.'):'Estás de visita: só quem vive aqui pode mudar as coisas.'}</div></div>
   ${roomTopBar()}
-  <div class="qbar"><button class="qcoins" onclick="bpmZoom()" title="Ver os BPM de hoje">♩ <b id="bpmv">${coins}</b> BPM</button><span class="rdisc">💿 ${pl.own.length} discos</span><span class="rdisc">🕰️ <b id="rclock">${n.hh}</b> em Portugal</span>${ed?`<button class="rdisc rbill" onclick="billsZoom()">🧾 −${billDay()} BPM/dia</button><button class="rdisc rbill" onclick="agendaZoom()">📅 Agenda</button>`:''}</div>
+  <div class="qbar"><button class="qcoins" onclick="bpmZoom()" title="Ver os BPM de hoje">♩ <b id="bpmv">${coins}</b> BPM</button><span class="rdisc">💿 ${pl.own.length} discos</span><span class="rdisc">🕰️ <b id="rclock">${n.hh}</b> em Portugal</span>${ed?`<button class="rdisc rbill" onclick="billsZoom()">🧾 −${billDay()} BPM/dia</button>`:''}</div>
   <div class="roomscene${L.rFull?' full':''}${L.edit?' editing':''} p-${plantState()}"><div class="roomscroll">${roomSceneInner()}</div>${sceneHud()}<div class="rtopbtns">${canEdit()&&!L.edit?`<button class="redbtn" onclick="editStart()"><b>✏️</b><span> Editar posições</span></button>`:''}<button class="rfullbtn" onclick="roomFull()">${L.rFull?'<b>✕</b><span> Sair</span>':'<b>⛶</b><span> Ecrã inteiro</span>'}</button></div><span class="rfullhint">📱 Vira o telemóvel para ver maior</span></div>${L.edit?'<div id="redit" class="redit"></div>':''}
   <p class="hint center todinfo">👆 Toquem nas coisas do quarto: gira-discos, prateleira, móvel, molduras, quadro de recados, janela, luzes, animais… Agora é ${TODN[tnow]} em Portugal: o quarto segue a hora real. O sol nasce às ${n.f(n.rise)} e põe-se às ${n.f(n.set)}.</p>`;
   if(prev)h+=`<div class="rprev"><div><span class="mono">a experimentar</span><b>${esc(prev.n)}</b><em>${prev.lock?`🔒 Só com a missão a dois “${esc(lockM(prev).n)}”: ${esc(lockM(prev).d)}`:`♩ ${prev.p} BPM`}</em></div><div class="acts">${prev.lock?'':falta>0?`<button class="btn" disabled>Faltam ${falta} BPM</button>`:`<button class="btn" onclick="roomBuy('${prev.id}')">Comprar</button>`}<button class="btn ghost" onclick="L.rPrev=null;render()">Tirar</button></div></div>`;
@@ -4946,7 +4946,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795617337';
+const BUILD='1795617445';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
