@@ -2820,7 +2820,7 @@ const RDEF={lencol:'le-azul',moldura:'mo-creme',cor:'w-creme',chao:'f-madeira',p
 const LUZES=new Set(['fx-led','cm-luz','x-espelholed','mz-bolas','mz-cogumelo','l-bambu','t-ledazul','pf-papel','pf-pendente','pf-globo','pf-lustre','l-casal','l-lua','t-heras','t-lampadas','l-candeeiro','l-sunset','l-neon','l-onair','l-led','mz-lava','mz-velas','mz-sal','mz-relogio','cb-papel','cb-cogumelo','cb-velas','sc-madeira','sc-branca','sc-estante']);
 
 /* ---------- quarto partilhado do Miguel e da Clara (um só documento online) ---------- */
-const CASA_ID='u-quarto-casa',BPM_DIA=60,VIT_DIA=40;
+const CASA_ID='u-quarto-casa',BPM_DIA=30,VIT_DIA=40;
 /* quartos: cada jogador tem o seu; pode convidar alguém sem par para o partilhar. CASAL = quem vive no quarto que está aberto */
 const CASAL=[];let QID=null;
 const roomOf=pid=>!pid?null:(pid==='p0'||pid==='p1')?CASA_ID:((PLAYERS[pid]||{}).q||null);
@@ -2854,6 +2854,7 @@ function sqMerge(base,loc,rem){const S=x=>JSON.stringify(x),o=JSON.parse(S(rem||
   o.spent=(+o.spent||0)+((+loc.spent||0)-(+base.spent||0));o.custo=Math.max(+o.custo||0,+loc.custo||0);if(loc.paid!=null&&(o.paid==null||loc.paid>o.paid))o.paid=loc.paid;if(S(loc.blog)!==S(base.blog)&&(loc.paid||0)>=(o.paid||0))o.blog=loc.blog;o.mus=(+o.mus||0)+((+loc.mus||0)-(+base.mus||0));if(loc.leg||o.leg){const a=o.leg||{},b=loc.leg||{};o.leg={...a};for(const k in b)o.leg[k]=Math.max(+a[k]||0,+b[k]||0)}
   o.eq={...(o.eq||{})};for(const k of new Set([...Object.keys(loc.eq||{}),...Object.keys(base.eq||{})]))if(S(ev(loc,k))!==S(ev(base,k)))o.eq[k]=ev(loc,k);
   if((+loc.lt||0)>(+o.lt||0)){o.lt=loc.lt;o.lb=loc.lb}
+  if(loc.md){const a=o.md||{},b=loc.md;if(!a.d||b.d>a.d)o.md={...b};else if(a.d===b.d){o.md={...a};for(const k in b)if(k!=='d')o.md[k]=Math.max(+a[k]||0,+b[k]||0)}}
   for(const k of ['sh','wl','px','play','on','cl','pos','mul','li','rf1','bm1','lon'])if(S(loc[k])!==S(base[k]))o[k]=loc[k];return o}
 async function sqSync(){if(!(db&&db.cloud)||!QID||!canEdit())return;if(SQ.busy){SQ.again=1;return}SQ.busy=true;SQ.again=0;
   const snap=JSON.parse(JSON.stringify(SQ.d)),base=SQ.base;
@@ -2897,11 +2898,16 @@ function sunPos(n){const hz=WY+100;if(todNow(n)!=='noite'||n.min>=n.rise-40&&n.m
   const len=1440-(n.set-n.rise),tt=((n.min-n.set)%1440+1440)%1440/len,c=Math.max(0,Math.min(1,tt));return [WX+18+c*(WW-36),hz-Math.sin(Math.PI*c)*80]}
 function roomTodOf(){return L.rTodV||todNow()}
 /* música a tocar no quarto dá BPM */
-function bpmToday(){const d=lisNow().ymd;try{const x=JSON.parse(localStorage.getItem('bpm-dia')||'{}');return x.d===d?+x.n||0:0}catch(e){return 0}}
-function bpmTick(){if(L.screen!=='quarto'||document.hidden||!canEdit()||!SND.on)return;const q=roomQ();if(!q.on||!discPlaces().play)return;const t=bpmToday();if(t>=BPM_DIA)return;
-  try{localStorage.setItem('bpm-dia',JSON.stringify({d:lisNow().ymd,n:t+1}))}catch(e){}q.mus=(+q.mus||0)+1;roomSave(q,1);
-  const v=document.getElementById('bpmv');if(v)v.textContent=roomCoins();const hd=document.getElementById('bpmday');if(hd)hd.textContent=`${t+1}/${BPM_DIA}`;roomPop('+1 BPM')}
+/* disco a tocar no quarto: +1 BPM por minuto para cada pessoa do quarto, até 30 por dia cada uma; conta com o jogo aberto em qualquer ecrã */
+function musDay(q){q=q||roomQ();const d=lisNow().ymd,m=q.md&&q.md.d===d?q.md:{d};return m}
+function bpmOf(pid,q){return +(musDay(q)[pid]||0)}
+function bpmToday(){return ME?bpmOf(myPid()):0}
+function bpmTick(){if(!ME||!canEdit())return;const q=roomQ();if(!q.on||!discPlaces().play)return;const w=myPid(),m=musDay(q),t=+(m[w]||0);if(t>=BPM_DIA)return;
+  q.md={...m,[w]:t+1};q.mus=(+q.mus||0)+1;roomSave(q,1);
+  if(L.screen==='quarto'){const v=document.getElementById('bpmv');if(v)v.textContent=roomCoins();const hd=document.getElementById('bpmday');if(hd)hd.textContent=`${t+1}/${BPM_DIA}`;roomPop('+1 BPM')}
+  if(t+1===BPM_DIA)toast(`🎶 Já ganhaste os ${BPM_DIA} BPM de música de hoje`)}
 setInterval(bpmTick,60000);
+function musWho(){const q=roomQ();return CASAL.map(w=>`${plE(w)} ${bpmOf(w,q)>=BPM_DIA?'✓':bpmOf(w,q)+'/'+BPM_DIA}`).join(' · ')}
 setInterval(()=>{if(L.screen!=='quarto')return;sqPull();const s=document.querySelector('.roomscene .roomsvg');if(s&&!L.rPrev&&!document.querySelector('.rplayfx')){const n=lisNow();s.outerHTML=roomSceneInner();const c=document.getElementById('rclock');if(c)c.textContent=n.hh}},30000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&L.screen==='quarto')sqPull()});
 
@@ -3487,7 +3493,7 @@ function quartoScreen(){if(!QID)return noRoomScreen();const ed=canEdit(),coins=r
     if(sub==='excl'){h+=`<p class="hint">Estes não se compram. Há discos assim de quase todos os cantores: basta um de vocês completar a missão.</p>${chips}<div class="dgrid">`;
       DISCOS.filter(d=>DISC_EXCL.has(d.k)&&!pl.own.includes(d.k)&&(!art||d.a===art)).forEach(d=>{const m=missOfDisc(d.k),best=Math.max(...CASAL.map(w=>Math.min(stVal(profGet(w),m.s),m.t)));h+=`<div class="dcard lock r-${discInfo(d.k).rar}"><img src="${esc(d.f)}" alt="" loading="lazy"><b>${esc(d.t)}</b><span>${esc(d.a)}</span><em class="dmiss">🎯 ${esc(m.n)}</em><div class="mbar"><i style="width:${Math.round(best/m.t*100)}%"></i></div><small>${esc(m.d)} · ${best}/${m.t}</small></div>`});h+=`</div>`}}
   if(L.rTab==='ganhar'){const P=CASAL.map(w=>profGet(w));
-    h+=`<p class="hint">O quarto começa com 0 BPM. As missões de quem vive no quarto enchem a mesma conta: cada missão só paga os BPM quando fica completa (o que já tinham recebido antes desta regra fica vosso). Ter um disco a tocar no quarto, com o som ligado, dá +1 BPM por minuto (até ${BPM_DIA} por dia em cada telemóvel). Cada vitória também paga na hora: contra o computador 3/6/10 BPM (Fácil/Normal/Difícil), contra uma pessoa 8; perder não dá nada. Até ${VIT_DIA} BPM por dia a cada um${(()=>{const u=CASAL.map(w=>{const s=profGet(w).st;return +s.vbDay===dayNum(lisNow().ymd)?+s.vbHoje||0:0});return ` (hoje: 🌴 ${u[0]}/${VIT_DIA} · 🌻 ${u[1]}/${VIT_DIA})`})()}. Atenção às contas do quarto: comida dos animais, luz e água são cobradas todos os dias. Já ganharam ${q.mus||0} BPM com música.</p><div class="mgrid">`;
+    h+=`<p class="hint">O quarto começa com 0 BPM. As missões de quem vive no quarto enchem a mesma conta: cada missão só paga os BPM quando fica completa (o que já tinham recebido antes desta regra fica vosso). Ter um disco a tocar no quarto, com o som ligado, dá +1 BPM por minuto (até ${BPM_DIA} por dia para cada pessoa do quarto, com o jogo aberto em qualquer ecrã; hoje: ${musWho()}). Cada vitória também paga na hora: contra o computador 3/6/10 BPM (Fácil/Normal/Difícil), contra uma pessoa 8; perder não dá nada. Até ${VIT_DIA} BPM por dia a cada um${(()=>{const u=CASAL.map(w=>{const s=profGet(w).st;return +s.vbDay===dayNum(lisNow().ymd)?+s.vbHoje||0:0});return ` (hoje: 🌴 ${u[0]}/${VIT_DIA} · 🌻 ${u[1]}/${VIT_DIA})`})()}. Atenção às contas do quarto: comida dos animais, luz e água são cobradas todos os dias. Já ganharam ${q.mus||0} BPM com música.</p><div class="mgrid">`;
     MISSOES.map(m=>{const r=mReward(m),vs=P.map(p=>Math.min(stVal(p,m.s),m.t)),cv=m.co?Math.min(coVal(m),m.t):0;return {m,r,vs,got:m.co?mPaid(m,coVal(m),m.id,SQ.d&&SQ.d.leg):vs.reduce((a,v,i)=>a+mPaid(m,v,m.id+'|'+CASAL[i],SQ.d&&SQ.d.leg),0),pr:(m.co?cv:Math.max(...vs))/m.t}}).sort((a,b)=>(a.pr>=1)-(b.pr>=1)||b.pr-a.pr).slice(0,24).forEach(x=>{const d=x.r.disc&&DISCO(x.r.disc),done=x.pr>=1;
       h+=`<div class="mcard ${done?'on':''}">${d?`<img class="rmc" src="${esc(d.f)}" alt="" loading="lazy" style="${done?'':'filter:grayscale(1) brightness(.6)'}">`:vinyl(x.m,done)}<div class="mtxt"><b>${esc(x.m.n)}</b><span>${esc(x.m.d)}</span><span class="rrw">♩ ${x.got} de ${x.r.r*(x.m.co?1:2)} BPM${d?` · 💿 ${esc(d.t)}`:''}${MITEM[x.m.id]?` · 🎁 ${esc(RIT[MITEM[x.m.id]].n)}`:''}</span><span class="rrw who">${x.m.co?(x.m.half?`${plE(CASAL[0])} ${coHalf(x.m)[0]}/${x.m.t/2} · ${plE(CASAL[1])} ${coHalf(x.m)[1]}/${x.m.t/2} · a meias`:`${plE(CASAL[0])}${plE(CASAL[1])} a dois · ${Math.min(coVal(x.m),x.m.t)}/${x.m.t}`):`🌴 ${x.vs[0]}/${x.m.t} · 🌻 ${x.vs[1]}/${x.m.t}`}</span><div class="mbar"><i style="width:${Math.round(x.pr*100)}%"></i></div></div></div>`});
     h+=`</div><div class="actions"><button class="btn ghost" onclick="openMissions()">Ver todas as missões</button></div>`}
@@ -3808,7 +3814,7 @@ function postersTab(coins,art,chips){const own=postersOwned(),pl=discPlaces();le
 /* ---------- tudo dentro do quarto: música, recados, contas ---------- */
 function sceneHud(){const ed=canEdit(),q=roomQ(),pl=discPlaces(),pd=pl.play&&DISCO(pl.play),on=q.on&&pd;let h='';
   if(pd&&!L.hudOpen)h+=`<button class="hud-mini ${on?'on':''}" onclick="event.stopPropagation();hudOpen(1)" aria-label="${on?'A tocar':'No gira-discos'}: ${esc(pd.t)}"><span style="background-image:url('${pd.f.replace(/'/g,"\\'")}')"></span>${on?'<i>♪</i>':''}</button>`;
-  else if(pd)h+=`<div class="hud-row"><button class="hud-play ${on?'on':''}" onclick="event.stopPropagation();${ed?(on?'roomStop()':'roomPlay()'):'discZoom(\''+pl.play+'\')'}"><img src="${esc(pd.f)}" alt=""><span><small>${on?'a tocar':'no gira-discos'}${on&&ed?` · <b id="bpmday">${bpmToday()}/${BPM_DIA}</b> BPM hoje`:''}</small><b>${esc(pd.t)}</b></span><i>${ed?(on?'⏸':'▶'):'♪'}</i></button><button class="hud-min" onclick="event.stopPropagation();discZoom('${pl.play}')" title="Detalhes do disco">📖</button><button class="hud-min" onclick="event.stopPropagation();hudOpen(0)" title="Minimizar">–</button></div>`;
+  else if(pd)h+=`<div class="hud-row"><button class="hud-play ${on?'on':''}" onclick="event.stopPropagation();${ed?(on?'roomStop()':'roomPlay()'):'discZoom(\''+pl.play+'\')'}"><img src="${esc(pd.f)}" alt=""><span><small>${on?'a tocar':'no gira-discos'}${on?` · ♩ ${musWho()}`:''}</small><b>${esc(pd.t)}</b></span><i>${ed?(on?'⏸':'▶'):'♪'}</i></button><button class="hud-min" onclick="event.stopPropagation();discZoom('${pl.play}')" title="Detalhes do disco">📖</button><button class="hud-min" onclick="event.stopPropagation();hudOpen(0)" title="Minimizar">–</button></div>`;
   if(bdFresh())h+=`<button class="hud-note" onclick="event.stopPropagation();noteZoom()">💌 Recado novo ${esc(bdFrom(false))}</button>`;
   if(roomDebt())h+=`<button class="hud-debt" onclick="event.stopPropagation();billsZoom()">⚠️ Em dívida (${roomCoins()} BPM): luz cortada e animais com fome</button>`;
   return `<div class="hud">${h}</div>`}
@@ -4146,7 +4152,7 @@ function rulesBox(){
     <div class="rchips">${Object.entries(CO_MODES).map(([q,x])=>`<button class="rchip ${m===q?'on':''}" onclick="L.rco='${q}';render()">${x.e} ${x.n}</button>`).join('')}</div><div class="rbody2">${X[m]}</div>
     <p class="rsmall">Quando jogam as duas pessoas do mesmo quarto, estas partidas contam para as <b>missões a dois</b>.</p>`}
   if(k===7){body=`<p>O <b>BPM</b> é o dinheiro do jogo. Tal como a batida dita o ritmo de uma música, os BPM ditam o que o vosso quarto pode ter.</p>
-    <div class="rexp"><b>♩ Como se ganham</b><span>Missões de cada um: entre 100 e 700 BPM, pagos só quando a missão fica completa. Missões a dois: entre 400 e 2 500 BPM, pagas uma vez ao casal. Música a tocar no quarto: +1 BPM por minuto, só com o quarto aberto no ecrã e o som ligado (até 60 por dia em cada telemóvel). Vitórias: cada partida ganha dá BPM na hora (contra o computador 3 no Fácil, 6 no Normal, 10 no Difícil; contra uma pessoa 8; nos modos a dois até 10). Perder não dá nada. Máximo de 40 BPM por dia a cada um.</span></div>
+    <div class="rexp"><b>♩ Como se ganham</b><span>Missões de cada um: entre 100 e 700 BPM, pagos só quando a missão fica completa. Missões a dois: entre 400 e 2 500 BPM, pagas uma vez ao casal. Música a tocar no quarto: +1 BPM por minuto, só com o quarto aberto no ecrã e o som ligado (até 30 por dia para cada pessoa do quarto, com o jogo aberto em qualquer ecrã). Vitórias: cada partida ganha dá BPM na hora (contra o computador 3 no Fácil, 6 no Normal, 10 no Difícil; contra uma pessoa 8; nos modos a dois até 10). Perder não dá nada. Máximo de 40 BPM por dia a cada um.</span></div>
     <div class="rexp"><b>🧾 Contas do quarto</b><span>Todos os dias paga-se a casa (8 BPM), a comida de cada animal (5 a 20), a luz de cada candeeiro (1 a 8), a luz do teto (4 a 11, conforme a intensidade), a eletricidade do gira-discos e do computador e a água das plantas. Se ficarem a dever, a luz é cortada e os animais passam fome até pagarem. Se ninguém abrir o jogo durante uns dias, paga-se tudo quando voltarem, mas nunca mais do que uma semana.</span></div>
     <div class="rexp"><b>🏠 Uma só conta</b><span>Os BPM das duas pessoas que partilham o quarto vão todos para a mesma conta. Os dois veem o mesmo número e qualquer um pode gastar.</span></div>
     <div class="rexp"><b>🛍️ O que se compra</b><span>Objetos para o quarto (de 230 a 2 250 BPM), discos com 4 raridades (⚪ Comum até ~250, 🔵 Raro ~300–450, 🟣 Épico ~500–750, 🟡 Lendário ~900–1 150 BPM: conta sobretudo o álbum, não só o cantor) e caixas surpresa de cada raridade. Há 41 discos que só se ganham em missões, e 5 objetos de casal que só se ganham em missões a dois. Os pósteres compram-se à parte (40% do preço do disco): podem ter o póster de um álbum sem terem o disco.</span></div>
@@ -4275,7 +4281,7 @@ function rankingScreen(){
 function modeScreen(){
   const nv=ME?MISSOES.filter(m=>profGet(myPid()).u[m.id]).length:0;
   return `<div class="hero"><div class="kick">um jogo de música brasileira</div><h1 class="herot">Meu <em>Álbum</em></h1><div class="turntable"><div class="record"></div></div>${heroVs()}<p>Olá, ${esc(ME?ME.e+' '+ME.n:'')}! O que vamos fazer?</p><div id="bnotice">${bdNotice()}</div></div>
-  <div class="modes one mt"><button class="modebtn room" onclick="openRoom()"><span class="ic">🛋️</span><b>Quarto</b><span>${myInvite()?`💌 ${esc(plOf(myInvite().de).n)} convidou-te para partilhar o quarto!`:QID?`♩ ${roomCoins()} BPM para decorar ${esc(roomTitle().replace(/^O /,'o '))}. O quadro de recados está lá dentro${bdFresh()?' — e há um recado novo! 💌':'.'}`:'Cria o teu quarto e decora-o com os BPM das missões.'}</span></button></div>
+  <div class="modes one mt"><button class="modebtn room" onclick="openRoom()"><span class="ic">🛋️</span><b>Quarto</b><span>${myInvite()?`💌 ${esc(plOf(myInvite().de).n)} convidou-te para partilhar o quarto!`:QID?`♩ ${roomCoins()} BPM para decorar ${esc(roomTitle().replace(/^O /,'o '))}. Música de hoje: ${musWho()}. O quadro de recados está lá dentro${bdFresh()?' — e há um recado novo! 💌':'.'}`:'Cria o teu quarto e decora-o com os BPM das missões.'}</span></button></div>
   <div class="modes one mt"><button class="modebtn play" onclick="L.screen='jogar';render();scrollTo(0,0)"><span class="ic">▶️</span><b>Jogar</b><span>Contra o computador ou com um amigo, cada um no seu telemóvel. Com um amigo também podem jogar em equipa.</span></button></div>
   <div class="modes mt">
    <button class="modebtn" onclick="openMissions()"><span class="ic">💿</span><b>Missões e vinis</b><span>${ME?`${nv} de ${MISSOES.length} vinis conquistados. Completa missões e ganha mais.`:'Completa missões e ganha vinis personalizados.'}</span></button>
@@ -4568,7 +4574,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795610281';
+const BUILD='1795610406';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
