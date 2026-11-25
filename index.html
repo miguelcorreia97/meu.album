@@ -2780,9 +2780,9 @@ const mReward=m=>({r:MREW[m.id]||200,disc:DISC_MISS[m.id]||null});
 function rewardTxt(m){const r=mReward(m),d=r.disc&&DISCO(r.disc),it=MITEM[m.id]&&RIT[MITEM[m.id]];return `♩ ${r.r} BPM${d?` · 💿 ${d.t}`:''}${it?` · 🎁 ${it.n}`:''}`}
 
 /* ---------- catálogo ---------- */
-const RTEMAS=[['musica','Música','🎵',['discos','posteres','excl','leitor','prat','quadros']],['luz','Luzes','💡',['plafon','luz','teto']],['plantas','Plantas','🪴',['planta','planta2','suspensa']],['moveis','Móveis','🛋️',['movel','mesa','secretaria','assento','cabeceira','extra']],['dormir','Cama','🛏️',['cama','poster']],['casa','Paredes e chão','🏠',['cor','chao','tapete','cortina']],['pet','Animais','🐾',['pet']]];
+const RTEMAS=[['musica','Música','🎵',['discos','posteres','excl','leitor','prat','quadros']],['luz','Luzes','💡',['plafon','luz','teto','fita']],['plantas','Plantas','🪴',['planta','planta2','suspensa']],['moveis','Móveis','🛋️',['movel','mesa','secretaria','assento','cabeceira','extra']],['dormir','Cama','🛏️',['cama','poster']],['casa','Paredes e chão','🏠',['cor','chao','tapete','cortina']],['pet','Animais','🐾',['pet']]];
 const RCATALL=()=>[['discos','Discos','💿'],['posteres','Pósteres','🖼️'],['excl','Só nas missões','🔒'],...RSLOT];
-const RSLOT=[['cor','Paredes','🎨'],['chao','Chão','🪵'],['cama','Camas','🛏️'],['cortina','Cortinas','🪟'],['prat','Prateleiras','📚'],['quadros','Pósteres de álbuns','🖼️'],['poster','Parede da cama','🪧'],['secretaria','Secretária','🖥️'],['cabeceira','Mesa de cabeceira','🏮'],['movel','Móveis','🗄️'],['leitor','Leitores','📀'],['mesa','Em cima do móvel','🕯️'],['planta2','Plantinhas','🌵'],['plafon','Luz do teto','💡'],['teto','Luzes decorativas','✨'],['luz','Candeeiros','💡'],['suspensa','Plantas suspensas','🌿'],['tapete','Tapetes','🟤'],['planta','Plantas','🪴'],['assento','Onde sentar','🛋️'],['extra','Extras','♟️'],['pet','Animais','🐾']];
+const RSLOT=[['cor','Paredes','🎨'],['chao','Chão','🪵'],['cama','Camas','🛏️'],['cortina','Cortinas','🪟'],['prat','Prateleiras','📚'],['quadros','Pósteres de álbuns','🖼️'],['poster','Parede da cama','🪧'],['fita','Luz nas prateleiras','✨'],['secretaria','Secretária','🖥️'],['cabeceira','Mesa de cabeceira','🏮'],['movel','Móveis','🗄️'],['leitor','Leitores','📀'],['mesa','Em cima do móvel','🕯️'],['planta2','Plantinhas','🌵'],['plafon','Luz do teto','💡'],['teto','Luzes decorativas','✨'],['luz','Candeeiros','💡'],['suspensa','Plantas suspensas','🌿'],['tapete','Tapetes','🟤'],['planta','Plantas','🪴'],['assento','Onde sentar','🛋️'],['extra','Extras','♟️'],['pet','Animais','🐾']];
 const RFIX={cor:1,chao:1,movel:1,cama:1};
 const RITEMS=[
  ['w-creme','cor','Creme',0,{c:'#e6d6bb'}],['w-pessego','cor','Pêssego',260,{c:'#e8b49a'}],['w-terracota','cor','Terracota',240,{c:'#c56f4e'}],['w-oliva','cor','Verde-oliva',240,{c:'#8d905c'}],['w-mostarda','cor','Mostarda',240,{c:'#d6a03c'}],['w-rosa','cor','Rosa antigo',240,{c:'#d9a89c'}],['w-cimento','cor','Cimento',280,{c:'#9a958d'}],['w-noite','cor','Azul-noite',300,{c:'#2c3654'}],['w-floresta','cor','Verde floresta',300,{c:'#345c4a'}],['w-vinho','cor','Vinho',300,{c:'#6a2a33'}],
@@ -2791,7 +2791,7 @@ const RITEMS=[
  ['c-linho','cortina','Cortinas de linho',0],['c-mostarda','cortina','Cortinas mostarda',270],['c-veludo','cortina','Cortinas de veludo',420],['c-bambu','cortina','Estore de bambu',330],
  ['p-simples','prat','Prateleira simples',0,{cap:3,d:'3 discos à mostra'}],['p-dupla','prat','Prateleira dupla',780,{cap:6,d:'6 discos em duas filas'}],['p-cubos','prat','Cubos flutuantes',660,{cap:4,d:'4 nichos brancos'}],['p-grelha','prat','Parede de capas',1140,{cap:8,d:'8 capas emolduradas'}],
  ['qd-capa','quadros','Moldura grande',600,{cap:1,d:'Para um póster de álbum'}],['qd-trio','quadros','Trio de molduras',1200,{cap:3,d:'Para três pósteres de álbuns'}],['qd-galeria','quadros','Parede galeria',1500,{cap:3,d:'3 pósteres, relógio e quadrinhos'}],['qd-graficos','quadros','Pósteres gráficos',700,{d:'Onda, sol e tipografia'}],
- ['po-samba','poster','Póster Samba',270],['po-bossa','poster','Póster Bossa Nova',270],['po-tropical','poster','Póster Tropical',330],['po-retro','poster','Póster Anos 70',360],['po-gig','poster','Cartaz do concerto',450],['po-polaroids','poster','Fio de polaroids',390],['po-vinis','poster','Vinis na parede',660,{cap:3,d:'3 discos vossos pendurados'}],
+ ['po-samba','poster','Póster Samba',270],['po-bossa','poster','Póster Bossa Nova',270],['po-tropical','poster','Póster Tropical',330],['po-retro','poster','Póster Anos 70',360],['po-gig','poster','Cartaz do concerto',450],['po-polaroids','poster','Fio de polaroids',390],['po-vinis','poster','Vinis na parede',660,{cap:3,d:'3 discos vossos pendurados'}],['ph-kombi','poster','Kombi e bandeira',420,{img:'posters/kombi.jpg'}],['ph-norte','poster','Mi norte es el sur',360,{img:'posters/mi-norte.jpg'}],['ph-cadeiras','poster','Quintal com bandeira',360,{img:'posters/cadeiras.jpg'}],['ph-ainda','poster','Ainda Estou Aqui',480,{img:'posters/ainda-estou-aqui.jpg'}],['ph-cidade','poster','Cidade de Deus',480,{img:'posters/cidade-de-deus.jpg'}],['ph-rita','poster','Rita Lee, rainha do rock',450,{img:'posters/rita-lee.jpg'}],['ph-seu','poster','Seu Jorge ao vivo',450,{img:'posters/seu-jorge.jpg'}],['fx-led','fita','Fita LED nas prateleiras',540,{d:'Luz quente por baixo das prateleiras'}],
  ['sc-madeira','secretaria','Secretária de madeira',1350,{d:'Ecrã, colunas e candeeiro de braço'}],['sc-branca','secretaria','Secretária branca',1200,{d:'Teclado colorido e candeeiro cogumelo'}],['sc-estante','secretaria','Estante preta em escada',900,{d:'Câmaras, feto e livros'}],
  ['cb-papel','cabeceira','Mesinha com candeeiro de papel',480],['cb-cogumelo','cabeceira','Mesinha com candeeiro cogumelo',540],['cb-velas','cabeceira','Mesinha com velas e livros',360],
  ['m-caixote','movel','Caixote de feira',0,{top:352,x0:108,x1:292}],['m-retro','movel','Móvel retro de discos',840,{top:300,x0:118,x1:282}],['m-cubos','movel','Estante de cubos',720,{top:296,x0:114,x1:286}],['m-preto','movel','Móvel com aparelhagem',1050,{top:328,x0:104,x1:296}],
@@ -2811,7 +2811,7 @@ const RITEMS=[
 ].map(([id,s,n,p,o])=>({id,s,n,p:Math.round(p*1.5/10)*10,...(o||{})}));
 const RIT=Object.fromEntries(RITEMS.map(x=>[x.id,x]));
 const RDEF={cor:'w-creme',chao:'f-madeira',prat:'p-simples',movel:'m-caixote',leitor:'g-basico',cama:'cm-casal',cortina:'c-linho'};
-const LUZES=new Set(['pf-papel','pf-pendente','pf-globo','pf-lustre','l-casal','l-lua','t-heras','t-lampadas','l-candeeiro','l-sunset','l-neon','l-onair','l-led','mz-lava','mz-velas','mz-sal','mz-relogio','cb-papel','cb-cogumelo','cb-velas','sc-madeira','sc-branca','sc-estante']);
+const LUZES=new Set(['fx-led','pf-papel','pf-pendente','pf-globo','pf-lustre','l-casal','l-lua','t-heras','t-lampadas','l-candeeiro','l-sunset','l-neon','l-onair','l-led','mz-lava','mz-velas','mz-sal','mz-relogio','cb-papel','cb-cogumelo','cb-velas','sc-madeira','sc-branca','sc-estante']);
 
 /* ---------- quarto partilhado do Miguel e da Clara (um só documento online) ---------- */
 const CASA_ID='u-quarto-casa',BPM_DIA=60,VIT_DIA=40;
@@ -3037,7 +3037,19 @@ const GRADE={manha:[['#ffb8a6',.16,'multiply'],['#5b6aa6',.12,'multiply']],dia:[
 const GLOWK={manha:.35,dia:0,tarde:.6,noite:1};
 const WX=370,WY=40,WW=180,WH=160;
 
-Object.assign(RDR,{
+function posterImg(src){return `<rect x="240" y="56" width="118" height="154" fill="rgba(0,0,0,.28)" transform="translate(3 4)"/><rect x="236" y="52" width="126" height="162" fill="#f3ede2"/><image href="${src}" x="240" y="56" width="118" height="154" preserveAspectRatio="xMidYMid slice"/><rect x="240" y="56" width="118" height="154" fill="none" stroke="rgba(0,0,0,.18)"/>`}
+/* fita LED: segue a prateleira que estiver no quarto */
+const LED_ROWS={'p-simples':[[24,185,176]],'p-dupla':[[22,119,180],[22,201,180]],'p-cubos':[[26,126,74],[112,140,74],[34,198,74],[118,206,74]],'p-grelha':[[22,162,176]]};
+function ledDraw(c){const rows=LED_ROWS[c.eq.prat]||LED_ROWS['p-simples'],id='led'+RUID;let b='',g=`<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffc36b" stop-opacity=".85"/><stop offset="1" stop-color="#ffb04a" stop-opacity="0"/></linearGradient>`;
+  rows.forEach(([x,y,w])=>{b+=`<rect x="${x+2}" y="${y-1}" width="${w-4}" height="2" rx="1" fill="#e9d6b3"/>`;g+=`<rect x="${x+2}" y="${y-1}" width="${w-4}" height="2.4" rx="1" fill="#fff1cf"/><path d="M${x+4} ${y+1} h${w-8} l14 70 h-${w+20}z" fill="url(#${id})" style="mix-blend-mode:screen"/>`});return {b,g}}
+Object.assign(RDR,{'fx-led'(it,c){return ledDraw(c)},
+'ph-kombi'(){return {b:posterImg('posters/kombi.jpg')}},
+'ph-norte'(){return {b:posterImg('posters/mi-norte.jpg')}},
+'ph-cadeiras'(){return {b:posterImg('posters/cadeiras.jpg')}},
+'ph-ainda'(){return {b:posterImg('posters/ainda-estou-aqui.jpg')}},
+'ph-cidade'(){return {b:posterImg('posters/cidade-de-deus.jpg')}},
+'ph-rita'(){return {b:posterImg('posters/rita-lee.jpg')}},
+'ph-seu'(){return {b:posterImg('posters/seu-jorge.jpg')}},
 cor(it){const c=it.c,L=shade(c,-.2),T=shade(c,.25);return {b:`
  <polygon points="0,0 800,0 800,22 130,22" fill="${T}"/><polygon points="0,0 800,0 800,22 130,22" fill="url(#ceil)"/>
  <rect x="130" y="22" width="670" height="318" fill="${c}"/><rect x="130" y="22" width="670" height="318" fill="url(#wtex)" opacity=".55"/>
@@ -3235,7 +3247,7 @@ Object.assign(RDR,{
 });
 
 let GRAIN='';function grainUrl(){if(GRAIN)return GRAIN;try{const c=document.createElement('canvas');c.width=c.height=140;const x=c.getContext('2d'),d=x.createImageData(140,140);for(let i=0;i<d.data.length;i+=4){const v=Math.random()*255|0;d.data[i]=d.data[i+1]=d.data[i+2]=v;d.data[i+3]=22}x.putImageData(d,0,0);GRAIN=c.toDataURL()}catch(e){GRAIN='data:,'}return GRAIN}
-const ST={secretaria:'translate(662 366) scale(1.1) translate(-666 -366)',prat:'translate(130 -14)',extra:'translate(125 16)',poster:'translate(643 -14)',movel:'translate(260 -62)',leitor:'translate(260 -62)',mesa:'translate(260 -62)',planta2:'translate(260 -62)',planta:'translate(-6 -64) scale(1.3)',assento:'translate(-120 -32) scale(1.2)',tapete:'translate(300 -66) scale(1.1)',
+const ST={fita:'translate(130 -14)',secretaria:'translate(662 366) scale(1.1) translate(-666 -366)',prat:'translate(130 -14)',extra:'translate(125 16)',poster:'translate(643 -14)',movel:'translate(260 -62)',leitor:'translate(260 -62)',mesa:'translate(260 -62)',planta2:'translate(260 -62)',planta:'translate(-6 -64) scale(1.3)',assento:'translate(-120 -32) scale(1.2)',tapete:'translate(300 -66) scale(1.1)',
   'l-candeeiro':'translate(-235 -60)','l-neon':'translate(740 4)','l-sunset':'translate(640 -14)','pet-caramelo':'translate(110 0)','pet-tartaruga':'translate(170 0)'};
 /* lugares à escolha: [nome, dx, dy, escala, ox, oy] (escala à volta da base do objeto) */
 const RPOS={planta:[['Canto esquerdo'],['Ao lado do móvel',260,-123,.62,85,491],['À frente, junto à cama',640,5,.95,85,491]],
@@ -3251,7 +3263,7 @@ const RSINGLE=new Set(['prat','quadros','poster']);
 const SILL_Y=207;
 const MOVEL_POS=[['Debaixo da janela',0],['Parede esquerda',-215],['Trocar com a secretária',202]];
 const movelDx=()=>{const i=L.pv&&L.pv.k==='movel'?L.pv.i:(+((roomQ().pos||{}).movel)||0);return (MOVEL_POS[i]||MOVEL_POS[0])[1]};
-function posT(k,c,pi){const q=roomQ(),i=pi!=null?pi:(+((q.pos||{})[k])||0),P=RPOS[k],mv=RIT[c.eq.movel]||{};
+function posT(k,c,pi){if(k==='fita'){const a=mulGet(roomQ(),'prat');return posT('prat',c,Math.max(0,a.findIndex(Boolean)))}const q=roomQ(),i=pi!=null?pi:(+((q.pos||{})[k])||0),P=RPOS[k],mv=RIT[c.eq.movel]||{};
   if(P&&i&&P[i]){const [,dx,dy,sc,ox,oy]=P[i];if(dx==='sill'){const by=c.top-62;return k==='mesa'?`translate(6 ${SILL_Y-by})`:`translate(-1 ${SILL_Y-by})`}
     return `translate(${dx} ${dy}) translate(${ox} ${oy}) scale(${sc}) translate(${-ox} ${-oy})`}
   const md=movelDx();if(k==='mesa')return `translate(${(mv.x0??108)+6-114+md} 0)`;if(k==='planta2')return `translate(${(mv.x1??292)-4-286+md} 0)`;if((k==='movel'||k==='leitor')&&md)return `translate(${md} 0)`;if(k==='secretaria'&&md>0)return `translate(${-md} 0)`;return ''}
@@ -3263,7 +3275,7 @@ function mulAuto(q,id){const k=RIT[id].s,a=mulGet(q,k);if(a.includes(id))return;
 function roomPlace(id,i){if(!canEdit())return;const it=RIT[id];if(!it||!RPOS[it.s]||!ownsItem(0,id))return;const q=roomQ(),a=mulGet(q,it.s);if(a[i]===id){if(RFIX[it.s])return;a[i]=null}else{const j=a.indexOf(id);if(j>=0)a[j]=null;if(RSINGLE.has(it.s))a.fill(null);a[i]=id}mulSet(q,it.s,a);L.rPrev=null;roomSave(q);render()}
 function movelPos(i){if(!canEdit())return;const q=roomQ();q.pos={...(q.pos||{}),movel:i};let moved='';if(MOVEL_POS[i][1]<0){const a=mulGet(q,'extra');for(const j of [0,1])if(a[j]&&!a[2]){a[2]=a[j];a[j]=null;moved=(RIT[a[2]]||{}).n||''}if(moved)mulSet(q,'extra',a)}roomSave(q);render();if(moved)setTimeout(()=>toast(`🎸 ${moved} passou para cima da mesa de cabeceira, para não ficar tapado pelo móvel`),300)}
 function roomPos(k,i){if(!canEdit())return;const q=roomQ();q.pos={...(q.pos||{}),[k]:i};roomSave(q);render()}
-const RORDER=['cor','recados','janela','cortina','luz:w','prat','quadros','poster','extra','teto','chao','tapete','#patch','luz','suspensa','secretaria','cabeceira','movel','leitor','mesa','planta2','cama','pet','planta','assento','plafon'];
+const RORDER=['cor','recados','janela','cortina','luz:w','prat','fita','quadros','poster','extra','teto','chao','tapete','#patch','luz','suspensa','secretaria','cabeceira','movel','leitor','mesa','planta2','cama','pet','planta','assento','plafon'];
 function roomSvg(w,o){o=o||{};RUID=0;const q=roomQ(),eq={...q.eq,...(o.eq||{})};for(const k in eq)if(!eq[k])delete eq[k];const pl=discPlaces(),n=lisNow();
   const top=RIT[eq.movel]?.top||352,tod=o.tod||roomTodOf(),live=!o.tod&&!L.rTodV,c={pl,top,tod,eq,on:!!q.on&&!!pl.play,hh:n.hh,sun:live?sunPos(n):null,win:!!L.rWin,debt:roomDebt()};c.music=c.on&&!FX.reduced;let b='',g='',fx='';const S=SKY[tod];
   for(const s of RORDER){const [k,part]=s.split(':');
@@ -3307,12 +3319,12 @@ function roomDefs(S){S=S||SKY.tarde;return roomDefsBase().replace('</defs>',`
  <radialGradient id="winglow"><stop offset="0" stop-color="${S.l}" stop-opacity=".6"/><stop offset="1" stop-color="${S.l}" stop-opacity="0"/></radialGradient>
  <radialGradient id="vign" cx=".5" cy=".45" r=".75"><stop offset=".6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".35"/></radialGradient>
  <pattern id="grain" width="140" height="140" patternUnits="userSpaceOnUse"><image href="${grainUrl()}" width="140" height="140"/></pattern></defs>`)}
-const RTHUMB={plafon:'730 0 140 130',cor:'0 0 1080 500',chao:'0 340 1080 160',prat:'14 56 196 168',poster:'214 44 176 178',teto:'0 0 1080 260',luz:'150 120 250 320',mesa:'100 230 70 90',movel:'96 280 208 150',leitor:'136 240 128 76',tapete:'60 420 280 96',planta:'24 270 92 160',planta2:'246 250 56 120',assento:'250 330 180 110',extra:'14 172 116 130',cortina:'330 18 260 340',cama:'790 130 290 380',secretaria:'560 100 210 270',cabeceira:'740 260 80 110',quadros:'566 40 194 176',suspensa:'300 0 100 130'};
+const RTHUMB={fita:'14 90 210 140',plafon:'730 0 140 130',cor:'0 0 1080 500',chao:'0 340 1080 160',prat:'14 56 196 168',poster:'214 44 176 178',teto:'0 0 1080 260',luz:'150 120 250 320',mesa:'100 230 70 90',movel:'96 280 208 150',leitor:'136 240 128 76',tapete:'60 420 280 96',planta:'24 270 92 160',planta2:'246 250 56 120',assento:'250 330 180 110',extra:'14 172 116 130',cortina:'330 18 260 340',cama:'790 130 290 380',secretaria:'560 100 210 270',cabeceira:'740 260 80 110',quadros:'566 40 194 176',suspensa:'300 0 100 130'};
 const IBOX={'l-onair':'870 190 150 70','l-led':'0 240 260 260','pet-gato':'425 420 90 56','pet-caramelo':'400 405 135 75','pet-papagaio':'290 205 60 165','pet-peixe':'375 170 50 40','pet-tartaruga':'270 440 60 40','sc-estante':'580 100 180 270'};
 function itemThumb(it){RUID=Math.floor(Math.random()*1e6);const pl={sh:[],wl:[],px:[],play:null,box:Array(12)},c={pl,top:330,music:false,on:false,tod:'tarde',eq:{},hh:lisNow().hh};let inner;
   if(it.s==='cor')inner=`<rect width="1080" height="500" fill="${it.c}"/><rect width="1080" height="500" fill="url(#wtex)" opacity=".6"/>`;
   else if(it.s==='chao')inner=RDR.chao(it).b;
-  else{const r=RDR[it.id](it,c)||{};const dark=it.s==='luz'||it.s==='mesa'||it.s==='teto'||it.s==='cabeceira';inner=(dark?`<rect x="-100" y="-100" width="1300" height="700" fill="#2a2030"/>`:it.s==='cortina'?RDR.janela({},c).b:'')+(r.w||'')+(r.b||'')+(r.g&&dark?`<g opacity=".7">${r.g}</g>`:'')}
+  else{const r=RDR[it.id](it,c)||{};const dark=it.s==='fita'||it.s==='luz'||it.s==='mesa'||it.s==='teto'||it.s==='cabeceira';inner=(dark?`<rect x="-100" y="-100" width="1300" height="700" fill="#2a2030"/>`:it.s==='cortina'?RDR.janela({},c).b:'')+(r.w||'')+(r.b||'')+(r.g&&dark?`<g opacity=".7">${r.g}</g>`:'')}
   return `<svg viewBox="${IBOX[it.id]||RTHUMB[it.s]}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">${roomDefs()}${inner}</svg>`}
 
 /* ---------- ecrã ---------- */
@@ -3656,7 +3668,7 @@ function dust(tod){if(tod==='noite')return '';let s='';for(let i=0;i<16;i++){con
 
 /* ---------- contas do quarto: custos de todos os dias ---------- */
 const CUSTO={'pet-peixe':['🐠','Comida e aquário do peixe',5],'pet-tartaruga':['🐢','Comida da tartaruga',8],'pet-papagaio':['🦜','Sementes do papagaio',12],'pet-gato':['🐈','Ração do gato',16],'pet-caramelo':['🐕','Ração do caramelo',20],
-  't-heras':['✨','Luzes do teto',4],'t-lampadas':['✨','Fio de lâmpadas',5],'l-candeeiro':['💡','Candeeiro de pé',5],'l-sunset':['🌇','Luz pôr-do-sol',4],'l-neon':['🌸','Néon',7],'l-onair':['🔴','Letreiro ON AIR',8],'l-led':['🟢','Luz LED',2],'l-casal':['💞','Néon do casal',7],'l-lua':['🌙','Candeeiro de lua',3],
+  't-heras':['✨','Luzes do teto',4],'fx-led':['✨','Fita LED das prateleiras',3],'t-lampadas':['✨','Fio de lâmpadas',5],'l-candeeiro':['💡','Candeeiro de pé',5],'l-sunset':['🌇','Luz pôr-do-sol',4],'l-neon':['🌸','Néon',7],'l-onair':['🔴','Letreiro ON AIR',8],'l-led':['🟢','Luz LED',2],'l-casal':['💞','Néon do casal',7],'l-lua':['🌙','Candeeiro de lua',3],
   'mz-lava':['🌋','Lava lamp',4],'mz-velas':['🕯️','Velas novas',3],'mz-sal':['🧂','Candeeiro de sal',3],'mz-relogio':['⏰','Relógio digital',1],'cb-papel':['🏮','Candeeiro da mesinha',3],'cb-cogumelo':['🍄','Candeeiro cogumelo',3],'cb-velas':['🕯️','Velas da mesinha',3],
   'sc-madeira':['🖥️','Eletricidade do computador',8],'sc-branca':['🖥️','Eletricidade do computador',8],'sc-estante':['📷','Pilhas das câmaras',2],
   'g-basico':['📀','Gira-discos',2],'g-madeira':['📀','Gira-discos',3],'g-mala':['📀','Gira-discos',2],'g-cd':['💿','Leitor de CDs',3],'g-boombox':['📻','Pilhas do rádio',3]};
@@ -4477,7 +4489,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795602239';
+const BUILD='1795604384';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
