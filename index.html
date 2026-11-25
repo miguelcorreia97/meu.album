@@ -3517,7 +3517,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&L.rFull&&!document.
 const PSZ={A2:1.41,A3:1,A4:.71,A5:.5};
 function posterSize(id,sz){if(!canEdit())return;const q=roomQ();q.psz=q.psz||{};const old=q.psz[id]||'A3';if(old===sz)return;q.psz[id]=sz;roomSave(q);roomRedraw();
   requestAnimationFrame(()=>{const me=document.querySelector(`.roomscene .ract[data-id="${id}"]`);if(!me)return;const a=me.getBoundingClientRect(),hit=[...document.querySelectorAll('.roomscene .ract-janela,.roomscene .ract-cortina,.roomscene .ract-prat,.roomscene .ract-poster,.roomscene .ract-quadros,.roomscene .ract-extra,.roomscene .ract-suspensa,.roomscene .rnote-wall')].filter(x=>x!==me&&!me.contains(x)&&!x.contains(me)).some(x=>{const b=x.getBoundingClientRect();return a.left<b.right-2&&a.right>b.left+2&&a.top<b.bottom-2&&a.bottom>b.top+2});
-    if(hit){const q2=roomQ();q2.psz[id]=old;roomSave(q2);roomRedraw();roomBubble(`🖼️ Em ${sz} não cabe aí: afasta-o primeiro em ✏️ Editar posições`)}else{roomBubble(`🖼️ Tamanho ${sz}`);if(!L.edit)setTimeout(()=>posterAt(id,document.querySelector(`.ract[data-id="${id}"]`)),60)}})}
+    if(hit){const q2=roomQ();q2.psz[id]=old;roomSave(q2);roomRedraw();toast(`🖼️ Em ${sz} não cabe aí: afasta-o primeiro de outras coisas`)}else{if(!L.edit)setTimeout(()=>posterAt(id,document.querySelector(`.ract[data-id="${id}"]`)),60)}})}
 const BACKY={cama:7,movel:-10,secretaria:-2,cabeceira:-2};
 const NOEDIT=new Set(['cor','chao','janela','recados','cortina','teto','moldura','lencol']);
 const FOLLOW={mesa:'movel',planta2:'movel',fita:'prat'};
@@ -4759,7 +4759,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795616214';
+const BUILD='1795616338';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
