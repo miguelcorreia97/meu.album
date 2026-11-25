@@ -4688,10 +4688,10 @@ function feDeal(F,n){const okp=songPool().filter(i=>{const u=fePvGet(i);return f
 function feStart(i){const N0=FEN[i],c=CAR[i];const N={...N0,pub:Math.random()<.35?[...N0.pub,...[Object.keys(GEN_N)[(Math.random()*8)|0]].flatMap(g=>[g,g])]:N0.pub};const crowd=[];for(let k=0;k<N.n;k++){const p=rndPerson('f'+i+'-'+k+'-'+Date.now()%1000);if(Math.random()<.25)p.acc=['sun','glasses','flower','hat','beard'][(Math.random()*5)|0];
     crowd.push({p,pref:N.pub[(Math.random()*N.pub.length)|0],h:55+Math.random()*25,on:true,x:5+((k*61+(k>>2)*7)%90),y:(k%3),d:(Math.random()*.8).toFixed(2)})}
   const me=meLook({acc:'phones',phc:'#ffd23f'}),riv=rndPerson('dj'+i,{acc:'phones'+(i%2?' sun':' beard'),phc:c.cor});
-  L.fe={i,round:1,hype:[0,0],nota:5,hist:[],sil:0,tEnd:null,crowd,me,riv,used:[],noise:0,turn:'me',ph:'intro',opts:[],log:[],lastEn:null,lastG:null,lastA:null,rain:0,req:null,msg:null};L.screen='festa';L.fe.ph='brief';L.fe.bT=Date.now();feBgPause();L.feBg=1;render();scrollTo(0,0);const F0=L.fe;fePrep().then(()=>{F0.prepOk=1;feBriefUpd()});clearInterval(L.feT);L.feT=setInterval(feTick,250)}
+  L.fe={i,round:1,hype:[0,0],nota:5,hist:[],sil:0,tEnd:null,crowd,me,riv,used:[],noise:0,turn:'me',ph:'intro',opts:[],log:[],lastEn:null,lastG:null,lastA:null,rain:0,req:null,msg:null};L.screen='festa';L.fe.ph='brief';L.fe.bT=Date.now();feBgPause();L.feBg=1;render();scrollTo(0,0);const F0=L.fe;fsStart(FEN[i].cena);fePrep().then(()=>{F0.prepOk=1;feBriefUpd()});clearInterval(L.feT);L.feT=setInterval(feTick,250)}
 async function fePrep(){const pool=songPool().slice().sort(()=>Math.random()-.5);const have=()=>songPool().filter(i=>{const u=fePvGet(i);return u&&u.length>4}).length;if(have()>=24)return;
   const todo=pool.filter(i=>fePvGet(i)==null).slice(0,36);let k=0;const t0=Date.now();const worker=async()=>{while(k<todo.length&&Date.now()-t0<9000){const i=todo[k++];try{await fePv(i)}catch(e){}}};await Promise.race([Promise.all([0,1,2,3,4,5].map(worker)),new Promise(r=>setTimeout(r,9000))])}
-function feGo(){const F=L.fe;if(!F||F.ph!=='brief'||!F.prepOk)return;fsStart(FEN[F.i].cena);F.ph='prep';F.t0=Date.now();F.tEnd=Date.now()+30000;feRound()}
+function feGo(){const F=L.fe;if(!F||F.ph!=='brief'||!F.prepOk)return;if(!FSX.t||FSX.cena!==FEN[F.i].cena)fsStart(FEN[F.i].cena);F.ph='prep';F.t0=Date.now();F.tEnd=Date.now()+30000;feRound()}
 function feBriefUpd(){const F=L.fe;if(!F||F.ph!=='brief')return;const l=Math.max(0,30-Math.floor((Date.now()-F.bT)/1000)),b=document.querySelector('.fbrief .fbt');if(b)b.textContent=F.prepOk?(l>0?`A noite começa em ${l}s`:'A começar…'):'💿 A preparar a caixa de discos…';const g=document.querySelector('.fbrief .fbgo');if(g)g.disabled=!F.prepOk;if(l<=0&&F.prepOk)feGo()}
 function feTick(){const F=L.fe;if(!F||L.screen!=='festa'){clearInterval(L.feT);return}if(F.ph==='brief'){feBriefUpd();return}if(F.ph==='end'||F.ph==='prep'||!F.tEnd)return;const now=Date.now(),left=F.tEnd-now,nightLeft=F.t0+FE_NIGHT-now;
   {const ck=document.querySelector('.fclock');if(ck){ck.firstChild&&(ck.firstChild.nodeValue='🕕 '+hFmt(feHour(F)))}}
@@ -4781,8 +4781,8 @@ const FS_P={praia:{bab:.45,sea:1,gull:.05,ball:.045,steps:.03,laugh:.02},restaur
 function fsCtx(){try{if(!FSX.ctx){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;FSX.ctx=new AC();FSX.g=FSX.ctx.createGain();FSX.g.gain.value=0;FSX.g.connect(FSX.ctx.destination)}if(FSX.ctx.state==='suspended')FSX.ctx.resume();return FSX.ctx}catch(e){return null}}
 function fsBuf(kind,sec){const c=FSX.ctx,n=c.sampleRate*(sec||2),b=c.createBuffer(1,n,c.sampleRate),d=b.getChannelData(0);let last=0;for(let i=0;i<n;i++){const w=Math.random()*2-1;if(kind==='brown'){last=(last+.02*w)/1.02;d[i]=last*3.5}else d[i]=w}return b}
 function fsLoop(kind,type,freq,q,gain){const c=FSX.ctx,s=c.createBufferSource();s.buffer=fsBuf(kind,3);s.loop=true;const f=c.createBiquadFilter();f.type=type;f.frequency.value=freq;f.Q.value=q||.7;const g=c.createGain();g.gain.value=gain;s.connect(f);f.connect(g);g.connect(FSX.g);s.start();FSX.nodes.push(s);return {s,f,g}}
-function fsNoise(t,dur,type,freq,q,gain){const c=FSX.ctx,s=c.createBufferSource();s.buffer=FSX.wb||(FSX.wb=fsBuf('white',1));const f=c.createBiquadFilter();f.type=type;f.frequency.value=freq;f.Q.value=q||1;const g=c.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(gain,t+.005);g.gain.exponentialRampToValueAtTime(.0001,t+dur);s.connect(f);f.connect(g);g.connect(FSX.g);s.start(t,Math.random()*.5);s.stop(t+dur+.05)}
-function fsTone(t,type,f0,f1,dur,gain,filt){const c=FSX.ctx,o=c.createOscillator();o.type=type;o.frequency.setValueAtTime(f0,t);if(f1)o.frequency.exponentialRampToValueAtTime(f1,t+dur);const g=c.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(gain,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+dur);let n=o;if(filt){const f=c.createBiquadFilter();f.type='bandpass';f.frequency.value=filt;f.Q.value=2;o.connect(f);n=f}n.connect(g);g.connect(FSX.g);o.start(t);o.stop(t+dur+.05)}
+function fsNoise(t,dur,type,freq,q,gain){const c=FSX.ctx,s=c.createBufferSource();s.buffer=FSX.wb||(FSX.wb=fsBuf('white',1));const f=c.createBiquadFilter();f.type=type;f.frequency.value=freq;f.Q.value=q||1;const g=c.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(gain,t+.005);g.gain.exponentialRampToValueAtTime(.0001,t+dur);s.connect(f);f.connect(g);g.connect(FSX.out||FSX.g);s.start(t,Math.random()*.5);s.stop(t+dur+.05)}
+function fsTone(t,type,f0,f1,dur,gain,filt){const c=FSX.ctx,o=c.createOscillator();o.type=type;o.frequency.setValueAtTime(f0,t);if(f1)o.frequency.exponentialRampToValueAtTime(f1,t+dur);const g=c.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(gain,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+dur);let n=o;if(filt){const f=c.createBiquadFilter();f.type='bandpass';f.frequency.value=filt;f.Q.value=2;o.connect(f);n=f}n.connect(g);g.connect(FSX.out||FSX.g);o.start(t);o.stop(t+dur+.05)}
 const FSE={
  clink(t){const f=2400+Math.random()*1800;fsTone(t,'sine',f,0,.5,.035);fsTone(t+.01,'sine',f*1.48,0,.35,.02)},
  plate(t){fsNoise(t,.09,'bandpass',1900,3,.06);fsTone(t+.02,'triangle',1200+Math.random()*500,0,.25,.025)},
@@ -4794,14 +4794,14 @@ const FSE={
  horn(t){fsTone(t,'square',420,0,.32,.012,900);fsTone(t,'square',520,0,.32,.01,900)},
  pand(t){for(let k=0;k<3;k++)fsNoise(t+k*.09,.07,'highpass',6500,1,.05)},
  boom(t){fsTone(t,'sine',90,35,.9,.18);for(let k=0;k<12;k++)fsNoise(t+.3+Math.random()*.8,.02,'highpass',3000,1,.03)}};
-function fsStart(cena){const c=fsCtx();if(!c||!SND.on)return;fsStop(true);FSX.cena=cena;const P=FS_P[cena]||{bab:.6};const now=c.currentTime;FSX.g.gain.cancelScheduledValues(now);FSX.g.gain.setTargetAtTime(.9,now,1.2);
+function fsStart(cena){const c=fsCtx();if(!c||!SND.on)return;fsStop(true);FSX.cena=cena;const P=FS_P[cena]||{bab:.6};const now=c.currentTime;FSX.g.gain.cancelScheduledValues(now);FSX.g.gain.setTargetAtTime(1.7,now,.8);
   FSX.bab=fsLoop('brown','bandpass',520,.6,.05*P.bab);const b2=fsLoop('white','bandpass',1300,1.2,.004*P.bab);FSX.bab2=b2;
   if(P.sea)FSX.sea=fsLoop('brown','lowpass',650,.7,.05*P.sea);if(P.city)fsLoop('brown','lowpass',170,.7,.09);if(P.fire){}
   clearInterval(FSX.t);FSX.t=setInterval(()=>fsTickS(P),250)}
 function fsTickS(P){const c=FSX.ctx;if(!c||!L.fe||L.screen!=='festa'||!SND.on){fsStop();return}const t=c.currentTime+.02,F=L.fe,sil=F.tEnd&&Date.now()>F.tEnd&&F.ph!=='end',on=F.crowd.filter(x=>x.on).length/Math.max(1,F.crowd.length),en=F.last?F.last.e.en:2;
   /* conversa: mais alta em silêncio, ondula como um café cheio */
-  try{const lvl=.05*(P.bab||.6)*(sil?2.2:1)*(.7+Math.random()*.6);FSX.bab.g.gain.setTargetAtTime(lvl,t,.4);FSX.bab.f.frequency.setTargetAtTime(420+Math.random()*260,t,.3);if(FSX.bab2)FSX.bab2.g.gain.setTargetAtTime(.006*(P.bab||.6)*(sil?2:1)*Math.random(),t,.2)}catch(e){}
-  if(FSX.sea){const ph=(Date.now()/7000)%1;FSX.sea.g.gain.setTargetAtTime(.02+.06*Math.sin(ph*Math.PI),t,.6)}
+  try{const lvl=.075*(P.bab||.6)*(sil||F.ph==='brief'||F.ph==='prep'&&!F.last?1.6:1)*(sil?1.4:1)*(.7+Math.random()*.6);FSX.bab.g.gain.setTargetAtTime(lvl,t,.4);FSX.bab.f.frequency.setTargetAtTime(420+Math.random()*260,t,.3);if(FSX.bab2)FSX.bab2.g.gain.setTargetAtTime(.006*(P.bab||.6)*(sil?2:1)*Math.random(),t,.2)}catch(e){}
+  if(FSX.sea){const ph=(Date.now()/7000)%1;FSX.sea.g.gain.setTargetAtTime(.035+.09*Math.sin(ph*Math.PI),t,.6)}
   for(const k in FSE){const pr=P[k];if(pr&&Math.random()<pr*(k==='steps'?on*(en/3):1))FSE[k](t+Math.random()*.2)}
   if(P.fire)for(let k=0;k<3;k++)if(Math.random()<.5)fsNoise(t+Math.random()*.25,.008+Math.random()*.01,'highpass',2500,1,.04*Math.random());
   if(P.drums&&!sil){const beat=60/(80+en*14);const b=Math.floor(c.currentTime/beat);if(b!==FSX.lb){FSX.lb=b;if(b%2===0)fsTone(t,'sine',95,45,.25,.09);else if(Math.random()<.6)fsNoise(t,.05,'bandpass',700,2,.04)}}
@@ -4836,7 +4836,10 @@ function feDeskTick(F){const now=Date.now();if(F.ph!=='play'&&F.ph!=='pick')retu
   if(playing&&(!F.vT||now-F.vT>5000)){F.vT=now;const off=Math.abs((F.vol==null?1:F.vol)-L20[F.i].vol);if(off===0)feBump(.04,'',false);else{feBump(off===1?-.05:-.12,'',false);if(Math.random()<.45)feToastF(L20[F.i].vol>(F.vol==null?1:F.vol)?'🔈 "Não se ouve nada!"':'🔊 "Está alto demais!"',false)}}
   if(F.ask&&now>F.ask.until){const a=F.ask;F.ask=null;feBump(-.25,'⌛ Ignoraste o pedido',false)}
   if(!F.ask&&playing&&F.ph==='play'&&(!F.aT||now-F.aT>22000)&&Math.random()<.08){F.aT=now;F.ask={...FE_ASKS[(Math.random()*FE_ASKS.length)|0](F),until:now+9000};const w=document.querySelector('.fdesk2');if(w){const t=document.createElement('div');t.innerHTML=feDesk(F);w.replaceWith(t.firstChild)}}}
-function fsHorn(){const c=FSX.ctx;if(!c)return;const t=c.currentTime;for(let k=0;k<3;k++){fsTone(t+k*.18,'sawtooth',440,440,.16,.06,1200);fsTone(t+k*.18,'sawtooth',554,554,.16,.04,1400)}}
+function fsHorn(){if(!SND.on)return;const c=fsCtx();if(!c)return;const lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=3400;lp.connect(c.destination);const t0=c.currentTime+.03;
+  [[0,.2],[.28,.2],[.56,.8]].forEach(([d,len])=>{const t=t0+d,g=c.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.22,t+.02);g.gain.setValueAtTime(.22,t+len-.05);g.gain.linearRampToValueAtTime(0,t+len);g.connect(lp);
+    [466,469,587,591,698].forEach(f=>{const o=c.createOscillator();o.type='sawtooth';o.frequency.setValueAtTime(f*1.03,t);o.frequency.linearRampToValueAtTime(f,t+.06);o.connect(g);o.start(t);o.stop(t+len+.02)})});
+  setTimeout(()=>{try{lp.disconnect()}catch(e){}},2500)}
 function fsApplause(){const c=fsCtx();if(!c)return;try{FSX.g.gain.cancelScheduledValues(c.currentTime);FSX.g.gain.setTargetAtTime(.95,c.currentTime,.2)}catch(e){}const t=c.currentTime;
   for(let k=0;k<420;k++){const tt=t+Math.random()*5*Math.pow(Math.random(),.6);fsNoise(tt,.03+Math.random()*.03,'bandpass',1200+Math.random()*1800,1.4,.05*(1-(tt-t)/6))}
   for(let k=0;k<6;k++){const tt=t+.3+Math.random()*2.5;fsTone(tt,'sine',700+Math.random()*300,1300+Math.random()*400,.35,.03)}
@@ -5743,7 +5746,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795642990';
+const BUILD='1795643596';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
