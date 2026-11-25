@@ -1485,6 +1485,38 @@ body,#app{overflow-x:clip}
 .mtopback{position:fixed;left:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:40}.mtopback .btn{backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);background:rgba(34,16,6,.85)!important;box-shadow:0 6px 20px rgba(0,0,0,.4)}.mmore{display:flex;justify-content:center;margin:10px 0 4px}.mtemas{justify-content:flex-start;margin:6px 0 2px}
 .rplaces{display:flex;flex-direction:column;gap:5px;margin:8px 0 4px}.rplaces button{font:inherit;font-size:.74rem;padding:6px 8px;border-radius:9px;border:1px solid rgba(255,214,150,.25);background:rgba(255,246,230,.06);color:var(--cream);cursor:pointer;text-align:left}.rplaces button.on{background:#ffd23f;color:#2b1d14;border-color:#ffd23f;font-weight:700}.rplaces i{opacity:.65;font-style:normal}.rposh{text-align:left;margin:-4px 0 8px}
 .edsz{display:inline-flex;gap:4px;align-items:center}.edsz .on{background:var(--cream)!important;color:#2a1608!important}
+/* vida do quarto */
+.rfx{position:absolute;z-index:6;pointer-events:none;transform:translate(-50%,-50%);font-size:22px;line-height:1}
+.rfx-spark{animation:fxSpark 1.1s ease-out forwards;font-size:16px}@keyframes fxSpark{0%{opacity:0;transform:translate(-50%,-50%) scale(.3) rotate(0)}30%{opacity:1}100%{opacity:0;transform:translate(-50%,-130%) scale(1.2) rotate(90deg)}}
+.rfx-drop{animation:fxDrop .9s ease-in forwards;font-size:15px}@keyframes fxDrop{0%{opacity:0;transform:translate(-50%,-50%)}15%{opacity:1}100%{opacity:0;transform:translate(-50%,120%) scale(.7)}}
+.rfx-can{font-size:34px;animation:fxCan 1.5s ease-in-out forwards}@keyframes fxCan{0%{opacity:0;transform:translate(-20%,-70%) rotate(0)}20%{opacity:1;transform:translate(-50%,-50%) rotate(-35deg)}80%{opacity:1;transform:translate(-50%,-50%) rotate(-40deg)}100%{opacity:0;transform:translate(-20%,-70%) rotate(0)}}
+.rfx-broom{font-size:40px;animation:fxBroom 1.5s ease-in-out forwards}@keyframes fxBroom{0%{opacity:0;transform:translate(-260px,-50%) rotate(-20deg)}15%{opacity:1}25%{transform:translate(-160px,-50%) rotate(20deg)}40%{transform:translate(-60px,-50%) rotate(-20deg)}55%{transform:translate(40px,-50%) rotate(20deg)}70%{transform:translate(140px,-50%) rotate(-20deg)}90%{opacity:1}100%{opacity:0;transform:translate(240px,-50%) rotate(20deg)}}
+.rfx-pop{font-size:34px;animation:fxPop .9s ease-out forwards}@keyframes fxPop{0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}35%{opacity:1;transform:translate(-50%,-50%) scale(1.4)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.8)}}
+.rfx-fall{font-size:26px;animation:fxFall 1.1s cubic-bezier(.5,0,.9,.6) forwards}@keyframes fxFall{0%{opacity:1;transform:translate(-50%,-50%) rotate(0)}85%{opacity:1;transform:translate(-50%,280%) rotate(200deg)}100%{opacity:0;transform:translate(-50%,300%) rotate(220deg) scale(.6)}}
+.rfx-conf{font-size:20px;animation:fxConf 2.6s linear forwards}@keyframes fxConf{0%{opacity:0;transform:translate(-50%,0) rotate(0)}10%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--dx,0px)),110vh) rotate(540deg)}}
+.rfx-polish{animation:fxPolish 1.2s ease-in-out}@keyframes fxPolish{0%,100%{filter:none}50%{filter:brightness(1.5) saturate(1.3);transform:rotate(8deg) scale(1.04)}}
+.ract-leitor.rfx-arm{animation:fxArm 1.4s ease}@keyframes fxArm{0%,100%{filter:none}30%{filter:brightness(1.6) drop-shadow(0 0 8px #ffe08a)}}
+.ract-plafon.rfx-flicker{animation:fxFlick 2s steps(1) 1}@keyframes fxFlick{0%,20%,40%,60%{opacity:1}10%,30%,50%,70%,100%{opacity:.25}}
+.rsujo{transition:opacity .35s,transform .35s;transform-box:fill-box;transform-origin:50% 100%}.rsujo:hover{filter:brightness(1.15)}.rsujo-out{opacity:0;transform:scale(.4) translateY(-6px)}
+.rleak{animation:fxLeak 1.3s ease-in infinite}@keyframes fxLeak{0%{transform:translateY(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(440px);opacity:0}}
+.rlampfx{animation:fxDim 4s ease-in-out infinite}@keyframes fxDim{0%,100%{opacity:.22}48%{opacity:.22}50%{opacity:.05}52%{opacity:.22}}
+.roomscene.p-murcha .ract-planta,.roomscene.p-murcha .ract-planta2,.roomscene.p-murcha .ract-suspensa{filter:saturate(.2) sepia(.55) brightness(.85);transform-box:fill-box;transform-origin:50% 100%;transform:scaleY(.88) skewX(-4deg);transition:filter 1s,transform 1s}
+.roomscene.p-sede .ract-planta,.roomscene.p-sede .ract-planta2,.roomscene.p-sede .ract-suspensa{filter:saturate(.7);transform-box:fill-box;transform-origin:50% 100%;animation:fxThirst 3s ease-in-out infinite}@keyframes fxThirst{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.95) skewX(-2deg)}}
+.hud-vida{display:block;margin-top:6px;padding:7px 12px;border-radius:99px;border:1px solid rgba(255,214,150,.45);background:rgba(20,10,4,.82);color:var(--cream);font:inherit;font-size:.76rem;font-weight:700;cursor:pointer;animation:rzIn .3s ease}.hud-vida.bad{border-color:#ff8a7a;color:#ffd0c8}
+.dwear{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;margin:0 0 10px;font-size:.8rem}.dwear .bzbar{grid-column:1/-1}.dwear .btn{grid-column:1/-1;justify-self:start}.dwear.mid .bzbar i{background:linear-gradient(90deg,#ffb347,#e8892a)}.dwear.bad .bzbar i{background:linear-gradient(90deg,#ff7a6b,#d9473a)}
+.agenda .agday{display:grid;grid-template-columns:86px 1fr;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.08)}.agenda .agday.hoje{background:rgba(255,210,63,.08);border-radius:12px;padding:9px 8px;border-bottom:0}.agenda .agd b{display:block}.agenda .agd small,.agenda .agt small{display:block;opacity:.65;font-size:.72rem}.agenda .agt em{color:#ffd23f;font-style:normal}.agenda .agt>div+div{margin-top:6px}
+.festa-ov{position:absolute;inset:0;z-index:5;pointer-events:none;overflow:hidden;background:rgba(20,0,40,.35);animation:fIn 1s ease;border-radius:inherit}.festa-ov.out{opacity:0;transition:opacity .9s}@keyframes fIn{from{opacity:0}}
+.fball{position:absolute;left:50%;top:-80px;width:2px;height:120px;background:#bbb;animation:fBallDown 1.6s cubic-bezier(.3,1.4,.5,1) forwards}.fball i{position:absolute;left:-26px;bottom:-50px;width:54px;height:54px;border-radius:50%;background:repeating-conic-gradient(#fff 0 10deg,#9aa 10deg 20deg),radial-gradient(#fff,#888);background-blend-mode:multiply;box-shadow:0 0 30px #fff,0 0 80px #c9f;animation:fSpin 2s linear infinite}@keyframes fBallDown{to{top:0}}@keyframes fSpin{to{transform:rotate(360deg)}}
+.fspot{position:absolute;top:-20%;left:50%;width:60%;height:140%;transform-origin:50% 0;mix-blend-mode:screen;opacity:.55}.fspot.s1{background:linear-gradient(180deg,rgba(255,60,160,.8),transparent 80%);clip-path:polygon(48% 0,52% 0,80% 100%,20% 100%);animation:fSweep 3s ease-in-out infinite alternate}.fspot.s2{background:linear-gradient(180deg,rgba(60,200,255,.8),transparent 80%);clip-path:polygon(48% 0,52% 0,80% 100%,20% 100%);animation:fSweep 2.3s ease-in-out infinite alternate-reverse}.fspot.s3{background:linear-gradient(180deg,rgba(255,220,60,.8),transparent 80%);clip-path:polygon(48% 0,52% 0,80% 100%,20% 100%);animation:fSweep 3.7s ease-in-out infinite alternate;animation-delay:-1s}@keyframes fSweep{from{transform:translateX(-50%) rotate(-38deg)}to{transform:translateX(-50%) rotate(38deg)}}
+.fdots{position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.9) 1.5px,transparent 2px);background-size:46px 38px;animation:fDots 6s linear infinite;mix-blend-mode:screen;opacity:.5}@keyframes fDots{to{background-position:460px 120px}}
+.roomscene.festa .roomsvg{animation:fBeat .5s ease-in-out infinite alternate}@keyframes fBeat{to{filter:saturate(1.35) brightness(1.06)}}
+.festa-prize{position:absolute;left:50%;top:50%;z-index:8;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:6px;padding:18px 22px;border-radius:20px;background:rgba(25,12,30,.94);border:2px solid #ffd23f;color:var(--cream);text-align:center;max-width:260px;box-shadow:0 0 40px rgba(255,210,63,.5);animation:fPrize .7s cubic-bezier(.2,1.6,.4,1)}.festa-prize img{width:120px;height:120px;border-radius:8px;object-fit:cover}.festa-prize .rth{width:120px;height:100px}.festa-prize .fpe{font-size:54px}.festa-prize small{color:#ffd23f;font-weight:700}@keyframes fPrize{from{transform:translate(-50%,-50%) scale(.2) rotate(-12deg);opacity:0}}
+.tixcard{position:absolute;left:50%;top:40%;z-index:8;transform:translate(-50%,-50%) rotate(-4deg);padding:14px 26px;border-radius:10px;background:#ffe7a8;color:#3a2410;display:flex;flex-direction:column;align-items:center;gap:2px;box-shadow:0 10px 30px rgba(0,0,0,.4);border:2px dashed #b8862b;animation:tixIn 3.6s ease forwards}.tixcard i{position:absolute;right:-14px;top:-12px;padding:3px 9px;border:3px solid #c0392b;color:#c0392b;font-style:normal;font-weight:900;border-radius:6px;transform:rotate(14deg) scale(2.2);opacity:0;animation:tixStamp .35s .7s ease-out forwards}@keyframes tixIn{0%{opacity:0;transform:translate(-50%,40%) rotate(8deg)}15%{opacity:1;transform:translate(-50%,-50%) rotate(-4deg)}85%{opacity:1;transform:translate(-50%,-50%) rotate(-4deg)}100%{opacity:0;transform:translate(-50%,-120%) rotate(-10deg)}}@keyframes tixStamp{to{opacity:1;transform:rotate(14deg) scale(1)}}
+@media (prefers-reduced-motion:reduce){.festa-ov *,.rleak,.rlampfx,.roomscene.festa .roomsvg{animation:none!important}}
+.cal{margin-top:34px;background:#fbf8f1;color:#141414;border-radius:16px;padding:16px 14px 12px}.cal-top{display:flex;align-items:center;justify-content:space-between;gap:8px}.cal-top h2{margin:0;color:#141414!important;background:none!important;-webkit-text-fill-color:#141414;font-family:Anton,sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.02em;font-size:clamp(1.6rem,6vw,2.6rem);line-height:1;text-align:center;flex:1}.cal-top button{border:0;background:none;font-size:2rem;line-height:1;cursor:pointer;color:#141414;padding:0 8px}
+.cal-wd{display:grid;grid-template-columns:repeat(7,1fr);margin:12px 0 6px}.cal-wd span{text-align:center;font-weight:800;font-size:.72rem;text-transform:uppercase;letter-spacing:.12em}
+.cal-g{display:grid;grid-template-columns:repeat(7,1fr);border-top:2px solid #141414;border-left:2px solid #141414}.cal-c{position:relative;aspect-ratio:1/.9;border:0;border-right:2px solid #141414;border-bottom:2px solid #141414;background:#fff;padding:4px 5px;text-align:left;font:inherit;color:#141414;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;min-width:0}.cal-c b{font-weight:800;font-size:.82rem}.cal-c span{font-size:clamp(.7rem,2.6vw,1.05rem);line-height:1;text-align:right}.cal-c.fora b{color:#bbb}.cal-c.fora span{opacity:.35}.cal-c.past:not(.fora){background:#f1ede4}.cal-c.past:not(.fora) span{opacity:.45}.cal-c.hoje{background:#ffd23f!important}.cal-c.hoje span{opacity:1}.cal-c.sel{box-shadow:inset 0 0 0 3px #c0392b}.cal-c:hover{background:#fff6d6}
+.cal-leg{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:10px;font-size:.72rem;color:#444}.cal-det{margin-top:12px}.cal-det h4{margin:0 0 6px}.cal-det>div{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.08)}.cal-det small{display:block;opacity:.65;font-size:.74rem}.cal-det em{color:#ffd23f;font-style:normal}
 .rszchip{display:flex;gap:4px;padding:4px!important;cursor:default!important}.rszchip button{border:0;border-radius:99px;padding:5px 9px;background:rgba(255,255,255,.1);color:var(--cream);font:inherit;font-size:.74rem;font-weight:700;cursor:pointer}.rszchip button.on{background:var(--cream);color:#2a1608}
 .rplacechip{position:absolute;transform:translate(-50%,0);z-index:4;padding:7px 12px;border-radius:99px;border:1px solid rgba(255,214,150,.5);background:rgba(20,10,4,.88);color:var(--cream);font:inherit;font-size:.78rem;font-weight:700;cursor:pointer;white-space:nowrap;box-shadow:0 6px 18px rgba(0,0,0,.4);animation:rzIn .2s ease}
 .rplaces.big button{font-size:.9rem;padding:11px 12px}
@@ -2882,7 +2914,7 @@ const sqBlank=()=>({eq:{},own:{},spent:0,pst:null,buy:[],sh:null,wl:null,px:null
 SQ.d=sqBlank();SQ.base=sqBlank();
 function sqSaveLocal(){if(!QID)return;try{localStorage.setItem(sqKey(),JSON.stringify({d:SQ.d,base:SQ.base,ut:SQ.ut}))}catch(e){}}
 const CASA_URL=()=>PROF_URL(QID);
-async function sqFetch(){if(!(db&&db.cloud)||!QID)return null;const q0=QID;try{const r=await fetch(CASA_URL(),{cache:'no-store'});if(q0!==QID)return null;if(r.status===404)return {d:sqBlank(),ut:null};if(!r.ok)return null;const j=await r.json();if(q0!==QID)return null;return {d:JSON.parse(j.fields.d.stringValue),ut:j.updateTime}}catch(e){return null}}
+async function sqFetch(){if(!(db&&db.cloud)||!QID)return null;const q0=QID;try{const r=await fetch(CASA_URL(),{cache:'no-store'});if(q0!==QID)return null;if(r.status===404)return {d:sqBlank(),ut:null};if(!r.ok)return null;const j=await r.json();if(q0!==QID)return null;try{let tn=0;for(const f in j.fields)if(f.startsWith('tix_'))tn+=+j.fields[f].stringValue||0;SQ.tix=tn;localStorage.setItem('tixn:'+q0,tn)}catch(e){}if(!j.fields.d)return {d:sqBlank(),ut:j.updateTime};return {d:JSON.parse(j.fields.d.stringValue),ut:j.updateTime}}catch(e){return null}}
 /* junta as mudanças dos dois: compras somam-se, o que foi mudado ganha, o resto fica como está */
 function sqMerge(base,loc,rem){const S=x=>JSON.stringify(x),o=JSON.parse(S(rem||sqBlank()));base=base||sqBlank();loc=loc||sqBlank();
   const ev=(x,k)=>x&&x.eq&&k in x.eq?x.eq[k]:(RDEF[k]||null);
@@ -2891,11 +2923,11 @@ function sqMerge(base,loc,rem){const S=x=>JSON.stringify(x),o=JSON.parse(S(rem||
   o.eq={...(o.eq||{})};for(const k of new Set([...Object.keys(loc.eq||{}),...Object.keys(base.eq||{})]))if(S(ev(loc,k))!==S(ev(base,k)))o.eq[k]=ev(loc,k);
   if((+loc.lt||0)>(+o.lt||0)){o.lt=loc.lt;o.lb=loc.lb}
   if(loc.md){const a=o.md||{},b=loc.md;if(!a.d||b.d>a.d)o.md={...b};else if(a.d===b.d){o.md={...a};for(const k in b)if(k!=='d')o.md[k]=Math.max(+a[k]||0,+b[k]||0)}}
-  for(const k of ['sh','wl','px','play','on','cl','pos','mul','li','rf1','bm1','lon','flip','off','cc','psz'])if(S(loc[k])!==S(base[k]))o[k]=loc[k];return o}
+  for(const k of ['sh','wl','px','play','on','cl','pos','mul','li','rf1','bm1','lon','flip','off','cc','psz','wear','agu','sujo','rega','limpD','imp','impD','impW','festa','restD'])if(S(loc[k])!==S(base[k]))o[k]=loc[k];return o}
 async function sqSync(){if(!(db&&db.cloud)||!QID||!canEdit())return;if(SQ.busy){SQ.again=1;return}SQ.busy=true;SQ.again=0;
   const snap=JSON.parse(JSON.stringify(SQ.d)),base=SQ.base;
   for(let k=0;k<8;k++){const cur=await sqFetch();if(!cur)break;const m=sqMerge(base,snap,cur.d);
-    try{const r=await fetch(CASA_URL()+(cur.ut?'&currentDocument.updateTime='+encodeURIComponent(cur.ut):'&currentDocument.exists=false'),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:{d:{stringValue:JSON.stringify(m)},at:{stringValue:new Date().toISOString()}}})});
+    try{const r=await fetch(CASA_URL()+'&updateMask.fieldPaths=d&updateMask.fieldPaths=at'+(cur.ut?'&currentDocument.updateTime='+encodeURIComponent(cur.ut):'&currentDocument.exists=false'),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:{d:{stringValue:JSON.stringify(m)},at:{stringValue:new Date().toISOString()}}})});
       if(r.ok){let j={};try{j=await r.json()}catch(e){}SQ.chg=JSON.stringify(m)!==JSON.stringify(snap);SQ.ut=j.updateTime||SQ.ut;SQ.base=JSON.parse(JSON.stringify(m));SQ.d=sqMerge(snap,SQ.d,m);sqSaveLocal();break}}catch(e){}
     await new Promise(z=>setTimeout(z,250+Math.random()*500))}
   SQ.busy=false;if(SQ.again)sqSync();else if(SQ.chg){SQ.chg=0;roomRefresh()}}
@@ -2907,7 +2939,7 @@ const canEdit=()=>!!(ME&&QID&&QID===myRoomId()&&CASAL.includes(myPid()));
 /* missões: só pagam quando ficam completas. O que já tinha sido pago aos quartos antes desta regra fica guardado em q.leg (não se perde nem se paga duas vezes) */
 const qPart=(m,v)=>Math.round(mReward(m).r*Math.floor(4*Math.min(v,m.t)/m.t)/4);
 function mPaid(m,v,key,leg){if(v>=m.t)return mReward(m).r;if(!leg)return qPart(m,v);return +leg[key]||0}
-function roomEarned(){const q=roomQ(),leg=(SQ.d&&SQ.d.leg)||(QID!==CASA_ID?{}:null);let n=(q.mus||0)+CASAL.reduce((a,w)=>a+(+profGet(w).st.vbpm||0),0);for(const m of MISSOES){if(m.co){n+=mPaid(m,coVal(m),m.id,leg);continue}for(const w of CASAL)n+=mPaid(m,stVal(profGet(w),m.s),m.id+'|'+w,leg)}return n}
+function roomEarned(){const q=roomQ(),leg=(SQ.d&&SQ.d.leg)||(QID!==CASA_ID?{}:null);let n=(q.mus||0)+TIX*(SQ.tix!=null?SQ.tix:tixLocalN(QID))+CASAL.reduce((a,w)=>a+(+profGet(w).st.vbpm||0),0);for(const m of MISSOES){if(m.co){n+=mPaid(m,coVal(m),m.id,leg);continue}for(const w of CASAL)n+=mPaid(m,stVal(profGet(w),m.s),m.id+'|'+w,leg)}return n}
 async function legMigrate(){try{if(QID!==CASA_ID||!(db&&db.cloud)||!CASAL.includes(myPid()))return;await Promise.all(CASAL.map(w=>profLoad(w)));await sqPull();if(!SQ.d||SQ.d.leg)return;
   const leg={_:1};for(const m of MISSOES){if(m.co){const v=coVal(m);if(v<m.t&&qPart(m,v))leg[m.id]=qPart(m,v);continue}for(const w of CASAL){const v=stVal(profGet(w),m.s);if(v<m.t&&qPart(m,v))leg[m.id+'|'+w]=qPart(m,v)}}
   const q=roomQ();q.leg=leg;roomSave(q)}catch(e){}}
@@ -2957,6 +2989,7 @@ function bpmZoom(){const q=roomQ(),me=myPid(),hoje=dayNum(lisNow().ymd),mem=CASA
   zoomOpen(`<div class="rzlist bpmz"><h3>♩ BPM de hoje</h3><p class="hint">Hoje o quarto já ganhou <b>${tot}</b> de ${max} BPM possíveis hoje.</p>
    <h4>🎵 Música a tocar (1 BPM a cada ${BPM_MIN} min)</h4>${mus}
    <h4>🎮 Partidas ganhas</h4>${jog}
+   <p class="hint" style="margin-top:12px">🎟️ Bilhetes de visitas a este quarto: ${SQ.tix!=null?SQ.tix:tixLocalN(QID)} (+${TIX} BPM cada). <a href="#" onclick="event.preventDefault();zoomClose();setTimeout(agendaZoom,200)">📅 Ver a agenda</a></p>
    <h4>🎯 Jogar ${PART_META} partidas no dia (+${PART_BPM} BPM)</h4>${mem.map(w=>{const st=profGet(w).st||{},v=Math.min(PART_META,+st.pdDay===hoje?(+st.pdHoje||0):0);return row(w,v,PART_META,v>=PART_META?`+${PART_BPM} BPM ganhos hoje`:'Contam todas as partidas, ganhas ou perdidas')}).join('')}
 </div>`,'sheet')}
 function musWho(){const q=roomQ();return CASAL.map(w=>`${plE(w)} ${bpmOf(w,q)>=BPM_DIA?'✓':bpmOf(w,q)+'/'+BPM_DIA}`).join(' · ')}
@@ -3431,6 +3464,7 @@ function roomSvg(w,o){o=o||{};RUID=0;const q=roomQ(),eq={...q.eq,...(o.eq||{})};
   post+=`<polygon points="${WX},${WY+WH} ${WX+WW},${WY+WH} ${patchPts(tod).join(' ')}" fill="url(#beam)" style="mix-blend-mode:screen" opacity="${tod==='dia'?.14:tod==='noite'?.1:.2}"/>`;
   post+=`<circle cx="${WX+WW/2}" cy="${WY+WH/2}" r="190" fill="url(#winglow)" style="mix-blend-mode:screen" opacity="${tod==='noite'?.25:tod==='dia'?.35:.6}"/>`;
   post+=fx+dust(tod)+`<rect width="${QW}" height="500" fill="url(#grain)" style="mix-blend-mode:multiply" opacity=".9"/><rect width="${QW}" height="500" fill="url(#vign)"/>`;
+  if(!o.tod&&!o.eq){b+=sujoSvg(q)+impSvg(q)}
   return `<svg class="roomsvg" viewBox="0 0 ${QW} 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(roomTitle())}">${roomDefs(S)}${b}<g style="pointer-events:none">${post}</g></svg>`}
 function patchPts(tod){const sh={manha:60,dia:0,tarde:-70,noite:-20}[tod];return [`${420+sh*1.6},470`,`${210+sh*1.6},470`]}
 function lightPatch(tod){const sh={manha:60,dia:0,tarde:-70,noite:-20}[tod],c=SKY[tod].l,op={manha:.55,dia:.45,tarde:.6,noite:.25}[tod];
@@ -3489,7 +3523,7 @@ function roomList(){const m={};m[CASA_ID]=1;Object.values(PLAYERS).forEach(p=>{i
 function visitZoom(){plLoad();const mine=myRoomId(),L_=roomList().filter(q=>q!==mine);
   zoomOpen(`<div class="rzlist"><h3>👀 Quartos dos outros</h3><p class="hint">Podes ver como os outros decoraram, mas só quem lá vive pode mudar as coisas.</p>
    ${L_.length?`<div class="rinvlist">${L_.map(q=>{const mm=roomMembers(q);return `<button onclick="zoomClose();visitRoom('${q}')"><span>${mm.map(plE).join('')}</span><b>${esc(roomTitle(q).replace(/^O quarto /,''))}</b><i>visitar</i></button>`}).join('')}</div>`:'<p class="hint">Ainda não há outros quartos.</p>'}</div>`,'wide')}
-function visitRoom(q){L.visit=q;useRoom(q);CASAL.forEach(w=>profLoad(w).then(()=>{if(L.screen==='quarto')roomRefresh()}));L.screen='quarto';L.rTab='loja';render();scrollTo(0,0)}
+function visitRoom(q){L.visit=q;useRoom(q);tixPay(q);CASAL.forEach(w=>profLoad(w).then(()=>{if(L.screen==='quarto')roomRefresh()}));L.screen='quarto';L.rTab='loja';render();scrollTo(0,0)}
 /* pósteres de álbuns e pósteres desenhados saíram da loja: devolver os BPM do que já tinham comprado (uma vez) */
 const PO_OLD={'po-samba':270,'po-bossa':270,'po-tropical':330,'po-retro':360,'po-gig':450};
 const BED_MIG={'cm-laranja':['cm-estofada','le-laranja'],'cm-cinza':['cm-luz','le-cinza'],'cm-xadrez':['cm-estofada','le-xadrez'],'cm-brasil':['cm-casal','le-brasil'],'cm-simples':['cm-casal','le-azul']};
@@ -3499,7 +3533,7 @@ function posterRefund(){bedMigrate();if(!canEdit())return;const q=roomQ();if(q.r
   for(const id in q.own){if(PO_OLD[id])v+=Math.round(PO_OLD[id]*1.5/10)*10;else if(RIT[id]&&RIT[id].s==='quadros')v+=RIT[id].p}
   (q.pst||[]).forEach(k=>{if(DISCO(k))v+=posterPrice(k)});
   q.rf1=1;q.spent=Math.max(0,q.spent-v);if(PO_OLD[q.eq.poster])q.eq.poster=null;if(q.mul&&q.mul.poster)q.mul.poster=q.mul.poster.map(x=>PO_OLD[x]?null:x);roomSave(q);if(v)setTimeout(()=>toast(`♩ +${v} BPM devolvidos pelos pósteres que saíram da loja`),1200)}
-function openRoom(){L.bedLook=null;L.lenLook=null;setTimeout(posterRefund,2500);L.visit=null;useRoom(myRoomId());plLoad();legMigrate();L.screen='quarto';L.rFull=false;document.body.classList.remove('rfull');setTimeout(roomBills,1500);L.rTodV=null;L.rNoteEd=0;if(db&&db.cloud)bdLoad();L.rTab=L.rTab||'loja';L.rCat=(L.rCat==='posteres'||L.rCat==='quadros'?'poster':L.rCat)||'cama';L.rPrev=null;L.rTodV=null;CASAL.forEach(w=>profLoad(w));sqPull();render();scrollTo(0,0)}
+function openRoom(){setTimeout(()=>{if(L.screen==='quarto'&&!L.visit)vidaOpen()},1200);L.bedLook=null;L.lenLook=null;setTimeout(posterRefund,2500);L.visit=null;useRoom(myRoomId());plLoad();legMigrate();L.screen='quarto';L.rFull=false;document.body.classList.remove('rfull');setTimeout(roomBills,1500);L.rTodV=null;L.rNoteEd=0;if(db&&db.cloud)bdLoad();L.rTab=L.rTab||'loja';L.rCat=(L.rCat==='posteres'||L.rCat==='quadros'?'poster':L.rCat)||'cama';L.rPrev=null;L.rTodV=null;CASAL.forEach(w=>profLoad(w));sqPull();render();scrollTo(0,0)}
 function roomMine(){return canEdit()}
 function roomRefresh(){if(L.screen!=='quarto'||L.rNoteEd||document.querySelector('.rplayfx'))return;const a=document.activeElement;if(a&&/INPUT|TEXTAREA/.test(a.tagName))return;render()}
 function roomTod(t){L.rTodV=t||null;const s=document.querySelector('.roomscene .roomsvg');if(s)s.outerHTML=roomSceneInner();document.querySelectorAll('.todbar button').forEach(b=>b.classList.toggle('on',(b.dataset.t||'')===(t||'')))}
@@ -3580,7 +3614,7 @@ function roomPlayFx(k){const sc=document.querySelector('.roomscene'),lt=document
   let notes='';for(let i=0;i<10;i++){const ang=-170+i*16+Math.random()*10,dist=60+Math.random()*70;notes+=`<i data-dx="${(Math.cos(ang*Math.PI/180)*dist).toFixed(0)}" data-dy="${(-Math.abs(Math.sin(ang*Math.PI/180))*dist).toFixed(0)}">${['♪','♫','♩','♬'][i%4]}</i>`}
   fx.innerHTML=`<div class="pfx-cover" style="background-image:url('${d.f.replace(/'/g,"\\'")}')"></div><div class="pfx-vinyl"><span style="background-image:url('${d.f.replace(/'/g,"\\'")}')"></span></div><b class="pfx-ring"></b><b class="pfx-ring r2"></b><b class="pfx-ring r3"></b>${notes}<div class="pfx-label">a tocar · ${esc(d.t)}</div>`;
   sc.appendChild(fx);fx.querySelectorAll('i').forEach((n,i)=>{if(n.animate){n.style.animation='none';n.animate([{opacity:0,transform:'translate(-50%,-50%) scale(.5)'},{opacity:1,offset:.2},{opacity:0,transform:`translate(calc(-50% + ${n.dataset.dx}px),calc(-50% + ${n.dataset.dy}px)) scale(1.2)`}],{duration:1500,delay:2000+i*60,easing:'ease-out',fill:'both'})}});setTimeout(()=>fx.remove(),3800)}
-function roomPlay(k){if(!canEdit())return;const q=roomQ(),pl=discPlaces();k=k||pl.play;if(!k)return;const was=q.on&&q.play===k;q.play=k;q.on=1;roomSave(q);
+function roomPlay(k){if(!canEdit())return;if(agBroken()){agZoom();return}const q=roomQ(),pl=discPlaces();k=k||pl.play;if(!k)return;const was=q.on&&q.play===k;q.play=k;q.on=1;roomSave(q);
   if(!SND.on){sndStart();lsSet({snd:true});const h=document.getElementById('hdr');if(h)h.outerHTML=header()}
   L.rFull?roomLite():render();requestAnimationFrame(()=>roomPlayFx(k))}
 function roomLite(){const sc=document.querySelector('.roomscene');if(!sc)return render();roomRedraw();const h=sc.querySelector('.hud');if(h)h.outerHTML=sceneHud()}
@@ -3597,8 +3631,8 @@ const TODN={manha:'amanhecer',dia:'dia',tarde:'pôr do sol',noite:'noite'};
 function quartoScreen(){if(!QID)return noRoomScreen();const ed=canEdit(),coins=roomCoins(),q=roomQ(),pl=discPlaces(),n=lisNow(),tnow=todNow(n),prev=L.rPrev&&RIT[L.rPrev],falta=prev?prev.p-coins:0,pd=pl.play&&DISCO(pl.play),on=q.on&&pd;
   let h=`<div class="tot-head"><div class="mono" style="color:var(--muted)">${L.visit?'de visita':'quarto'}</div><h2>${esc(roomTitle())}</h2><div class="sub">${ed?(CASAL.length>1?'Decorem juntos com os BPM que os dois ganham nas missões. Com música a tocar no quarto também ganham BPM.':'Decora com os BPM que ganhas nas missões. Podes convidar alguém para partilhar o quarto contigo.'):'Estás de visita: só quem vive aqui pode mudar as coisas.'}</div></div>
   ${roomTopBar()}
-  <div class="qbar"><button class="qcoins" onclick="bpmZoom()" title="Ver os BPM de hoje">♩ <b id="bpmv">${coins}</b> BPM</button><span class="rdisc">💿 ${pl.own.length} discos</span><span class="rdisc">🕰️ <b id="rclock">${n.hh}</b> em Portugal</span>${ed?`<button class="rdisc rbill" onclick="billsZoom()">🧾 −${billDay()} BPM/dia</button>`:''}</div>
-  <div class="roomscene${L.rFull?' full':''}${L.edit?' editing':''}"><div class="roomscroll">${roomSceneInner()}</div>${sceneHud()}<div class="rtopbtns">${canEdit()&&!L.edit?`<button class="redbtn" onclick="editStart()"><b>✏️</b><span> Editar posições</span></button>`:''}<button class="rfullbtn" onclick="roomFull()">${L.rFull?'<b>✕</b><span> Sair</span>':'<b>⛶</b><span> Ecrã inteiro</span>'}</button></div><span class="rfullhint">📱 Vira o telemóvel para ver maior</span></div>${L.edit?'<div id="redit" class="redit"></div>':''}
+  <div class="qbar"><button class="qcoins" onclick="bpmZoom()" title="Ver os BPM de hoje">♩ <b id="bpmv">${coins}</b> BPM</button><span class="rdisc">💿 ${pl.own.length} discos</span><span class="rdisc">🕰️ <b id="rclock">${n.hh}</b> em Portugal</span>${ed?`<button class="rdisc rbill" onclick="billsZoom()">🧾 −${billDay()} BPM/dia</button><button class="rdisc rbill" onclick="agendaZoom()">📅 Agenda</button>`:''}</div>
+  <div class="roomscene${L.rFull?' full':''}${L.edit?' editing':''} p-${plantState()}"><div class="roomscroll">${roomSceneInner()}</div>${sceneHud()}<div class="rtopbtns">${canEdit()&&!L.edit?`<button class="redbtn" onclick="editStart()"><b>✏️</b><span> Editar posições</span></button>`:''}<button class="rfullbtn" onclick="roomFull()">${L.rFull?'<b>✕</b><span> Sair</span>':'<b>⛶</b><span> Ecrã inteiro</span>'}</button></div><span class="rfullhint">📱 Vira o telemóvel para ver maior</span></div>${L.edit?'<div id="redit" class="redit"></div>':''}
   <p class="hint center todinfo">👆 Toquem nas coisas do quarto: gira-discos, prateleira, móvel, molduras, quadro de recados, janela, luzes, animais… Agora é ${TODN[tnow]} em Portugal: o quarto segue a hora real. O sol nasce às ${n.f(n.rise)} e põe-se às ${n.f(n.set)}.</p>`;
   if(prev)h+=`<div class="rprev"><div><span class="mono">a experimentar</span><b>${esc(prev.n)}</b><em>${prev.lock?`🔒 Só com a missão a dois “${esc(lockM(prev).n)}”: ${esc(lockM(prev).d)}`:`♩ ${prev.p} BPM`}</em></div><div class="acts">${prev.lock?'':falta>0?`<button class="btn" disabled>Faltam ${falta} BPM</button>`:`<button class="btn" onclick="roomBuy('${prev.id}')">Comprar</button>`}<button class="btn ghost" onclick="L.rPrev=null;render()">Tirar</button></div></div>`;
   if(!ed)return h+`<div class="actions"><button class="btn" onclick="L.screen=null;render()">← Voltar</button></div>`;
@@ -3884,12 +3918,12 @@ function placeZoom(k,id){const q=roomQ();let opts;
 function roomAct0(k,ev){if(ev)ev.stopPropagation();const q=roomQ(),el=ev&&ev.currentTarget,id=(el&&el.dataset&&el.dataset.id)||q.eq[k],it=RIT[id];
   if(k==='cortina'){if(!canEdit()){roomBubble('🪟 Só quem vive aqui mexe nas cortinas',el);return}const q=roomQ();q.cc=q.cc?0:1;if(q.cc)L.rWin=false;roomSave(q);roomRedraw();roomBubble(q.cc?(RIT[q.eq.cortina]&&q.eq.cortina==='c-bambu'?'🌙 Estore em baixo':'🌙 Cortinas fechadas'):'☀️ Cortinas abertas',el);return}
   if(k==='janela'){if(roomQ().cc){roomBubble('🪟 Abre primeiro as cortinas',el);return}L.rWin=!L.rWin;roomRedraw();roomBubble(L.rWin?(roomTodOf()==='noite'?'🌙 Entra o ar fresco da noite':'🌊 Cheira a mar!'):'🪟 Janela fechada');return}
-  if(k==='leitor'){if(!canEdit()){roomBubble('🎵 Só quem vive aqui põe música',el);return}if(q.on)roomStop();else roomPlay();return}
-  if(k==='plafon'){if(roomDebt()){roomBubble('🔌 A luz foi cortada: paguem as contas!');return}plafonZoom();return}
+  if(k==='leitor'){if(agBroken(q)){agZoom();return}if(!canEdit()){roomBubble('🎵 Só quem vive aqui põe música',el);return}if(q.on)roomStop();else roomPlay();return}
+  if(k==='plafon'){if(q.imp&&q.imp.t==='lampada'){impZoom();return}if(roomDebt()){roomBubble('🔌 A luz foi cortada: paguem as contas!');return}plafonZoom();return}
   if(LUZES.has(id)&&!['cama','prat'].includes(k)){luzZoom(id);return}
   if(k==='pet'){roomBubble(roomDebt()?pick1(['😿 Tenho fome…','🥺 Não há comida?','*barriga a roncar*']):pick1(PET_FALA[id]||['🐾']),el);roomOnce('.ract-pet','rm-hop',700);return}
   if(k==='cama'){roomBubble(pick1(['💤 Só mais 5 minutos…','🛏️ Que fofinha!','💤 zzz']),el);roomOnce('.ract-cama','rm-squish',700);return}
-  if(k==='planta'||k==='planta2'||k==='suspensa'){roomOnce('.ract-'+k,'rm-sway',1300);return}
+  if(k==='planta'||k==='planta2'||k==='suspensa'){plantWater(k,el);return}
   if(k==='poster'){if(id==='po-vinis'){roomOnce('.ract-poster .vinyl-g','rm-spin',2200);return}roomBubble('🎨 '+(it?it.n:''),el);if(canEdit())setTimeout(()=>posterAt(id,el),30);return}
   if(k==='quadros'){if(canEdit())setTimeout(()=>posterAt(id,el),30);roomBubble('🖼️ '+(it?it.n:'')+' · toca outra vez para ver os pósteres',el);if(L.qdTap===id&&Date.now()-L.qdT<5000){L.qdTap=null;postersZoom()}else{L.qdTap=id;L.qdT=Date.now()}return}
   if(k==='prat'){boxZoom();return}
@@ -3970,7 +4004,7 @@ function discZoom(k,ev){if(ev)ev.stopPropagation();const d=DISCO(k);if(!d)return
   const B=(w,t,on)=>`<button class="btn ${on?'':'ghost'}" onclick="zoomClose();setTimeout(()=>discMove('${k}','${w}'),120)">${t}</button>`;
   zoomOpen(`<div class="rzsleeve"><img src="${esc(d.f)}" alt=""><div class="rzvinyl"><span style="background-image:url('${d.f.replace(/'/g,"\\'")}')"></span></div></div>
   <div class="rzinfo"><span class="mono">${at}</span><h3>${esc(d.t)}</h3><p>${esc(d.a)}</p><div class="dtags">${I.tags.map(t=>`<i>${t}</i>`).join('')}</div>
-  <button class="btn ghost sm dzbtn" onclick="discDet('${k}',this)">📖 Detalhes: faixas e resumo</button><div class="dzdet" id="dzdet"></div>
+  ${discOwned().includes(k)?discWearHtml(k):''}<button class="btn ghost sm dzbtn" onclick="discDet('${k}',this)">📖 Detalhes: faixas e resumo</button><div class="dzdet" id="dzdet"></div>
   ${ed?`<div class="rzacts">${B('p','▶️ Tocar agora',1)}${pl.sh.includes(k)?'':B('s','📚 Pôr na prateleira')}${pl.wl.includes(k)?'':B('w','💿 Pendurar na parede')}${pl.box.includes(k)?'':B('m','📦 Guardar no móvel')}</div>`:`<p class="hint">Só quem vive neste quarto mexe nos discos.</p>`}</div>`)}
 /* detalhes do disco: faixas (Apple Music / iTunes) e resumo (Wikipédia), carregados no momento e guardados */
 function jsonp(url,ms){return new Promise((res,rej)=>{const cb='__jp'+Math.random().toString(36).slice(2),sc=document.createElement('script');let done=0;const end=()=>{done=1;clearTimeout(t);try{delete window[cb]}catch(e){window[cb]=undefined}sc.remove()},t=setTimeout(()=>{if(!done){end();rej('timeout')}},ms||9000);
@@ -4007,12 +4041,149 @@ function postersTab(coins,art,chips){const own=postersOwned(),pl=discPlaces();le
   return h+'</div>'}
 
 /* ---------- tudo dentro do quarto: música, recados, contas ---------- */
+/* ======== vida do quarto: rega, limpeza, discos gastos, agulha, visitas, festas e imprevistos ======== */
+const TIX=3,FESTA_BPM=60,RESTAURO=15,AGULHA_BPM=25,LIMPAR_BPM=6,DISC_GASTO=300,AGULHA_MAX=900;
+const PLANTS=new Set(['planta','planta2','suspensa']);
+const IMPREV={lampada:{e:'💡',n:'A lâmpada do teto fundiu',fix:'Trocar a lâmpada',v:5},caneca:{e:'☕',n:'Partiu-se uma caneca',fix:'Apanhar os cacos e comprar outra',v:4},fuga:{e:'💧',n:'Há uma fuga de água no teto',fix:'Chamar o canalizador',v:8},quadro:{e:'🖼️',n:'Um póster caiu da parede',fix:'Pendurar outra vez com prego novo',v:3}};
+const todayN=()=>dayNum(lisNow().ymd);
+/* agenda da semana: 0=domingo */
+const AGENDA={1:['limpeza'],2:['rega'],3:['revisao'],4:['limpeza'],5:['rega'],6:['festa'],0:['visitas']};
+const AGT={limpeza:['🧹','Dia de limpeza','Aparece pó e loiça. Toca em cada coisa para arrumar (grátis) ou usa a vassoura.'],rega:['🪴','Dia de regar as plantas','Toca nas plantas para as regar (1 a 2 BPM cada). Se ninguém regar, murcham até à próxima rega.'],revisao:['🪡','Revisão do gira-discos','Vejam o estado da agulha e restaurem um disco gasto, se for preciso.'],festa:['🎉','Dia de festa','Podem dar uma festa: luzes, bola de espelhos e um prémio no fim.'],visitas:['🎟️','Domingo de portas abertas','Visitar outros quartos é grátis: não se paga bilhete.']};
+const DSEM=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+const wdOf=n=>((n%7)+7+4)%7;/* dayNum 0 = 1970-01-01, quinta-feira */
+const isDay=(tag,n)=>(AGENDA[wdOf(n==null?todayN():n)]||[]).includes(tag);
+function lastDay(tag,before){for(let n=before;n>before-8;n--)if(isDay(tag,n))return n;return null}
+function vq(){return roomQ()}
+const wearOf=(q,k)=>+((q.wear||{})[k]||0);
+const discGasto=(q,k)=>wearOf(q,k)>=DISC_GASTO;
+const agBroken=q=>(+(q||roomQ()).agu||0)>=AGULHA_MAX;
+/* custos das plantas na conta diária */
+const plantIds=q=>{const ids=new Set;for(const k of PLANTS){if(q.eq[k])ids.add(q.eq[k]);if(RPOS[k])mulGet(q,k).forEach(x=>x&&ids.add(x))}return [...ids].filter(id=>RIT[id])};
+const regaCost=id=>(RIT[id]||{}).p>=600?2:1;
+function plantState(q){q=q||roomQ();const t=todayN(),r=+q.rega||0;if(roomDebt())return 'murcha';const ld=lastDay('rega',t-1);if(ld!=null&&r<ld&&!isDay('rega',t))return 'murcha';if(isDay('rega',t)&&r<t)return ld!=null&&r<ld?'murcha':'sede';return 'ok'}
+/* efeitos por cima do quarto (DOM, ficam presos à cena) */
+function fxAt(sel,html,cls,ms,dx,dy){const sc=document.querySelector('.roomscene');if(!sc||FX.reduced&&!/rfxk/.test(cls||''))return null;const a=sc.getBoundingClientRect();let x=a.width/2,y=a.height/2;const el=typeof sel==='string'?sc.querySelector(sel):sel;if(el){const b=el.getBoundingClientRect();x=b.left-a.left+b.width/2;y=b.top-a.top+b.height/2}
+  const e=document.createElement('div');e.className='rfx '+(cls||'');e.innerHTML=html;e.style.left=(x+(dx||0))+'px';e.style.top=(y+(dy||0))+'px';sc.appendChild(e);setTimeout(()=>e.remove(),ms||1600);return e}
+function sparkles(sel,n){for(let i=0;i<(n||6);i++)setTimeout(()=>fxAt(sel,'✨','rfx-spark',1100,(Math.random()-.5)*70,(Math.random()-.5)*50),i*70)}
+/* ---------- rega ---------- */
+function plantWater(k,el){roomOnce('.ract-'+k,'rm-sway',1300);const q=roomQ(),t=todayN(),st=plantState(q);
+  if(roomDebt()){roomBubble('🥀 Em dívida: as plantas murcharam. Paguem as contas!',el);return}
+  if(+q.rega===t){roomBubble('🪴 Já foram regadas hoje',el);return}
+  if(!isDay('rega',t)&&st!=='murcha'){const nx=[1,2,3,4,5,6,7].map(d=>t+d).find(n=>isDay('rega',n));roomBubble(`🪴 Estão bem. A próxima rega é ${DSEM[wdOf(nx)].toLowerCase()}`,el);return}
+  if(!canEdit()){roomBubble('🪴 Só quem vive aqui rega as plantas',el);return}
+  const v=plantIds(q).reduce((a,id)=>a+regaCost(id),0);if(roomCoins()<v){toast(`Faltam BPM: a rega custa ${v}`);return}
+  q.spent+=v;q.rega=t;roomSave(q);fxAt(el,'🚿','rfx-can',1500,30,-60);document.querySelectorAll('.roomscene .ract-planta,.roomscene .ract-planta2,.roomscene .ract-suspensa').forEach(p=>{for(let i=0;i<5;i++)setTimeout(()=>fxAt(p,'💧','rfx-drop',900,(Math.random()-.5)*40,-40),300+i*120)});
+  setTimeout(()=>{roomRedraw();roomHud();roomBubble(`🪴 Plantas regadas! −${v} BPM. Próxima rega daqui a uns dias`,document.querySelector('.ract-'+k))},1100)}
+/* ---------- limpeza ---------- */
+function sujoGerar(q){const t=todayN(),from=Math.max((+q.limpD||t-1)+1,t-7);let n=0;for(let d=from;d<=t;d++)if(isDay('limpeza',d))n+=3+((d*7)%3);q.limpD=t;if(!n)return false;const tipos=['po','po','caneca','prato','meia','po','caneca','papel'];const s=(q.sujo||[]).slice();
+  for(let i=0;i<n&&s.length<10;i++){const tp=tipos[(Math.random()*tipos.length)|0];s.push({t:tp,x:Math.round(170+Math.random()*560),y:Math.round(392+Math.random()*80)})}q.sujo=s;return true}
+function sujoSvg(q){return (q.sujo||[]).map((o,i)=>{const {x,y}=o;let g='';
+  if(o.t==='po')g=`<ellipse cx="${x}" cy="${y}" rx="22" ry="6" fill="#8d8172" opacity=".45"/><circle cx="${x-8}" cy="${y-3}" r="5" fill="#a39684" opacity=".55"/><circle cx="${x+6}" cy="${y-4}" r="6" fill="#9a8d7b" opacity=".5"/><circle cx="${x+15}" cy="${y-1}" r="3" fill="#b0a491" opacity=".6"/>`;
+  else if(o.t==='caneca')g=`<ellipse cx="${x}" cy="${y+1}" rx="11" ry="3" fill="rgba(0,0,0,.25)"/><rect x="${x-8}" y="${y-16}" width="16" height="17" rx="3" fill="${['#e57373','#64b5f6','#fff3e0','#81c784'][i%4]}"/><path d="M${x+8} ${y-12} q8 1 0 9" stroke="${['#c75656','#4a90c9','#e0cfb8','#5f9e62'][i%4]}" stroke-width="3" fill="none"/><ellipse cx="${x}" cy="${y-16}" rx="8" ry="2" fill="#5b3a22"/>`;
+  else if(o.t==='prato')g=`<ellipse cx="${x}" cy="${y}" rx="17" ry="5" fill="#f4f1ea" stroke="#cfc6b6"/><ellipse cx="${x}" cy="${y-1}" rx="10" ry="3" fill="#e8e0d0"/><circle cx="${x-4}" cy="${y-1}" r="1.6" fill="#b5651d"/><circle cx="${x+3}" cy="${y}" r="1.3" fill="#8b4513"/><path d="M${x+6} ${y-3} l16 -6" stroke="#9aa0a6" stroke-width="2"/>`;
+  else if(o.t==='meia')g=`<path d="M${x-12} ${y-12} l7 0 l2 9 q10 0 10 5 q0 4 -8 4 l-12 0 q-3 -3 1 -6z" fill="${['#ffb74d','#ba68c8','#4db6ac'][i%3]}"/><path d="M${x-12} ${y-12} l7 0 l0 3 l-7 0z" fill="rgba(255,255,255,.6)"/>`;
+  else g=`<path d="M${x-9} ${y} l4 -10 l9 2 l5 -6 l3 9 l-6 7z" fill="#fbfbf6" stroke="#d8d2c4"/><path d="M${x-3} ${y-4} l8 1" stroke="#c9c2b2"/>`;
+  return `<g class="rsujo" data-i="${i}" onclick="sujoTap(${i},event)" style="cursor:pointer">${g}</g>`}).join('')}
+function sujoTap(i,ev){if(ev)ev.stopPropagation();if(!canEdit()){roomBubble('🧹 Só quem vive aqui arruma o quarto');return}const el=ev&&ev.currentTarget;if(el){el.classList.add('rsujo-out');sparkles(el,4)}
+  setTimeout(()=>{const q=roomQ();q.sujo=(q.sujo||[]).filter((_,j)=>j!==i);roomSave(q);roomRedraw();if(!q.sujo.length){toast('✨ Quarto arrumado!');roomHud()}},380)}
+function sujoTudo(){if(!canEdit())return;const q=roomQ();if(!(q.sujo||[]).length)return;if(roomCoins()<LIMPAR_BPM){toast(`Faltam BPM: a vassoura custa ${LIMPAR_BPM}`);return}q.spent+=LIMPAR_BPM;roomSave(q);
+  const sc=document.querySelector('.roomscene');if(sc){const b=fxAt(null,'🧹','rfx-broom',1500,0,90);document.querySelectorAll('.roomscene .rsujo').forEach((g,j)=>setTimeout(()=>{g.classList.add('rsujo-out');sparkles(g,3)},150+j*120))}
+  setTimeout(()=>{const q2=roomQ();q2.sujo=[];roomSave(q2);roomRedraw();roomHud();toast(`🧹 Limpeza feita: −${LIMPAR_BPM} BPM`)},1500)}
+/* ---------- discos gastos e agulha ---------- */
+function wearTick(){if(!ME||!canEdit())return;const q=roomQ(),k=discPlaces().play;if(!q.on||!k)return;
+  if(agBroken(q)){q.on=0;roomSave(q);render();toast('🪡 A agulha do gira-discos partiu-se! Toca no gira-discos para a trocar.');return}
+  q.wear={...(q.wear||{}),[k]:wearOf(q,k)+1};q.agu=(+q.agu||0)+1;roomSave(q,1);
+  if(wearOf(q,k)===DISC_GASTO)toast(`〰️ ${(DISCO(k)||{}).t||'O disco'} já está gasto e tem chiado. Podem restaurá-lo nos detalhes do disco.`);
+  if(q.agu===AGULHA_MAX-60)toast('🪡 A agulha do gira-discos está quase gasta');crackleSync()}
+setInterval(wearTick,60000);
+const CRK={ctx:null,src:null,g:null};
+function crackleSync(){try{const q=roomQ(),k=discPlaces().play,want=!!(q.on&&k&&discGasto(q,k)&&MUS.el&&!MUS.el.paused&&!IS_IOS);
+  if(want&&!CRK.src){const C=CRK.ctx||(CRK.ctx=new (window.AudioContext||window.webkitAudioContext)());const n=C.sampleRate*3,buf=C.createBuffer(1,n,C.sampleRate),d=buf.getChannelData(0);for(let i=0;i<n;i++){d[i]=(Math.random()*2-1)*.04;if(Math.random()<.0009){const L_=40+Math.random()*120;for(let j=0;j<L_&&i+j<n;j++)d[i+j]+=(Math.random()*2-1)*(1-j/L_)*.9}}
+    const s=C.createBufferSource();s.buffer=buf;s.loop=true;const g=C.createGain();g.gain.value=.16;s.connect(g);g.connect(C.destination);s.start();CRK.src=s;CRK.g=g}
+  else if(!want&&CRK.src){CRK.src.stop();CRK.src=null}}catch(e){}}
+setInterval(crackleSync,4000);
+function discRestore(k){if(!canEdit())return;const q=roomQ();if(q.restD===todayN()){toast('🧽 Só dá para restaurar um disco por dia');return}q.restD=todayN();if(roomCoins()<RESTAURO){toast(`Faltam BPM: restaurar custa ${RESTAURO}`);return}q.spent+=RESTAURO;q.wear={...(q.wear||{}),[k]:0};roomSave(q);crackleSync();
+  const c=document.querySelector('.rzoom .dzcover, .rzoom img');if(c){c.classList.add('rfx-polish');sparkles(c,8)}toast(`🧽 Disco restaurado: soa como novo! −${RESTAURO} BPM`);setTimeout(()=>discZoom(k),1400)}
+function discWearHtml(k){const q=roomQ(),w=wearOf(q,k),p=Math.min(100,Math.round(100*w/DISC_GASTO)),ed=canEdit();
+  return `<div class="dwear ${p>=100?'bad':p>=60?'mid':''}"><span>${p>=100?'〰️ Gasto: tem chiado':p>=60?'Já se nota algum uso':'Em bom estado'}</span><div class="bzbar"><i style="width:${p}%"></i></div>${ed&&p>=50?`<button class="btn ghost sm" onclick="discRestore('${k}')">🧽 Restaurar (−${RESTAURO} BPM)</button>`:''}</div>`}
+function agZoom(){const q=roomQ(),p=Math.min(100,Math.round(100*(+q.agu||0)/AGULHA_MAX)),br=agBroken(q),ed=canEdit();
+  zoomOpen(`<div class="rzlist"><h3>🪡 Agulha do gira-discos</h3><p class="hint">${br?'A agulha partiu-se: o gira-discos não toca até a trocarem.':'Cada minuto de música gasta um bocadinho a agulha. Quando chega ao fim, parte-se.'}</p><div class="bzrow"><span>Desgaste</span><b>${p}%</b><div class="bzbar"><i style="width:${p}%"></i></div></div>
+   ${ed?`<button class="btn" style="margin-top:12px" ${roomCoins()<AGULHA_BPM?'disabled':''} onclick="agTrocar()">🪡 Trocar a agulha (−${AGULHA_BPM} BPM)</button>`:''}</div>`,'sheet')}
+function agTrocar(){if(!canEdit()||roomCoins()<AGULHA_BPM)return;const q=roomQ();q.spent+=AGULHA_BPM;q.agu=0;roomSave(q);zoomClose();roomRedraw();roomHud();setTimeout(()=>{const lt=document.querySelector('.roomscene .ract-leitor');if(lt){lt.classList.add('rfx-arm');setTimeout(()=>lt.classList.remove('rfx-arm'),1400)}sparkles('.ract-leitor',8);toast(`🪡 Agulha nova! −${AGULHA_BPM} BPM`)},200)}
+/* ---------- imprevistos ---------- */
+function impRoll(q){const t=todayN(),wk=Math.floor((t+3)/7);if(q.impD===t)return false;q.impD=t;if(q.imp||q.impW===wk||Math.random()>.25)return false;q.impW=wk;
+  const op=['fuga','quadro'];if(q.eq.plafon)op.push('lampada');if(q.eq.pet||(RPOS.pet&&mulGet(q,'pet').some(Boolean)))op.push('caneca','caneca');if(!(q.eq.poster||(RPOS.poster&&mulGet(q,'poster').some(Boolean))))op.splice(op.indexOf('quadro'),1);
+  q.imp={t:op[(Math.random()*op.length)|0],d:t};return true}
+function impSvg(q){const i=q.imp;if(!i)return '';let g='';
+  if(i.t==='caneca'){const x=640,y=455;g=`<path d="M${x} ${y} l9 -5 l6 6 z" fill="#e57373"/><path d="M${x+18} ${y+4} l7 -9 l5 7 z" fill="#c75656"/><path d="M${x-14} ${y+6} l6 -7 l8 4 z" fill="#e57373"/><path d="M${x+6} ${y+9} q5 -8 10 0" stroke="#c75656" stroke-width="3" fill="none"/><ellipse cx="${x+4}" cy="${y+10}" rx="26" ry="5" fill="#6d4c2f" opacity=".35"/>`}
+  if(i.t==='fuga'){const x=560;g=`<ellipse cx="${x}" cy="462" rx="44" ry="9" fill="#7fb7e6" opacity=".55"/><ellipse cx="${x-6}" cy="460" rx="26" ry="5" fill="#b9dcf7" opacity=".6"/><path d="M${x-30} 0 q6 14 0 24 q-5 8 8 14" stroke="#8a7a66" stroke-width="2" fill="none" opacity=".5"/><g class="rleak"><path d="M${x} 6 q-4 8 0 10 q4 -2 0 -10" fill="#7fb7e6"/></g>`}
+  if(i.t==='quadro'){g=`<g transform="translate(300 448) rotate(-8)"><rect x="-40" y="-22" width="80" height="26" rx="2" fill="#5a3a24"/><rect x="-36" y="-19" width="72" height="20" fill="#c9b79c"/></g><circle cx="299" cy="44" r="2.5" fill="#666"/>`}
+  if(i.t==='lampada')g=`<rect width="${QW}" height="500" fill="#000" opacity=".22" class="rlampfx" style="pointer-events:none"/>`;
+  return `<g class="rimp rimp-${i.t}" onclick="impZoom(event)" style="cursor:pointer">${g}</g>`}
+function impZoom(ev){if(ev)ev.stopPropagation();const q=roomQ(),i=q.imp;if(!i)return;const I=IMPREV[i.t];
+  zoomOpen(`<div class="rzlist"><h3>${I.e} ${esc(I.n)}</h3><p class="hint">Coisas que acontecem numa casa. Resolve-se rápido.</p>${canEdit()?`<button class="btn" ${roomCoins()<I.v?'disabled':''} onclick="impFix()">${esc(I.fix)} (−${I.v} BPM)</button>`:'<p class="hint">Só quem vive aqui pode resolver.</p>'}</div>`,'sheet')}
+function impFix(){const q=roomQ(),i=q.imp;if(!i||!canEdit())return;const I=IMPREV[i.t];if(roomCoins()<I.v)return;q.spent+=I.v;q.imp=null;roomSave(q);zoomClose();
+  const sel=i.t==='lampada'?'.ract-plafon':'.rimp';sparkles(sel,8);document.querySelectorAll('.roomscene .rimp').forEach(g=>g.classList.add('rsujo-out'));setTimeout(()=>{roomRedraw();roomHud();toast(`${I.e} Resolvido! −${I.v} BPM`)},500)}
+function impPlayFx(q){const i=q.imp;if(!i)return;const key='impfx:'+QID+':'+i.d+i.t;try{if(localStorage.getItem(key))return;localStorage.setItem(key,1)}catch(e){}
+  setTimeout(()=>{if(i.t==='lampada'){const p=document.querySelector('.roomscene .ract-plafon');if(p){p.classList.add('rfx-flicker');setTimeout(()=>p.classList.remove('rfx-flicker'),2000)}fxAt('.ract-plafon','💥','rfx-pop',1200)}
+    if(i.t==='caneca'){fxAt('.rimp','☕','rfx-fall',1100,0,-150);setTimeout(()=>fxAt('.rimp','💥','rfx-pop',900),900)}
+    if(i.t==='fuga')for(let j=0;j<5;j++)setTimeout(()=>fxAt('.rimp','💧','rfx-drop',900,0,-120),j*260);
+    if(i.t==='quadro')fxAt('.rimp','🖼️','rfx-fall',1100,0,-140);
+    setTimeout(()=>toast(`${IMPREV[i.t].e} ${IMPREV[i.t].n}! Toca nele no quarto para resolver.`),1200)},900)}
+/* ---------- festa ---------- */
+function festaZoom(){const q=roomQ(),hoje=todayN(),feita=q.festa===hoje,dia=isDay('festa',hoje);
+  zoomOpen(`<div class="rzlist"><h3>🎉 Dar uma festa</h3><p class="hint">Luzes, bola de espelhos e música mais alta durante um minuto. No fim há sempre um prémio: um disco que ainda não têm ou um acessório surpresa para o quarto. Só ao sábado, uma vez.</p>
+   ${!dia?`<p class="hint"><b>As festas são ao sábado.</b> Vejam a 📅 Agenda.</p>`:feita?'<p class="hint"><b>Já houve festa hoje.</b> Até ao próximo sábado!</p>':`<button class="btn" ${roomCoins()<FESTA_BPM?'disabled':''} onclick="festaStart()">🎉 Começar a festa (−${FESTA_BPM} BPM)</button>`}</div>`,'sheet')}
+function festaPremio(q){const own=discOwned(),dk=DISCOS.filter(d=>!own.includes(d.k)&&!DISC_EXCL.has(d.k)),rare=dk.filter(d=>['raro','epico','lend'].includes(discInfo(d.k).rar));
+  if(Math.random()<.5&&(rare.length||dk.length)){const d=(rare.length?rare:dk)[(Math.random()*(rare.length||dk.length))|0];q.buy=[...q.buy,d.k];return {e:'💿',t:'Disco: '+d.t,s:d.a,img:d.f}}
+  const its=RITEMS.filter(it=>it&&it.p>0&&it.p<=1500&&!it.lock&&!q.own[it.id]&&!['cor','chao','moldura','lencol','recados'].includes(it.s));
+  if(!its.length){q.spent-=40;return {e:'♩',t:'+40 BPM de volta',s:'Já têm quase tudo!'}}const it=its[(Math.random()*its.length)|0];q.own={...q.own,[it.id]:1};return {e:'🎁',t:it.n,s:'Já está nos vossos acessórios',th:itemThumb(it)}}
+function festaStart(){if(!canEdit())return;const q=roomQ(),hoje=todayN();if(!isDay('festa',hoje)||q.festa===hoje||roomCoins()<FESTA_BPM)return;q.spent+=FESTA_BPM;q.festa=hoje;const pr=festaPremio(q);roomSave(q);zoomClose();
+  const sc=document.querySelector('.roomscene');if(!sc)return;sc.classList.add('festa');const ov=document.createElement('div');ov.className='festa-ov';
+  ov.innerHTML=`<div class="fball"><i></i></div><div class="fspot s1"></div><div class="fspot s2"></div><div class="fspot s3"></div><div class="fdots"></div>`;sc.appendChild(ov);
+  const vol=MUS.el?MUS.el.volume:null;try{if(MUS.el)MUS.el.volume=Math.min(1,(vol||.5)*1.6)}catch(e){}
+  let n=0;const conf=setInterval(()=>{if(++n>40)return clearInterval(conf);for(let j=0;j<3;j++){const e=fxAt(null,['🎊','🎉','♪','♫','✨','🪩'][(Math.random()*6)|0],'rfx-conf',2600,(Math.random()-.5)*sc.clientWidth,-sc.clientHeight/2-10);if(e)e.style.setProperty('--dx',((Math.random()-.5)*120)+'px')}},450);
+  setTimeout(()=>{const c=document.createElement('div');c.className='festa-prize';c.innerHTML=`<small>🎉 Prémio da festa</small>${pr.img?`<img src="${esc(pr.img)}" alt="">`:pr.th?`<div class="rth">${pr.th}</div>`:`<span class="fpe">${pr.e}</span>`}<b>${esc(pr.t)}</b><span>${esc(pr.s||'')}</span><button class="btn sm" onclick="this.parentNode.remove()">Boa!</button>`;sc.appendChild(c)},4500);
+  setTimeout(()=>{sc.classList.remove('festa');ov.classList.add('out');setTimeout(()=>ov.remove(),900);try{if(MUS.el&&vol!=null)MUS.el.volume=vol}catch(e){}},60000)}
+/* ---------- visitas: bilhete para o dono do quarto ---------- */
+function tixLocalN(qid){try{return +(localStorage.getItem('tixn:'+qid)||0)}catch(e){return 0}}
+async function tixPay(qid){try{const me=myPid(),mine=myRoomId();if(!me||!qid||qid===mine||!mine)return;const t=todayN(),k='tixd:'+qid;if(+localStorage.getItem(k)===t)return;localStorage.setItem(k,t);
+  if(isDay('visitas',t)){tixFx(qid,1);return}localStorage.setItem('tixdue',String((+localStorage.getItem('tixdue')||0)+TIX));tixFx(qid);
+  if(!(db&&db.cloud))return;const fld='tix_'+me;const r=await fetch(PROF_URL(qid),{cache:'no-store'});let cur=0;if(r.ok){const j=await r.json();cur=+((j.fields||{})[fld]||{}).stringValue||0}
+  await fetch(PROF_URL(qid)+'&updateMask.fieldPaths='+fld,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:{[fld]:{stringValue:String(cur+1)}}})})}catch(e){}}
+function tixFx(qid,free){const own=roomMembers(qid).map(w=>plOf(w).n).filter(Boolean).join(' e ')||'o dono';setTimeout(()=>{const sc=document.querySelector('.roomscene');if(!sc)return;const t=document.createElement('div');t.className='tixcard';t.innerHTML=free?`<b>🎟️ Domingo de portas abertas</b><span>Visita grátis ao quarto de ${esc(own)}</span><i>GRÁTIS</i>`:`<b>🎟️ Bilhete de visita</b><span>−${TIX} BPM para ${esc(own)}</span><i>PAGO</i>`;sc.appendChild(t);setTimeout(()=>t.remove(),3600)},700)}
+function tixApplyDue(){try{const due=+localStorage.getItem('tixdue')||0;if(!due||!canEdit())return;const q=roomQ();q.spent+=due;roomSave(q);localStorage.setItem('tixdue','0');setTimeout(()=>toast(`🎟️ Bilhetes das visitas a outros quartos: −${due} BPM`),1500)}catch(e){}}
+/* ---------- ao abrir o próprio quarto ---------- */
+function vidaOpen(){if(!canEdit())return;const q=roomQ();let ch=false;if(sujoGerar(q))ch=true;if(impRoll(q))ch=true;if(ch){roomSave(q);setTimeout(()=>{roomRedraw();roomHud();if((q.sujo||[]).length)toast('🧹 Esteve ninguém por cá uns dias: há coisas para arrumar. Toca nelas para limpar.')},300)}
+  tixApplyDue();setTimeout(()=>impPlayFx(roomQ()),400)}
+function roomHud(){const h=document.querySelector('.roomscene .hud');if(h)h.outerHTML=sceneHud()}
+function vidaHud(){const q=roomQ(),ed=canEdit(),ps=plantState(q);let h='';
+  if(ed&&ps!=='ok'&&plantIds(q).length&&!roomDebt())h+=`<button class="hud-vida ${ps==='murcha'?'bad':''}" onclick="event.stopPropagation();plantWater('planta',document.querySelector('.roomscene .ract-planta,.roomscene .ract-planta2,.roomscene .ract-suspensa'))">${ps==='murcha'?'🥀 Plantas murchas: regar':'🪴 Hoje é dia de regar'}</button>`;
+  if(ed&&isDay('festa')&&q.festa!==todayN())h+=`<button class="hud-vida" onclick="event.stopPropagation();festaZoom()">🎉 Hoje é dia de festa!</button>`;
+  if((q.sujo||[]).length&&ed)h+=`<button class="hud-vida" onclick="event.stopPropagation();sujoTudo()">🧹 Limpar tudo (−${LIMPAR_BPM} BPM) · ou toca em cada coisa</button>`;
+  if(agBroken(q))h+=`<button class="hud-vida bad" onclick="event.stopPropagation();agZoom()">🪡 Agulha partida: trocar</button>`;
+  if(q.imp)h+=`<button class="hud-vida" onclick="event.stopPropagation();impZoom()">${IMPREV[q.imp.t].e} ${esc(IMPREV[q.imp.t].n)}</button>`;
+  return h}
+
+const MESES=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+function agTaskState(tg,q,t){if(tg==='rega')return +q.rega===t?'✓ feito':plantIds(q).length?'por fazer':'sem plantas';if(tg==='limpeza')return (q.sujo||[]).length?`${q.sujo.length} coisas por arrumar`:'✓ arrumado';if(tg==='festa')return q.festa===t?'✓ houve festa':'disponível';if(tg==='revisao')return `agulha ${Math.min(100,Math.round(100*(+q.agu||0)/AGULHA_MAX))}% gasta`;if(tg==='visitas')return 'bilhetes grátis';return ''}
+function agendaZoom(mo,sel){const q=roomQ(),t=todayN(),ps=plantState(q),[Y,M]=lisNow().ymd.split('-').map(Number);mo=mo||0;
+  const d0=new Date(Date.UTC(Y,M-1+mo,1)),y=d0.getUTCFullYear(),m=d0.getUTCMonth(),first=Math.round(d0/864e5),start=first-wdOf(first),last=Math.round(Date.UTC(y,m+1,1)/864e5)-1,end=last+(6-wdOf(last));sel=sel==null?(mo?first:t):sel;
+  let cells='';for(let n=start;n<=end;n++){const dd=new Date(n*864e5).getUTCDate(),inM=n>=first&&n<=last,tags=AGENDA[wdOf(n)]||[];
+    cells+=`<button class="cal-c ${inM?'':'fora'} ${n===t?'hoje':''} ${n===sel?'sel':''} ${n<t?'past':''}" onclick="agendaZoom(${mo},${n})"><b>${dd}</b><span>${tags.map(tg=>AGT[tg][0]).join('')}</span></button>`}
+  const st=AGENDA[wdOf(sel)]||[],dt=new Date(sel*864e5);
+  const det=`<div class="cal-det"><h4>${sel===t?'Hoje':sel===t+1?'Amanhã':DSEM[wdOf(sel)]}, ${dt.getUTCDate()} de ${MESES[dt.getUTCMonth()].toLowerCase()}</h4>${st.map(tg=>{const T=AGT[tg],s_=sel===t?agTaskState(tg,q,t):'';return `<div><span>${T[0]} <b>${esc(T[1])}</b>${s_?` <em>· ${s_}</em>`:''}</span><small>${esc(T[2])}</small></div>`}).join('')||'<small>Dia livre.</small>'}</div>`;
+  zoomOpen(`<div class="rzlist agenda"><div class="cal"><div class="cal-top"><button onclick="agendaZoom(${mo-1})" aria-label="Mês anterior">‹</button><h2>${MESES[m]} ${y}</h2><button onclick="agendaZoom(${mo+1})" aria-label="Mês seguinte">›</button></div>
+   <div class="cal-wd">${['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].map(x=>`<span>${x}</span>`).join('')}</div><div class="cal-g">${cells}</div>
+   <div class="cal-leg">${Object.values(AGT).map(T=>`<span>${T[0]} ${esc(T[1].replace(/^Dia de /,'').replace('Domingo de portas abertas','Visitas grátis'))}</span>`).join('')}</div></div>
+   ${det}<p class="hint" style="margin-top:10px">Imprevistos: no máximo um por semana. Restaurar discos: um por dia.${ps==='murcha'&&plantIds(q).length?' <b>🥀 As plantas estão murchas: reguem-nas!</b>':''}</p></div>`,'sheet')}
+
 function sceneHud(){const ed=canEdit(),q=roomQ(),pl=discPlaces(),pd=pl.play&&DISCO(pl.play),on=q.on&&pd;let h='';
   if(pd&&!L.hudOpen)h+=`<button class="hud-mini ${on?'on':''}" onclick="event.stopPropagation();hudOpen(1)" aria-label="${on?'A tocar':'No gira-discos'}: ${esc(pd.t)}"><span style="background-image:url('${pd.f.replace(/'/g,"\\'")}')"></span>${on?'<i>♪</i>':''}</button>`;
   else if(pd)h+=`<div class="hud-row"><button class="hud-play ${on?'on':''}" onclick="event.stopPropagation();${ed?(on?'roomStop()':'roomPlay()'):'discZoom(\''+pl.play+'\')'}"><img src="${esc(pd.f)}" alt=""><span><small>${on?'a tocar':'no gira-discos'}${on?` · ♩ ${musWho()}`:''}</small><b>${esc(pd.t)}</b></span><i>${ed?(on?'⏸':'▶'):'♪'}</i></button><button class="hud-min" onclick="event.stopPropagation();discZoom('${pl.play}')" title="Detalhes do disco">📖</button><button class="hud-min" onclick="event.stopPropagation();hudOpen(0)" title="Minimizar">–</button></div>`;
   if(bdFresh())h+=`<button class="hud-note" onclick="event.stopPropagation();noteZoom()">💌 Recado novo ${esc(bdFrom(false))}</button>`;
   if(roomDebt())h+=`<button class="hud-debt" onclick="event.stopPropagation();billsZoom()">⚠️ Em dívida (${roomCoins()} BPM): luz cortada e animais com fome</button>`;
-  return `<div class="hud">${h}</div>`}
+  h+=vidaHud();return `<div class="hud">${h}</div>`}
 function hudOpen(v){L.hudOpen=!!v;clearTimeout(hudOpen.t);const h=document.querySelector('.roomscene .hud');if(h)h.outerHTML=sceneHud();if(v)hudOpen.t=setTimeout(()=>{if(L.hudOpen)hudOpen(0)},7000)}
 function billsZoom(){const rows=billRows(),tot=rows.reduce((a,r)=>a+r[2],0),q=roomQ();
   zoomOpen(`<div class="rzlist"><h3>🧾 Contas do quarto</h3><p class="hint">As contas são de todos os dias. Se ninguém abrir o jogo durante uns dias, quando voltarem paga-se tudo de uma vez, mas nunca mais do que ${CUSTO_DIAS} dias (uma semana): o resto é perdoado.</p><div class="rbrows">${rows.map(r=>`<div><span>${r[0]} ${esc(r[1])}</span><b>−${r[2]}</b></div>`).join('')}<div class="rbtot"><span>Por dia</span><b>−${tot} BPM</b></div></div>
@@ -4759,7 +4930,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795616338';
+const BUILD='1795617197';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
