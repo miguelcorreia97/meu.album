@@ -1476,6 +1476,9 @@ body,#app{overflow-x:clip}
 .qtabs{justify-content:center;margin:18px 0 8px;flex-wrap:wrap;gap:6px}.qtabs .chip{white-space:nowrap;flex:none}
 .mtopback{position:fixed;left:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:40}.mtopback .btn{backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);background:rgba(34,16,6,.85)!important;box-shadow:0 6px 20px rgba(0,0,0,.4)}.mmore{display:flex;justify-content:center;margin:10px 0 4px}.mtemas{justify-content:flex-start;margin:6px 0 2px}
 .rplaces{display:flex;flex-direction:column;gap:5px;margin:8px 0 4px}.rplaces button{font:inherit;font-size:.74rem;padding:6px 8px;border-radius:9px;border:1px solid rgba(255,214,150,.25);background:rgba(255,246,230,.06);color:var(--cream);cursor:pointer;text-align:left}.rplaces button.on{background:#ffd23f;color:#2b1d14;border-color:#ffd23f;font-weight:700}.rplaces i{opacity:.65;font-style:normal}.rposh{text-align:left;margin:-4px 0 8px}
+.rplacechip{position:absolute;transform:translate(-50%,0);z-index:4;padding:7px 12px;border-radius:99px;border:1px solid rgba(255,214,150,.5);background:rgba(20,10,4,.88);color:var(--cream);font:inherit;font-size:.78rem;font-weight:700;cursor:pointer;white-space:nowrap;box-shadow:0 6px 18px rgba(0,0,0,.4);animation:rzIn .2s ease}
+.rplaces.big button{font-size:.9rem;padding:11px 12px}
+.dzbtn{margin:10px 0 4px}.dzdet h4{margin:12px 0 6px;font-size:.85rem;color:#ffd23f}.dzres{font-size:.85rem;line-height:1.5;margin:0}.dzsrc{font-size:.7rem;opacity:.6;margin:4px 0 0}.dzsrc a{color:inherit}.dztr{margin:0;padding-left:22px;max-height:220px;overflow:auto;font-size:.82rem}.dztr li{padding:3px 0;border-bottom:1px solid rgba(255,246,230,.07)}.dztr li span{display:inline-block;max-width:78%}.dztr li i{float:right;opacity:.55;font-style:normal;font-size:.75rem}
 .rposc{justify-content:flex-start;align-items:center;margin:-4px 0 10px;flex-wrap:wrap}.rposc span{font-size:.8rem;opacity:.8;margin-right:2px}
 .acesbtns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:0 0 6px}.mcat small{font-size:.7em;opacity:.6;margin-left:4px}
 .rtemas{display:flex;gap:6px;overflow-x:auto;padding:4px 2px 6px;scrollbar-width:none;-webkit-overflow-scrolling:touch}.rtemas::-webkit-scrollbar{display:none}.rtemas button{flex:none;padding:8px 14px;border-radius:99px;border:1px solid rgba(255,214,150,.2);background:rgba(34,16,6,.55);color:var(--cream);font:inherit;font-size:.82rem;font-weight:700;cursor:pointer;white-space:nowrap}.rtemas button.on{background:#ffd23f;color:#2b1d14;border-color:#ffd23f}
@@ -2783,7 +2786,7 @@ function sqMerge(base,loc,rem){const S=x=>JSON.stringify(x),o=JSON.parse(S(rem||
   o.own={...(o.own||{}),...(loc.own||{})};o.buy=[...new Set([...(o.buy||[]),...(loc.buy||[])])];if(loc.pst||o.pst)o.pst=[...new Set([...(o.pst||[]),...(loc.pst||[])])];
   o.spent=(+o.spent||0)+((+loc.spent||0)-(+base.spent||0));o.custo=Math.max(+o.custo||0,+loc.custo||0);if(loc.paid!=null&&(o.paid==null||loc.paid>o.paid))o.paid=loc.paid;if(S(loc.blog)!==S(base.blog)&&(loc.paid||0)>=(o.paid||0))o.blog=loc.blog;o.mus=(+o.mus||0)+((+loc.mus||0)-(+base.mus||0));if(loc.leg||o.leg){const a=o.leg||{},b=loc.leg||{};o.leg={...a};for(const k in b)o.leg[k]=Math.max(+a[k]||0,+b[k]||0)}
   o.eq={...(o.eq||{})};for(const k of new Set([...Object.keys(loc.eq||{}),...Object.keys(base.eq||{})]))if(S(ev(loc,k))!==S(ev(base,k)))o.eq[k]=ev(loc,k);
-  for(const k of ['sh','wl','px','play','on','cl','pos','mul'])if(S(loc[k])!==S(base[k]))o[k]=loc[k];return o}
+  for(const k of ['sh','wl','px','play','on','cl','pos','mul','li'])if(S(loc[k])!==S(base[k]))o[k]=loc[k];return o}
 async function sqSync(){if(!(db&&db.cloud))return;if(SQ.busy){SQ.again=1;return}SQ.busy=true;SQ.again=0;
   const snap=JSON.parse(JSON.stringify(SQ.d)),base=SQ.base;
   for(let k=0;k<8;k++){const cur=await sqFetch();if(!cur)break;const m=sqMerge(base,snap,cur.d);
@@ -3212,10 +3215,10 @@ function roomSvg(w,o){o=o||{};RUID=0;const q=roomQ(),eq={...q.eq,...(o.eq||{})};
     b+=open+'<g class="ri">'+(k==='leitor'?`<g id="rleitor">${wr(r.b)}</g>`:wr(r.b))+'</g></g>';
     if(k==='leitor'&&c.music)fx+=`<g transform="translate(${movelDx()} 0)"><g transform="${ST.leitor}">${musicNotes(192,top-26)}</g></g>`;
     if(k==='janela'&&L.rWin)fx+=breeze();
-    if(r.g&&!((L.rLightsOff||c.debt)&&(LUZES.has(id))))g+=wr(r.g)}}
+    if(r.g&&!((c.tod!=='noite'||c.debt)&&(LUZES.has(id))))g+=wr(r.g)}}
   const pfOn=plafonOn(eq,c),pfI=pfOn?clGet().i:0;const gk=Math.max(GLOWK[tod],pfOn?.85:0);let post=GRADE[tod].map(([col,op,bl])=>`<rect width="${QW}" height="500" fill="${col}" opacity="${(bl==='normal'?op*(1-.62*pfI):op*(1-.4*pfI)).toFixed(3)}" style="mix-blend-mode:${bl}"/>`).join('');
   if(pfOn)post+=`<rect width="${QW}" height="500" fill="${clGet().c}" opacity="${(.1+.16*pfI).toFixed(3)}" style="mix-blend-mode:soft-light"/>`;
-  if(g&&gk)post+=`<g opacity="${gk}">${g}</g>`;
+  if(g&&gk)post+=`<g opacity="${(gk*(tod==='noite'?(.35+.65*liGet()):1)).toFixed(3)}">${g}</g>`;
   post+=`<polygon points="${WX},${WY+WH} ${WX+WW},${WY+WH} ${patchPts(tod).join(' ')}" fill="url(#beam)" style="mix-blend-mode:screen" opacity="${tod==='dia'?.14:tod==='noite'?.1:.2}"/>`;
   post+=`<circle cx="${WX+WW/2}" cy="${WY+WH/2}" r="190" fill="url(#winglow)" style="mix-blend-mode:screen" opacity="${tod==='noite'?.25:tod==='dia'?.35:.6}"/>`;
   post+=fx+dust(tod)+`<rect width="${QW}" height="500" fill="url(#grain)" style="mix-blend-mode:multiply" opacity=".9"/><rect width="${QW}" height="500" fill="url(#vign)"/>`;
@@ -3513,12 +3516,24 @@ function roomRedraw(){const s=document.querySelector('.roomscene .roomsvg');if(s
 function roomBubble(t,el){const sc=document.querySelector('.roomscene');if(!sc)return;const a=sc.getBoundingClientRect();let x=a.width/2,y=a.height*.35;if(el){const b=el.getBoundingClientRect();x=b.left-a.left+b.width/2;y=b.top-a.top}
   const d=document.createElement('div');d.className='rbubble';d.textContent=t;d.style.left=Math.max(50,Math.min(a.width-50,x))+'px';d.style.top=Math.max(8,y)+'px';sc.appendChild(d);setTimeout(()=>d.remove(),2400)}
 function roomOnce(sel,cls,ms){document.querySelectorAll(sel).forEach(e=>{e.classList.remove(cls);void e.getBoundingClientRect();e.classList.add(cls);setTimeout(()=>e.classList.remove(cls),ms||1400)})}
-function roomAct(k,ev){if(ev)ev.stopPropagation();const q=roomQ(),el=ev&&ev.currentTarget,id=(el&&el.dataset&&el.dataset.id)||q.eq[k],it=RIT[id];
+function roomAct(k,ev){const el=ev&&ev.currentTarget,id=(el&&el.dataset&&el.dataset.id)||roomQ().eq[k];roomAct0(k,ev);
+  if(canEdit()&&(RPOS[k]||k==='leitor'))placeChip(k==='leitor'?'movel':k,id,el)}
+function placeChip(k,id,el){const sc=document.querySelector('.roomscene');if(!sc)return;sc.querySelectorAll('.rplacechip').forEach(x=>x.remove());const a=sc.getBoundingClientRect();let x=a.width/2,y=a.height*.6;
+  if(el){const b=el.getBoundingClientRect();x=b.left-a.left+b.width/2;y=b.bottom-a.top+4}
+  const d=document.createElement('button');d.className='rplacechip';d.innerHTML='📍 Mudar de lugar';d.style.left=Math.max(70,Math.min(a.width-70,x))+'px';d.style.top=Math.max(30,Math.min(a.height-40,y))+'px';
+  d.onclick=e=>{e.stopPropagation();d.remove();placeZoom(k,id)};sc.appendChild(d);setTimeout(()=>d.remove(),4000)}
+function placeZoom(k,id){const q=roomQ();let opts;
+  if(k==='movel'){const cur=+((q.pos||{}).movel)||0;opts=MOVEL_POS.map(([nm],i)=>`<button class="${cur===i?'on':''}" onclick="movelPos(${i});zoomClose()">${cur===i?'✓ ':''}${esc(nm)}</button>`).join('');
+    return zoomOpen(`<div class="rzlist"><h3>📍 Móvel do gira-discos</h3><p class="hint">O gira-discos e o que está em cima do móvel vão juntos.</p><div class="rplaces big">${opts}</div></div>`,'sheet')}
+  const it=RIT[id];if(!it||!RPOS[k])return;const a=mulGet(q,k),pi=a.indexOf(id);
+  opts=RPOS[k].map((P,i)=>{const oc=a[i];return `<button class="${pi===i?'on':''}" onclick="roomPlace('${id}',${i});zoomClose()">${pi===i?'✓ ':''}${esc(P[0])}${oc&&oc!==id?` <i>(troca: ${esc((RIT[oc]||{}).n||'')})</i>`:''}</button>`}).join('');
+  zoomOpen(`<div class="rzlist"><h3>📍 ${esc(it.n)}</h3><p class="hint">${RSINGLE.has(k)?'Escolham em que parede fica.':'Escolham onde fica. Podem ter outro do mesmo tipo noutro lugar.'}</p><div class="rplaces big">${opts}</div>${!RFIX[k]&&pi>=0?`<button class="btn ghost sm" style="margin-top:10px" onclick="roomPlace('${id}',${pi});zoomClose()">Tirar do quarto</button>`:''}</div>`,'sheet')}
+function roomAct0(k,ev){if(ev)ev.stopPropagation();const q=roomQ(),el=ev&&ev.currentTarget,id=(el&&el.dataset&&el.dataset.id)||q.eq[k],it=RIT[id];
   if(k==='janela'||k==='cortina'){L.rWin=!L.rWin;roomRedraw();roomBubble(L.rWin?(roomTodOf()==='noite'?'🌙 Entra o ar fresco da noite':'🌊 Cheira a mar!'):'🪟 Janela fechada');return}
   if(k==='leitor'){if(!canEdit()){roomBubble('🎵 Só o Miguel e a Clara põem música aqui',el);return}if(q.on)roomStop();else roomPlay();return}
   if(k==='plafon'){if(roomDebt()){roomBubble('🔌 A luz foi cortada: paguem as contas!');return}plafonZoom();return}
   if((k==='luz'||k==='teto'||k==='cabeceira'||(k==='mesa'&&LUZES.has(id)))&&roomDebt()){roomBubble('🔌 A luz foi cortada: paguem as contas!');return}
-  if(k==='luz'||k==='teto'||k==='cabeceira'||(k==='mesa'&&LUZES.has(id))){L.rLightsOff=!L.rLightsOff;roomRedraw();roomBubble(L.rLightsOff?'💡 Luzes apagadas':'💡 Luzes acesas');return}
+  if(k==='luz'||k==='teto'||k==='cabeceira'||(k==='mesa'&&LUZES.has(id))){plafonZoom();return}
   if(k==='pet'){roomBubble(roomDebt()?pick1(['😿 Tenho fome…','🥺 Não há comida?','*barriga a roncar*']):pick1(PET_FALA[id]||['🐾']),el);roomOnce('.ract-pet','rm-hop',700);return}
   if(k==='cama'){roomBubble(pick1(['💤 Só mais 5 minutos…','🛏️ Que fofinha!','💤 zzz']),el);roomOnce('.ract-cama','rm-squish',700);return}
   if(k==='planta'||k==='planta2'||k==='suspensa'){roomOnce('.ract-'+k,'rm-sway',1300);return}
@@ -3546,7 +3561,7 @@ const CUSTO={'pet-peixe':['🐠','Comida e aquário do peixe',5],'pet-tartaruga'
   'g-basico':['📀','Gira-discos',2],'g-madeira':['📀','Gira-discos',3],'g-mala':['📀','Gira-discos',2],'g-cd':['💿','Leitor de CDs',3],'g-boombox':['📻','Pilhas do rádio',3]};
 const CUSTO_BASE=8,CUSTO_DIAS=7;
 const dayNum=ymd=>{const [y,m,d]=ymd.split('-').map(Number);return Math.round(Date.UTC(y,m-1,d)/864e5)};
-function billRows(eq){eq=eq||roomQ().eq;const rows=[['🏠','Água, luz da casa e internet',CUSTO_BASE]],ids=new Set(Object.values(eq)),q0=roomQ();for(const k in RPOS)mulGet({...q0,eq:{...q0.eq,[k]:eq[k]}},k).forEach(x=>x&&ids.add(x));for(const id of ids){if(id&&CUSTO[id])rows.push(CUSTO[id])}if(eq.plafon&&clGet().on)rows.push(['💡',`Luz do teto (${Math.round(clGet().i*100)}%)`,plafonCost()]);
+function billRows(eq){eq=eq||roomQ().eq;const rows=[['🏠','Água, luz da casa e internet',CUSTO_BASE]],ids=new Set(Object.values(eq)),q0=roomQ();for(const k in RPOS)mulGet({...q0,eq:{...q0.eq,[k]:eq[k]}},k).forEach(x=>x&&ids.add(x));for(const id of ids){if(id&&CUSTO[id])rows.push(CUSTO[id])}if(eq.plafon)rows.push(['💡',`Luz do teto (${Math.round(clGet().i*100)}%)`,plafonCost()]);
   const pl=['planta','planta2','suspensa'].filter(k=>eq[k]).length;if(pl)rows.push(['💧',`Água para ${pl} planta${pl>1?'s':''}`,pl*2]);return rows}
 const billDay=eq=>billRows(eq).reduce((a,r)=>a+r[2],0);
 /* cobra os dias que passaram (no máximo 7 de cada vez); os dois telemóveis chegam ao mesmo valor */
@@ -3567,7 +3582,30 @@ function discZoom(k,ev){if(ev)ev.stopPropagation();const d=DISCO(k);if(!d)return
   const B=(w,t,on)=>`<button class="btn ${on?'':'ghost'}" onclick="zoomClose();setTimeout(()=>discMove('${k}','${w}'),120)">${t}</button>`;
   zoomOpen(`<div class="rzsleeve"><img src="${esc(d.f)}" alt=""><div class="rzvinyl"><span style="background-image:url('${d.f.replace(/'/g,"\\'")}')"></span></div></div>
   <div class="rzinfo"><span class="mono">${at}</span><h3>${esc(d.t)}</h3><p>${esc(d.a)}</p><div class="dtags">${I.tags.map(t=>`<i>${t}</i>`).join('')}</div>
+  <button class="btn ghost sm dzbtn" onclick="discDet('${k}',this)">📖 Detalhes: faixas e resumo</button><div class="dzdet" id="dzdet"></div>
   ${ed?`<div class="rzacts">${B('p','▶️ Tocar agora',1)}${pl.sh.includes(k)?'':B('s','📚 Pôr na prateleira')}${pl.wl.includes(k)?'':B('w','💿 Pendurar na parede')}${pl.box.includes(k)?'':B('m','📦 Guardar no móvel')}</div>`:`<p class="hint">Só o Miguel e a Clara mexem nos discos.</p>`}</div>`)}
+/* detalhes do disco: faixas (Apple Music / iTunes) e resumo (Wikipédia), carregados no momento e guardados */
+function jsonp(url,ms){return new Promise((res,rej)=>{const cb='__jp'+Math.random().toString(36).slice(2),sc=document.createElement('script');let done=0;const end=()=>{done=1;clearTimeout(t);try{delete window[cb]}catch(e){window[cb]=undefined}sc.remove()},t=setTimeout(()=>{if(!done){end();rej('timeout')}},ms||9000);
+  window[cb]=d=>{if(done)return;end();res(d)};sc.onerror=()=>{if(!done){end();rej('err')}};sc.src=url+(url.includes('?')?'&':'?')+'callback='+cb;document.head.appendChild(sc)})}
+const nrm=x=>String(x||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\(.*?\)|\[.*?\]/g,'').replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
+async function discTracks(d){const t=nrm(d.t),a=nrm(d.a).split(' ').filter(w=>w.length>2);
+  for(const cc of ['br','pt','us']){let r;try{r=await jsonp(`https://itunes.apple.com/search?term=${encodeURIComponent(d.a+' '+d.t.replace(/\(.*?\)/g,''))}&entity=album&country=${cc}&limit=15`)}catch(e){continue}
+    const L_=(r&&r.results||[]).filter(x=>a.some(w=>nrm(x.artistName).includes(w)));const best=L_.find(x=>nrm(x.collectionName)===t)||L_.find(x=>nrm(x.collectionName).startsWith(t)||t.startsWith(nrm(x.collectionName)))||L_.find(x=>nrm(x.collectionName).includes(t));
+    if(!best)continue;let tr;try{tr=await jsonp(`https://itunes.apple.com/lookup?id=${best.collectionId}&entity=song&country=${cc}`)}catch(e){continue}
+    const songs=(tr.results||[]).filter(x=>x.wrapperType==='track').sort((x,y)=>(x.discNumber-y.discNumber)||(x.trackNumber-y.trackNumber)).map(x=>[x.trackName,x.trackTimeMillis||0]);
+    if(songs.length)return {songs,year:(best.releaseDate||'').slice(0,4),genre:best.primaryGenreName||'',name:best.collectionName}}return null}
+async function discWiki(d){const t=d.t.replace(/\(.*?\)/g,'').trim(),last=nrm(d.a).split(' ').filter(w=>w.length>2).pop()||'';
+  for(const [lg,q] of [['pt',`${t} ${d.a} álbum`],['en',`${t} ${d.a} album`]]){try{const s1=await (await fetch(`https://${lg}.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(q)}&srlimit=4&format=json&origin=*`)).json();
+    for(const h of (s1.query&&s1.query.search||[])){if(!nrm(h.title).includes(nrm(t).split(' ')[0]))continue;const s2=await (await fetch(`https://${lg}.wikipedia.org/w/api.php?action=query&prop=extracts&exintro=1&explaintext=1&redirects=1&titles=${encodeURIComponent(h.title)}&format=json&origin=*`)).json();
+      const pg=Object.values(s2.query&&s2.query.pages||{})[0],ex=(pg&&pg.extract||'').trim();if(ex.length>60&&nrm(ex).includes(last)){const fr=ex.split(/(?<=[.!?])\s+/).slice(0,4).join(' ');return {txt:fr,lg,url:`https://${lg}.wikipedia.org/wiki/${encodeURIComponent(h.title.replace(/ /g,'_'))}`}}}}catch(e){}}return null}
+async function discDet(k,btn){const box=document.getElementById('dzdet'),d=DISCO(k);if(!box||!d)return;if(btn)btn.remove();box.innerHTML='<p class="hint">A procurar as faixas e o resumo…</p>';
+  let info=null;try{info=JSON.parse(localStorage.getItem('dinfo:'+k)||'null')}catch(e){}
+  if(!info){const [tr,wk]=await Promise.all([discTracks(d).catch(()=>null),discWiki(d).catch(()=>null)]);info={tr,wk};if(tr||wk)try{localStorage.setItem('dinfo:'+k,JSON.stringify(info))}catch(e){}}
+  if(!document.getElementById('dzdet'))return;const {tr,wk}=info,mm=ms=>ms?`${Math.floor(ms/60000)}:${String(Math.round(ms/1000)%60).padStart(2,'0')}`:'';
+  const res=wk?wk.txt:tr?`${d.t} é um disco de ${d.a}${tr.year?`, lançado em ${tr.year}`:''}${tr.genre?` (${tr.genre})`:''}, com ${tr.songs.length} faixas.`:'';
+  box.innerHTML=(res?`<h4>Resumo</h4><p class="dzres">${esc(res)}</p>${wk?`<p class="dzsrc">${wk.lg==='en'?'Resumo em inglês, da ':'Fonte: '}<a href="${esc(wk.url)}" target="_blank" rel="noopener">Wikipédia</a></p>`:''}`:'')+
+   (tr?`<h4>Faixas${tr.year?` · ${tr.year}`:''}</h4><ol class="dztr">${tr.songs.map(([n,ms])=>`<li><span>${esc(n)}</span><i>${mm(ms)}</i></li>`).join('')}</ol><p class="dzsrc">Faixas: Apple Music</p>`:'')+
+   (!tr&&!wk?'<p class="hint">Não foi possível carregar os detalhes agora. Confirmem a ligação à internet e tentem outra vez.</p><button class="btn ghost sm" onclick="localStorage.removeItem(\'dinfo:'+k+'\');discDet(\''+k+'\')">Tentar outra vez</button>':'')}
 function boxZoom(){const pl=discPlaces();zoomOpen(`<div class="rzlist"><h3>📦 Guardados no móvel</h3><p class="hint">${pl.box.length?`${pl.box.length} disco${pl.box.length>1?'s':''}. Toca num para o ver de perto.`:'Não há discos guardados: estão todos à vista.'}</p>
   <div class="rzgrid">${pl.box.map(k=>{const d=DISCO(k);return `<button onclick="discZoom('${k}')"><img src="${esc(d.f)}" alt="" loading="lazy"><b>${esc(d.t)}</b><small>${esc(d.a)}</small></button>`}).join('')}</div></div>`,'wide')}
 function posterZoom(k,ev){if(ev)ev.stopPropagation();const d=DISCO(k);if(!d)return;const ed=canEdit();
@@ -3593,7 +3631,7 @@ function noteZoom(){const t=noteTxt(),has=!BD.empty&&bdPid()&&BD.at;if(bdFresh()
   zoomOpen(`<div class="rzlist rznote"><h3>📝 Quadro de recados</h3>${has?`<div class="chalk">${t?esc(t):'(um desenho)'}<small>${bdFrom(true)} · ${bdRel(BD.at)}</small></div>`:'<p class="hint">Ainda não há recado. Escreve o primeiro!</p>'}
   ${ME?`<textarea id="notein" maxlength="${NOTE_MAX}" rows="3" placeholder="Escreve um recado para quem abrir o quarto…" oninput="document.getElementById('notecnt').textContent=this.value.length+'/${NOTE_MAX}'"></textarea><div class="nacts"><span id="notecnt" class="mono">0/${NOTE_MAX}</span>${has?`<button class="btn ghost" onclick="noteSave('')">Apagar</button>`:''}<button class="btn" onclick="noteSave(document.getElementById('notein').value)">Escrever no quadro</button></div><small id="noteerr" class="nerr"></small>`:''}</div>`,'wide')}
 function boxZoom(){const pl=discPlaces(),sec=(t,a)=>a.length?`<h4>${t} · ${a.length}</h4><div class="rzgrid">${a.map(k=>{const d=DISCO(k);return `<button onclick="discZoom('${k}')"><img src="${esc(d.f)}" alt="" loading="lazy"><b>${esc(d.t)}</b><small>${esc(d.a)}</small></button>`}).join('')}</div>`:'';
-  zoomOpen(`<div class="rzlist"><h3>💿 Os vossos discos</h3><p class="hint">${pl.own.length?'Toca num disco para o ver de perto, pôr a tocar, arrumar na prateleira ou pendurar.':'Ainda não há discos. Ganhem-nos nas missões ou comprem-nos na Loja → Discos.'}</p>
+  zoomOpen(`<div class="rzlist"><h3>💿 Os vossos discos</h3>${canEdit()?`<button class="btn ghost sm" style="margin:-4px 0 8px" onclick="zoomClose();setTimeout(()=>placeZoom('movel'),250)">📍 Mudar o móvel de lugar</button>`:''}<p class="hint">${pl.own.length?'Toca num disco para o ver de perto, pôr a tocar, arrumar na prateleira ou pendurar.':'Ainda não há discos. Ganhem-nos nas missões ou comprem-nos na Loja → Discos.'}</p>
   ${sec('📦 Guardados no móvel',pl.box)}${sec('📚 Na prateleira',pl.sh)}${sec('💿 Na parede',pl.wl)}</div>`,'wide')}
 function postersZoom(){const own=postersOwned(),pl=discPlaces();
   zoomOpen(`<div class="rzlist"><h3>🖼️ Pósteres nas molduras · ${pl.px.length}/${pl.capP}</h3><p class="hint">${!pl.capP?'Ainda não têm molduras: comprem-nas na Loja → Pósteres de álbuns.':own.length?'Toca num póster para o pendurar ou tirar.':'Ainda não têm pósteres: comprem-nos na Loja → Pósteres.'}</p>
@@ -3603,7 +3641,8 @@ function postersZoom(){const own=postersOwned(),pl=discPlaces();
 const CL_DEF={on:1,c:'#ffd9a0',i:.7};
 const CL_CORES=[['#ffd9a0','Quente'],['#fff4e0','Branca'],['#dfefff','Fria'],['#ffb36b','Âmbar'],['#ff8fb8','Rosa'],['#c39bff','Roxa'],['#7fc8ff','Azul'],['#8ff0a8','Verde'],['#ff6a5a','Vermelha']];
 const clGet=()=>({...CL_DEF,...(roomQ().cl||{})});
-function plafonOn(eq,c){const L_=clGet();return !!eq.plafon&&L_.on&&!L.rLightsOff&&!(c&&c.debt)}
+function plafonOn(eq,c){return !!eq.plafon&&((c&&c.tod)||roomTodOf())==='noite'&&!(c&&c.debt)}
+const liGet=()=>{const v=roomQ().li;return v==null?.8:+v};
 Object.assign(RDR,{
 'pf-pendente'(it,c){const L_=clGet(),on=plafonOn(c.eq,c);return {b:`<path d="M800 0 V40" stroke="#1d1a18" stroke-width="1.6"/><rect x="796" y="38" width="8" height="8" rx="2" fill="#2a2420"/><path d="M776 70 q24 -36 48 0z" fill="#1d1a18"/><path d="M780 66 q20 -26 40 0" stroke="rgba(255,255,255,.12)" stroke-width="2" fill="none"/><ellipse cx="800" cy="70" rx="24" ry="4" fill="${on?L_.c:'#8b8780'}"/>`,g:on?plafonGlow(800,72):''}},
 'pf-papel'(it,c){const L_=clGet(),on=plafonOn(c.eq,c),f=on?L_.c:'#efe6d6';return {b:`<path d="M800 0 V44" stroke="#c9c1b4" stroke-width="1.4"/><circle cx="800" cy="70" r="26" fill="${f}"/>${[-18,-9,0,9,18].map(d=>`<path d="M${800+d} 45 q${d*.5} 25 0 50" stroke="rgba(120,80,30,.35)" stroke-width="1" fill="none"/>`).join('')}<path d="M776 62 h48 M775 72 h50 M777 82 h46" stroke="rgba(120,80,30,.25)" stroke-width=".8"/><circle cx="790" cy="62" r="8" fill="#fff" opacity=".25"/>`,g:on?plafonGlow(800,70):''}},
@@ -3614,11 +3653,14 @@ Object.assign(RDR,{
 function plafonGlow(x,y){const L_=clGet(),i=L_.i;return `<radialGradient id="gl-pf"><stop offset="0" stop-color="${L_.c}" stop-opacity=".95"/><stop offset=".3" stop-color="${L_.c}" stop-opacity=".4"/><stop offset="1" stop-color="${L_.c}" stop-opacity="0"/></radialGradient><circle cx="${x}" cy="${y}" r="${60+i*80}" fill="url(#gl-pf)" style="mix-blend-mode:screen" opacity="${.5+i*.5}"/><path d="M${x-26} ${y+4} L${x-260} 500 L${x+260} 500 L${x+26} ${y+4}z" fill="url(#gl-pf)" style="mix-blend-mode:screen" opacity="${i*.35}"/>`}
 /* painel da luz: abre ao tocar no candeeiro do teto */
 function plafonZoom(){const sc=document.querySelector('.roomscene');if(sc&&!L.rFull&&!document.querySelector('.rzoom.sheet')){const r=sc.getBoundingClientRect();if(r.top<0||r.top>60)scrollTo({top:scrollY+r.top-60,behavior:'smooth'})}const L_=clGet(),ed=canEdit(),id=roomQ().eq.plafon,it=RIT[id];
-  zoomOpen(`<div class="rzlist pfz"><h3>💡 ${esc(it?it.n:'Luz do teto')}</h3>
-  ${ed?`<div class="pfrow"><span>Ligada</span><button class="pfsw ${L_.on?'on':''}" onclick="plafonSet({on:${L_.on?0:1}})"><i></i></button></div>
-  <div class="pfrow col"><span>Cor</span><div class="pfcores">${CL_CORES.map(([c,n])=>`<button class="${L_.c===c?'on':''}" style="--c:${c}" title="${n}" onclick="plafonSet({c:'${c}'})"><i></i><small>${n}</small></button>`).join('')}<label class="pfcustom" title="Outra cor"><input type="color" value="${L_.c}" oninput="plafonSet({c:this.value},1)"><small>Outra</small></label></div></div>
+  const n=lisNow(),noite=roomTodOf()==='noite',sun=(typeof sunTimes==='function')?sunTimes():null,li=liGet();
+  zoomOpen(`<div class="rzlist pfz"><h3>💡 Luzes do quarto</h3><p class="hint">${noite?'É de noite: as luzes estão acesas.':'As luzes acendem sozinhas quando anoitece e apagam de manhã, conforme a hora em Portugal.'}${roomDebt()?' 🔌 Agora estão cortadas: paguem as contas!':''}</p>
+  ${ed?`<div class="pfrow col"><span>Intensidade dos candeeiros · <b id="liv">${Math.round(li*100)}%</b></span><input type="range" min="10" max="100" step="5" value="${Math.round(li*100)}" oninput="liSet(this.value/100)"></div>`:''}
+  ${id?`<h3 style="margin-top:14px">${esc(it?it.n:'Luz do teto')}</h3>`:''}
+  ${ed&&id?`<div class="pfrow col"><span>Cor</span><div class="pfcores">${CL_CORES.map(([c,n])=>`<button class="${L_.c===c?'on':''}" style="--c:${c}" title="${n}" onclick="plafonSet({c:'${c}'})"><i></i><small>${n}</small></button>`).join('')}<label class="pfcustom" title="Outra cor"><input type="color" value="${L_.c}" oninput="plafonSet({c:this.value},1)"><small>Outra</small></label></div></div>
   <div class="pfrow col"><span>Intensidade · <b id="pfiv">${Math.round(L_.i*100)}%</b></span><input type="range" min="10" max="100" step="5" value="${Math.round(L_.i*100)}" oninput="plafonSet({i:this.value/100},1)"></div>
-  <p class="hint">Custa ${plafonCost()} BPM por dia com esta intensidade (mais forte gasta mais).</p>`:'<p class="hint">Só o Miguel e a Clara mexem na luz.</p>'}</div>`,'sheet')}
+  <p class="hint">Custa ${plafonCost()} BPM por dia com esta intensidade (mais forte gasta mais).</p>`:ed?'':'<p class="hint">Só o Miguel e a Clara mexem na luz.</p>'}</div>`,'sheet')}
+function liSet(v){if(!canEdit())return;const q=roomQ();q.li=v;roomSave(q,0);const b=document.getElementById('liv');if(b)b.textContent=Math.round(v*100)+'%';clearTimeout(liSet.t);liSet.t=setTimeout(roomRedraw,60)}
 const plafonCost=()=>{const L_=clGet();return 3+Math.round(L_.i*8)};
 function plafonSet(o,live){if(!canEdit())return;const q=roomQ();q.cl={...clGet(),...o};roomSave(q,0);roomRedraw();
   if(live){const v=document.getElementById('pfiv');if(v)v.textContent=Math.round(q.cl.i*100)+'%';return}plafonZoom()}
@@ -3726,15 +3768,25 @@ function ytStop(hide){try{YTP&&YTP.pauseVideo&&YTP.pauseVideo()}catch(e){}const 
 
 /* ======== som: ondas, gaivotas e bossa nova (sintetizados) ======== */
 const SND={ctx:null,on:false,timers:[],master:null};
-function sndBtn(){return (SND.on?`<button class="ytlink" onclick="musicNext()" title="${esc(MUS.cur?MUS.cur.t:'')} — passar à seguinte">⏭<span class="lt"> ${esc(MUS.cur?MUS.cur.t:'Música')}</span></button>`:'')+`<button class="sndbtn ${SND.on?'on':''}" onclick="sndToggle()" title="${SND.on?'Desligar o som do mar':'Ligar o som do mar e dos pássaros'}" aria-label="${SND.on?'Desligar som':'Ligar som'}">${SND.on?'🔊':'🔇'}</button>`}
+function sndBtn(){return (SND.on?`<button class="ytlink" onclick="musicNext(true)" title="${esc(MUS.cur?MUS.cur.t:'')} — passar à seguinte">⏭<span class="lt"> ${esc(MUS.cur?MUS.cur.t:'Música')}</span></button>`:'')+`<button class="sndbtn ${SND.on?'on':''}" onclick="sndToggle()" title="${SND.on?'Desligar o som do mar':'Ligar o som do mar e dos pássaros'}" aria-label="${SND.on?'Desligar som':'Ligar som'}">${SND.on?'🔊':'🔇'}</button>`}
 function sndToggle(){if(SND.on)sndStop();else sndStart();lsSet({snd:SND.on});const h=document.getElementById('hdr');if(h)h.outerHTML=header()}
 function sndStop(){SND.on=false;ytStop();musicStop();try{SND.el&&SND.el.pause()}catch(e){}SND.timers.forEach(t=>{clearTimeout(t);clearInterval(t)});SND.timers=[];if(SND.master){const c=SND.ctx;SND.master.gain.setTargetAtTime(0,c.currentTime,.3);setTimeout(()=>{try{c.suspend()}catch(e){}},900)}}
 const PLAYLIST=[['Anjo Azul','anjo-azul'],['Chove Chuva','chove-chuva'],['Flor do Medo','flor-do-medo'],['Como Tudo Deve Ser','como-tudo-deve-ser'],['Amante Amado','amante-amado'],['Cigana','cigana'],['Me Chamando de Paixão','me-chamando-de-paixao'],['A Beleza É Você Menina','a-beleza-e-voce-menina'],['Balança Pema','balanca-pema'],['Azul','azul'],['Onde Anda Você','onde-anda-voce'],['Preciso Dizer Que Te Amo','preciso-dizer-que-te-amo'],['Que Nem Maré','que-nem-mare'],['BB (Garupa de Moto Amarela)','bb-garupa-de-moto-amarela'],['Eu Te Devoro','eu-te-devoro'],['Enamorado','enamorado'],['Amor','amor'],['Eres Tu','eres-tu'],['Bom Dia, Boa Tarde, Boa Noite','bom-dia-boa-tarde-boa-noite'],['O Descobridor dos Sete Mares','o-descobridor-dos-sete-mares'],['Garota de Ipanema','garota-de-ipanema'],['Preciso Me Encontrar','preciso-me-encontrar'],['Essa Moça Tá Diferente','essa-moca-ta-diferente'],['Roda Viva','roda-viva'],['Carolina, Carol Bela','carolina-carol-bela'],['O Telefone Tocou Novamente','o-telefone-tocou-novamente']].map(([t,f])=>({t,src:'musica/'+f+'.mp3'}));
 const MUS={el:null,queue:[],cur:null,last:null};
 function musicShuffle(){const q=PLAYLIST.slice();for(let i=q.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[q[i],q[j]]=[q[j],q[i]]}if(MUS.last&&q[0].src===MUS.last&&q.length>1)q.push(q.shift());MUS.queue=q}
-function musicNext(){if(!MUS.el)return;if(!MUS.queue.length)musicShuffle();MUS.cur=MUS.queue.shift();MUS.last=MUS.cur.src;MUS.el.src=MUS.cur.src;MUS.el.play().catch(()=>{});const h=document.getElementById('hdr');if(h)h.outerHTML=header()}
-function musicStart(){try{if(!MUS.el){MUS.el=new Audio();MUS.el.preload='auto';MUS.el.volume=.55;MUS.el.setAttribute('playsinline','');MUS.el.addEventListener('ended',musicNext);MUS.el.addEventListener('error',()=>setTimeout(musicNext,500));musicShuffle();musicNext()}else MUS.el.play().catch(()=>{})}catch(e){}}
-function musicStop(){try{MUS.el&&MUS.el.pause()}catch(e){}}
+/* fade in / fade out da música de fundo (Web Audio quando há, senão volume) */
+const MUS_VOL=.55,MUS_FIN=1.6,MUS_FOUT=2.2;
+function musGraph(){if(MUS.g||!MUS.el||!SND.ctx)return;try{MUS.node=SND.ctx.createMediaElementSource(MUS.el);MUS.g=SND.ctx.createGain();MUS.g.gain.value=0;MUS.node.connect(MUS.g);MUS.g.connect(SND.ctx.destination);MUS.el.volume=1}catch(e){MUS.g=null}}
+function musFade(to,sec){to=Math.max(0,to);if(MUS.g){const g=MUS.g.gain,t=SND.ctx.currentTime;try{g.cancelScheduledValues(t);g.setValueAtTime(g.value,t);g.linearRampToValueAtTime(to,t+sec)}catch(e){g.value=to}return}
+  const el=MUS.el;if(!el)return;clearInterval(MUS.fi);const from=el.volume,t0=performance.now();MUS.fi=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/(sec*1000));try{el.volume=from+(to-from)*k}catch(e){}if(k>=1)clearInterval(MUS.fi)},40)}
+function musLevel(v){if(MUS.g){try{MUS.g.gain.cancelScheduledValues(SND.ctx.currentTime);MUS.g.gain.value=v}catch(e){}}else if(MUS.el)try{MUS.el.volume=v}catch(e){}}
+function musicNext(skip){if(!MUS.el)return;if(skip===true&&!MUS.el.paused&&!MUS.switching){MUS.switching=1;musFade(0,.7);setTimeout(()=>{MUS.switching=0;musicNext()},750);return}
+  if(!MUS.queue.length)musicShuffle();MUS.cur=MUS.queue.shift();MUS.last=MUS.cur.src;MUS.out=0;musLevel(0);MUS.el.src=MUS.cur.src;MUS.el.play().then(()=>musFade(MUS_VOL,MUS_FIN)).catch(()=>{});const h=document.getElementById('hdr');if(h)h.outerHTML=header()}
+function musicStart(){try{if(!MUS.el){MUS.el=new Audio();MUS.el.preload='auto';MUS.el.volume=MUS_VOL;MUS.el.setAttribute('playsinline','');musGraph();
+    MUS.el.addEventListener('ended',()=>musicNext());MUS.el.addEventListener('error',()=>setTimeout(()=>musicNext(),500));
+    MUS.el.addEventListener('timeupdate',()=>{const e=MUS.el;if(!MUS.out&&e.duration&&isFinite(e.duration)&&e.duration-e.currentTime<MUS_FOUT){MUS.out=1;musFade(0,Math.max(.3,e.duration-e.currentTime-.1))}});
+    musicShuffle();musicNext()}else{musGraph();musLevel(0);MUS.el.play().then(()=>musFade(MUS_VOL,MUS_FIN)).catch(()=>{})}}catch(e){}}
+function musicStop(){try{if(MUS.el&&!MUS.el.paused){musFade(0,.6);const el=MUS.el;setTimeout(()=>{try{if(!SND.on)el.pause()}catch(e){}},650)}}catch(e){}}
 function sndStart(){
   try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
   if(!SND.el){try{const sr=8000,n=sr/4,buf=new ArrayBuffer(44+n*2),v=new DataView(buf);const w=(o,t)=>{for(let i=0;i<t.length;i++)v.setUint8(o+i,t.charCodeAt(i))};w(0,'RIFF');v.setUint32(4,36+n*2,true);w(8,'WAVEfmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,sr,true);v.setUint32(28,sr*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,'data');v.setUint32(40,n*2,true);
