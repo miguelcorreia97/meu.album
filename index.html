@@ -3527,14 +3527,15 @@ function roomAct(k,ev){const el=ev&&ev.currentTarget,id=(el&&el.dataset&&el.data
   if(canEdit()&&(RPOS[k]||k==='movel')){if(ev)ev.stopPropagation();if(!['prat','quadros','movel'].includes(k))roomAct0(k,ev);itemZoom(k,id);return}roomAct0(k,ev)}
 /* painel de um objeto do quarto: mudar de lugar (com pré-visualização) ou guardar */
 function itemZoom(k,id,sel){const q=roomQ(),mv=k==='movel';id=mv?q.eq.movel:id;const it=RIT[id];if(!it)return;
-  const sc=document.querySelector('.roomscene');if(sc&&!L.rFull&&sel==null){const r=sc.getBoundingClientRect(),want=(innerHeight-r.height)/2;if(Math.abs(r.top-want)>12)scrollTo({top:scrollY+r.top-want,behavior:'smooth'})}
+  const first=sel==null;
   const P=mv?MOVEL_POS.map(x=>[x[0]]):RPOS[k],cur=mv?(+((q.pos||{}).movel)||0):mulGet(q,k).indexOf(id),a=mv?[]:mulGet(q,k);
   sel=sel==null?cur:sel;L.pv=sel!==cur?{k,id,i:sel}:null;roomRedraw();
   const extra=k==='prat'?`<button class="btn ghost sm" onclick="zoomClose();setTimeout(boxZoom,250)">💿 Ver os discos</button>`:k==='quadros'?`<button class="btn ghost sm" onclick="zoomClose();setTimeout(postersZoom,250)">🖼️ Ver os pósteres</button>`:mv?`<button class="btn ghost sm" onclick="zoomClose();setTimeout(boxZoom,250)">💿 Ver os discos guardados</button>`:'';
   zoomOpen(`<div class="rzlist itemz"><div class="izhead"><div class="rth">${itemThumb(it)}</div><div><h3>${esc(mv?'Móvel do gira-discos':it.n)}</h3><p class="hint">${mv?'O gira-discos e o que está em cima vão juntos.':it.d?esc(it.d):''}</p></div></div>
    <h4>📍 Mudar de lugar</h4><p class="hint">Escolham um lugar para ver como fica no quarto e depois confirmem.</p>
    <div class="rplaces big">${P.map((p,i)=>{const oc=a[i];return `<button class="${sel===i?'on':''}" onclick="itemZoom('${k}','${id}',${i})">${i===cur?'📌 ':''}${esc(p[0])}${i===cur?' <i>(agora)</i>':''}${oc&&oc!==id?` <i>(troca com: ${esc((RIT[oc]||{}).n||'')})</i>`:''}</button>`}).join('')}</div>
-   <div class="izacts"><button class="btn" ${sel===cur?'disabled':''} onclick="itemConfirm('${k}','${id}',${sel})">✓ Confirmar</button>${!RFIX[k]&&cur>=0?`<button class="btn ghost" onclick="itemStore('${k}','${id}')">📦 Guardar</button>`:''}${extra}</div></div>`,'sheet itemz')}
+   <div class="izacts"><button class="btn" ${sel===cur?'disabled':''} onclick="itemConfirm('${k}','${id}',${sel})">✓ Confirmar</button>${!RFIX[k]&&cur>=0?`<button class="btn ghost" onclick="itemStore('${k}','${id}')">📦 Guardar</button>`:''}${extra}</div></div>`,'sheet itemz')
+  if(first&&!L.rFull)requestAnimationFrame(()=>{const sc=document.querySelector('.roomscene'),bx=document.querySelector('.rzoom.itemz .rzbox');if(!sc)return;const r=sc.getBoundingClientRect(),av=innerHeight-(bx&&innerWidth<700?bx.getBoundingClientRect().height:0),want=av>r.height+16?(av-r.height)/2:(innerHeight-r.height)/2;if(Math.abs(r.top-want)>10)scrollTo({top:scrollY+r.top-want,behavior:'smooth'})})}
 function itemConfirm(k,id,i){L.pv=null;if(k==='movel')movelPos(i);else roomPlace(id,i);zoomClose()}
 function itemStore(k,id){L.pv=null;const q=roomQ(),a=mulGet(q,k),j=a.indexOf(id);if(j>=0){a[j]=null;mulSet(q,k,a);roomSave(q);render()}zoomClose();toast(`📦 ${(RIT[id]||{}).n||'Guardado'} foi para os vossos acessórios`)}
 function placeChip(k,id,el){const sc=document.querySelector('.roomscene');if(!sc)return;sc.querySelectorAll('.rplacechip').forEach(x=>x.remove());const a=sc.getBoundingClientRect();let x=a.width/2,y=a.height*.6;
