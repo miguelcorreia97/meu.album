@@ -1480,6 +1480,7 @@ body,#app{overflow-x:clip}
 .rplaces.big button{font-size:.9rem;padding:11px 12px}
 .dzbtn{margin:10px 0 4px}.dzdet h4{margin:12px 0 6px;font-size:.85rem;color:#ffd23f}.dzres{font-size:.85rem;line-height:1.5;margin:0}.dzsrc{font-size:.7rem;opacity:.6;margin:4px 0 0}.dzsrc a{color:inherit}.dztr{margin:0;padding-left:22px;max-height:220px;overflow:auto;font-size:.82rem}.dztr li{padding:3px 0;border-bottom:1px solid rgba(255,246,230,.07)}.dztr li span{display:inline-block;max-width:78%}.dztr li i{float:right;opacity:.55;font-style:normal;font-size:.75rem}
 .izhead{display:flex;gap:12px;align-items:center}.izhead .rth{width:64px;height:64px;flex:none;border-radius:12px;overflow:hidden;background:rgba(255,246,230,.06)}.izhead h3{margin:0}.itemz h4{margin:12px 0 2px;font-size:.88rem;color:#ffd23f}.izacts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.izacts .btn[disabled]{opacity:.45}
+.rgrid.acesg{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px}.acesg .ritem{padding:7px}.acesg .ritem b{font-size:.78rem;line-height:1.2}.acesg .ritem em,.acesg .ritem small{font-size:.66rem}
 .rposc{justify-content:flex-start;align-items:center;margin:-4px 0 10px;flex-wrap:wrap}.rposc span{font-size:.8rem;opacity:.8;margin-right:2px}
 .acesbtns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:0 0 6px}.mcat small{font-size:.7em;opacity:.6;margin-left:4px}
 .rtemas{display:flex;gap:6px;overflow-x:auto;padding:4px 2px 6px;scrollbar-width:none;-webkit-overflow-scrolling:touch}.rtemas::-webkit-scrollbar{display:none}.rtemas button{flex:none;padding:8px 14px;border-radius:99px;border:1px solid rgba(255,214,150,.2);background:rgba(34,16,6,.55);color:var(--cream);font:inherit;font-size:.82rem;font-weight:700;cursor:pointer;white-space:nowrap}.rtemas button.on{background:#ffd23f;color:#2b1d14;border-color:#ffd23f}
@@ -1740,6 +1741,28 @@ body.rfull #app{visibility:hidden}body.rfull #app .roomscene{visibility:visible}
 .boxfx.r-lend .bxdisc img{box-shadow:0 0 0 4px var(--c),0 0 90px 20px var(--c)}
 .ract.rm-new .ri{animation:rmNew 2.2s ease}@keyframes rmNew{0%,100%{filter:none}20%,60%{filter:drop-shadow(0 0 10px #ffd23f) drop-shadow(0 0 22px #ffd23f) brightness(1.25)}40%,80%{filter:drop-shadow(0 0 4px #ffd23f)}}
 @media (prefers-reduced-motion:reduce){.bfrays,.bxbody,.bxlid,.bxvinyl{animation:none}}
+
+/* telemóvel deitado: tudo um pouco mais pequeno para caber na altura */
+@media (orientation:landscape) and (max-height:520px) and (pointer:coarse){
+ #app{zoom:.72;padding-top:8px}
+ .rzoom .rzbox{max-height:calc(100dvh - 20px);overflow:auto}
+ .rzoom.sheet .rzbox{max-width:560px;margin:0 auto;max-height:72dvh}
+ .rzoom.wide .rzbox{max-width:760px}
+ .buyfx{zoom:.75}
+ .rxfloat .rxs,.rxfloat img,.rxfloat video{width:64px!important;height:64px!important;max-width:64px!important;max-height:64px!important}.rxfloat .rxe{font-size:40px!important}.rxfloat .rxtxt{font-size:.72rem!important;max-width:200px!important;padding:4px 9px!important}.rxfloat{bottom:18%!important}
+ .vtoast{top:8px!important;padding:8px 12px!important;gap:10px!important;max-width:min(440px,calc(100% - 24px))!important}.vtoast .vinyl{width:44px!important;height:44px!important;flex:none}.vtoast b{font-size:.9rem!important}.vtoast span{font-size:.72rem!important}
+ .hero .kick,.hero .turntable{display:none!important}.hero{padding-top:4px!important;padding-bottom:4px!important}.herot{font-size:64px!important;margin:0 0 4px!important;line-height:1!important}
+ .modebtn{padding:14px 16px!important}.modebtn .ic{font-size:22px!important}.modes.mt,.mt{margin-top:10px!important}
+ .tot-head{margin-bottom:8px!important}.tot-head>.mono,.tot-head .sub{display:none!important}.tot-head h2{font-size:34px!important;margin:0 0 6px!important}
+ .winner h1,.wtitle{font-size:48px!important;line-height:1.05!important;margin:4px 0!important}.winner .bigemoji,.winner .crown{font-size:40px!important}
+ #app .roomscene:not(.full){max-width:calc(100dvh * 2.16 * .82)!important;margin-left:auto!important;margin-right:auto!important}
+ #ytbox,#ytframe,#ytframe iframe{width:120px!important;height:68px!important}
+ .toast{font-size:.8rem}
+}
+
+@media(max-width:600px){.vtoast{top:60px;padding:9px 12px;gap:10px;border-radius:16px}.vtoast .vinyl{width:50px!important;height:50px!important;flex:none}.vtoast b{font-size:.92rem}.vtoast span{font-size:.74rem}
+ .rxfloat .rxs,.rxfloat img,.rxfloat video{max-width:70px!important;max-height:70px!important}}
+@media(max-width:600px){.vtoast b{margin:0!important}.vtoast .mono{font-size:.58rem}.vtoast .rrw{font-size:.7rem!important}}
 </style>
 </head>
 <body>
@@ -2371,11 +2394,11 @@ const STK_OFF=new Set([35-1]); /* fora do jogo */
 function botSet(hum){const B=RX.bot;if(B.setSeed===G.seed&&B.set)return B.set;
   const recent=new Set(BOT_HIST.s.flat()),sh=x=>{x=x.slice();for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]]}return x};
   const pick=(pool,n)=>{const ok=sh(pool.filter(i=>!hum.includes(i)&&!recent.has(i)));const extra=sh(pool.filter(i=>!hum.includes(i)&&!ok.includes(i)));return [...ok,...extra].slice(0,n)};
-  B.set=[...pick(STK_GOZO,3),...pick(STK_RAIVA,2)];B.setSeed=G.seed;B.stUse={};BOT_HIST.s=[...BOT_HIST.s,B.set].slice(-2);botHistSave();return B.set}
+  B.set=[...pick(STK_GOZO,3),...pick(STK_RAIVA,3)];B.setSeed=G.seed;B.stUse={};BOT_HIST.s=[...BOT_HIST.s,B.set].slice(-2);botHistSave();return B.set}
 function stkOrder(){const r=rng(hash('stk'+G.seed)),a=STK.map((_,i)=>i).filter(i=>!STK_OFF.has(i));for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function stkFor(p){if(!G||!G.seed)return [];const a=stkOrder();
-  if(MODE==='cpu'){const hum=a.slice(0,5);if(p===WHO)return hum;return botSet(hum)}
-  return a.slice(p*5,p*5+5)}
+  if(MODE==='cpu'){const hum=a.slice(0,6);if(p===WHO)return hum;return botSet(hum)}
+  return a.slice(p*6,p*6+6)}
 const rxHtml=k=>String(k).startsWith('s:')?`<img class="rxs" src="${STK[+k.slice(2)]}" alt="sticker">`:`<span class="rxe">${k}</span>`;
 function reactBar(){if(!(G&&G.seed&&MODE))return '';
   const mine=stkFor(WHO);
@@ -3309,7 +3332,7 @@ function quartoScreen(){const ed=canEdit(),coins=roomCoins(),q=roomQ(),pl=discPl
   if(L.rTab==='acess'){const it0=it=>{const isOn=onRoom(q,it.id);return `<button class="ritem ${isOn?'on':''}" onclick="roomTry('${it.id}')"><div class="rth">${itemThumb(it)}</div><b>${esc(it.n)}</b>${CUSTO[it.id]?`<small class="icost">🧾 −${CUSTO[it.id][2]} BPM por dia</small>`:''}<em>${isOn?(RFIX[it.s]?'✓ no quarto':'✓ no quarto · tocar para guardar'):'＋ pôr no quarto'}</em></button>`};
     const grupos=RSLOT.map(([k,nm,e])=>[k,nm,e,RITEMS.filter(x=>x.s===k&&ownsItem(0,x.id))]).filter(g=>RPOS[g[0]]?g[3].length:g[3].some(x=>x.p>0||x.lock));
     h+=`<p class="hint">Tudo o que já é vosso. Toquem num acessório para o pôr no quarto, sem gastar BPM. Para o mudar de sítio ou guardar, toquem nele dentro do quarto.</p><div class="acesbtns"><button class="btn ghost sm" onclick="roomAct('movel')">💿 Os vossos discos (${discPlaces().own.length})</button><button class="btn ghost sm" onclick="postersZoom()">🖼️ Os vossos pósteres (${postersOwned().length})</button></div>`;
-    h+=grupos.length?grupos.map(([k,nm,e,its])=>`<h3 class="mcat">${e} ${esc(nm)} <small>${its.length}</small></h3><div class="rgrid">${its.map(it0).join('')}</div>`).join(''):`<p class="hint center">Ainda não compraram acessórios além dos que vêm com o quarto. Vão à Loja!</p>`}
+    const AO=L.aOpen||(L.aOpen={});h+=grupos.length?grupos.map(([k,nm,e,its])=>{its=its.slice().sort((x,y)=>onRoom(q,y.id)-onRoom(q,x.id));const vis=AO[k]?its:its.slice(0,3);return `<h3 class="mcat">${e} ${esc(nm)} <small>${its.length}</small></h3><div class="rgrid acesg">${vis.map(it0).join('')}</div>${its.length>3?`<div class="mmore"><button class="btn ghost sm" onclick="L.aOpen['${k}']=${AO[k]?0:1};render()">${AO[k]?'Ver menos ▲':`Ver mais (${its.length-3}) ▼`}</button></div>`:''}`}).join(''):`<p class="hint center">Ainda não compraram acessórios além dos que vêm com o quarto. Vão à Loja!</p>`}
   if(L.rTab==='loja'||!L.rTab){const cat=L.rCat;
     {const T=RTEMAS.find(t=>t[3].includes(cat))||RTEMAS[0],CA=RCATALL();
     h+=`<div class="rtemas">${RTEMAS.map(t=>`<button class="${t===T?'on':''}" onclick="L.rCat='${t[3][0]}';render()">${t[2]} ${t[1]}</button>`).join('')}</div>`;
