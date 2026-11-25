@@ -4437,8 +4437,8 @@ function personSvg(p,mood,talk){const s=p.skin,h=p.hair,m=mood==null?2:mood;
   const mouth=m<=0?'<path d="M25 39 q5 -4 10 0" stroke="#3a1a10" stroke-width="1.6" fill="none"/>':m===1?'<path d="M26 38.5 h8" stroke="#3a1a10" stroke-width="1.6"/>':m===2?'<path d="M25 37 q5 4 10 0" stroke="#3a1a10" stroke-width="1.6" fill="none"/>':'<path d="M24.5 36.5 q5.5 7 11 0 z" fill="#7a2016"/>';
   const brow=m<=0?'<path d="M22 27 l5 2 M38 27 l-5 2" stroke="#2a1a10" stroke-width="1.4"/>':'';
   const curls=(pts,r)=>pts.map(([x,y])=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${h}"/>`).join('');
-  const hairB=p.hs===6?curls([[15,30],[14,40],[15,50],[18,58],[45,30],[46,40],[45,50],[42,58],[20,20],[40,20],[30,14],[22,46],[38,46]],7):p.hs===5?curls([[17,30],[43,30]],4.5):p.hs===1?`<path d="M16 30 q0 -18 14 -18 q14 0 14 18 v22 h-6 v-14 h-16 v14 h-6z" fill="${h}"/>`:p.hs===3?`<circle cx="30" cy="27" r="17" fill="${h}"/>`:'';
-  const hairF=p.hs===5?curls([[18,25],[22,19],[28,16],[34,16],[40,19],[43,25],[25,22],[31,20],[37,22]],5.2):p.hs===6?curls([[17,26],[21,19],[27,15],[33,15],[39,19],[43,26],[24,22],[30,19],[36,22]],5.6):p.hs===0?`<path d="M17 30 q0 -15 13 -15 q13 0 13 15 q-4 -8 -13 -8 q-9 0 -13 8z" fill="${h}"/>`:p.hs===1?`<path d="M17 30 q1 -14 13 -14 q12 0 13 14 q-6 -7 -13 -7 q-7 0 -13 7z" fill="${h}"/>`:p.hs===2?`<path d="M17 29 q0 -13 13 -13 q13 0 13 13 q-5 -6 -13 -6 q-8 0 -13 6z" fill="${h}"/><circle cx="30" cy="13" r="6" fill="${h}"/>`:p.hs===3?'':`<path d="M17 27 q2 -12 13 -12 q11 0 13 12z" fill="${p.cap||'#e94e3c'}"/><rect x="28" y="24" width="20" height="4" rx="2" fill="${p.cap||'#e94e3c'}"/>`;
+  const hairB=p.hs===6?curls([[18,32],[17.5,41],[19,50],[42,32],[42.5,41],[41,50],[22,21],[38,21],[30,16]],5):p.hs===5?curls([[17,30],[43,30]],4.5):p.hs===1?`<path d="M16 30 q0 -18 14 -18 q14 0 14 18 v22 h-6 v-14 h-16 v14 h-6z" fill="${h}"/>`:p.hs===3?`<circle cx="30" cy="27" r="17" fill="${h}"/>`:'';
+  const hairF=p.hs===5?curls([[18,25],[22,19],[28,16],[34,16],[40,19],[43,25],[25,22],[31,20],[37,22]],5.2):p.hs===6?curls([[18,25],[22,19.5],[27.5,16.5],[32.5,16.5],[38,19.5],[42,25],[25,22],[30,20],[35,22]],4.6):p.hs===0?`<path d="M17 30 q0 -15 13 -15 q13 0 13 15 q-4 -8 -13 -8 q-9 0 -13 8z" fill="${h}"/>`:p.hs===1?`<path d="M17 30 q1 -14 13 -14 q12 0 13 14 q-6 -7 -13 -7 q-7 0 -13 7z" fill="${h}"/>`:p.hs===2?`<path d="M17 29 q0 -13 13 -13 q13 0 13 13 q-5 -6 -13 -6 q-8 0 -13 6z" fill="${h}"/><circle cx="30" cy="13" r="6" fill="${h}"/>`:p.hs===3?'':`<path d="M17 27 q2 -12 13 -12 q11 0 13 12z" fill="${p.cap||'#e94e3c'}"/><rect x="28" y="24" width="20" height="4" rx="2" fill="${p.cap||'#e94e3c'}"/>`;
   const a=p.acc||'';let acc='';
   if(a.includes('glasses'))acc+='<circle cx="25" cy="32" r="4" fill="none" stroke="#222" stroke-width="1.3"/><circle cx="35" cy="32" r="4" fill="none" stroke="#222" stroke-width="1.3"/><path d="M29 32 h2" stroke="#222"/>';
   if(a.includes('sun'))acc+='<rect x="20" y="29" width="9" height="5" rx="2" fill="#111"/><rect x="31" y="29" width="9" height="5" rx="2" fill="#111"/><path d="M29 31 h2" stroke="#111"/>';
@@ -5461,7 +5461,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795635055';
+const BUILD='1795635157';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
