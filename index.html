@@ -1475,6 +1475,7 @@ body,#app{overflow-x:clip}
 .rprev .acts{display:flex;gap:8px}.rprev .btn{padding:9px 16px}
 .qtabs{justify-content:center;margin:18px 0 8px;flex-wrap:wrap;gap:6px}.qtabs .chip{white-space:nowrap;flex:none}
 .mtopback{position:fixed;left:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:40}.mtopback .btn{backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);background:rgba(34,16,6,.85)!important;box-shadow:0 6px 20px rgba(0,0,0,.4)}.mmore{display:flex;justify-content:center;margin:10px 0 4px}.mtemas{justify-content:flex-start;margin:6px 0 2px}
+.rplaces{display:flex;flex-direction:column;gap:5px;margin:8px 0 4px}.rplaces button{font:inherit;font-size:.74rem;padding:6px 8px;border-radius:9px;border:1px solid rgba(255,214,150,.25);background:rgba(255,246,230,.06);color:var(--cream);cursor:pointer;text-align:left}.rplaces button.on{background:#ffd23f;color:#2b1d14;border-color:#ffd23f;font-weight:700}.rplaces i{opacity:.65;font-style:normal}.rposh{text-align:left;margin:-4px 0 8px}
 .rposc{justify-content:flex-start;align-items:center;margin:-4px 0 10px;flex-wrap:wrap}.rposc span{font-size:.8rem;opacity:.8;margin-right:2px}
 .acesbtns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:0 0 6px}.mcat small{font-size:.7em;opacity:.6;margin-left:4px}
 .rtemas{display:flex;gap:6px;overflow-x:auto;padding:4px 2px 6px;scrollbar-width:none;-webkit-overflow-scrolling:touch}.rtemas::-webkit-scrollbar{display:none}.rtemas button{flex:none;padding:8px 14px;border-radius:99px;border:1px solid rgba(255,214,150,.2);background:rgba(34,16,6,.55);color:var(--cream);font:inherit;font-size:.82rem;font-weight:700;cursor:pointer;white-space:nowrap}.rtemas button.on{background:#ffd23f;color:#2b1d14;border-color:#ffd23f}
@@ -2782,7 +2783,7 @@ function sqMerge(base,loc,rem){const S=x=>JSON.stringify(x),o=JSON.parse(S(rem||
   o.own={...(o.own||{}),...(loc.own||{})};o.buy=[...new Set([...(o.buy||[]),...(loc.buy||[])])];if(loc.pst||o.pst)o.pst=[...new Set([...(o.pst||[]),...(loc.pst||[])])];
   o.spent=(+o.spent||0)+((+loc.spent||0)-(+base.spent||0));o.custo=Math.max(+o.custo||0,+loc.custo||0);if(loc.paid!=null&&(o.paid==null||loc.paid>o.paid))o.paid=loc.paid;if(S(loc.blog)!==S(base.blog)&&(loc.paid||0)>=(o.paid||0))o.blog=loc.blog;o.mus=(+o.mus||0)+((+loc.mus||0)-(+base.mus||0));if(loc.leg||o.leg){const a=o.leg||{},b=loc.leg||{};o.leg={...a};for(const k in b)o.leg[k]=Math.max(+a[k]||0,+b[k]||0)}
   o.eq={...(o.eq||{})};for(const k of new Set([...Object.keys(loc.eq||{}),...Object.keys(base.eq||{})]))if(S(ev(loc,k))!==S(ev(base,k)))o.eq[k]=ev(loc,k);
-  for(const k of ['sh','wl','px','play','on','cl','pos'])if(S(loc[k])!==S(base[k]))o[k]=loc[k];return o}
+  for(const k of ['sh','wl','px','play','on','cl','pos','mul'])if(S(loc[k])!==S(base[k]))o[k]=loc[k];return o}
 async function sqSync(){if(!(db&&db.cloud))return;if(SQ.busy){SQ.again=1;return}SQ.busy=true;SQ.again=0;
   const snap=JSON.parse(JSON.stringify(SQ.d)),base=SQ.base;
   for(let k=0;k<8;k++){const cur=await sqFetch();if(!cur)break;const m=sqMerge(base,snap,cur.d);
@@ -3174,28 +3175,36 @@ const ST={secretaria:'translate(662 366) scale(1.1) translate(-666 -366)',prat:'
   'l-candeeiro':'translate(-235 -60)','l-neon':'translate(740 4)','l-sunset':'translate(640 -14)','pet-caramelo':'translate(110 0)','pet-tartaruga':'translate(170 0)'};
 /* lugares à escolha: [nome, dx, dy, escala, ox, oy] (escala à volta da base do objeto) */
 const RPOS={planta:[['Canto esquerdo'],['Ao lado do móvel',260,-123,.62,85,491],['À frente, junto à cama',640,5,.95,85,491]],
- assento:[['À frente do móvel'],['Junto à cama',427,4,1,293,492],['No canto esquerdo',-200,2,1,293,492]],
+ assento:[['À frente do móvel'],['Junto à cama',427,4,1,293,492],['Ao centro, no tapete',225,0,1,293,492]],
  extra:[['Ao lado da prateleira'],['Junto à janela',86,0,1,194,258],['Por cima da mesa de cabeceira',600,-95,1,194,258]],
  tapete:[['No centro'],['Ao pé da cama',240,23,1,520,447],['À esquerda',-270,3,1,520,447]],
  mesa:[['Em cima do móvel'],['No parapeito da janela','sill']],planta2:[['Em cima do móvel'],['No parapeito da janela','sill']]};
 const SILL_Y=207;
-function posT(k,c){const q=roomQ(),i=+((q.pos||{})[k])||0,P=RPOS[k],mv=RIT[c.eq.movel]||{};
+function posT(k,c,pi){const q=roomQ(),i=pi!=null?pi:(+((q.pos||{})[k])||0),P=RPOS[k],mv=RIT[c.eq.movel]||{};
   if(P&&i&&P[i]){const [,dx,dy,sc,ox,oy]=P[i];if(dx==='sill'){const by=c.top-62;return k==='mesa'?`translate(6 ${SILL_Y-by})`:`translate(-1 ${SILL_Y-by})`}
     return `translate(${dx} ${dy}) translate(${ox} ${oy}) scale(${sc}) translate(${-ox} ${-oy})`}
   if(k==='mesa')return `translate(${(mv.x0??108)+6-114} 0)`;if(k==='planta2')return `translate(${(mv.x1??292)-4-286} 0)`;return ''}
+function mulGet(q,k){const n=RPOS[k].length;let a=q.mul&&Array.isArray(q.mul[k])?q.mul[k].slice(0,n):null;if(!a){a=[];const id=q.eq&&q.eq[k];if(id)a[Math.min(n-1,+((q.pos||{})[k])||0)]=id}for(let i=0;i<n;i++)a[i]=a[i]||null;return a}
+function mulSet(q,k,a){q.mul={...(q.mul||{}),[k]:a};const i=a.findIndex(Boolean);q.eq[k]=i<0?null:a[i];q.pos={...(q.pos||{}),[k]:Math.max(0,i)}}
+function onRoom(q,id){const it=RIT[id];if(!it)return false;return RPOS[it.s]?mulGet(q,it.s).includes(id):q.eq[it.s]===id}
+function placeOf(q,id){const it=RIT[id];return it&&RPOS[it.s]?mulGet(q,it.s).indexOf(id):-1}
+function mulAuto(q,id){const k=RIT[id].s,a=mulGet(q,k);if(a.includes(id))return;let i=a.indexOf(null);if(i<0)i=0;a[i]=id;mulSet(q,k,a)}
+function roomPlace(id,i){if(!canEdit())return;const it=RIT[id];if(!it||!RPOS[it.s]||!ownsItem(0,id))return;const q=roomQ(),a=mulGet(q,it.s);if(a[i]===id)a[i]=null;else{const j=a.indexOf(id);if(j>=0)a[j]=null;a[i]=id}mulSet(q,it.s,a);L.rPrev=null;roomSave(q);render()}
 function roomPos(k,i){if(!canEdit())return;const q=roomQ();q.pos={...(q.pos||{}),[k]:i};roomSave(q);render()}
 const RORDER=['cor','recados','janela','cortina','luz:w','prat','quadros','poster','extra','teto','chao','tapete','#patch','luz','suspensa','secretaria','cabeceira','movel','leitor','mesa','planta2','cama','pet','planta','assento','plafon'];
 function roomSvg(w,o){o=o||{};RUID=0;const q=roomQ(),eq={...q.eq,...(o.eq||{})};for(const k in eq)if(!eq[k])delete eq[k];const pl=discPlaces(),n=lisNow();
   const top=RIT[eq.movel]?.top||352,tod=o.tod||roomTodOf(),live=!o.tod&&!L.rTodV,c={pl,top,tod,eq,on:!!q.on&&!!pl.play,hh:n.hh,sun:live?sunPos(n):null,win:!!L.rWin,debt:roomDebt()};c.music=c.on&&!FX.reduced;let b='',g='',fx='';const S=SKY[tod];
   for(const s of RORDER){const [k,part]=s.split(':');
     if(k==='#patch'){b+=lightPatch(tod);continue}
-    const id=k==='janela'||k==='recados'?k:eq[k];if(!id)continue;const it=RIT[id]||{},f=RDR[k==='cor'||k==='chao'?k:id];if(!f)continue;const r=f(it,c)||{};const T=ST[id]||ST[k],PT=posT(k,c);const wr0=x=>x&&T?`<g transform="${T}">${x}</g>`:(x||''),wr=x=>x&&PT?`<g transform="${PT}">${wr0(x)}</g>`:wr0(x);
+    let LST;if(RPOS[k]){const a=mulGet(roomQ(),k);if(eq[k]&&!a.includes(eq[k])){let j=a.indexOf(null);if(j<0)j=0;a[j]=eq[k]}LST=a.map((x,i)=>[x,i]).filter(x=>x[0])}else LST=[[k==='janela'||k==='recados'?k:eq[k],null]];
+    for(const [id,pi] of LST){
+    if(!id)continue;const it=RIT[id]||{},f=RDR[k==='cor'||k==='chao'?k:id];if(!f)continue;const r=f(it,c)||{};const T=ST[id]||ST[k],PT=posT(k,c,pi);const wr0=x=>x&&T?`<g transform="${T}">${x}</g>`:(x||''),wr=x=>x&&PT?`<g transform="${PT}">${wr0(x)}</g>`:wr0(x);
     if(part==='w'){if(r.w&&tod==='dia')b+=wr(r.w);continue}
-    const ACT=!['cor','chao','recados'].includes(k),open=ACT?`<g class="ract ract-${k}${k==='cortina'&&L.rWin?' win-open':''}" onclick="roomAct('${k}',event)">`:'<g>';
+    const ACT=!['cor','chao','recados'].includes(k),open=ACT?`<g class="ract ract-${k}${k==='cortina'&&L.rWin?' win-open':''}" data-id="${id}" onclick="roomAct('${k}',event)">`:'<g>';
     b+=open+'<g class="ri">'+(k==='leitor'?`<g id="rleitor">${wr(r.b)}</g>`:wr(r.b))+'</g></g>';
     if(k==='leitor'&&c.music)fx+=`<g transform="${ST.leitor}">${musicNotes(192,top-26)}</g>`;
     if(k==='janela'&&L.rWin)fx+=breeze();
-    if(r.g&&!((L.rLightsOff||c.debt)&&(LUZES.has(id))))g+=wr(r.g)}
+    if(r.g&&!((L.rLightsOff||c.debt)&&(LUZES.has(id))))g+=wr(r.g)}}
   const pfOn=plafonOn(eq,c),pfI=pfOn?clGet().i:0;const gk=Math.max(GLOWK[tod],pfOn?.85:0);let post=GRADE[tod].map(([col,op,bl])=>`<rect width="${QW}" height="500" fill="${col}" opacity="${(bl==='normal'?op*(1-.62*pfI):op*(1-.4*pfI)).toFixed(3)}" style="mix-blend-mode:${bl}"/>`).join('');
   if(pfOn)post+=`<rect width="${QW}" height="500" fill="${clGet().c}" opacity="${(.1+.16*pfI).toFixed(3)}" style="mix-blend-mode:soft-light"/>`;
   if(g&&gk)post+=`<g opacity="${gk}">${g}</g>`;
@@ -3240,9 +3249,9 @@ function roomMine(){return canEdit()}
 function roomRefresh(){if(L.screen!=='quarto'||L.rNoteEd||document.querySelector('.rplayfx'))return;const a=document.activeElement;if(a&&/INPUT|TEXTAREA/.test(a.tagName))return;render()}
 function roomTod(t){L.rTodV=t||null;const s=document.querySelector('.roomscene .roomsvg');if(s)s.outerHTML=roomSceneInner();document.querySelectorAll('.todbar button').forEach(b=>b.classList.toggle('on',(b.dataset.t||'')===(t||'')))}
 function roomTry(id){const it=RIT[id];if(!it||!canEdit())return;
-  if(ownsItem(0,id)){const q=roomQ();if(q.eq[it.s]===id&&!RFIX[it.s])q.eq[it.s]=null;else q.eq[it.s]=id;L.rPrev=null;roomSave(q)}else L.rPrev=L.rPrev===id?null:id;render();roomScroll()}
+  if(ownsItem(0,id)){const q=roomQ();if(RPOS[it.s]){const a=mulGet(q,it.s),j=a.indexOf(id);if(j>=0){a[j]=null;mulSet(q,it.s,a)}else mulAuto(q,id)}else if(q.eq[it.s]===id&&!RFIX[it.s])q.eq[it.s]=null;else q.eq[it.s]=id;L.rPrev=null;roomSave(q)}else L.rPrev=L.rPrev===id?null:id;render();roomScroll()}
 function roomBuy(id){const it=RIT[id];if(!it||!canEdit()||it.lock)return;const q=roomQ();if(roomCoins()<it.p)return;
-  q.spent+=it.p;q.own[id]=1;q.eq[it.s]=id;L.rPrev=null;roomSave(q);profAdd('compras');profMax('ninho',Object.keys(q.own).length);render();
+  q.spent+=it.p;q.own[id]=1;if(RPOS[it.s])mulAuto(q,id);else q.eq[it.s]=id;L.rPrev=null;roomSave(q);profAdd('compras');profMax('ninho',Object.keys(q.own).length);render();
   buyFx({html:itemThumb(it),title:it.n,sub:'novo no quarto!',kind:'item'},()=>{const sc=document.querySelector('.roomscene');if(sc&&sc.scrollIntoView)sc.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>{roomOnce('.ract-'+it.s,'rm-new',2200);if(it.s==='plafon')setTimeout(plafonZoom,900)},450)})}
 function roomScroll(){const s=document.querySelector('.roomscene');if(s&&s.getBoundingClientRect().top<-80)s.scrollIntoView({behavior:'smooth',block:'start'})}
 function roomFull(on){on=on===undefined?!L.rFull:on;L.rFull=on;document.body.classList.toggle('rfull',on);const sc=document.querySelector('.roomscene');if(sc){sc.classList.toggle('full',on);const b=sc.querySelector('.rfullbtn');if(b)b.innerHTML=on?'<b>✕</b><span> Sair</span>':'<b>⛶</b><span> Ecrã inteiro</span>'}
@@ -3279,16 +3288,16 @@ function quartoScreen(){const ed=canEdit(),coins=roomCoins(),q=roomQ(),pl=discPl
   if(prev)h+=`<div class="rprev"><div><span class="mono">a experimentar</span><b>${esc(prev.n)}</b><em>${prev.lock?`🔒 Só com a missão a dois “${esc(lockM(prev).n)}”: ${esc(lockM(prev).d)}`:`♩ ${prev.p} BPM`}</em></div><div class="acts">${prev.lock?'':falta>0?`<button class="btn" disabled>Faltam ${falta} BPM</button>`:`<button class="btn" onclick="roomBuy('${prev.id}')">Comprar</button>`}<button class="btn ghost" onclick="L.rPrev=null;render()">Tirar</button></div></div>`;
   if(!ed)return h+`<div class="actions"><button class="btn" onclick="L.screen=null;render()">← Voltar</button></div>`;
   h+=`<div class="chips qtabs">${[['loja','🛍️ Loja'],['acess','🧺 Os meus acessórios'],['ganhar','♩ Como ganhar BPM']].map(([k,t])=>`<button class="chip ${L.rTab===k?'on':''}" onclick="L.rTab='${k}';L.rMsg='';render()">${t}</button>`).join('')}</div>`;
-  if(L.rTab==='acess'){const it0=it=>{const isOn=q.eq[it.s]===it.id;return `<button class="ritem ${isOn?'on':''}" onclick="roomTry('${it.id}')"><div class="rth">${itemThumb(it)}</div><b>${esc(it.n)}</b>${CUSTO[it.id]?`<small class="icost">🧾 −${CUSTO[it.id][2]} BPM por dia</small>`:''}<em>${isOn?(RFIX[it.s]?'✓ em uso':'✓ em uso · tocar para tirar'):'pôr no quarto'}</em></button>`};
-    const grupos=RSLOT.map(([k,nm,e])=>[k,nm,e,RITEMS.filter(x=>x.s===k&&ownsItem(0,x.id))]).filter(g=>g[3].some(x=>x.p>0||x.lock));
-    h+=`<p class="hint">Tudo o que já é vosso. Toquem num acessório para o pôr no quarto ou trocar pelo que lá está, sem gastar BPM.</p><div class="acesbtns"><button class="btn ghost sm" onclick="roomAct('movel')">💿 Os vossos discos (${discPlaces().own.length})</button><button class="btn ghost sm" onclick="postersZoom()">🖼️ Os vossos pósteres (${postersOwned().length})</button></div>`;
-    h+=grupos.length?grupos.map(([k,nm,e,its])=>`<h3 class="mcat">${e} ${esc(nm)} <small>${its.length}</small></h3>${RPOS[k]&&q.eq[k]?`<div class="chips rposc"><span>📍 Lugar:</span>${RPOS[k].map((P,i)=>`<button class="chip ${(+((q.pos||{})[k])||0)===i?'on':''}" onclick="roomPos('${k}',${i})">${esc(P[0])}</button>`).join('')}</div>`:''}<div class="rgrid">${its.map(it0).join('')}</div>`).join(''):`<p class="hint center">Ainda não compraram acessórios além dos que vêm com o quarto. Vão à Loja!</p>`}
+  if(L.rTab==='acess'){const it0=it=>{if(RPOS[it.s]){const pi=placeOf(q,it.id);return `<div class="ritem ${pi>=0?'on':''}"><div class="rth">${itemThumb(it)}</div><b>${esc(it.n)}</b>${CUSTO[it.id]?`<small class="icost">🧾 −${CUSTO[it.id][2]} BPM por dia</small>`:''}<div class="rplaces">${RPOS[it.s].map((P,i)=>{const oc=mulGet(q,it.s)[i];return `<button class="${pi===i?'on':''}" onclick="roomPlace('${it.id}',${i})">${pi===i?'✓ ':''}${esc(P[0])}${oc&&oc!==it.id?` <i>(troca: ${esc((RIT[oc]||{}).n||'')})</i>`:''}</button>`}).join('')}</div><em>${pi>=0?'toca no lugar marcado para tirar':'escolhe onde pôr'}</em></div>`}const isOn=q.eq[it.s]===it.id;return `<button class="ritem ${isOn?'on':''}" onclick="roomTry('${it.id}')"><div class="rth">${itemThumb(it)}</div><b>${esc(it.n)}</b>${CUSTO[it.id]?`<small class="icost">🧾 −${CUSTO[it.id][2]} BPM por dia</small>`:''}<em>${isOn?(RFIX[it.s]?'✓ em uso':'✓ em uso · tocar para tirar'):'pôr no quarto'}</em></button>`};
+    const grupos=RSLOT.map(([k,nm,e])=>[k,nm,e,RITEMS.filter(x=>x.s===k&&ownsItem(0,x.id))]).filter(g=>RPOS[g[0]]?g[3].length:g[3].some(x=>x.p>0||x.lock));
+    h+=`<p class="hint">Tudo o que já é vosso. Toquem num acessório para o pôr no quarto ou trocar pelo que lá está, sem gastar BPM. Plantas, sítios para sentar, decoração de parede, tapetes e objetos pequenos podem ir para vários lugares e ter mais do que um ao mesmo tempo.</p><div class="acesbtns"><button class="btn ghost sm" onclick="roomAct('movel')">💿 Os vossos discos (${discPlaces().own.length})</button><button class="btn ghost sm" onclick="postersZoom()">🖼️ Os vossos pósteres (${postersOwned().length})</button></div>`;
+    h+=grupos.length?grupos.map(([k,nm,e,its])=>`<h3 class="mcat">${e} ${esc(nm)} <small>${its.length}</small></h3>${RPOS[k]?`<p class="hint rposh">📍 Podem ter até ${RPOS[k].length} ao mesmo tempo, um em cada lugar.</p>`:''}<div class="rgrid">${its.map(it0).join('')}</div>`).join(''):`<p class="hint center">Ainda não compraram acessórios além dos que vêm com o quarto. Vão à Loja!</p>`}
   if(L.rTab==='loja'||!L.rTab){const cat=L.rCat;
     {const T=RTEMAS.find(t=>t[3].includes(cat))||RTEMAS[0],CA=RCATALL();
     h+=`<div class="rtemas">${RTEMAS.map(t=>`<button class="${t===T?'on':''}" onclick="L.rCat='${t[3][0]}';render()">${t[2]} ${t[1]}</button>`).join('')}</div>`;
     h+=T[3].length>1?`<div class="rcats">${T[3].map(k=>CA.find(c=>c[0]===k)).filter(Boolean).map(([k,nm,e])=>`<button class="${cat===k?'on':''}" onclick="L.rCat='${k}';render()"><span>${e}</span>${nm}</button>`).join('')}</div>`:'';
     h+=`<div class="rgrid">`;}
-    RITEMS.filter(x=>x.s===cat).forEach(it=>{const own=ownsItem(0,it.id),isOn=q.eq[it.s]===it.id,pv=L.rPrev===it.id;
+    RITEMS.filter(x=>x.s===cat).forEach(it=>{const own=ownsItem(0,it.id),isOn=onRoom(q,it.id),pv=L.rPrev===it.id;
       h+=`<button class="ritem ${isOn?'on':''} ${pv?'pv':''}" onclick="roomTry('${it.id}')"><div class="rth">${itemThumb(it)}</div><b>${esc(it.n)}</b>${it.d?`<small>${esc(it.d)}</small>`:''}${CUSTO[it.id]?`<small class="icost">🧾 −${CUSTO[it.id][2]} BPM por dia</small>`:''}<em>${isOn?(RFIX[it.s]?'✓ em uso':'✓ em uso · tocar para tirar'):own?'já é vosso · pôr':it.lock?`🔒 missão a dois: ${esc(lockM(it).n)} · ${Math.min(coVal(lockM(it)),lockM(it).t)}/${lockM(it).t}`:it.p>coins?`♩ ${it.p} · faltam ${it.p-coins}`:`♩ ${it.p} BPM`}</em></button>`});
     h+='</div>'}
   if((L.rTab==='loja'||!L.rTab)&&{discos:1,posteres:1,excl:1}[L.rCat]){const art=L.rArt||'',sub={discos:'loja',posteres:'post',excl:'excl'}[L.rCat],chips=`<div class="chips rart">${['',...new Set(DISCOS.map(d=>d.a))].map(a=>`<button class="chip ${art===a?'on':''}" onclick="L.rArt='${esc(a)}';render()">${a?esc(a):'Todos'}</button>`).join('')}</div>`;
@@ -3496,7 +3505,7 @@ function roomRedraw(){const s=document.querySelector('.roomscene .roomsvg');if(s
 function roomBubble(t,el){const sc=document.querySelector('.roomscene');if(!sc)return;const a=sc.getBoundingClientRect();let x=a.width/2,y=a.height*.35;if(el){const b=el.getBoundingClientRect();x=b.left-a.left+b.width/2;y=b.top-a.top}
   const d=document.createElement('div');d.className='rbubble';d.textContent=t;d.style.left=Math.max(50,Math.min(a.width-50,x))+'px';d.style.top=Math.max(8,y)+'px';sc.appendChild(d);setTimeout(()=>d.remove(),2400)}
 function roomOnce(sel,cls,ms){document.querySelectorAll(sel).forEach(e=>{e.classList.remove(cls);void e.getBoundingClientRect();e.classList.add(cls);setTimeout(()=>e.classList.remove(cls),ms||1400)})}
-function roomAct(k,ev){if(ev)ev.stopPropagation();const q=roomQ(),id=q.eq[k],it=RIT[id],el=ev&&ev.currentTarget;
+function roomAct(k,ev){if(ev)ev.stopPropagation();const q=roomQ(),el=ev&&ev.currentTarget,id=(el&&el.dataset&&el.dataset.id)||q.eq[k],it=RIT[id];
   if(k==='janela'||k==='cortina'){L.rWin=!L.rWin;roomRedraw();roomBubble(L.rWin?(roomTodOf()==='noite'?'🌙 Entra o ar fresco da noite':'🌊 Cheira a mar!'):'🪟 Janela fechada');return}
   if(k==='leitor'){if(!canEdit()){roomBubble('🎵 Só o Miguel e a Clara põem música aqui',el);return}if(q.on)roomStop();else roomPlay();return}
   if(k==='plafon'){if(roomDebt()){roomBubble('🔌 A luz foi cortada: paguem as contas!');return}plafonZoom();return}
@@ -3529,7 +3538,7 @@ const CUSTO={'pet-peixe':['🐠','Comida e aquário do peixe',5],'pet-tartaruga'
   'g-basico':['📀','Gira-discos',2],'g-madeira':['📀','Gira-discos',3],'g-mala':['📀','Gira-discos',2],'g-cd':['💿','Leitor de CDs',3],'g-boombox':['📻','Pilhas do rádio',3]};
 const CUSTO_BASE=8,CUSTO_DIAS=7;
 const dayNum=ymd=>{const [y,m,d]=ymd.split('-').map(Number);return Math.round(Date.UTC(y,m-1,d)/864e5)};
-function billRows(eq){eq=eq||roomQ().eq;const rows=[['🏠','Água, luz da casa e internet',CUSTO_BASE]];for(const k in eq){const id=eq[k];if(id&&CUSTO[id])rows.push(CUSTO[id])}if(eq.plafon&&clGet().on)rows.push(['💡',`Luz do teto (${Math.round(clGet().i*100)}%)`,plafonCost()]);
+function billRows(eq){eq=eq||roomQ().eq;const rows=[['🏠','Água, luz da casa e internet',CUSTO_BASE]],ids=new Set(Object.values(eq)),q0=roomQ();for(const k in RPOS)mulGet({...q0,eq:{...q0.eq,[k]:eq[k]}},k).forEach(x=>x&&ids.add(x));for(const id of ids){if(id&&CUSTO[id])rows.push(CUSTO[id])}if(eq.plafon&&clGet().on)rows.push(['💡',`Luz do teto (${Math.round(clGet().i*100)}%)`,plafonCost()]);
   const pl=['planta','planta2','suspensa'].filter(k=>eq[k]).length;if(pl)rows.push(['💧',`Água para ${pl} planta${pl>1?'s':''}`,pl*2]);return rows}
 const billDay=eq=>billRows(eq).reduce((a,r)=>a+r[2],0);
 /* cobra os dias que passaram (no máximo 7 de cada vez); os dois telemóveis chegam ao mesmo valor */
