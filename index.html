@@ -1463,7 +1463,8 @@ body,#app{overflow-x:clip}
 
 /* ===== o meu quarto ===== */
 .qbar{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin:12px 0}
-.qbar .qcoins{padding:7px 14px;border-radius:99px;background:linear-gradient(180deg,#ffd23f,#e8a92a);color:#2a1a10;font-weight:700;box-shadow:0 4px 14px rgba(255,210,63,.25)}
+.qbar .qcoins{border:0;font:inherit;cursor:pointer;padding:7px 14px;border-radius:99px;background:linear-gradient(180deg,#ffd23f,#e8a92a);color:#2a1a10;font-weight:700;box-shadow:0 4px 14px rgba(255,210,63,.25)}
+.bpmz h4{margin:14px 0 6px}.bzrow{display:grid;grid-template-columns:1fr auto;gap:3px 10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.08)}.bzrow small{grid-column:1/-1;opacity:.7;font-size:.74rem}.bzbar{grid-column:1/-1;height:6px;border-radius:9px;background:rgba(255,255,255,.12);overflow:hidden}.bzbar i{display:block;height:100%;background:linear-gradient(90deg,#ffd23f,#e8a92a);border-radius:9px}
 .qbar .qcoins.vis{background:rgba(255,246,230,.1);color:var(--cream);box-shadow:none}
 .qbar .rdisc{font-size:.85rem;color:var(--muted)}
 .roomscene{max-width:520px;margin:0 auto;border-radius:22px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.55),0 0 0 1px rgba(255,214,150,.18);background:#1a1210;scroll-margin-top:80px}
@@ -2938,6 +2939,20 @@ function bpmTick(){if(!ME||!canEdit())return;const q=roomQ();if(!q.on||!discPlac
   if(L.screen==='quarto'){const v=document.getElementById('bpmv');if(v)v.textContent=roomCoins();const hd=document.getElementById('bpmday');if(hd)hd.textContent=`${t+1}/${BPM_DIA}`;roomPop('+1 BPM')}
   if(t+1===BPM_DIA)toast(`🎶 Já ganhaste os ${BPM_DIA} BPM de música de hoje`)}
 setInterval(bpmTick,60000);
+function bpmZoom(){const q=roomQ(),me=myPid(),hoje=dayNum(lisNow().ymd),mem=CASAL.length?CASAL:[me];
+  const bar=(v,t)=>`<div class="bzbar"><i style="width:${Math.min(100,Math.round(100*v/t))}%"></i></div>`;
+  const row=(w,v,t,extra)=>`<div class="bzrow"><span>${plE(w)} ${esc(plOf(w).n||'')}${w===me?' (tu)':''}</span><b>${v>=t?'✓ ':''}${v}/${t}</b>${bar(v,t)}${extra?`<small>${extra}</small>`:''}</div>`;
+  const vit=w=>{const st=profGet(w).st||{};return +st.vbDay===hoje?(+st.vbHoje||0):0};
+  const mus=mem.map(w=>{const v=Math.min(BPM_DIA,bpmOf(w,q)),fal=(BPM_DIA-v)*BPM_MIN;return row(w,v,BPM_DIA,v>=BPM_DIA?'Completo por hoje':`Faltam ${fal>=60?Math.floor(fal/60)+'h'+String(fal%60).padStart(2,'0'):fal+' min'} de música`)}).join('');
+  const jog=mem.map(w=>{const v=vit(w);return row(w,v,VIT_DIA,v>=VIT_DIA?'Limite de hoje atingido':'Vitórias: contra o CPU 3, 6 ou 10 · contra pessoas 8')}).join('');
+  let ms=[];try{const P_=profGet(me);ms=MISSOES.map(m=>{const v=m.co?coVal(m):stVal(P_,m.s);return {m,v:Math.min(v,m.t),pr:Math.min(v,m.t)/m.t}}).filter(x=>x.pr<1).sort((a,b)=>b.pr-a.pr).slice(0,4)}catch(e){}
+  const mis=ms.map(x=>`<div class="bzrow"><span>${esc(x.m.n)}</span><b>♩ ${mReward(x.m).r}</b>${bar(x.v,x.m.t)}<small>${esc(x.m.d)} · ${x.v}/${x.m.t}</small></div>`).join('');
+  const tot=mem.reduce((a,w)=>a+Math.min(BPM_DIA,bpmOf(w,q))+vit(w),0),max=mem.length*(BPM_DIA+VIT_DIA);
+  zoomOpen(`<div class="rzlist bpmz"><h3>♩ BPM de hoje</h3><p class="hint">Hoje o quarto já ganhou <b>${tot}</b> de ${max} BPM possíveis em música e partidas. As missões não têm limite: pagam quando ficam completas.</p>
+   <h4>🎵 Música a tocar (1 BPM a cada ${BPM_MIN} min)</h4>${mus}
+   <h4>🎮 Partidas ganhas</h4>${jog}
+   <h4>🏅 Missões mais perto de acabar</h4>${mis||'<p class="hint">Já completaste todas!</p>'}
+   <button class="btn ghost sm" style="margin-top:10px" onclick="zoomClose();setTimeout(openMissions,200)">Ver todas as missões</button></div>`,'sheet')}
 function musWho(){const q=roomQ();return CASAL.map(w=>`${plE(w)} ${bpmOf(w,q)>=BPM_DIA?'✓':bpmOf(w,q)+'/'+BPM_DIA}`).join(' · ')}
 setInterval(()=>{if(L.screen!=='quarto')return;sqPull();const s=document.querySelector('.roomscene .roomsvg');if(s&&!L.rPrev&&!document.querySelector('.rplayfx')){const n=lisNow();s.outerHTML=roomSceneInner();const c=document.getElementById('rclock');if(c)c.textContent=n.hh}},30000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&L.screen==='quarto')sqPull()});
@@ -3571,7 +3586,7 @@ const TODN={manha:'amanhecer',dia:'dia',tarde:'pôr do sol',noite:'noite'};
 function quartoScreen(){if(!QID)return noRoomScreen();const ed=canEdit(),coins=roomCoins(),q=roomQ(),pl=discPlaces(),n=lisNow(),tnow=todNow(n),prev=L.rPrev&&RIT[L.rPrev],falta=prev?prev.p-coins:0,pd=pl.play&&DISCO(pl.play),on=q.on&&pd;
   let h=`<div class="tot-head"><div class="mono" style="color:var(--muted)">${L.visit?'de visita':'quarto'}</div><h2>${esc(roomTitle())}</h2><div class="sub">${ed?(CASAL.length>1?'Decorem juntos com os BPM que os dois ganham nas missões. Com música a tocar no quarto também ganham BPM.':'Decora com os BPM que ganhas nas missões. Podes convidar alguém para partilhar o quarto contigo.'):'Estás de visita: só quem vive aqui pode mudar as coisas.'}</div></div>
   ${roomTopBar()}
-  <div class="qbar"><span class="qcoins">♩ <b id="bpmv">${coins}</b> BPM</span><span class="rdisc">💿 ${pl.own.length} discos</span><span class="rdisc">🕰️ <b id="rclock">${n.hh}</b> em Portugal</span>${ed?`<button class="rdisc rbill" onclick="billsZoom()">🧾 −${billDay()} BPM/dia</button>`:''}</div>
+  <div class="qbar"><button class="qcoins" onclick="bpmZoom()" title="Ver os BPM de hoje">♩ <b id="bpmv">${coins}</b> BPM</button><span class="rdisc">💿 ${pl.own.length} discos</span><span class="rdisc">🕰️ <b id="rclock">${n.hh}</b> em Portugal</span>${ed?`<button class="rdisc rbill" onclick="billsZoom()">🧾 −${billDay()} BPM/dia</button>`:''}</div>
   <div class="roomscene${L.rFull?' full':''}${L.edit?' editing':''}"><div class="roomscroll">${roomSceneInner()}</div>${sceneHud()}<div class="rtopbtns">${canEdit()&&!L.edit&&!L.rFull?`<button class="redbtn" onclick="editStart()"><b>✏️</b><span> Editar posições</span></button>`:''}<button class="rfullbtn" onclick="roomFull()">${L.rFull?'<b>✕</b><span> Sair</span>':'<b>⛶</b><span> Ecrã inteiro</span>'}</button></div><span class="rfullhint">📱 Vira o telemóvel para ver maior</span></div>${L.edit?'<div id="redit" class="redit"></div>':''}
   <p class="hint center todinfo">👆 Toquem nas coisas do quarto: gira-discos, prateleira, móvel, molduras, quadro de recados, janela, luzes, animais… Agora é ${TODN[tnow]} em Portugal: o quarto segue a hora real. O sol nasce às ${n.f(n.rise)} e põe-se às ${n.f(n.set)}.</p>`;
   if(prev)h+=`<div class="rprev"><div><span class="mono">a experimentar</span><b>${esc(prev.n)}</b><em>${prev.lock?`🔒 Só com a missão a dois “${esc(lockM(prev).n)}”: ${esc(lockM(prev).d)}`:`♩ ${prev.p} BPM`}</em></div><div class="acts">${prev.lock?'':falta>0?`<button class="btn" disabled>Faltam ${falta} BPM</button>`:`<button class="btn" onclick="roomBuy('${prev.id}')">Comprar</button>`}<button class="btn ghost" onclick="L.rPrev=null;render()">Tirar</button></div></div>`;
@@ -4723,7 +4738,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795614882';
+const BUILD='1795614976';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
