@@ -3938,6 +3938,7 @@ const FLIPOK=new Set(['assento','planta','planta2','mesa','extra','luz','cabecei
 function flipT(id,k){const q=roomQ();return q.flip&&q.flip[id]?'F':''}
 /* centro real do objeto: medido no ecrã depois de desenhado */
 function fixFlips(root){const C={};(root||document).querySelectorAll('g[data-flip]:not([data-fd])').forEach(g=>{try{const k=g.dataset.flip;let cx=C[k];if(cx==null){const b=g.getBBox();if(!b.width)return;cx=C[k]=b.x+b.width/2}g.setAttribute('transform',`translate(${2*cx} 0) scale(-1 1)`);g.dataset.fd=1}catch(e){}})}
+document.addEventListener('click',e=>{if(!L.edit)return;const t=e.target;if(t.closest&&t.closest('.roomscene svg')){e.stopPropagation();e.preventDefault()}},true);
 function fixSizes(){document.querySelectorAll('g[data-psz]:not([data-pd])').forEach(g=>{try{const b=g.getBBox();if(!b.width)return;const f=+g.dataset.psz,cx=b.x+b.width/2,cy=b.y+b.height/2;g.setAttribute('transform',`translate(${cx} ${cy}) scale(${f}) translate(${-cx} ${-cy})`);g.dataset.pd=1}catch(e){}})}
 new MutationObserver(()=>{if(document.querySelector('g[data-psz]:not([data-pd])'))requestAnimationFrame(()=>fixSizes());if(document.querySelector('g[data-flip]:not([data-fd])'))requestAnimationFrame(()=>fixFlips())}).observe(document.documentElement,{childList:true,subtree:true});
 function roomFlip(id){if(!canEdit())return;const q=roomQ();q.flip={...(q.flip||{})};if(q.flip[id])delete q.flip[id];else q.flip[id]=1;roomSave(q);roomRedraw()}
@@ -4758,7 +4759,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795615822';
+const BUILD='1795616091';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
