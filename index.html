@@ -1629,6 +1629,8 @@ body,#app{overflow-x:clip}
 @media(max-width:600px){.fdj.me{width:11%}.fdj.host{width:9%;left:72%}.fbooth2{left:28%;width:44%}}
 .fdancer.edgeL .freq,.fdancer.edgeL .fwhisper{left:0;transform:none}.fdancer.edgeR .freq,.fdancer.edgeR .fwhisper{left:auto;right:0;transform:none}.fdancer.edgeL .freq,.fdancer.edgeR .freq{animation:sayIn .4s}
 .fcount{display:flex;gap:6px;padding:0!important;background:none!important}.fcount>span{padding:5px 10px;border-radius:99px;background:rgba(10,4,10,.72)}.fperf b{font-size:.95rem;color:#ffd23f}.fperf.ok b{color:#7cffb2}.fperf.bad b{color:#ff7a6b}.fnoise{top:46px}
+.fcardw{position:relative;display:flex}.fcardw .fcard{flex:1}.fhear{position:absolute;top:12px;right:12px;z-index:2;width:40px;height:40px;border-radius:50%;border:2px solid #ffd23f;background:rgba(10,4,10,.8);font-size:18px;cursor:pointer;transition:transform .2s}.fhear:hover{transform:scale(1.1)}.fhear.on{background:#ffd23f;animation:reqP 0.5s ease-in-out infinite alternate}.fhear.load{opacity:.6;animation:fSpin 1s linear infinite}.fsnd{font-weight:500;opacity:.7;font-size:.75rem}
+@media(max-width:600px){.fhear{top:auto;bottom:10px;right:10px;width:34px;height:34px;font-size:15px}}
 .rszchip{display:flex;gap:4px;padding:4px!important;cursor:default!important}.rszchip button{border:0;border-radius:99px;padding:5px 9px;background:rgba(255,255,255,.1);color:var(--cream);font:inherit;font-size:.74rem;font-weight:700;cursor:pointer}.rszchip button.on{background:var(--cream);color:#2a1608}
 .rplacechip{position:absolute;transform:translate(-50%,0);z-index:4;padding:7px 12px;border-radius:99px;border:1px solid rgba(255,214,150,.5);background:rgba(20,10,4,.88);color:var(--cream);font:inherit;font-size:.78rem;font-weight:700;cursor:pointer;white-space:nowrap;box-shadow:0 6px 18px rgba(0,0,0,.4);animation:rzIn .2s ease}
 .rplaces.big button{font-size:.9rem;padding:11px 12px}
@@ -4499,7 +4501,7 @@ function feRound(){const F=L.fe;if(!F)return;if(F.round>FE_ROUNDS){feEnd();retur
   /* um pedido de alguém na pista */
   const on=F.crowd.filter(c=>c.on);F.req=Math.random()<.75&&on.length?(()=>{const c=on[(Math.random()*on.length)|0];return {c:F.crowd.indexOf(c),g:c.pref}})():null;
   const gens=Object.keys(GEN_N);F.wh=[];const on2=F.crowd.filter(c=>c.on);for(let k=0;k<2&&on2.length;k++){const c=on2[(Math.random()*on2.length)|0],ci=F.crowd.indexOf(c);if(F.req&&F.req.c===ci)continue;const g=Math.random()<.7?c.pref:gens[(Math.random()*gens.length)|0];F.wh.push({c:ci,t:[`Apetecia-me um ${GEN_N[g].toLowerCase()}…`,`Hoje estou mais para ${GEN_N[g].toLowerCase()}, acho eu`,`Será que ele tem ${GEN_N[g].toLowerCase()}?`,`Uma coisa ${e_en(c)}… ou não`][(Math.random()*4)|0]})}
-  F.turn='me';F.ph='pick';F.opts=feDeal(F,3);F.msg=E?{t:E.t,k:'ev'}:null;feDraw();if(E&&E.fx)feFx(E.fx)}
+  F.turn='me';F.ph='pick';F.opts=feDeal(F,3);F.opts.forEach(i=>fePv(i));F.msg=E?{t:E.t,k:'ev'}:null;feDraw();if(E&&E.fx)feFx(E.fx)}
 const e_en=c=>c.h>60?'mais mexida':'mais calma';
 function feScore(i,F,who,mixQ){const e=ev(i),s=song(i),N=FEN[F.i];let pts=e.nota,notes=[];
   const on=F.crowd.filter(c=>c.on),fit=on.length?on.filter(c=>c.pref===e.gen).length/on.length:0;pts+=fit*8;if(fit>=.4)notes.push('💃 O público adora '+GEN_N[e.gen]);
@@ -4515,7 +4517,7 @@ function feScore(i,F,who,mixQ){const e=ev(i),s=song(i),N=FEN[F.i];let pts=e.nota
 function fePick(i){const F=L.fe;if(!F||F.ph!=='pick'||F.turn!=='me')return;F.sel=i;F.ph='mix';F.mixT0=Date.now();feDraw();clearTimeout(F.mixTO);F.mixTO=setTimeout(()=>{if(L.fe===F&&F.ph==='mix')feMix(true)},4200)}
 function feMix(late){const F=L.fe;if(!F||F.ph!=='mix')return;clearTimeout(F.mixTO);const bar=document.querySelector('.fmix'),nd=document.querySelector('.fmix .fneedle');let pos=0;
   if(bar&&nd&&!late){const a=bar.getBoundingClientRect(),b=nd.getBoundingClientRect();pos=(b.left+b.width/2-a.left)/a.width}
-  const d=Math.abs(pos-.5),q=late?'falhou':d<.06?'perfeito':d<.16?'bom':'falhou';F.ph='play';const r=feScore(F.sel,F,'me',q);F.hype[0]+=r.pts;
+  const d=Math.abs(pos-.5),q=late?'falhou':d<.06?'perfeito':d<.16?'bom':'falhou';F.ph='play';if(FA.pre){FA.pre.pause();FA.pre=null}fePlay(F.sel);const r=feScore(F.sel,F,'me',q);F.hype[0]+=r.pts;
   const dn=Math.max(-2,Math.min(1.6,(r.pts-FE_PAR[CAR[F.i].lvl])/3.2)),n0=F.nota;F.nota=Math.max(0,Math.min(10,Math.round((F.nota+dn)*10)/10));F.hist.push(F.nota);F.last={who:'me',...r,q,i:F.sel,dn:Math.round((F.nota-n0)*10)/10};
   if(q==='falhou')feFx('scratch');feDraw();feFloat(F.last.dn,'me');setTimeout(()=>{if(L.fe!==F)return;F.round++;feRound()},4200)}
 function feRival(){const F=L.fe;if(!F)return;F.turn='riv';F.ph='rival';F.msg=null;const lvl=CAR[F.i].lvl,opts=feDeal(F,3);
@@ -4536,6 +4538,25 @@ function feEnd(){const F=L.fe;F.ph='end';const won=F.nota>=feMeta(F.i);const i=F
   if(won&&i>=carDone()){profSet('carN',i+1);const b=CAR_BPM[i]||5;if(CASAL.includes(myPid()))profAdd('vbpm',b);F.newWin=b}
   feDraw();if(won){confetti(50);if(F.newWin)setTimeout(()=>bigFx(`<div class="carwin"><span>${c.e}</span><b>Noite conquistada!</b><small>${esc(c.lugar)} é teu. +${F.newWin} BPM${i+1<CAR.length?` · próxima: ${esc(CAR[i+1].lugar)}`:' · és o rei do Carnaval! 👑'}</small><i class="carstamp big">✓</i></div>`,4200,'carwinfx'),900)}}
 function feDraw(){const w=document.querySelector('.festa');if(w)w.outerHTML=festaHtml();else render()}
+/* ---- música a sério na festa: pré-visualizações de 30 s ---- */
+const FA={el:null,pre:null,url:{},i:null};
+function fePvGet(i){try{const v=localStorage.getItem('pv:'+i);if(v!=null)return v}catch(e){}return FA.url[i]}
+async function fePv(i){let u=fePvGet(i);if(u!==undefined&&u!==null)return u||null;if(FA.url[i]instanceof Promise)return FA.url[i];
+  const s0=song(i),t=nrm(s0.t).split(' ').slice(0,4).join(' '),a=nrm(s0.a).split(' ')[0];
+  FA.url[i]=(async()=>{for(const cc of ['br','us']){try{const r=await jsonp(`https://itunes.apple.com/search?term=${encodeURIComponent(s0.a.split(/[,&]/)[0]+' '+s0.t.replace(/\(.*?\)/g,''))}&entity=song&country=${cc}&limit=15`,7000);
+      const rs=(r.results||[]).filter(x=>x.previewUrl);const best=rs.find(x=>nrm(x.trackName).startsWith(t.split(' ').slice(0,2).join(' '))&&nrm(x.artistName).includes(a))||rs.find(x=>nrm(x.trackName).includes(t.split(' ')[0])&&nrm(x.artistName).includes(a))||rs.find(x=>nrm(x.artistName).includes(a)&&nrm(x.trackName).includes(t.split(' ')[0]));
+      if(best){FA.url[i]=best.previewUrl;try{localStorage.setItem('pv:'+i,best.previewUrl)}catch(e){}return best.previewUrl}}catch(e){}}FA.url[i]='';try{localStorage.setItem('pv:'+i,'')}catch(e){}return null})();return FA.url[i]}
+function faFade(el,to,sec,then){if(!el)return;clearInterval(el._f);const from=el.volume,t0=performance.now();el._f=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/(sec*1000));try{el.volume=Math.max(0,Math.min(1,from+(to-from)*k))}catch(e){}if(k>=1){clearInterval(el._f);then&&then()}},40)}
+function feBgPause(){try{if(MUS.el&&!MUS.el.paused){musFade(0,.6);const el=MUS.el;setTimeout(()=>{try{el.pause()}catch(e){}},650)}}catch(e){}}
+function fePlay(i){if(!SND.on)return;const go=u=>{if(!u||!L.fe||L.screen!=='festa')return;feBgPause();const old=FA.el,n=new Audio(u);n.loop=true;n.volume=0;n.setAttribute('playsinline','');FA.el=n;FA.i=i;
+    n.play().then(()=>{if(IS_IOS)n.volume=1;else faFade(n,.85,1.4)}).catch(()=>{});if(old){if(IS_IOS){old.pause()}else faFade(old,0,1.2,()=>old.pause())}};
+  const u=fePvGet(i);if(u)go(u);else if(u===undefined||u===null)fePv(i).then(go)}
+function feHear(i,btn){if(!SND.on){toast('🔇 Liga o som (botão em cima) para ouvir');return}const stop=()=>{if(FA.pre){FA.pre.pause();FA.pre=null}document.querySelectorAll('.fhear.on').forEach(b=>b.classList.remove('on'));if(FA.el&&!IS_IOS)faFade(FA.el,.85,.5)};
+  if(FA.pre&&FA.preI===i){stop();return}stop();const go=u=>{if(!u){toast('Sem amostra para esta música');return}const a=new Audio(u);a.volume=IS_IOS?1:.7;a.currentTime=0;a.play().catch(()=>{});FA.pre=a;FA.preI=i;if(btn)btn.classList.add('on');feBgPause();if(FA.el&&!IS_IOS)faFade(FA.el,.15,.4);clearTimeout(FA.preT);FA.preT=setTimeout(()=>{if(FA.pre===a)stop()},9000)};
+  const u=fePvGet(i);if(u)go(u);else if(u==='')go(null);else{btn&&btn.classList.add('load');fePv(i).then(x=>{btn&&btn.classList.remove('load');go(x)})}}
+function feStopAll(){if(FA.pre){FA.pre.pause();FA.pre=null}if(FA.el){const el=FA.el;FA.el=null;if(IS_IOS)el.pause();else faFade(el,0,1,()=>el.pause());if(SND.on)setTimeout(()=>{try{musicStart()}catch(e){}},1100)}}
+setInterval(()=>{if((FA.el||FA.pre)&&(L.screen!=='festa'||!SND.on))feStopAll()},800);
+
 function feScene(F){const N=FEN[F.i],c=CAR[F.i],on=F.crowd.filter(x=>x.on).length,energy=F.last?F.last.e.en:2;
   const sky=feSky(F.ph==='end'?FE_ROUNDS+1:F.round),playing=F.ph==='play'||F.ph==='rivplay';
   const crowd=F.crowd.map((x,k)=>{const st=x.on?(x.like&&playing?'hype':'on'):'off',m=x.h>70?3:x.h>45?2:x.h>25?1:0;const left=x.on?x.x:(k%2?93+((k*7)%5):2+((k*7)%5)),bot=x.on?2+x.y*8:28+(k%3)*2;
@@ -4556,7 +4577,7 @@ function festaHtml(){const F=L.fe;if(!F)return '';const c=CAR[F.i],N=FEN[F.i],to
   if(F.ph==='end'){const won=F.nota>=feMeta(F.i);return `<div class="festa">${meter}${feScene(F)}<div class="fend ${won?'won':''}"><h2>${won?'A pista é tua! 🎉':'A noite não correu bem 😮‍💨'}</h2><p>${won?`${esc(c.dj)} deu-te ${F.nota.toFixed(1)} ⭐ (precisavas de ${feMeta(F.i).toFixed(1)}).`:`Acabaste com ${F.nota.toFixed(1)} ⭐ e precisavas de ${feMeta(F.i).toFixed(1)}. Ouve os pedidos e os palpites do público, e cumpre a regra do sítio.`}</p>
     <div class="actions"><button class="btn" onclick="feStart(${F.i})">🔁 Repetir a noite</button>${won&&F.i+1<CAR.length?`<button class="btn" onclick="careerIntro(${F.i+1})">▶ Próxima noite: ${esc(CAR[F.i+1].lugar)}</button>`:''}<button class="btn ghost" onclick="L.fe=null;L.screen='carreira';render();scrollTo(0,0)">🗺️ Carreira</button></div></div></div>`}
   let panel='';
-  if(F.ph==='pick')panel=`<div class="fpanel"><div class="fturn">🎧 A tua vez · ${feClock(F.round)} · música ${F.round} de ${FE_ROUNDS}</div>${F.round===1?`<div class="fpistas"><b>📍 O que se diz sobre este sítio</b>${FEN_PISTAS[F.i].map(t=>`<span>${esc(t)}</span>`).join('')}<small>São boatos: o público de hoje pode ser diferente.</small></div>`:''}${F.req?`<div class="freqbar">📣 Alguém na pista está a pedir <b>${GEN_IC[F.req.g]} ${GEN_N[F.req.g]}</b>!</div>`:''}${F.msg?`<div class="fevent">${esc(F.msg.t)}</div>`:''}<div class="fcards">${F.opts.map(i=>{const s=song(i),e=ev(i);return `<button class="fcard" onclick="fePick(${i})"><img src="${esc(s.c)}" alt="" onerror="this.src='${esc(s.fb)}'"><span class="fct"><b>${esc(s.t)}</b><small>${esc(s.a)}</small></span><span class="fchips"><i>${GEN_IC[e.gen]} ${GEN_N[e.gen]}</i><i>${'⚡'.repeat(e.en)}</i><i>⭐ ${fmt1(e.nota)}</i>${e.tags.map(t=>`<i class="tg">${t}</i>`).join('')}</span></button>`}).join('')}</div></div>`;
+  if(F.ph==='pick')panel=`<div class="fpanel"><div class="fturn">🎧 A tua vez · ${feClock(F.round)} · música ${F.round} de ${FE_ROUNDS}${SND.on?'':' <small class="fsnd">🔇 liga o som para ouvires as músicas</small>'}</div>${F.round===1?`<div class="fpistas"><b>📍 O que se diz sobre este sítio</b>${FEN_PISTAS[F.i].map(t=>`<span>${esc(t)}</span>`).join('')}<small>São boatos: o público de hoje pode ser diferente.</small></div>`:''}${F.req?`<div class="freqbar">📣 Alguém na pista está a pedir <b>${GEN_IC[F.req.g]} ${GEN_N[F.req.g]}</b>!</div>`:''}${F.msg?`<div class="fevent">${esc(F.msg.t)}</div>`:''}<div class="fcards">${F.opts.map(i=>{const s=song(i),e=ev(i);return `<div class="fcardw"><button class="fhear" onclick="event.stopPropagation();feHear(${i},this)" title="Ouvir antes">🎧</button><button class="fcard" onclick="if(FA.pre){FA.pre.pause();FA.pre=null}fePick(${i})"><img src="${esc(s.c)}" alt="" onerror="this.src='${esc(s.fb)}'"><span class="fct"><b>${esc(s.t)}</b><small>${esc(s.a)}</small></span><span class="fchips"><i>${GEN_IC[e.gen]} ${GEN_N[e.gen]}</i><i>${'⚡'.repeat(e.en)}</i><i>⭐ ${fmt1(e.nota)}</i>${e.tags.map(t=>`<i class="tg">${t}</i>`).join('')}</span></button></div>`}).join('')}</div></div>`;
   else if(F.ph==='mix'){const s=song(F.sel);panel=`<div class="fpanel"><div class="fturn">🎚️ Faz a mistura: carrega quando a agulha estiver no verde</div><div class="fmixrow"><img src="${esc(s.c)}" alt="" onerror="this.src='${esc(s.fb)}'"><div class="fmix lvl-${c.lvl}" onclick="feMix()"><div class="fzone"></div><div class="fzone p"></div><div class="fneedle"></div></div></div><button class="btn full" onclick="feMix()">🎚️ MISTURAR!</button></div>`}
   else if(F.last){const L_=F.last,s=L_.s;panel=`<div class="fpanel"><div class="fturn">🎶 Está a tocar</div>${`<div class="fnow"><img src="${esc(s.c)}" alt="" onerror="this.src='${esc(s.fb)}'"><div><b>${esc(s.t)}</b><small>${esc(s.a)} · ${GEN_IC[L_.e.gen]} ${GEN_N[L_.e.gen]} · mistura ${L_.q}</small><div class="fnotes">${L_.notes.map(n=>`<span>${esc(n)}</span>`).join('')}</div></div><b class="fpts ${L_.dn<0?'neg':''}">${L_.dn>=0?'+':'−'}${Math.abs(L_.dn).toFixed(1)}⭐</b></div>`}</div>`}
   return `<div class="festa"><div class="frule">${esc(N.regra)}</div>${meter}${feScene(F)}${panel}</div>`}
@@ -5426,7 +5447,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795634259';
+const BUILD='1795634466';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
