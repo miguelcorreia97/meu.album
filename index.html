@@ -3332,7 +3332,7 @@ function discSurprise(rk){if(!canEdit())return;const R=RARK[rk||'comum'],q=roomQ
   const d=pool[Math.floor(Math.random()*pool.length)];q.spent+=R[6];q.buy=[...q.buy,d.k];roomSave(q);L.rNew=d.k;render();boxOpenFx(R,d.k,()=>discZoom(d.k))}
 const TODN={manha:'amanhecer',dia:'dia',tarde:'pôr do sol',noite:'noite'};
 function quartoScreen(){const ed=canEdit(),coins=roomCoins(),q=roomQ(),pl=discPlaces(),n=lisNow(),tnow=todNow(n),prev=L.rPrev&&RIT[L.rPrev],falta=prev?prev.p-coins:0,pd=pl.play&&DISCO(pl.play),on=q.on&&pd;
-  let h=`<div class="tot-head"><div class="mono" style="color:var(--muted)">o nosso quarto</div><h2>O quarto do Miguel e da Clara</h2><div class="sub">${ed?'Decorem juntos com os BPM que os dois ganham nas missões. Com música a tocar no quarto também ganham BPM.':'Estás de visita. Só o Miguel e a Clara podem mudar as coisas.'}</div></div>
+  let h=`<div class="tot-head"><div class="mono" style="color:var(--muted)">quarto</div><h2>O quarto do Miguel e da Clara</h2><div class="sub">${ed?'Decorem juntos com os BPM que os dois ganham nas missões. Com música a tocar no quarto também ganham BPM.':'Estás de visita. Só o Miguel e a Clara podem mudar as coisas.'}</div></div>
   <div class="qbar"><span class="qcoins">♩ <b id="bpmv">${coins}</b> BPM</span><span class="rdisc">💿 ${pl.own.length} discos</span><span class="rdisc">🕰️ <b id="rclock">${n.hh}</b> em Portugal</span>${ed?`<button class="rdisc rbill" onclick="billsZoom()">🧾 −${billDay()} BPM/dia</button>`:''}</div>
   <div class="roomscene${L.rFull?' full':''}"><div class="roomscroll">${roomSceneInner()}</div>${sceneHud()}<button class="rfullbtn" onclick="roomFull()">${L.rFull?'<b>✕</b><span> Sair</span>':'<b>⛶</b><span> Ecrã inteiro</span>'}</button><span class="rfullhint">📱 Vira o telemóvel para ver maior</span></div>
   <p class="hint center todinfo">👆 Toquem nas coisas do quarto: gira-discos, prateleira, móvel, molduras, quadro de recados, janela, luzes, animais… Agora é ${TODN[tnow]} em Portugal: o quarto segue a hora real. O sol nasce às ${n.f(n.rise)} e põe-se às ${n.f(n.set)}.</p>`;
@@ -4134,7 +4134,7 @@ function rankingScreen(){
 function modeScreen(){
   const nv=ME?MISSOES.filter(m=>profGet(myPid()).u[m.id]).length:0;
   return `<div class="hero"><div class="kick">um jogo de música brasileira</div><h1 class="herot">Meu <em>Álbum</em></h1><div class="turntable"><div class="record"></div></div>${heroVs()}<p>Olá, ${esc(ME?ME.e+' '+ME.n:'')}! O que vamos fazer?</p><div id="bnotice">${bdNotice()}</div></div>
-  <div class="modes one mt"><button class="modebtn room" onclick="openRoom()"><span class="ic">🛋️</span><b>O nosso quarto</b><span>♩ ${roomCoins()} BPM para decorar o quarto do Miguel e da Clara. O quadro de recados está lá dentro${bdFresh()?' — e há um recado novo! 💌':'.'}</span></button></div>
+  <div class="modes one mt"><button class="modebtn room" onclick="openRoom()"><span class="ic">🛋️</span><b>Quarto</b><span>♩ ${roomCoins()} BPM para decorar o quarto do Miguel e da Clara. O quadro de recados está lá dentro${bdFresh()?' — e há um recado novo! 💌':'.'}</span></button></div>
   <div class="modes one mt"><button class="modebtn play" onclick="L.screen='jogar';render();scrollTo(0,0)"><span class="ic">▶️</span><b>Jogar</b><span>Contra o computador ou com um amigo, cada um no seu telemóvel. Com um amigo também podem jogar em equipa.</span></button></div>
   <div class="modes mt">
    <button class="modebtn" onclick="openMissions()"><span class="ic">💿</span><b>Missões e vinis</b><span>${ME?`${nv} de ${MISSOES.length} vinis conquistados. Completa missões e ganha mais.`:'Completa missões e ganha vinis personalizados.'}</span></button>
@@ -4428,7 +4428,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795598739';
+const BUILD='1795601649';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
