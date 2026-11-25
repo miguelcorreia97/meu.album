@@ -1708,6 +1708,12 @@ body,#app{overflow-x:clip}
 @media(max-width:600px){.fbgrid{grid-template-columns:1fr 1fr}}
 .festa{height:calc(100dvh - 190px)}
 @media(max-width:600px){.festa{height:calc(100dvh - 130px)}.fstagew{flex:0 0 auto!important;min-height:0}.fpanel{flex:1 1 auto;max-height:none!important;min-height:0}}
+.bkmcode{display:flex;flex-direction:column;align-items:center;gap:4px;padding:16px;border-radius:18px;background:linear-gradient(140deg,#3a1c2c,#2a1220);border:2px dashed #ffd23f;max-width:420px;margin:0 auto}.bkmcode small{text-transform:uppercase;letter-spacing:.15em;font-size:.7rem;opacity:.7}.bkmcode b{font-family:Anton,sans-serif;font-weight:400;font-size:3.4rem;letter-spacing:.2em;color:#ffd23f;line-height:1}.bkmcode span{font-size:.78rem;opacity:.75}
+.bkmlist,.bkmres{max-width:560px;margin-left:auto;margin-right:auto}.bkmrow{display:flex;align-items:center;gap:10px;padding:8px 6px;border-bottom:1px solid rgba(255,255,255,.07);animation:carIn .4s calc(var(--i)*.06s) both}.bkmrow em{font-style:normal;font-size:.66rem;padding:2px 8px;border-radius:99px;background:rgba(255,210,63,.18);color:#ffd23f}.bkmrow em.me{background:rgba(124,255,178,.18);color:#7cffb2}.bkmav{font-size:1.4rem}
+.bkmrow.big b{flex:1}.bkmrow.big .bkmm{font-family:Anton,sans-serif;font-size:1.5rem;color:#7cffb2}.bkmrow.big small{opacity:.6;font-size:.72rem;min-width:70px;text-align:right}.bkmrow.me{background:rgba(255,210,63,.08);border-radius:10px}.bkmrow.win{background:linear-gradient(90deg,rgba(255,210,63,.25),transparent);border-radius:10px}.bkmwin{text-align:center;color:#ffd23f;animation:djX .6s both}
+.bkmcount{text-align:center;font-family:Anton,sans-serif;font-size:2.4rem;color:#ffd23f;margin:16px 0;animation:spPulse 1s ease-in-out infinite}
+.bkmlive{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}.bkmlive span{padding:4px 10px;border-radius:99px;background:rgba(255,255,255,.07);font-size:.78rem}.bkmlive span.me{background:rgba(255,210,63,.18)}.bkmlive b{color:#7cffb2}
+.bkmmenu{max-width:640px;margin-left:auto;margin-right:auto}.bkmjoin{display:flex;gap:8px;margin-top:10px}.bkmjoin .inp{max-width:140px;text-transform:uppercase;letter-spacing:.2em;font-weight:800;text-align:center}
 .rszchip{display:flex;gap:4px;padding:4px!important;cursor:default!important}.rszchip button{border:0;border-radius:99px;padding:5px 9px;background:rgba(255,255,255,.1);color:var(--cream);font:inherit;font-size:.74rem;font-weight:700;cursor:pointer}.rszchip button.on{background:var(--cream);color:#2a1608}
 .rplacechip{position:absolute;transform:translate(-50%,0);z-index:4;padding:7px 12px;border-radius:99px;border:1px solid rgba(255,214,150,.5);background:rgba(20,10,4,.88);color:var(--cream);font:inherit;font-size:.78rem;font-weight:700;cursor:pointer;white-space:nowrap;box-shadow:0 6px 18px rgba(0,0,0,.4);animation:rzIn .2s ease}
 .rplaces.big button{font-size:.9rem;padding:11px 12px}
@@ -4530,17 +4536,18 @@ const BK_GOAL={facil:260,normal:370,dificil:500},BK_DUR=120000,BK_PAT=1.8;
 const bkVal=k=>Math.max(8,Math.round(discPrice(k)/10));
 const bkRare=k=>{const r=discInfo(k)||{};return ['epico','lend'].includes(r.rar)||r.fama>=4.5};
 function bkPool(){return DISCOS.filter(d=>!DISC_EXCL.has(d.k))}
-function bkDraw(n,not){const pool=bkPool().filter(d=>!(not||[]).includes(d.k));const out=[];while(out.length<n&&pool.length)out.push(pool.splice((Math.random()*pool.length)|0,1)[0].k);return out}
+const bkR=()=>(L.bk&&L.bk.rnd?L.bk.rnd():Math.random());
+function bkDraw(n,not,R){R=R||bkR;const pool=bkPool().filter(d=>!(not||[]).includes(d.k));const out=[];while(out.length<n&&pool.length)out.push(pool.splice((R()*pool.length)|0,1)[0].k);return out}
 function bkNewCust(){const B0=L.bk;B0.q=B0.q||[];while(B0.q.length<3)B0.q.push(rndPerson('q'+Date.now()+Math.random()));B0.nextP=B0.q.shift();return bkNewCust0()}
-function bkNewCust0(){const B=L.bk,crate=B.crate.map(DISCO);let T=BK_T[(Math.random()*BK_T.length)|0];if(B.last===T.id)T=BK_T[(BK_T.indexOf(T)+1)%BK_T.length];B.last=T.id;
-  const c={t:T,mood:1+((Math.random()*3)|0),pat:T.pat*1000*BK_PAT,arr:Date.now(),rounds:0,offer:null,name:T.id==='avo'?['Dona Rosa','Dona Lurdes','Dona Fátima','Dona Graça'][(Math.random()*4)|0]:T.id==='colec'?['Sr. Alberto','Sr. Joaquim','Sr. Mário'][(Math.random()*3)|0]:['Ana','Zé','Rui','Bia','Tó','Lu','Gui','Rita','Nando','Inês','Caio','Dora'][(Math.random()*12)|0]};
-  if(T.want==='artist'){let arts=T.arts||[...new Set(bkPool().map(d=>d.a))];const inC=arts.filter(a=>crate.some(d=>d.a===a));c.a=(Math.random()<.75&&inC.length?inC:arts)[(Math.random()*(Math.random()<.75&&inC.length?inC:arts).length)|0]}
-  if(T.want==='cheap')c.b=[18,22,25,28,32][(Math.random()*5)|0];
-  c.say=T.say[(Math.random()*T.say.length)|0].replace('{a}',c.a||'').replace('{b}',c.b||'');B.cust=c;B.sel=null;B.msg=null}
+function bkNewCust0(){const B=L.bk,crate=B.crate.map(DISCO);let T=BK_T[(bkR()*BK_T.length)|0];if(B.last===T.id)T=BK_T[(BK_T.indexOf(T)+1)%BK_T.length];B.last=T.id;
+  const c={t:T,mood:1+((bkR()*3)|0),pat:T.pat*1000*BK_PAT,arr:Date.now(),rounds:0,offer:null,name:T.id==='avo'?['Dona Rosa','Dona Lurdes','Dona Fátima','Dona Graça'][(bkR()*4)|0]:T.id==='colec'?['Sr. Alberto','Sr. Joaquim','Sr. Mário'][(bkR()*3)|0]:['Ana','Zé','Rui','Bia','Tó','Lu','Gui','Rita','Nando','Inês','Caio','Dora'][(bkR()*12)|0]};
+  if(T.want==='artist'){let arts=T.arts||[...new Set(bkPool().map(d=>d.a))];const inC=arts.filter(a=>crate.some(d=>d.a===a));c.a=(bkR()<.75&&inC.length?inC:arts)[(bkR()*(bkR()<.75&&inC.length?inC:arts).length)|0]}
+  if(T.want==='cheap')c.b=[18,22,25,28,32][(bkR()*5)|0];
+  c.say=T.say[(bkR()*T.say.length)|0].replace('{a}',c.a||'').replace('{b}',c.b||'');B.cust=c;B.sel=null;B.msg=null}
 function bkMatch(c,k){const d=DISCO(k);if(!d)return false;const T=c.t;if(T.want==='any')return true;if(T.want==='rare')return bkRare(k);if(T.want==='cheap')return bkVal(k)*.85<=c.b;if(T.want==='artist')return d.a===c.a;if(T.want==='style')return (T.st||[]).includes(BK_ART[d.a]);return false}
-function bancaStart(lvl){const cr=bkDraw(8);L.bk={lvl:lvl||'normal',goal:BK_GOAL[lvl||'normal'],t0:Date.now(),money:0,sales:[],crate:cr,deco:bkDraw(12,cr),phase:'play',best:0};L.screen='banca';bkNewCust();render();scrollTo(0,0);clearInterval(L.bkT);L.bkT=setInterval(bkTick,200);
+function bancaStart(lvl,mp){const R=mp&&mp.seed?rng(hash(mp.seed)):Math.random;const cr=bkDraw(8,null,R);L.bk={lvl:lvl||'normal',goal:BK_GOAL[lvl||'normal'],t0:Date.now(),money:0,sales:[],crate:cr,deco:bkDraw(12,cr,R),phase:'play',best:0,rnd:mp&&mp.seed?R:null,mp:mp?mp.code:null};L.screen='banca';bkNewCust();render();scrollTo(0,0);clearInterval(L.bkT);L.bkT=setInterval(bkTick,200);
   setTimeout(()=>{const s=document.querySelector('.bkstage');if(s)s.classList.add('go')},50)}
-function bkTick(){const B=L.bk;if(!B||B.phase!=='play'||L.screen!=='banca'){clearInterval(L.bkT);return}const left=B.t0+BK_DUR-Date.now();
+function bkTick(){const B=L.bk;if(!B||B.phase!=='play'||L.screen!=='banca'){clearInterval(L.bkT);return}if(B.mp&&Date.now()-(B.mpT||0)>4000){B.mpT=Date.now();bkmPush(0);bkmPoll()}const left=B.t0+BK_DUR-Date.now();
   const tb=document.querySelector('.bktime i');if(tb)tb.style.width=Math.max(0,100*left/BK_DUR)+'%';const tl=document.querySelector('.bktime b');if(tl)tl.textContent=Math.max(0,Math.ceil(left/1000))+'s';
   const c=B.cust;if(c&&!c.leaving){const pl=c.arr+c.pat*MOODS[c.mood][3]-Date.now(),pb=document.querySelector('.bkpat i');if(pb)pb.style.width=Math.max(0,100*pl/(c.pat*MOODS[c.mood][3]))+'%';if(pl<=0)bkLeave('⌛ Demoraste muito. Vou-me embora!',false)}
   if(left<=0)bkEnd()}
@@ -4570,14 +4577,48 @@ function bkLeave(t,happy){const B=L.bk,c=B.cust;if(!c||c.leaving)return;c.leavin
 function bkSkip(){bkLeave('👋 Está bem, fica para a próxima.',false)}
 function bkShake(){const e=document.querySelector('.bkcust');if(e){e.classList.remove('shake');void e.offsetWidth;e.classList.add('shake')}}
 function bkDraw_(){if(L.bk&&L.bk.cust)setTimeout(()=>{if(L.bk&&L.bk.cust)L.bk.cust.shown=1},600);const w=document.querySelector('.banca');if(w)w.outerHTML=bancaHtml();else render()}
-function bkEnd(){const B=L.bk;if(!B||B.phase!=='play')return;B.phase='end';clearInterval(L.bkT);const won=B.money>=B.goal;
+function bkEnd(){const B=L.bk;if(!B||B.phase!=='play')return;B.phase='end';clearInterval(L.bkT);const won=B.money>=B.goal;if(B.mp){bkmPush(1);bkmPoll()}
   try{profAdd('bancaJ');profMax('bancaBest',B.money);if(won){profAdd('bancaWin');vitBpm(VIT_BPM.cpu[B.lvl]||6,'vitória na banca')}partDia()}catch(e){}
   bkDraw_();if(won)confetti(45)}
+
+/* ======================= 💰 BANCA MULTIJOGADOR ======================= */
+const BKM_URL=c=>PROF_URL('bkm-'+c);
+function bkmCode(){const A='ABCDEFGHJKLMNPQRSTUVWXYZ';let c='';for(let i=0;i<4;i++)c+=A[(Math.random()*A.length)|0];return c}
+async function bkmGet(c){const r=await fetch(BKM_URL(c),{cache:'no-store'});if(!r.ok)return null;const j=await r.json(),f=j.fields||{};const out={meta:null,pl:{}};for(const k in f){try{const v=JSON.parse(f[k].stringValue);if(k==='meta')out.meta=v;else if(k.startsWith('p_'))out.pl[k.slice(2)]=v}catch(e){}}return out}
+async function bkmPatch(c,obj){const ks=Object.keys(obj),q=ks.map(k=>'updateMask.fieldPaths='+k).join('&');const fields={};ks.forEach(k=>fields[k]={stringValue:JSON.stringify(obj[k])});return fetch(BKM_URL(c)+'&'+q,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields})})}
+const bkmMe=()=>({n:(ME&&ME.n)||'?',e:(ME&&ME.e)||'🙂',money:L.bk&&L.bk.mp?L.bk.money:0,sales:L.bk&&L.bk.mp?L.bk.sales.length:0,done:0,at:Date.now()});
+async function bkmCreate(lvl){if(!(db&&db.cloud)){toast('Sem ligação: o multijogador precisa de internet');return}const code=bkmCode();L.bkm={code,host:1,data:null};L.screen='bkm';render();
+  try{await bkmPatch(code,{meta:{host:myPid(),lvl,state:'lobby',t0:0,seed:'bk'+code+Date.now()},['p_'+myPid()]:bkmMe()});bkmPoll()}catch(e){toast('Não deu para criar a sala')}}
+async function bkmJoin(){const c=(document.getElementById('bkmIn')||{}).value;const code=String(c||'').trim().toUpperCase();if(code.length!==4){toast('O código tem 4 letras');return}
+  try{const d=await bkmGet(code);if(!d||!d.meta){toast('Não encontrei essa sala');return}if(d.meta.state!=='lobby'){toast('Essa banca já começou');return}L.bkm={code,host:0,data:d};await bkmPatch(code,{['p_'+myPid()]:bkmMe()});L.screen='bkm';render();bkmPoll()}catch(e){toast('Não deu para entrar')}}
+async function bkmPush(done){const B=L.bk;if(!B||!B.mp)return;try{await bkmPatch(B.mp,{['p_'+myPid()]:{...bkmMe(),done:done?1:0}})}catch(e){}}
+async function bkmStart(){const M=L.bkm;if(!M||!M.host||!M.data)return;const meta={...M.data.meta,state:'go',t0:Date.now()+6000};try{await bkmPatch(M.code,{meta});M.data.meta=meta;bkmTickLobby()}catch(e){}}
+async function bkmPoll(){const M=L.bkm;if(!M)return;clearTimeout(M.to);try{const d=await bkmGet(M.code);if(d&&L.bkm===M){M.data=d;if(L.screen==='bkm')bkmDraw();if(L.screen==='banca'&&L.bk&&L.bk.mp){bkmLive();if(L.bk.phase==='end')bkDraw_()}}}catch(e){}
+  if(L.bkm===M&&(L.screen==='bkm'||(L.screen==='banca'&&L.bk&&L.bk.mp)))M.to=setTimeout(bkmPoll,L.screen==='bkm'?1500:3500);bkmTickLobby()}
+function bkmTickLobby(){const M=L.bkm;if(!M||!M.data||!M.data.meta||L.screen!=='bkm')return;const m=M.data.meta;if(m.state==='go'){const l=m.t0-Date.now();const el=document.querySelector('.bkmcount');if(el)el.textContent=l>0?`A banca abre em ${Math.ceil(l/1000)}…`:'Abrir!';
+  if(l<=0&&!M.started){M.started=1;bancaStart(m.lvl,{seed:m.seed,code:M.code});setTimeout(()=>bkmPoll(),1500)}else if(l>0){clearTimeout(M.ct);M.ct=setTimeout(bkmTickLobby,300)}}}
+function bkmDraw(){const w=document.querySelector('.bkmw');if(w)w.outerHTML=bkmHtml();else render()}
+function bkmHtml(){const M=L.bkm;if(!M)return '';const d=M.data,m=d&&d.meta,pl=d?Object.entries(d.pl):[];const lv={facil:'Feira de bairro',normal:'Feira da Ladra',dificil:'Feira de São Cristóvão'};
+  return `<div class="bkmw"><div class="tot-head"><div class="mono" style="color:var(--muted)">banca multijogador</div><h2>Quem vende mais?</h2><div class="sub">Todos recebem os mesmos discos e os mesmos clientes, ao mesmo tempo. Ao fim de 2 minutos ganha quem tiver feito mais dinheiro.</div></div>
+   <div class="bkmcode"><small>código da sala</small><b>${esc(M.code)}</b><span>Diz este código aos outros jogadores para entrarem.</span></div>
+   <div class="panel mt bkmlist"><div class="mono" style="color:var(--muted)">💰 vendedores (${pl.length})${m?` · ${lv[m.lvl]||''}`:''}</div>${pl.map(([id,v],i)=>`<div class="bkmrow" style="--i:${i}"><span class="bkmav">${esc(v.e)}</span><b>${esc(v.n)}</b>${m&&m.host===id?'<em>anfitrião</em>':''}${id===myPid()?'<em class="me">tu</em>':''}</div>`).join('')||'<p class="hint">A carregar…</p>'}</div>
+   ${m&&m.state==='go'?`<div class="bkmcount">A preparar…</div>`:M.host?`<div class="actions"><button class="btn" ${pl.length<2?'':''} onclick="bkmStart()">▶ Abrir as bancas${pl.length<2?' (ainda só tu)':''}</button></div>`:'<p class="hint" style="text-align:center">À espera que o anfitrião abra as bancas…</p>'}
+   <div class="actions"><button class="btn ghost" onclick="L.bkm=null;L.screen='bancaMenu';render()">← Sair da sala</button></div></div>`}
+function bkmLive(){const M=L.bkm,B=L.bk;if(!M||!M.data||!B)return;const rows=Object.entries(M.data.pl).map(([id,v])=>({id,...v,money:id===myPid()?B.money:v.money})).sort((a,b)=>b.money-a.money);
+  const el=document.querySelector('.bkmlive');const h=rows.map((r,i)=>`<span class="${r.id===myPid()?'me':''}">${['🥇','🥈','🥉'][i]||i+1} ${esc(r.e)} ${esc(r.n)} <b>${r.money}€</b>${r.done?' ✓':''}</span>`).join('');if(el)el.innerHTML=h;return h}
+function bkmResults(){const M=L.bkm,B=L.bk;if(!M||!M.data)return '<p class="hint">A juntar os resultados…</p>';const rows=Object.entries(M.data.pl).map(([id,v])=>({id,...v,money:id===myPid()?B.money:v.money,done:id===myPid()?1:v.done})).sort((a,b)=>b.money-a.money);const all=rows.every(r=>r.done);
+  if(all&&!M.fin){M.fin=1;if(rows[0]&&rows[0].id===myPid()&&rows.length>1){setTimeout(()=>confetti(60),300);try{profAdd('bancaMpWin')}catch(e){}}}
+  return `<div class="bkmres"><div class="mono" style="color:var(--muted)">🏆 resultado da sala ${esc(M.code)}</div>${rows.map((r,i)=>`<div class="bkmrow big ${r.id===myPid()?'me':''} ${i===0&&all?'win':''}" style="--i:${i}"><span class="ddpos">${['🥇','🥈','🥉'][i]||i+1}</span><span class="bkmav">${esc(r.e)}</span><b>${esc(r.n)}</b><span class="bkmm">${r.money}€</span><small>${r.done?`${r.sales} vendas`:'a vender…'}</small></div>`).join('')}${all?(rows[0].id===myPid()?'<h3 class="bkmwin">👑 Foste quem vendeu mais!</h3>':`<h3 class="bkmwin">👑 ${esc(rows[0].e)} ${esc(rows[0].n)} vendeu mais!</h3>`):'<p class="hint">À espera que os outros fechem a banca…</p>'}</div>`}
+
 function bancaMenu(){const best=(profGet(myPid()).st||{}).bancaBest||0;
   return `<div class="tot-head"><div class="mono" style="color:var(--muted)">banca de vinis</div><h2>Vende discos na feira</h2><div class="sub">Tens 2 minutos. Chegam clientes, cada um com o seu gosto, feitio e humor. Mostra-lhes o disco certo e aceita a oferta ou negocia: uns aceitam, outros irritam-se e vão-se embora.</div></div>
   <div class="bkhow"><span>🧐 Colecionadores querem raridades 💎</span><span>🎒 Estudantes têm pouco dinheiro</span><span>👵 Avós procuram artistas da juventude</span><span>😤 Regateadores oferecem pouco mas cedem</span><span>😊 Clientes felizes pagam mais e aguentam mais tempo</span></div>
   <div class="modes">${[['facil','Feira de bairro','🧺'],['normal','Feira da Ladra','🏮'],['dificil','Feira de São Cristóvão','🎪']].map(([k,n,e])=>`<button class="modebtn" onclick="bancaStart('${k}')"><span class="ic">${e}</span><b>${n}</b><span>Meta: ${BK_GOAL[k]}€ em 2 minutos · +${VIT_BPM.cpu[k]} BPM se conseguires</span></button>`).join('')}</div>
-  ${best?`<p class="hint" style="text-align:center">🏅 O teu recorde: ${best}€</p>`:''}<div class="actions"><button class="btn" onclick="L.screen='jogar';render();scrollTo(0,0)">← Voltar</button></div>`}
+  ${best?`<p class="hint" style="text-align:center">🏅 O teu recorde: ${best}€</p>`:''}
+  <div class="panel mt bkmmenu"><div class="mono" style="color:var(--muted)">👥 multijogador · quem vende mais?</div><p class="hint">Todos jogam ao mesmo tempo, cada um no seu telemóvel, com os mesmos discos e os mesmos clientes. No fim vê-se quem fez mais dinheiro.</p>
+   <div class="chips">${[['facil','🧺 Bairro'],['normal','🏮 Ladra'],['dificil','🎪 São Cristóvão']].map(([k,n])=>`<button class="chip" onclick="bkmCreate('${k}')">Criar sala · ${n}</button>`).join('')}</div>
+   <div class="bkmjoin"><input id="bkmIn" class="inp sm" maxlength="4" placeholder="CÓDIGO" autocomplete="off" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')bkmJoin()"><button class="btn sm" onclick="bkmJoin()">Entrar na sala</button></div></div>
+  <div class="actions"><button class="btn" onclick="L.screen='jogar';render();scrollTo(0,0)">← Voltar</button></div>`}
 
 /* ======================= PESSOAS DESENHADAS (para a festa e para a banca) ======================= */
 const SKINS=['#f6d2b6','#e8b48f','#c98e62','#a86b43','#7a4a2c','#5a3520'],HAIRC=['#1c1410','#3b2416','#6b3f1f','#a8692e','#d8b06a','#c9c2b8','#8a2c2c','#2a2a2a'];
@@ -4756,14 +4797,14 @@ function bkTalk(k){const B=L.bk,c=B.cust;if(!c||!B.sel||c.leaving)return;const T
 function bkMarket(){const walkers=[0,1,2,3].map(j=>{const p=rndPerson('w'+j+(L.bk?L.bk.t0:0));return `<div class="bkwalk w${j}" style="--wd:${(j*3.7).toFixed(1)}s">${personSvg(p,2)}</div>`}).join('');
   return `<div class="bkstreet"><div class="bklights">${Array.from({length:14},(_,j)=>`<i style="--j:${j}"></i>`).join('')}</div><div class="bkstalls"><span>🍍</span><span>🧀</span><span>📚</span><span>🌽</span></div>${walkers}</div>`}
 function bancaHtml(){const B=L.bk;if(!B)return '';const left=Math.max(0,B.t0+BK_DUR-Date.now()),c=B.cust,pct=Math.min(100,100*B.money/B.goal);
-  if(B.phase==='end'){const won=B.money>=B.goal;return `<div class="banca end"><div class="bkres ${won?'won':''}"><div class="mono" style="color:var(--muted)">💰 fecho da banca</div><h1>${won?'Meta batida! 🎉':'Não chegou… 😅'}</h1><div class="bkbig"><b>${B.money}€</b><span>de ${B.goal}€</span></div>
+  if(B.phase==='end'){const won=B.money>=B.goal;return `<div class="banca end"><div class="bkres ${won?'won':''}"><div class="mono" style="color:var(--muted)">💰 fecho da banca</div><h1>${B.mp?'Banca fechada! 💰':won?'Meta batida! 🎉':'Não chegou… 😅'}</h1><div class="bkbig"><b>${B.money}€</b><span>${B.mp?'o teu total':'de '+B.goal+'€'}</span></div>
     <div class="bkstats"><span>🛍️ <b>${B.sales.length}</b> vendas</span><span>⭐ melhor venda <b>${B.best}€</b></span><span>🏅 recorde <b>${(profGet(myPid()).st||{}).bancaBest||B.money}€</b></span></div>
-    <div class="bksold">${B.sales.map((s,i)=>`<span style="--i:${i}"><img src="${esc((DISCO(s.k)||{}).f||'')}" alt="">${s.c} ${s.p}€</span>`).join('')}</div>
+    ${B.mp?bkmResults():''}<div class="bksold">${B.sales.map((s,i)=>`<span style="--i:${i}"><img src="${esc((DISCO(s.k)||{}).f||'')}" alt="">${s.c} ${s.p}€</span>`).join('')}</div>
     ${won?`<p class="hint">+${VIT_BPM.cpu[B.lvl]||6} BPM para o quarto (conta para o limite de vitórias do dia).</p>`:''}
-    <div class="actions"><button class="btn" onclick="bancaStart('${B.lvl}')">🔁 Abrir a banca outra vez</button><button class="btn ghost" onclick="L.bk=null;L.screen='bancaMenu';render()">🎚️ Mudar a meta</button><button class="btn ghost" onclick="L.bk=null;L.screen='jogar';render();scrollTo(0,0)">← Modos de jogo</button></div></div></div>`}
+    <div class="actions">${B.mp?`<button class="btn" onclick="L.bk=null;L.bkm=null;L.screen='bancaMenu';render()">👥 Nova sala</button>`:`<button class="btn" onclick="bancaStart('${B.lvl}')">🔁 Abrir a banca outra vez</button>`}<button class="btn ghost" onclick="L.bk=null;L.screen='bancaMenu';render()">🎚️ Mudar a meta</button><button class="btn ghost" onclick="L.bk=null;L.screen='jogar';render();scrollTo(0,0)">← Modos de jogo</button></div></div></div>`}
   const T=c&&c.t,m=c?MOODS[c.mood]:null,sel=B.sel,vend=meLook({});
   const talking=B.msg&&!c.shown;
-  return `<div class="banca"><div class="bktop"><div class="bktime"><b>${Math.ceil(left/1000)}s</b><div><i style="width:${100*left/BK_DUR}%"></i></div></div><div class="bkcash"><span>🧾</span><b>${B.money}€</b><small>meta ${B.goal}€</small><div class="bkgoal"><i style="width:${pct}%"></i></div></div></div>
+  return `<div class="banca">${B.mp?`<div class="bkmlive">${bkmLive()||''}</div>`:''}<div class="bktop"><div class="bktime"><b>${Math.ceil(left/1000)}s</b><div><i style="width:${100*left/BK_DUR}%"></i></div></div><div class="bkcash"><span>🧾</span><b>${B.money}€</b><small>meta ${B.goal}€</small><div class="bkgoal"><i style="width:${pct}%"></i></div></div></div>
    <div class="bkstage">${bkMarket()}
     <div class="bkqueue">${(B.q||[]).slice(0,2).map((p,n)=>`<div class="bkqp" style="--n:${n}">${personSvg(p,1)}</div>`).join('')}<small>${(B.q||[]).length?'à espera':''}</small></div>
     <div class="bktent"><div class="bkback"><div class="bkshelf s1">${(B.deco||[]).slice(0,6).map((k,n)=>`<img src="${esc((DISCO(k)||{}).f||'')}" alt="" style="--r:${(n%3-1)*4}deg">`).join('')}</div><div class="bkshelf s2">${(B.deco||[]).slice(6,12).map((k,n)=>`<img src="${esc((DISCO(k)||{}).f||'')}" alt="" style="--r:${(n%3-1)*-4}deg">`).join('')}<span class="bkradio">📻</span></div></div>
@@ -5503,6 +5544,7 @@ function body(){
   if(L.screen==='festa')return L.fe?festaHtml():careerScreen();
   if(L.screen==='desafio')return ddScreen();
   if(L.screen==='bancaMenu')return bancaMenu();
+  if(L.screen==='bkm')return L.bkm?bkmHtml():bancaMenu();
   if(L.screen==='banca')return L.bk?bancaHtml():bancaMenu();
   if(!MODE)return modeScreen();
   if(MODE==='cpu'){if(!G||!G.seed)return newScreen();return ({draft,order,duels})[phase()]()}
@@ -5607,7 +5649,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795639342';
+const BUILD='1795639560';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
