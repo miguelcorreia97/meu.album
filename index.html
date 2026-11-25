@@ -4891,12 +4891,11 @@ function fsSfx(k){if(!SND.on)return;const c=fsCtx();if(!c)return;const o=c.creat
 
 /* distorção da música quando bêbedo (só nos ficheiros do site, mesma origem) */
 function feCurve(k){const n=1024,c=new Float32Array(n);for(let i=0;i<n;i++){const x=i*2/n-1;c[i]=(1+k)*x/(1+k*Math.abs(x))}return c}
-function feDistWire(n){const c=fsCtx();if(!c)return;const src=c.createMediaElementSource(n),dry=c.createGain(),wet=c.createGain(),sh=c.createWaveShaper(),bp=c.createBiquadFilter();bp.type='lowpass';bp.frequency.value=18000;sh.oversample='2x';sh.curve=feCurve(0);wet.gain.value=0;
-  src.connect(dry);src.connect(sh);sh.connect(wet);dry.connect(bp);wet.connect(bp);bp.connect(c.destination);n._dist={dry,wet,sh,bp,k:-1}}
+function feDistWire(n){const c=fsCtx();if(!c)return;const src=c.createMediaElementSource(n),dry=c.createGain(),wet=c.createGain(),sh=c.createWaveShaper(),lo=c.createBiquadFilter(),hi=c.createBiquadFilter(),out=c.createGain();lo.type='lowshelf';lo.frequency.value=140;lo.gain.value=0;hi.type='highshelf';hi.frequency.value=5000;hi.gain.value=0;sh.oversample='4x';sh.curve=feCurve(0);wet.gain.value=0;
+  src.connect(dry);src.connect(sh);sh.connect(wet);dry.connect(lo);wet.connect(lo);lo.connect(hi);hi.connect(out);out.connect(c.destination);n._dist={dry,wet,sh,lo,hi,out,k:-1}}
 function feDistUpd(F,now){const el=FA.el;if(!el)return;const a=F.alc||0,x=Math.min(1,a/FE_ALC_MAX);
-  if(a>=.3){el.preservesPitch=false;el.mozPreservesPitch=false;el.webkitPreservesPitch=false;el.playbackRate=Math.max(.5,1+x*.38+Math.sin(now/700)*.07*x+Math.sin(now/230)*.025*x)}else if(el.playbackRate!==1)el.playbackRate=1;
-  const d=el._dist;if(d){const k=Math.round(x*x*60);if(k!==d.k){d.k=k;d.sh.curve=feCurve(k)}const t=FSX.ctx.currentTime;d.wet.gain.setTargetAtTime(x*.9,t,.4);d.dry.gain.setTargetAtTime(1-x*.55,t,.4);d.bp.frequency.setTargetAtTime(18000-x*15000+Math.sin(now/500)*1200*x,t,.2)}
-  if(a>=.5&&SND.on&&FSX.ctx&&Math.random()<.5*x){const o=FSX.out;FSX.out=FSX.ctx.destination;try{for(let j=0;j<3;j++)fsNoise(FSX.ctx.currentTime+Math.random()*.25,.006+Math.random()*.01,'highpass',2500,1,.06*x)}catch(e){}FSX.out=o}}
+  if(a>=.2){el.preservesPitch=false;el.mozPreservesPitch=false;el.webkitPreservesPitch=false;el.playbackRate=1+x*.45+Math.sin(now/1300)*.02*x}else if(el.playbackRate!==1)el.playbackRate=1;
+  const d=el._dist;if(d){const k=Math.round(x*7);if(k!==d.k){d.k=k;d.sh.curve=feCurve(k)}const t=FSX.ctx.currentTime;d.wet.gain.setTargetAtTime(x*.3,t,.5);d.dry.gain.setTargetAtTime(1-x*.15,t,.5);d.lo.gain.setTargetAtTime(x*7,t,.5);d.hi.gain.setTargetAtTime(x*4,t,.5);d.out.gain.setTargetAtTime(1+x*.15,t,.5)}}
 function feDesk(F){const v=F.vol==null?1:F.vol,u=k=>F.used2&&F.used2[k+':'+F.round];
   return `<div class="fdesk2"><div class="fdrow"><span class="fdl">🎛️ Mesa</span><button class="fdb" onclick="feAct('horn')">📣 Buzina</button><button class="fdb ${F.lights?'on':''}" onclick="feAct('luz')">💡 Luzes ${F.lights?'on':'off'}</button><button class="fdb" ${u('mic')?'disabled':''} onclick="feAct('mic')">🎤 Falar</button><button class="fdb" ${u('ded')?'disabled':''} onclick="feAct('ded')">💞 Dedicar</button></div>
    <div class="fdrow"><span class="fdl">Volume</span>${VOLN.map((n,k)=>`<button class="fdv ${v===k?'on':''}" onclick="feVol(${k})">${n}</button>`).join('')}</div>
@@ -5821,7 +5820,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795645622';
+const BUILD='1795645999';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
