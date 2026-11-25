@@ -2911,7 +2911,7 @@ const lockM=it=>it&&it.lock&&MISSOES.find(m=>m.id===it.lock);
 const ownsItem=(w,id)=>{const it=RIT[id];if(!it)return false;if(it.lock)return coDone(lockM(it));return it.p===0||!!roomQ().own[id]};
 /* onde está cada disco: prateleira, parede, póster, gira-discos ou guardado no móvel */
 function discPlaces(){const q=roomQ(),own=discOwned(),capS=RIT[q.eq.prat]?.cap||0,capW=q.eq.poster==='po-vinis'?3:0,capP=RIT[q.eq.quadros]?.cap||0;
-  const sh=(q.sh||own).filter(k=>own.includes(k)).slice(0,capS);
+  const sh=((L.edit&&L.edSh)||q.sh||own).filter(k=>own.includes(k)).slice(0,capS);
   const wl=(q.wl||own.filter(k=>!sh.includes(k))).filter(k=>own.includes(k)&&!sh.includes(k)).slice(0,capW);
   const pst=q.pst||(q.px||[]),px=(q.px||pst).filter(k=>pst.includes(k)).slice(0,capP);
   const play=own.includes(q.play)?q.play:(own[0]||null);return {own,sh,wl,px,play,capS,capW,capP,box:own.filter(k=>!sh.includes(k)&&!wl.includes(k))}}
@@ -2948,11 +2948,10 @@ function bpmZoom(){const q=roomQ(),me=myPid(),hoje=dayNum(lisNow().ymd),mem=CASA
   let ms=[];try{const P_=profGet(me);ms=MISSOES.map(m=>{const v=m.co?coVal(m):stVal(P_,m.s);return {m,v:Math.min(v,m.t),pr:Math.min(v,m.t)/m.t}}).filter(x=>x.pr<1).sort((a,b)=>b.pr-a.pr).slice(0,4)}catch(e){}
   const mis=ms.map(x=>`<div class="bzrow"><span>${esc(x.m.n)}</span><b>♩ ${mReward(x.m).r}</b>${bar(x.v,x.m.t)}<small>${esc(x.m.d)} · ${x.v}/${x.m.t}</small></div>`).join('');
   const tot=mem.reduce((a,w)=>a+Math.min(BPM_DIA,bpmOf(w,q))+vit(w),0),max=mem.length*(BPM_DIA+VIT_DIA);
-  zoomOpen(`<div class="rzlist bpmz"><h3>♩ BPM de hoje</h3><p class="hint">Hoje o quarto já ganhou <b>${tot}</b> de ${max} BPM possíveis em música e partidas. As missões não têm limite: pagam quando ficam completas.</p>
+  zoomOpen(`<div class="rzlist bpmz"><h3>♩ BPM de hoje</h3><p class="hint">Hoje o quarto já ganhou <b>${tot}</b> de ${max} BPM possíveis em música e partidas.</p>
    <h4>🎵 Música a tocar (1 BPM a cada ${BPM_MIN} min)</h4>${mus}
    <h4>🎮 Partidas ganhas</h4>${jog}
-   <h4>🏅 Missões mais perto de acabar</h4>${mis||'<p class="hint">Já completaste todas!</p>'}
-   <button class="btn ghost sm" style="margin-top:10px" onclick="zoomClose();setTimeout(openMissions,200)">Ver todas as missões</button></div>`,'sheet')}
+</div>`,'sheet')}
 function musWho(){const q=roomQ();return CASAL.map(w=>`${plE(w)} ${bpmOf(w,q)>=BPM_DIA?'✓':bpmOf(w,q)+'/'+BPM_DIA}`).join(' · ')}
 setInterval(()=>{if(L.screen!=='quarto')return;sqPull();const s=document.querySelector('.roomscene .roomsvg');if(s&&!L.rPrev&&!document.querySelector('.rplayfx')){const n=lisNow();s.outerHTML=roomSceneInner();const c=document.getElementById('rclock');if(c)c.textContent=n.hh}},30000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&L.screen==='quarto')sqPull()});
@@ -3517,14 +3516,14 @@ function offKey(k,id){if(FOLLOW[k]){const q=roomQ(),f=FOLLOW[k];if(k==='mesa'||k
 function offGet(key){const src=L.edit?L.edOff:(roomQ().off||{});const o=src&&src[key];if(L.edit&&!o)return {x:0,y:0,z:1};if(!o||(!o.x&&!o.y&&(o.z==null||o.z===1)))return null;return {x:Math.round(o.x||0),y:Math.round(o.y||0),z:o.z==null?1:o.z}}
 function fixZ(root){const C={};(root||document).querySelectorAll('g[data-zs]:not([data-zd])').forEach(g=>{try{const z=+g.dataset.z||1;if(z===1){g.dataset.zd=1;return}const k=g.dataset.zs;let a=C[k];if(!a){const b=g.getBBox();if(!b.width)return;a=C[k]=[b.x+b.width/2,b.y+b.height]}g.setAttribute('transform',`translate(${a[0]} ${a[1]}) scale(${z}) translate(${-a[0]} ${-a[1]})`);g.dataset.zd=1}catch(e){}})}
 new MutationObserver(()=>{if(document.querySelector('g[data-zs]:not([data-zd])'))requestAnimationFrame(()=>fixZ())}).observe(document.documentElement,{childList:true,subtree:true});
-function editStart(id){if(!canEdit())return;L.edBad={};L.edStart={};zoomClose();L.edit=1;L.edOff=JSON.parse(JSON.stringify(roomQ().off||{}));L.edSel=id||null;L.rFull&&roomFull(false);render();requestAnimationFrame(()=>{const sc=document.querySelector('.roomscene');if(sc){const r=sc.getBoundingClientRect();scrollTo({top:scrollY+r.top-70,behavior:'smooth'})}})}
-function editEnd(save){if(save&&Object.keys(L.edBad||{}).length){toast('⚠️ Afasta os objetos sobrepostos antes de confirmar');return}L.edBad={};L.edStart={};if(save){const q=roomQ();const o={};for(const k in L.edOff){const v=L.edOff[k];if(v&&(v.x||v.y||(v.z!=null&&v.z!==1)))o[k]={x:Math.round(v.x||0),y:Math.round(v.y||0),z:+(v.z||1).toFixed(2)}}q.off=o;roomSave(q);toast('✓ Posições guardadas')}L.edit=0;L.edOff=null;L.edSel=null;render()}
+function editStart(id){if(!canEdit())return;L.edSh=null;L.edBad={};L.edStart={};zoomClose();L.edit=1;L.edOff=JSON.parse(JSON.stringify(roomQ().off||{}));L.edSel=id||null;L.rFull&&roomFull(false);render();requestAnimationFrame(()=>{const sc=document.querySelector('.roomscene');if(sc){const r=sc.getBoundingClientRect();scrollTo({top:scrollY+r.top-70,behavior:'smooth'})}})}
+function editEnd(save){if(save&&Object.keys(L.edBad||{}).length){toast('⚠️ Afasta os objetos sobrepostos antes de confirmar');return}L.edBad={};L.edStart={};if(save){const q=roomQ();const o={};for(const k in L.edOff){const v=L.edOff[k];if(v&&(v.x||v.y||(v.z!=null&&v.z!==1)))o[k]={x:Math.round(v.x||0),y:Math.round(v.y||0),z:+(v.z||1).toFixed(2)}}q.off=o;if(L.edSh){const ns=L.edSh.slice();for(const k of (q.sh||[]))if(!ns.includes(k))ns.push(k);q.sh=ns}roomSave(q);toast('✓ Posições guardadas')}L.edSh=null;L.edit=0;L.edOff=null;L.edSel=null;render()}
 function edKeyOf(id){const it=RIT[id];return it?offKey(it.s,id):'o:'+id}
 function edSel(id){L.edSel=id;edBar();document.querySelectorAll('.roomscene .ract').forEach(g=>g.classList.toggle('edsel',g.dataset.id===id))}
 function edZ(v){if(!L.edSel)return;const k=edKeyOf(L.edSel);L.edOff[k]={...(L.edOff[k]||{}),z:+v};const b=document.getElementById('edzv');if(b)b.textContent=Math.round(v*100)+'%';clearTimeout(edZ.t);edZ.t=setTimeout(()=>{roomRedraw();edSel(L.edSel)},40)}
 function edReset(){if(!L.edSel)return;delete L.edOff[edKeyOf(L.edSel)];roomRedraw();edSel(L.edSel)}
 function edBar(){const el=document.getElementById('redit');if(!el)return;const id=L.edSel,it=RIT[id],o=id?(L.edOff[edKeyOf(id)]||{}):{};
-  el.innerHTML=`<div class="edhead"><b>✏️ Editar posições</b><span>${it?esc(it.n):'Toca num objeto e arrasta-o. As coisas do chão ficam no chão e as da parede ficam na parede. Se um objeto ficar em cima de outro, fica transparente e não podes confirmar.'}</span></div>
+  el.innerHTML=`<div class="edhead"><b>✏️ Editar posições</b><span>${it?esc(it.n):'Toca num objeto e arrasta-o. As coisas do chão ficam no chão e as da parede ficam na parede. Se um objeto ficar em cima de outro, fica transparente e não podes confirmar. 💿 Os discos da prateleira também se arrastam: passa um por cima de outro para trocarem de lugar.'}</span></div>
   ${it?`<div class="edbtns">${FLIPOK.has(it.s)?`<button class="btn ghost sm" onclick="roomFlip('${id}');setTimeout(()=>edSel('${id}'),80)">↔ Virar</button>`:''}<button class="btn ghost sm" onclick="edReset()">↺ Repor</button>${RPOS[it.s]&&!RFIX[it.s]?`<button class="btn ghost sm" onclick="itemStore('${it.s}','${id}');setTimeout(edBar,60)">📦 Guardar</button>`:''}</div>`:''}
   <p id="edwarn" class="hint" style="display:none;color:#ff9a8a;margin:6px 0 0">⚠️ Há objetos uns em cima dos outros (estão transparentes). Afasta-os para poderes confirmar.</p><div class="edbtns main"><button class="btn ghost" onclick="editEnd(0)">Cancelar</button><button class="btn" id="edok" onclick="editEnd(1)">✓ Confirmar</button></div>`;setTimeout(()=>{for(const k in L.edBad)edMark(k,1);edBtnState()},0)}
 const WALLS=new Set(['prat','quadros','poster','extra','suspensa','fita','teto']),FREE=new Set(['pet','mesa','planta2']);
@@ -3551,8 +3550,11 @@ function edRecheck(){const svg=document.querySelector('.roomscene .roomsvg');if(
 function edDiscDown(e,dg){e.preventDefault();e.stopPropagation();const svg=dg.ownerSVGElement,k=dg.dataset.k,row=dg.dataset.row,bx=+dg.dataset.bx,w=+dg.dataset.w,x0=+dg.dataset.x0,x1=+dg.dataset.x1,sc=1080/svg.getBoundingClientRect().width,sx=e.clientX;
   const cur=(L.edOff['d:'+k]||{}).x||0,others=[...svg.querySelectorAll(`.shdisc[data-row="${row}"]`)].filter(n=>n!==dg).map(n=>{const ox=(L.edOff['d:'+n.dataset.k]||{}).x||0;return [+n.dataset.bx+ox,+n.dataset.bx+ox+(+n.dataset.w)]});
   let last=cur;L.edSel=null;edBar();document.querySelectorAll('.roomscene .ract').forEach(n=>n.classList.remove('edsel'));dg.classList.add('edsel');
-  const mv=ev=>{let nx=cur+(ev.clientX-sx)*sc;nx=Math.max(x0-bx,Math.min(x1-w-bx,nx));const L_=bx+nx,R_=L_+w;if(others.some(([a,b])=>R_>a+1&&L_<b-1))nx=last;last=nx;L.edOff['d:'+k]={x:nx};dg.setAttribute('transform',`translate(${nx} 0)`)};
-  const up=()=>{removeEventListener('pointermove',mv);removeEventListener('pointerup',up);removeEventListener('pointercancel',up)};addEventListener('pointermove',mv);addEventListener('pointerup',up);addEventListener('pointercancel',up)}
+  let fx=cur;const mv=ev=>{let nx=cur+(ev.clientX-sx)*sc;nx=Math.max(x0-bx,Math.min(x1-w-bx,nx));fx=nx;const L_=bx+nx,R_=L_+w,ov=others.some(([a,b])=>R_>a+1&&L_<b-1);if(!ov)last=nx;dg.style.opacity=ov?.55:'';dg.setAttribute('transform',`translate(${nx} 0)`)};
+  const up=()=>{dg.style.opacity='';const ctr=bx+fx+w/2,nodes=[...svg.querySelectorAll(`.shdisc[data-row="${row}"]`)],keys=nodes.map(n=>n.dataset.k),cx=n=>n===dg?ctr:(+n.dataset.bx+((L.edOff['d:'+n.dataset.k]||{}).x||0)+(+n.dataset.w)/2),ord=nodes.slice().sort((a,b)=>cx(a)-cx(b)).map(n=>n.dataset.k);
+    if(ord.join()!==keys.join()){const sh=(L.edSh||discPlaces().sh).slice(),idx=keys.map(x=>sh.indexOf(x)).sort((a,b)=>a-b);idx.forEach((ix,j)=>sh[ix]=ord[j]);L.edSh=sh;keys.forEach(x=>delete L.edOff['d:'+x]);roomRedraw();toast('💿 Discos trocados de lugar')}
+    else{L.edOff['d:'+k]={x:last};dg.setAttribute('transform',`translate(${last} 0)`)}
+    removeEventListener('pointermove',mv);removeEventListener('pointerup',up);removeEventListener('pointercancel',up)};addEventListener('pointermove',mv);addEventListener('pointerup',up);addEventListener('pointercancel',up)}
 function edPointerDown(e){if(!L.edit)return;const dg=e.target.closest&&e.target.closest('.shdisc');if(dg){edDiscDown(e,dg);return}const g=e.target.closest&&e.target.closest('.ract');if(!g)return;const id=g.dataset.id,it=RIT[id];if(!it||NOEDIT.has(it.s))return;e.preventDefault();e.stopPropagation();edSel(id);
   const svg=g.ownerSVGElement,key=edKeyOf(id),st=L.edOff[key]||{};let x0=st.x||0,y0=st.y||0,sx=e.clientX,sy=e.clientY,sc=1080/svg.getBoundingClientRect().width;let moved=0;
   const els=[...svg.querySelectorAll(`[data-off="${key}"]`)];const isL=it.s==='leitor',mo0=isL?(L.edOff[offKey('movel',roomQ().eq.movel)]||{}):null;if(isL){x0=(st.x||0)+(mo0.x||0);y0=mo0.y||0}let bb=null;try{bb=els[0]&&els[0].getBBox()}catch(_){}let lx=x0,ly=y0;const obs=bb?edObstacles(svg,key,edGroup(it.s)):[],box=(x,y)=>[bb.x+x+5,bb.y+y+5,bb.x+bb.width+x-5,bb.y+bb.height+y-5],start=bb?(L.edStart[key]=L.edStart[key]||obs.filter(o=>hit(box(x0,y0),o))):[];
@@ -4738,7 +4740,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795614976';
+const BUILD='1795615274';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
