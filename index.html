@@ -3880,8 +3880,11 @@ function juntosAdd(){profAdd('juntos');try{const n=lisNow(),d=new Date(),dow=+ne
 const PET_FALA={'pet-gato':['Miau! 🐾','Prrrr… 😺','Deixa-me dormir 😾','Miau? 🍣'],'pet-caramelo':['Au au! 🐶','Bora passear? 🦴','Au! Au! 💛','*abana o rabo*'],'pet-papagaio':['Garota de Ipanema! 🎶','Currupaco! 🦜','Miguel! Clara! 🦜','Ô ô ô, Taj Mahal! 🎵'],'pet-peixe':['blub blub 🫧','🫧 🫧','*nada em círculos*'],'pet-tartaruga':['Devagar se vai ao longe 🐢','…zzz 🐢','*esconde a cabeça*']};
 const pick1=a=>a[Math.floor(Math.random()*a.length)];
 function roomRedraw(){const s=document.querySelector('.roomscene .roomsvg');if(s)s.outerHTML=roomSceneInner()}
-function roomBubble(t,el){const sc=document.querySelector('.roomscene');if(!sc)return;const a=sc.getBoundingClientRect();let x=a.width/2,y=a.height*.35;if(el){const b=el.getBoundingClientRect();x=b.left-a.left+b.width/2;y=b.top-a.top}
-  const d=document.createElement('div');d.className='rbubble';d.textContent=t;d.style.left=Math.max(50,Math.min(a.width-50,x))+'px';d.style.top=Math.max(8,y)+'px';sc.appendChild(d);setTimeout(()=>d.remove(),2400)}
+/* um elemento do quarto pode ter sido redesenhado: procura o mesmo objeto no quarto atual */
+function liveEl(el){if(!el||!el.getBoundingClientRect)return null;if(el.isConnected){const b=el.getBoundingClientRect();return b.width||b.height?el:null}
+  const cl=[...(el.classList||[])].find(c=>/^ract-|^rsujo$|^rimp/.test(c)),id=el.dataset&&el.dataset.id;if(!cl)return null;const n=document.querySelector(`.roomscene .${cl}${id?`[data-id="${id}"]`:''}`)||document.querySelector(`.roomscene .${cl}`);return n&&n.getBoundingClientRect().width?n:null}
+function roomBubble(t,el){const sc=document.querySelector('.roomscene');if(!sc)return;const a=sc.getBoundingClientRect();let x=a.width/2,y=a.height*.35;el=liveEl(el);if(el){const b=el.getBoundingClientRect();x=b.left-a.left+b.width/2;y=b.top-a.top}
+  const d=document.createElement('div');d.className='rbubble';d.textContent=t;d.style.left=Math.max(Math.min(130,a.width/2),Math.min(a.width-Math.min(130,a.width/2),x))+'px';d.style.top=Math.max(44,Math.min(a.height-30,y))+'px';sc.appendChild(d);setTimeout(()=>d.remove(),2400)}
 function roomOnce(sel,cls,ms){document.querySelectorAll(sel).forEach(e=>{e.classList.remove(cls);void e.getBoundingClientRect();e.classList.add(cls);setTimeout(()=>e.classList.remove(cls),ms||1400)})}
 function roomAct(k,ev){if(L.edit){if(ev)ev.stopPropagation();return}const el=ev&&ev.currentTarget,id=(el&&el.dataset&&el.dataset.id)||roomQ().eq[k];if(canEdit()&&FLIPOK.has(k)&&!RPOS[k]&&!LUZES.has(id))setTimeout(()=>flipChip(id,el),30);
   if(canEdit()&&RPOS[k]&&!LUZES.has(id)&&FLIPOK.has(k)){roomAct0(k,ev);setTimeout(()=>flipChip(id,el),30);return}roomAct0(k,ev)}
@@ -3900,13 +3903,13 @@ function itemConfirm(k,id,i){L.pv=null;if(k==='movel')movelPos(i);else roomPlace
 function itemStore(k,id){L.pv=null;const q=roomQ(),a=mulGet(q,k),j=a.indexOf(id);if(j>=0){a[j]=null;mulSet(q,k,a);roomSave(q);render()}zoomClose();toast(`📦 ${(RIT[id]||{}).n||'Guardado'} foi para os vossos acessórios`)}
 function posterChip(id,d){const sc=document.querySelector('.roomscene');const it_=RIT[id]||{};if((it_.s==='poster'||it_.s==='quadros')&&canEdit()&&!L.edit){const cur=(roomQ().psz||{})[id]||'A3',w=document.createElement('div');w.className='rplacechip rszchip';w.style.left=d.style.left;w.style.top=(parseFloat(d.style.top)+(d.isConnected||d.className?36:0))+'px';w.onclick=e=>e.stopPropagation();
     w.innerHTML=['A2','A3','A4','A5'].map(z=>`<button class="${z===cur?'on':''}" onclick="event.stopPropagation();posterSize('${id}','${z}')">${z}</button>`).join('');sc.appendChild(w);clearTimeout(flipChip.t2);flipChip.t2=setTimeout(()=>w.remove(),6000)}}
-function posterAt(id,el){const sc=document.querySelector('.roomscene');if(!sc)return;sc.querySelectorAll('.rplacechip').forEach(x=>x.remove());const a=sc.getBoundingClientRect();let x=a.width/2,y=a.height*.5;if(el){const b=el.getBoundingClientRect();x=b.left-a.left+b.width/2;y=b.bottom-a.top+4}posterChip(id,{style:{left:Math.max(80,Math.min(a.width-80,x))+'px',top:Math.max(30,Math.min(a.height-40,y))+'px'}})}
-function flipChip(id,el){const sc=document.querySelector('.roomscene');if(!sc)return;sc.querySelectorAll('.rplacechip').forEach(x=>x.remove());const a=sc.getBoundingClientRect();let x=a.width/2,y=a.height*.6;
+function posterAt(id,el){const sc=document.querySelector('.roomscene');if(!sc)return;sc.querySelectorAll('.rplacechip').forEach(x=>x.remove());const a=sc.getBoundingClientRect();let x=a.width/2,y=a.height*.5;el=liveEl(el);if(el){const b=el.getBoundingClientRect();x=b.left-a.left+b.width/2;y=b.bottom-a.top+4}posterChip(id,{style:{left:Math.max(80,Math.min(a.width-80,x))+'px',top:Math.max(30,Math.min(a.height-40,y))+'px'}})}
+function flipChip(id,el){const sc=document.querySelector('.roomscene');if(!sc)return;sc.querySelectorAll('.rplacechip').forEach(x=>x.remove());const a=sc.getBoundingClientRect();let x=a.width/2,y=a.height*.6;el=liveEl(el);
   if(el){const b=el.getBoundingClientRect();x=b.left-a.left+b.width/2;y=b.bottom-a.top+4}const d=document.createElement('button');d.className='rplacechip';d.textContent='↔ Virar';d.style.left=Math.max(50,Math.min(a.width-50,x))+'px';d.style.top=Math.max(30,Math.min(a.height-40,y))+'px';
   d.onclick=e=>{e.stopPropagation();roomFlip(id);setTimeout(()=>flipChip(id,document.querySelector(`.ract[data-id="${id}"]`)),60)};
   posterChip(id,d);
   sc.appendChild(d);clearTimeout(flipChip.t);flipChip.t=setTimeout(()=>d.remove(),4000)}
-function placeChip(k,id,el){const sc=document.querySelector('.roomscene');if(!sc)return;sc.querySelectorAll('.rplacechip').forEach(x=>x.remove());const a=sc.getBoundingClientRect();let x=a.width/2,y=a.height*.6;
+function placeChip(k,id,el){const sc=document.querySelector('.roomscene');if(!sc)return;sc.querySelectorAll('.rplacechip').forEach(x=>x.remove());const a=sc.getBoundingClientRect();let x=a.width/2,y=a.height*.6;el=liveEl(el);
   if(el){const b=el.getBoundingClientRect();x=b.left-a.left+b.width/2;y=b.bottom-a.top+4}
   const d=document.createElement('button');d.className='rplacechip';d.innerHTML='✏️ Mover';d.style.left=Math.max(70,Math.min(a.width-70,x))+'px';d.style.top=Math.max(30,Math.min(a.height-40,y))+'px';
   d.onclick=e=>{e.stopPropagation();d.remove();placeZoom(k,id)};sc.appendChild(d);setTimeout(()=>d.remove(),4000)}
@@ -4078,7 +4081,7 @@ const plantIds=q=>{const ids=new Set;for(const k of PLANTS){if(q.eq[k])ids.add(q
 const regaCost=id=>(RIT[id]||{}).p>=600?2:1;
 function plantState(q){q=q||roomQ();const t=todayN(),r=+q.rega||0;if(roomDebt())return 'murcha';const ld=lastDay('rega',t-1);if(ld!=null&&r<ld&&!isDay('rega',t))return 'murcha';if(isDay('rega',t)&&r<t)return ld!=null&&r<ld?'murcha':'sede';return 'ok'}
 /* efeitos por cima do quarto (DOM, ficam presos à cena) */
-function fxAt(sel,html,cls,ms,dx,dy){const sc=document.querySelector('.roomscene');if(!sc||FX.reduced&&!/rfxk/.test(cls||''))return null;const a=sc.getBoundingClientRect();let x=a.width/2,y=a.height/2;const el=typeof sel==='string'?sc.querySelector(sel):sel;if(el){const b=el.getBoundingClientRect();x=b.left-a.left+b.width/2;y=b.top-a.top+b.height/2}
+function fxAt(sel,html,cls,ms,dx,dy){const sc=document.querySelector('.roomscene');if(!sc||FX.reduced&&!/rfxk/.test(cls||''))return null;const a=sc.getBoundingClientRect();let x=a.width/2,y=a.height/2;const el=typeof sel==='string'?sc.querySelector(sel):liveEl(sel);if(el){const b=el.getBoundingClientRect();x=b.left-a.left+b.width/2;y=b.top-a.top+b.height/2}
   const e=document.createElement('div');e.className='rfx '+(cls||'');e.innerHTML=html;e.style.left=(x+(dx||0))+'px';e.style.top=(y+(dy||0))+'px';sc.appendChild(e);setTimeout(()=>e.remove(),ms||1600);return e}
 function sparkles(sel,n){for(let i=0;i<(n||6);i++)setTimeout(()=>fxAt(sel,'✨','rfx-spark',1100,(Math.random()-.5)*70,(Math.random()-.5)*50),i*70)}
 /* ---------- rega ---------- */
@@ -4946,7 +4949,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795617929';
+const BUILD='1795618835';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
