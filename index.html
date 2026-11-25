@@ -4445,64 +4445,64 @@ const RU={
  saudade:{t:'🇵🇹 Numa tasca de Lisboa a saudade fala alto: saudade e boa letra contam muito.',f(e){let p=e.tags.includes('saudade')?3:0;p+=Math.round((e.let-6));return {p,m:p>2?'🇵🇹 Que saudade!':''}}},
  festa:{t:'🎉 É uma festa: músicas de festa e energia alta são o que se quer.',f(e){return e.tags.includes('festa')?{p:3,m:'🎉 Festa!'}:e.en<=2?{p:-2,m:'🥱 Muito parado'}:{p:0,m:''}}}};
 const L20=[
- {lugar:'Quiosque na Praia',cid:'Copacabana',dj:'Tia do Coco',e:'🥥',cena:'praia',cor:'#4fc3f7',meta:11,lvl:'facil',pub:['reggae','bossa','pop','suingue','mpb'],n:12,ru:['mar'],feitio:'Pés na areia, água de coco e o pôr do sol.',
+ {lugar:'Quiosque na Praia',cid:'Copacabana',dj:'Tia do Coco',e:'🥥',cena:'praia',cor:'#4fc3f7',meta:12,lvl:'facil',pub:['reggae','bossa','pop','suingue','mpb'],n:12,ru:['mar'],feitio:'Pés na areia, água de coco e o pôr do sol.',
   pist:['Na praia anda tudo de chinelo: reggae e coisas leves costumam resultar.','Os surfistas às vezes pedem suingue.','Ao pôr do sol, o mar fala mais alto.'],
   evs:{3:{t:'🌅 Pôr do sol! Toca algo calmo ou sobre o mar',ok:e=>e.en<=2||e.tags.includes('mar'),b:7,fx:'sunset'},5:{t:'🚌 Chegou um autocarro de turistas: querem algo bem brasileiro',ok:e=>e.tags.includes('brasil')||e.gen==='samba'||e.gen==='bossa',b:6,add:4}}},
- {lugar:'Café do Sarau',cid:'Belo Horizonte',dj:'Dona Clarice',e:'☕',cena:'cafe',cor:'#c792ea',meta:11,lvl:'facil',pub:['mpb','mpb','bossa','rock'],n:10,ru:['letra'],feitio:'Café com livros onde se vem ouvir a letra.',
+ {lugar:'Café do Sarau',cid:'Belo Horizonte',dj:'Dona Clarice',e:'☕',cena:'cafe',cor:'#c792ea',meta:12,lvl:'facil',pub:['mpb','mpb','bossa','rock'],n:10,ru:['letra'],feitio:'Café com livros onde se vem ouvir a letra.',
   pist:['No café, o público do sarau é exigente com a letra.','Dizem que há uns roqueiros escondidos atrás das estantes.','A bossa nunca fica mal… ou fica?'],
   evs:{2:{t:'🎤 Uma poeta lê um poema: quer uma canção de saudade',ok:e=>e.tags.includes('saudade'),b:6},4:{t:'👏 Pedem bis! Repete o artista anterior',ok:(e,F,s)=>F.lastA&&s.a===F.lastA,b:8}}},
- {lugar:'Bar da Lapa',cid:'Lapa, Rio',dj:'Seu Zé',e:'🍺',cena:'boteco',sign:'BAR DA LAPA',cor:'#ff9f5a',meta:12,lvl:'facil',pub:['samba','mpb','bossa','suingue'],n:12,ru:['vizinhos'],feitio:'Mesas na rua, azulejos e vizinhos que querem dormir.',
+ {lugar:'Bar da Lapa',cid:'Lapa, Rio',dj:'Seu Zé',e:'🍺',cena:'boteco',sign:'BAR DA LAPA',cor:'#ff9f5a',meta:13,lvl:'facil',pub:['samba','mpb','bossa','suingue'],n:12,ru:['vizinhos'],feitio:'Mesas na rua, azulejos e vizinhos que querem dormir.',
   pist:['Na Lapa o samba é rei, mas há quem só queira conversa.','Os vizinhos já chamaram a polícia este mês.','O Seu Zé adora uma MPB das antigas.'],
   evs:{3:{t:'💌 O Seu Zé pede uma música de amor para a mulher',ok:e=>e.tags.includes('amor'),b:6},6:{t:'🌙 Já é tarde: toca algo bem calmo',ok:e=>e.en<=2,b:5}}},
- {lugar:'Arraial na Praça',cid:'Caruaru',dj:'Sanfoneiro Zezinho',e:'🪗',cena:'arraial',cor:'#ffd54f',meta:12,lvl:'normal',pub:['nordeste','nordeste','samba','suingue','pop'],n:14,ru:['nordeste'],feitio:'Festa junina com fogueira e quadrilha.',
+ {lugar:'Arraial na Praça',cid:'Caruaru',dj:'Sanfoneiro Zezinho',e:'🪗',cena:'arraial',cor:'#ffd54f',meta:13,lvl:'normal',pub:['nordeste','nordeste','samba','suingue','pop'],n:14,ru:['nordeste'],feitio:'Festa junina com fogueira e quadrilha.',
   pist:['Em Caruaru o forró é rei, toda a gente sabe.','Mas há sempre quem queira um samba no meio.','Festa junina sem quadrilha não é festa.'],
   evs:{2:{t:'💃 "Anarriê!" A quadrilha vai começar: festa ou nordeste!',ok:e=>e.gen==='nordeste'||e.tags.includes('festa'),b:8,fx:'quadrilha'},4:{t:'🌧️ "Olha a chuva!" …é mentira! Só uma música com muita energia os traz de volta',ok:e=>e.en>=4,b:7,fx:'rain'},6:{t:'💃 "Balancê!" Outra vez a quadrilha',ok:e=>e.gen==='nordeste'||e.tags.includes('festa'),b:8,fx:'quadrilha'}}},
- {lugar:'Restaurante à Beira-Mar',cid:'Ipanema',dj:'Chef Bené',e:'🍤',cena:'restaurante',cor:'#ff6b9d',meta:12,lvl:'normal',pub:['bossa','bossa','mpb','pop','suingue'],n:14,ru:['jantar'],feitio:'Jantar à luz das velas; depois da sobremesa já se dança.',
+ {lugar:'Restaurante à Beira-Mar',cid:'Ipanema',dj:'Chef Bené',e:'🍤',cena:'restaurante',cor:'#ff6b9d',meta:13,lvl:'normal',pub:['bossa','bossa','mpb','pop','suingue'],n:14,ru:['jantar'],feitio:'Jantar à luz das velas; depois da sobremesa já se dança.',
   pist:['Em Ipanema janta-se ao som de bossa nova, claro.','Depois da sobremesa os mais novos querem suingue.','O Chef Bené detesta barulho com o peixe na mesa.'],
   evs:{2:{t:'💍 Há um pedido de casamento na mesa 4: algo de amor!',ok:e=>e.tags.includes('amor')&&e.en<=3,b:9},6:{t:'🎂 Parabéns na mesa 7: algo de festa!',ok:e=>e.tags.includes('festa'),b:7}}},
- {lugar:'Luau em Trancoso',cid:'Bahia',dj:'Mestre Lua',e:'🌕',cena:'praia',cor:'#b8c9ff',meta:13,lvl:'normal',pub:['bossa','mpb','reggae','pop'],n:12,ru:['luau','mar'],feitio:'Fogueira na areia, lua cheia e violão.',
+ {lugar:'Luau em Trancoso',cid:'Bahia',dj:'Mestre Lua',e:'🌕',cena:'praia',cor:'#b8c9ff',meta:14,lvl:'normal',pub:['bossa','mpb','reggae','pop'],n:12,ru:['luau','mar'],feitio:'Fogueira na areia, lua cheia e violão.',
   pist:['Num luau ninguém quer barulho.','Os casais pedem músicas de amor.','Há sempre um surfista que quer reggae.'],
   evs:{3:{t:'🌕 A lua cheia nasceu: algo bem romântico',ok:e=>e.tags.includes('amor')&&e.en<=2,b:8},5:{t:'🎸 Alguém pegou no violão: bossa!',ok:e=>e.gen==='bossa',b:7}}},
- {lugar:'Bar no Pelourinho',cid:'Salvador',dj:'Mestre Cabeça',e:'🌺',cena:'pelourinho',cor:'#7cffb2',meta:13,lvl:'normal',pub:['rock','mpb','pop','samba','bossa','reggae'],n:14,ru:['contraste'],feitio:'Casas coloridas, tambores na rua e tudo misturado.',
+ {lugar:'Bar no Pelourinho',cid:'Salvador',dj:'Mestre Cabeça',e:'🌺',cena:'pelourinho',cor:'#7cffb2',meta:14,lvl:'normal',pub:['rock','mpb','pop','samba','bossa','reggae'],n:14,ru:['contraste'],feitio:'Casas coloridas, tambores na rua e tudo misturado.',
   pist:['No Pelourinho tudo se mistura: rock, samba, reggae…','Os músicos da rua adoram ser surpreendidos.','Repetir o estilo é pecado na ladeira.'],
   evs:{3:{t:'🥁 Passa um bloco de tambores na rua: o público quer samba',ok:e=>e.gen==='samba',b:8},5:{t:'🌺 Turistas a dançar na ladeira: algo de festa',ok:e=>e.tags.includes('festa'),b:6}}},
- {lugar:'Feira de São Cristóvão',cid:'Rio de Janeiro',dj:'Dona Socorro',e:'🌵',cena:'arraial',cor:'#ffb74d',meta:13,lvl:'normal',pub:['nordeste','nordeste','nordeste','samba','pop'],n:16,ru:['nordeste','festa'],feitio:'O nordeste no meio do Rio: forró até de madrugada.',
+ {lugar:'Feira de São Cristóvão',cid:'Rio de Janeiro',dj:'Dona Socorro',e:'🌵',cena:'arraial',cor:'#ffb74d',meta:15,lvl:'normal',pub:['nordeste','nordeste','nordeste','samba','pop'],n:16,ru:['nordeste','festa'],feitio:'O nordeste no meio do Rio: forró até de madrugada.',
   pist:['Aqui é forró do princípio ao fim.','Os mais novos também dançam pop.','Música parada não tem lugar na feira.'],
   evs:{2:{t:'🪗 Trio de forró chegou: nordeste já!',ok:e=>e.gen==='nordeste',b:8},5:{t:'💃 Concurso de dança: energia máxima',ok:e=>e.en>=4,b:7}}},
- {lugar:'Livraria em Paraty',cid:'Paraty',dj:'Sr. Antero',e:'📚',cena:'cafe',cor:'#d4a373',meta:14,lvl:'normal',pub:['mpb','mpb','bossa','bossa','rock'],n:10,ru:['letra','saudade'],feitio:'Festa literária: escritores, vinho e letras bonitas.',
+ {lugar:'Livraria em Paraty',cid:'Paraty',dj:'Sr. Antero',e:'📚',cena:'cafe',cor:'#d4a373',meta:15,lvl:'normal',pub:['mpb','mpb','bossa','bossa','rock'],n:10,ru:['letra','saudade'],feitio:'Festa literária: escritores, vinho e letras bonitas.',
   pist:['Os escritores escolhem músicas pela letra.','Há quem chore com uma boa saudade.','Rock só se for com poesia.'],
   evs:{2:{t:'🖋️ Um escritor famoso pede saudade',ok:e=>e.tags.includes('saudade'),b:8},5:{t:'🍷 Brinde à meia-luz: algo calmo e bonito',ok:e=>e.en<=2&&e.let>=7,b:8}}},
- {lugar:'Bar do Terraço',cid:'São Paulo',dj:'Barman Teodoro',e:'🍸',cena:'terraco',cor:'#90a4ae',meta:14,lvl:'dificil',pub:['bossa','mpb','mpb','rock','pop'],n:12,ru:['garoa'],feitio:'Bar no topo de um prédio, com a cidade e a garoa.',
+ {lugar:'Bar do Terraço',cid:'São Paulo',dj:'Barman Teodoro',e:'🍸',cena:'terraco',cor:'#90a4ae',meta:16,lvl:'dificil',pub:['bossa','mpb','mpb','rock','pop'],n:12,ru:['garoa'],feitio:'Bar no topo de um prédio, com a cidade e a garoa.',
   pist:['São Paulo é cinzenta: saudade e bossa combinam com a garoa.','Os executivos no terraço gostam de MPB.','Dizem que a garoa vem sempre a meio da noite.'],
   evs:{2:{t:'🌧️ Começou a garoa! Saudade ou bossa para os trazer de volta',ok:e=>e.tags.includes('saudade')||e.gen==='bossa',b:8,fx:'rain',rain:1},4:{t:'☀️ Parou de chover! Agora algo para dançar',ok:e=>e.en>=4,b:6,rain:0}}},
- {lugar:'Casamento na Fazenda',cid:'Minas Gerais',dj:'Os Noivos',e:'💍',cena:'restaurante',cor:'#f8c8dc',meta:14,lvl:'dificil',pub:['mpb','bossa','samba','pop','suingue'],n:16,ru:['jantar'],feitio:'Casamento com jantar, primeira dança e festa até tarde.',
+ {lugar:'Casamento na Fazenda',cid:'Minas Gerais',dj:'Os Noivos',e:'💍',cena:'restaurante',cor:'#f8c8dc',meta:16,lvl:'dificil',pub:['mpb','bossa','samba','pop','suingue'],n:16,ru:['jantar'],feitio:'Casamento com jantar, primeira dança e festa até tarde.',
   pist:['As tias querem MPB e os primos querem dançar.','A primeira dança tem de ser de amor.','Depois do bolo, a pista enche.'],
   evs:{2:{t:'💞 Primeira dança dos noivos: amor, bem calmo',ok:e=>e.tags.includes('amor')&&e.en<=2,b:10},5:{t:'💐 Atirar o bouquet: algo de festa!',ok:e=>e.tags.includes('festa'),b:7}}},
- {lugar:'Quiosque em Itapuã',cid:'Salvador',dj:'Tia Iracema',e:'🐚',cena:'praia',cor:'#4dd0e1',meta:15,lvl:'dificil',pub:['reggae','reggae','samba','mpb','pop'],n:14,ru:['reggae'],feitio:'Tarde em Itapuã, com reggae e cerveja gelada.',
+ {lugar:'Quiosque em Itapuã',cid:'Salvador',dj:'Tia Iracema',e:'🐚',cena:'praia',cor:'#4dd0e1',meta:16,lvl:'dificil',pub:['reggae','reggae','samba','mpb','pop'],n:14,ru:['reggae'],feitio:'Tarde em Itapuã, com reggae e cerveja gelada.',
   pist:['Em Itapuã o reggae corre nas veias.','O mar inspira toda a gente.','Os mais velhos pedem MPB.'],
   evs:{3:{t:'🌅 Pôr do sol em Itapuã: algo sobre o mar',ok:e=>e.tags.includes('mar'),b:8,fx:'sunset'},5:{t:'🌴 Roda de reggae na areia',ok:e=>e.gen==='reggae',b:8}}},
- {lugar:'Botequim em Botafogo',cid:'Rio de Janeiro',dj:'Seu Ary',e:'🥃',cena:'boteco',sign:'BOTEQUIM',cor:'#ffab40',meta:15,lvl:'dificil',pub:['samba','suingue','suingue','mpb','pop'],n:14,ru:['rampa'],feitio:'Botequim cheio onde a animação só pode crescer.',
+ {lugar:'Botequim em Botafogo',cid:'Rio de Janeiro',dj:'Seu Ary',e:'🥃',cena:'boteco',sign:'BOTEQUIM',cor:'#ffab40',meta:17,lvl:'dificil',pub:['samba','suingue','suingue','mpb','pop'],n:14,ru:['rampa'],feitio:'Botequim cheio onde a animação só pode crescer.',
   pist:['Começa calmo e acaba com toda a gente de pé.','Suingue é o que mais pega aqui.','Se a energia cair, o Seu Ary fecha a porta.'],
   evs:{4:{t:'🔥 Toda a gente de pé: energia máxima',ok:e=>e.en>=5,b:10}}},
- {lugar:'São João em Campina Grande',cid:'Paraíba',dj:'Mestre Jackson',e:'🔥',cena:'arraial',cor:'#ff8a65',meta:15,lvl:'dificil',pub:['nordeste','nordeste','nordeste','samba'],n:18,ru:['nordeste','rampa'],feitio:'O maior São João do mundo. Não há descanso.',
+ {lugar:'São João em Campina Grande',cid:'Paraíba',dj:'Mestre Jackson',e:'🔥',cena:'arraial',cor:'#ff8a65',meta:17,lvl:'dificil',pub:['nordeste','nordeste','nordeste','samba'],n:18,ru:['nordeste','rampa'],feitio:'O maior São João do mundo. Não há descanso.',
   pist:['É o maior São João do mundo: forró sempre.','A energia não pode cair.','Os fogos marcam a meia-noite (mas tu acabas às 22:00).'],
   evs:{2:{t:'💃 Quadrilha gigante: festa ou nordeste',ok:e=>e.gen==='nordeste'||e.tags.includes('festa'),b:9,fx:'quadrilha'},5:{t:'🎆 Fogos de artifício: o maior forró',ok:e=>e.gen==='nordeste'&&e.en>=4,b:10,fx:'confetti'}}},
- {lugar:'Tasca em Lisboa',cid:'Alfama, Lisboa',dj:'Dona Amália',e:'🇵🇹',cena:'boteco',sign:'TASCA DA AMÁLIA',cor:'#e57373',meta:15,lvl:'dificil',pub:['mpb','mpb','bossa','samba'],n:12,ru:['saudade','vizinhos'],feitio:'MPB em Alfama: bacalhau, vinho e vizinhos à janela.',
+ {lugar:'Tasca em Lisboa',cid:'Alfama, Lisboa',dj:'Dona Amália',e:'🇵🇹',cena:'boteco',sign:'TASCA DA AMÁLIA',cor:'#e57373',meta:17,lvl:'dificil',pub:['mpb','mpb','bossa','samba'],n:12,ru:['saudade','vizinhos'],feitio:'MPB em Alfama: bacalhau, vinho e vizinhos à janela.',
   pist:['Em Lisboa a saudade compreende-se sem tradução.','Os vizinhos de Alfama também se queixam.','Os brasileiros da mesa do canto querem samba.'],
   evs:{3:{t:'🍷 Brinde à saudade',ok:e=>e.tags.includes('saudade'),b:8},6:{t:'🇧🇷 A mesa do canto pede samba',ok:e=>e.gen==='samba',b:7}}},
- {lugar:'Roda de Samba no Quintal',cid:'Madureira',dj:'Tia Cida',e:'🥘',cena:'roda',cor:'#ffd23f',meta:16,lvl:'dificil',pub:['samba','samba','samba','suingue','mpb'],n:18,ru:['samba'],feitio:'Mesa de plástico, feijoada e o samba mais exigente do Rio.',
+ {lugar:'Roda de Samba no Quintal',cid:'Madureira',dj:'Tia Cida',e:'🥘',cena:'roda',cor:'#ffd23f',meta:18,lvl:'dificil',pub:['samba','samba','samba','suingue','mpb'],n:18,ru:['samba'],feitio:'Mesa de plástico, feijoada e o samba mais exigente do Rio.',
   pist:['Em Madureira o samba manda. Ou quase sempre.','As tias da roda também gostam de MPB.','Os pandeiros não perdoam uma mistura falhada.'],
   evs:{2:{t:'🍲 Saiu a feijoada! Algo que fale do Brasil',ok:e=>e.tags.includes('brasil')||e.gen==='samba',b:8},4:{t:'🪘 O grupo pega nos pandeiros! Só uma mistura perfeita serve',ok:(e,F)=>F.mixQ==='perfeito',b:10,fx:'bateria'}}},
- {lugar:'Terraço em Copacabana',cid:'Pré-réveillon',dj:'DJ Iemanjá',e:'🌊',cena:'terraco',cor:'#80deea',meta:16,lvl:'dificil',pub:['pop','suingue','samba','mpb'],n:16,ru:['rampa','festa'],feitio:'Esquenta para o Ano Novo: a noite tem de subir sempre.',
+ {lugar:'Terraço em Copacabana',cid:'Pré-réveillon',dj:'DJ Iemanjá',e:'🌊',cena:'terraco',cor:'#80deea',meta:18,lvl:'dificil',pub:['pop','suingue','samba','mpb'],n:16,ru:['rampa','festa'],feitio:'Esquenta para o Ano Novo: a noite tem de subir sempre.',
   pist:['É a noite antes do Réveillon: só festa.','Toda a gente veste branco e quer dançar.','A energia não pode cair nunca.'],
   evs:{3:{t:'🤍 Oferendas a Iemanjá: algo sobre o mar',ok:e=>e.tags.includes('mar'),b:8},6:{t:'🎆 Contagem decrescente: energia máxima!',ok:e=>e.en>=5,b:10,fx:'confetti'}}},
- {lugar:'Carnaval no Pelourinho',cid:'Salvador',dj:'Mestre Bloco',e:'🎭',cena:'pelourinho',cor:'#ff4081',meta:16,lvl:'dificil',pub:['samba','samba','pop','rock','reggae'],n:18,ru:['contraste','festa'],feitio:'Carnaval na ladeira: blocos, trios e mistura total.',
+ {lugar:'Carnaval no Pelourinho',cid:'Salvador',dj:'Mestre Bloco',e:'🎭',cena:'pelourinho',cor:'#ff4081',meta:18,lvl:'dificil',pub:['samba','samba','pop','rock','reggae'],n:18,ru:['contraste','festa'],feitio:'Carnaval na ladeira: blocos, trios e mistura total.',
   pist:['No Carnaval baiano tudo vale, menos repetir.','Os blocos querem samba e festa.','Há um trio elétrico de rock a passar.'],
   evs:{2:{t:'🎺 Passa um trio elétrico: rock!',ok:e=>e.gen==='rock',b:8},5:{t:'🎭 Bloco de samba na ladeira',ok:e=>e.gen==='samba',b:9}}},
- {lugar:'Bar da Bossa',cid:'Ipanema',dj:'Seu Vinícius',e:'🎷',cena:'cafe',cor:'#a5d6a7',meta:17,lvl:'dificil',pub:['bossa','bossa','bossa','mpb'],n:12,ru:['bossa','letra'],feitio:'O bar onde nasceu a bossa nova. Público muito exigente.',
+ {lugar:'Bar da Bossa',cid:'Ipanema',dj:'Seu Vinícius',e:'🎷',cena:'cafe',cor:'#a5d6a7',meta:18,lvl:'dificil',pub:['bossa','bossa','bossa','mpb'],n:12,ru:['bossa','letra'],feitio:'O bar onde nasceu a bossa nova. Público muito exigente.',
   pist:['Aqui só a bossa nova encanta de verdade.','O Seu Vinícius tem ouvido de crítico.','Letra fraca não passa.'],
   evs:{3:{t:'🎹 O pianista da casa pede uma bossa',ok:e=>e.gen==='bossa',b:9},6:{t:'🌙 Para fechar: a mais bonita que tiveres',ok:e=>e.nota>=8.5,b:10}}},
- {lugar:'Pedra do Sal',cid:'Final · Rio de Janeiro',dj:'Tia Ciata',e:'👑',cena:'roda',cor:'#ffd23f',meta:17,lvl:'dificil',pub:['samba','samba','samba','mpb','suingue'],n:20,ru:['samba','festa'],feitio:'O berço do samba carioca. A roda mais importante da tua vida.',
+ {lugar:'Pedra do Sal',cid:'Final · Rio de Janeiro',dj:'Tia Ciata',e:'👑',cena:'roda',cor:'#ffd23f',meta:19,lvl:'dificil',pub:['samba','samba','samba','mpb','suingue'],n:20,ru:['samba','festa'],feitio:'O berço do samba carioca. A roda mais importante da tua vida.',
   pist:['Na Pedra do Sal nasceu o samba. Respeito!','Mas os jovens também dançam suingue.','Uma mistura falhada aqui não se perdoa.'],
   evs:{2:{t:'🥁 A roda começa: samba que fale do Brasil',ok:e=>e.gen==='samba'&&(e.tags.includes('brasil')||e.nota>=7),b:9},4:{t:'🪘 Pandeiros em uníssono: só mistura perfeita',ok:(e,F)=>F.mixQ==='perfeito',b:10,fx:'bateria'},6:{t:'👑 Apoteose: o maior samba que tiveres',ok:e=>e.gen==='samba'&&e.nota>=7.5,b:12,fx:'confetti'}}}];
 
@@ -4691,7 +4691,7 @@ function meLook(extra){const id=ME?ME.id:myPid();let o={};if(id==='miguel')o={sk
 /* ======================= 🎧 A FESTA (carreira de DJ, jogo novo) ======================= */
 const GEN_IC={mpb:'🎙️',suingue:'🕺',samba:'🥁',rock:'🎸',bossa:'🎷',pop:'💿',reggae:'🌴',nordeste:'🪗'},GEN_N={mpb:'MPB',suingue:'Suingue',samba:'Samba',rock:'Rock',bossa:'Bossa',pop:'Pop',reggae:'Reggae',nordeste:'Nordeste'};
 const FE_ROUNDS=8,FE_NIGHT=600000;
-const feFracT=F=>F&&F.t0?Math.max(0,Math.min(1,(Date.now()-F.t0)/FE_NIGHT)):0,feR=F=>1+feFracT(F)*FE_ROUNDS;const FE_PAR={facil:9.8,normal:11.8,dificil:13.8},FE_META={facil:6,normal:7,dificil:8};
+const feFracT=F=>F&&F.t0?Math.max(0,Math.min(1,(Date.now()-F.t0)/FE_NIGHT)):0,feR=F=>1+feFracT(F)*FE_ROUNDS;const FE_PAR={facil:10.6,normal:12.8,dificil:15},FE_META={facil:6,normal:7,dificil:8};
 const feMeta=i=>CAR[i].meta/2;
 /* cada noite: cenário, público, regra própria e acontecimentos */
 const FEN=L20.map(x=>({cena:x.cena,bg:['#000','#000'],pub:x.pub,n:x.n,regra:x.ru.map(r=>RU[r].t).join(' '),
@@ -4743,7 +4743,7 @@ function fePick(i){fsCtx();const F=L.fe;if(!F||F.ph!=='pick'||F.turn!=='me')retu
 function feMix(late){const F=L.fe;if(!F||F.ph!=='mix')return;clearTimeout(F.mixTO);const bar=document.querySelector('.fmix'),nd=document.querySelector('.fmix .fneedle');let pos=0;
   if(bar&&nd&&!late){const a=bar.getBoundingClientRect(),b=nd.getBoundingClientRect();pos=(b.left+b.width/2-a.left)/a.width}
   const d=Math.abs(pos-.5),q=late?'falhou':d<.06?'perfeito':d<.16?'bom':'falhou';F.ph='play';if(FA.pre){FA.pre.pause();FA.pre=null}const sil=F.tEnd?Math.max(0,Math.floor((Date.now()-F.tEnd)/1000)):0;F.silT=0;const r=feScore(F.sel,F,'me',q);const liked=r.pts>=FE_PAR[CAR[F.i].lvl];const full=feFull(F.sel);let dur=liked?(full?Math.min(150000,(feFull.d[F.sel]||200)*1000):75000):40000;const nl=F.t0+FE_NIGHT-Date.now();if(nl<dur+35000){dur=Math.max(30000,nl);F.lastTrack=1}F.dur=dur;F.tEnd=Date.now()+dur;F.liked=liked;fePlay(F.sel,q,dur);if(sil>0){r.notes.unshift(`🔇 ${sil}s de silêncio na pista`)}F.hype[0]+=r.pts;
-  const dn=Math.max(-2.2,Math.min(1.1,(r.pts-FE_PAR[CAR[F.i].lvl])/3.6))-Math.min(3,.12*sil),n0=F.nota;F.nota=Math.max(0,Math.min(10,Math.round((F.nota+dn)*10)/10));F.hist.push(F.nota);F.last={who:'me',...r,q,i:F.sel,dn:Math.round((F.nota-n0)*10)/10,liked};
+  const dn=Math.max(-2.4,Math.min(.95,(r.pts-FE_PAR[CAR[F.i].lvl])/3.8))-Math.min(3.2,.15*sil),n0=F.nota;F.nota=Math.max(0,Math.min(10,Math.round((F.nota+dn)*10)/10));F.hist.push(F.nota);F.last={who:'me',...r,q,i:F.sel,dn:Math.round((F.nota-n0)*10)/10,liked};
   if(q==='falhou')feFx('scratch');feDraw();feFloat(F.last.dn,'me');}
 function feRival(){const F=L.fe;if(!F)return;F.turn='riv';F.ph='rival';F.msg=null;const lvl=CAR[F.i].lvl,opts=feDeal(F,3);
   const noise={facil:5,normal:3,dificil:1.5}[lvl];let best=null,bs=-1e9;opts.forEach(i=>{const sim={...F,crowd:F.crowd.map(c=>({...c})),noise:F.noise};const e=ev(i);const on=F.crowd.filter(c=>c.on);let v=e.nota+(on.length?on.filter(c=>c.pref===e.gen).length/on.length*8:0)+Math.random()*noise;try{v+=(FEN[F.i].rule(e,sim,song(i))||{p:0}).p}catch(x){}if(v>bs){bs=v;best=i}});
@@ -5812,7 +5812,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795645326';
+const BUILD='1795645453';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
