@@ -2855,7 +2855,7 @@ function sqMerge(base,loc,rem){const S=x=>JSON.stringify(x),o=JSON.parse(S(rem||
   o.eq={...(o.eq||{})};for(const k of new Set([...Object.keys(loc.eq||{}),...Object.keys(base.eq||{})]))if(S(ev(loc,k))!==S(ev(base,k)))o.eq[k]=ev(loc,k);
   if((+loc.lt||0)>(+o.lt||0)){o.lt=loc.lt;o.lb=loc.lb}
   if(loc.md){const a=o.md||{},b=loc.md;if(!a.d||b.d>a.d)o.md={...b};else if(a.d===b.d){o.md={...a};for(const k in b)if(k!=='d')o.md[k]=Math.max(+a[k]||0,+b[k]||0)}}
-  for(const k of ['sh','wl','px','play','on','cl','pos','mul','li','rf1','bm1','lon'])if(S(loc[k])!==S(base[k]))o[k]=loc[k];return o}
+  for(const k of ['sh','wl','px','play','on','cl','pos','mul','li','rf1','bm1','lon','flip'])if(S(loc[k])!==S(base[k]))o[k]=loc[k];return o}
 async function sqSync(){if(!(db&&db.cloud)||!QID||!canEdit())return;if(SQ.busy){SQ.again=1;return}SQ.busy=true;SQ.again=0;
   const snap=JSON.parse(JSON.stringify(SQ.d)),base=SQ.base;
   for(let k=0;k<8;k++){const cur=await sqFetch();if(!cur)break;const m=sqMerge(base,snap,cur.d);
@@ -3335,18 +3335,18 @@ function movelPos(i){if(!canEdit())return;const q=roomQ();q.pos={...(q.pos||{}),
 function roomPos(k,i){if(!canEdit())return;const q=roomQ();q.pos={...(q.pos||{}),[k]:i};roomSave(q);render()}
 const RORDER=['cor','recados','janela','cortina','luz:w','prat','fita','poster','extra','teto','chao','tapete','#patch','luz','suspensa','secretaria','cabeceira','movel','leitor','mesa','planta2','cama','pet','planta','assento','plafon'];
 function roomSvg(w,o){o=o||{};RUID=0;const q=roomQ(),eq={...q.eq,...(o.eq||{})};for(const k in eq)if(!eq[k])delete eq[k];const pl=discPlaces(),n=lisNow();
-  const top=RIT[eq.movel]?.top||352,tod=o.tod||roomTodOf(),live=!o.tod&&!L.rTodV,c={pl,top,tod,eq,on:!!q.on&&!!pl.play,hh:n.hh,sun:live?sunPos(n):null,win:!!L.rWin,debt:roomDebt()};c.lit=(tod==='noite'||(!o.tod&&!!q.lon))&&!c.debt;c.music=c.on&&!FX.reduced;let b='',g='',fx='';const S=SKY[tod];
+  const top=RIT[eq.movel]?.top||352,tod=o.tod||roomTodOf(),live=!o.tod&&!L.rTodV,c={pl,top,tod,eq,on:!!q.on&&!!pl.play,hh:n.hh,sun:live?sunPos(n):null,win:!!L.rWin,debt:roomDebt()};c.litf=id=>!c.debt&&(tod==='noite'||(!o.tod&&lonOf(q,id)));c.lit=!c.debt&&(tod==='noite'||(!o.tod&&luzList(q).some(x=>lonOf(q,x[0]))));c.music=c.on&&!FX.reduced;let b='',g='',fx='';const S=SKY[tod];
   for(const s of RORDER){const [k,part]=s.split(':');
     if(k==='#patch'){b+=lightPatch(tod);continue}
     let LST;if(RPOS[k]){const a=mulGet(roomQ(),k);if(L.pv&&L.pv.k===k){const j=a.indexOf(L.pv.id);if(j>=0)a[j]=null;if(RSINGLE.has(k))a.fill(null);if(L.pv.i>=0)a[L.pv.i]=L.pv.id}if(eq[k]&&!a.includes(eq[k])){let j;if(RSINGLE.has(k)){j=Math.max(0,a.findIndex(Boolean));a.fill(null)}else{j=a.indexOf(null);if(j<0)j=0}a[j]=eq[k]}LST=a.map((x,i)=>[x,i]).filter(x=>x[0])}else LST=[[k==='janela'||k==='recados'?k:eq[k],null]];
     for(const [id,pi] of LST){
-    if(!id)continue;const it=RIT[id]||{},f=RDR[k==='cor'||k==='chao'?k:id];if(!f)continue;const r=f(it,c)||{};const T=ST[id]||ST[k],PT=posT(k,c,pi);const wr0=x=>x&&T?`<g transform="${T}">${x}</g>`:(x||''),wr=x=>x&&PT?`<g transform="${PT}">${wr0(x)}</g>`:wr0(x);
+    if(!id)continue;const it=RIT[id]||{},f=RDR[k==='cor'||k==='chao'?k:id];if(!f)continue;const r=f(it,c)||{};const T=ST[id]||ST[k],PT=posT(k,c,pi),FT=flipT(id,k);const wrF=x=>x&&FT?`<g data-flip="${id}_${pi==null?0:pi}_${RUID}">${x}</g>`:(x||''),wr0=x=>(x=wrF(x))&&T?`<g transform="${T}">${x}</g>`:(x||''),wr=x=>x&&PT?`<g transform="${PT}">${wr0(x)}</g>`:wr0(x);
     if(part==='w'){if(r.w&&tod==='dia')b+=wr(r.w);continue}
     const ACT=!['cor','chao','recados'].includes(k),open=ACT?`<g class="ract ract-${k}${k==='cortina'&&L.rWin?' win-open':''}" data-id="${id}" onclick="roomAct('${k}',event)">`:'<g>';
     b+=open+'<g class="ri">'+(k==='leitor'?`<g id="rleitor">${wr(r.b)}</g>`:wr(r.b))+'</g></g>';
     if(k==='leitor'&&c.music)fx+=`<g transform="translate(${movelDx()} 0)"><g transform="${ST.leitor}">${musicNotes(192,top-26)}</g></g>`;
     if(k==='janela'&&L.rWin)fx+=breeze();
-    if(r.g&&!(!c.lit&&LUZES.has(id)))g+=wr(r.g)}}
+    if(r.g&&!(LUZES.has(id)&&!c.litf(id)))g+=wr(r.g)}}
   const pfOn=plafonOn(eq,c),pfI=pfOn?clGet().i:0;const gk=Math.max(GLOWK[tod],pfOn?.85:0,c.lit&&tod!=='noite'?.55:0);let post=GRADE[tod].map(([col,op,bl])=>`<rect width="${QW}" height="500" fill="${col}" opacity="${(bl==='normal'?op*(1-.62*pfI):op*(1-.4*pfI)).toFixed(3)}" style="mix-blend-mode:${bl}"/>`).join('');
   if(pfOn)post+=`<rect width="${QW}" height="500" fill="${clGet().c}" opacity="${(.1+.16*pfI).toFixed(3)}" style="mix-blend-mode:soft-light"/>`;
   if(g&&gk)post+=`<g opacity="${(gk*(tod==='noite'?(.35+.65*liGet()):1)).toFixed(3)}">${g}</g>`;
@@ -3683,21 +3683,24 @@ function roomRedraw(){const s=document.querySelector('.roomscene .roomsvg');if(s
 function roomBubble(t,el){const sc=document.querySelector('.roomscene');if(!sc)return;const a=sc.getBoundingClientRect();let x=a.width/2,y=a.height*.35;if(el){const b=el.getBoundingClientRect();x=b.left-a.left+b.width/2;y=b.top-a.top}
   const d=document.createElement('div');d.className='rbubble';d.textContent=t;d.style.left=Math.max(50,Math.min(a.width-50,x))+'px';d.style.top=Math.max(8,y)+'px';sc.appendChild(d);setTimeout(()=>d.remove(),2400)}
 function roomOnce(sel,cls,ms){document.querySelectorAll(sel).forEach(e=>{e.classList.remove(cls);void e.getBoundingClientRect();e.classList.add(cls);setTimeout(()=>e.classList.remove(cls),ms||1400)})}
-function roomAct(k,ev){const el=ev&&ev.currentTarget,id=(el&&el.dataset&&el.dataset.id)||roomQ().eq[k];
+function roomAct(k,ev){const el=ev&&ev.currentTarget,id=(el&&el.dataset&&el.dataset.id)||roomQ().eq[k];if(canEdit()&&FLIPOK.has(k)&&!RPOS[k]&&!LUZES.has(id))setTimeout(()=>flipChip(id,el),30);
   if(canEdit()&&(RPOS[k]||k==='movel')){if(ev)ev.stopPropagation();if(!['prat','quadros','movel'].includes(k))roomAct0(k,ev);itemZoom(k,id);return}roomAct0(k,ev)}
 /* painel de um objeto do quarto: mudar de lugar (com pré-visualização) ou guardar */
 function itemZoom(k,id,sel){const q=roomQ(),mv=k==='movel';id=mv?q.eq.movel:id;const it=RIT[id];if(!it)return;
   const first=sel==null;
   const P=mv?MOVEL_POS.map(x=>[x[0]]):RPOS[k],cur=mv?(+((q.pos||{}).movel)||0):mulGet(q,k).indexOf(id),a=mv?[]:mulGet(q,k);
-  sel=sel==null?cur:sel;L.pv=sel!==cur?{k,id,i:sel}:null;roomRedraw();
+  sel=sel==null?cur:sel;L.izSel=sel;L.pv=sel!==cur?{k,id,i:sel}:null;roomRedraw();
   const extra=k==='prat'?`<button class="btn ghost sm" onclick="zoomClose();setTimeout(boxZoom,250)">💿 Ver os discos</button>`:k==='quadros'?`<button class="btn ghost sm" onclick="zoomClose();setTimeout(postersZoom,250)">🖼️ Ver os pósteres</button>`:mv?`<button class="btn ghost sm" onclick="zoomClose();setTimeout(boxZoom,250)">💿 Ver os discos guardados</button>`:'';
   zoomOpen(`<div class="rzlist itemz"><div class="izhead"><div class="rth">${itemThumb(it)}</div><div><h3>${esc(mv?'Móvel do gira-discos':it.n)}</h3><p class="hint">${mv?'O gira-discos e o que está em cima vão juntos.':it.d?esc(it.d):''}</p></div></div>
    <h4>📍 Mudar de lugar</h4><p class="hint">Escolham um lugar para ver como fica no quarto e depois confirmem.</p>
    <div class="rplaces big">${P.map((p,i)=>{const oc=a[i];return `<button class="${sel===i?'on':''}" onclick="itemZoom('${k}','${id}',${i})">${i===cur?'📌 ':''}${esc(p[0])}${i===cur?' <i>(agora)</i>':''}${oc&&oc!==id?` <i>(troca com: ${esc((RIT[oc]||{}).n||'')})</i>`:''}</button>`}).join('')}</div>
-   <div class="izacts"><button class="btn" ${sel===cur?'disabled':''} onclick="itemConfirm('${k}','${id}',${sel})">✓ Confirmar</button>${!RFIX[k]&&cur>=0?`<button class="btn ghost" onclick="itemStore('${k}','${id}')">📦 Guardar</button>`:''}${extra}</div></div>`,'sheet itemz')
+   ${LUZES.has(id)?`<h4>💡 Luz</h4>${luzBox(id)}`:''}<div class="izacts"><button class="btn" ${sel===cur?'disabled':''} onclick="itemConfirm('${k}','${id}',${sel})">✓ Confirmar</button>${flipBtn(id)}${!RFIX[k]&&cur>=0?`<button class="btn ghost" onclick="itemStore('${k}','${id}')">📦 Guardar</button>`:''}${extra}</div></div>`,'sheet itemz')
   if(first&&!L.rFull)requestAnimationFrame(()=>{const sc=document.querySelector('.roomscene'),bx=document.querySelector('.rzoom.itemz .rzbox');if(!sc)return;const r=sc.getBoundingClientRect(),av=innerHeight-(bx&&innerWidth<700?bx.getBoundingClientRect().height:0),want=av>r.height+16?(av-r.height)/2:(innerHeight-r.height)/2;if(Math.abs(r.top-want)>10)scrollTo({top:scrollY+r.top-want,behavior:'smooth'})})}
 function itemConfirm(k,id,i){L.pv=null;if(k==='movel')movelPos(i);else roomPlace(id,i);zoomClose()}
 function itemStore(k,id){L.pv=null;const q=roomQ(),a=mulGet(q,k),j=a.indexOf(id);if(j>=0){a[j]=null;mulSet(q,k,a);roomSave(q);render()}zoomClose();toast(`📦 ${(RIT[id]||{}).n||'Guardado'} foi para os vossos acessórios`)}
+function flipChip(id,el){const sc=document.querySelector('.roomscene');if(!sc)return;sc.querySelectorAll('.rplacechip').forEach(x=>x.remove());const a=sc.getBoundingClientRect();let x=a.width/2,y=a.height*.6;
+  if(el){const b=el.getBoundingClientRect();x=b.left-a.left+b.width/2;y=b.bottom-a.top+4}const d=document.createElement('button');d.className='rplacechip';d.textContent='↔ Virar';d.style.left=Math.max(50,Math.min(a.width-50,x))+'px';d.style.top=Math.max(30,Math.min(a.height-40,y))+'px';
+  d.onclick=e=>{e.stopPropagation();roomFlip(id);setTimeout(()=>flipChip(id,document.querySelector(`.ract[data-id="${id}"]`)),60)};sc.appendChild(d);clearTimeout(flipChip.t);flipChip.t=setTimeout(()=>d.remove(),4000)}
 function placeChip(k,id,el){const sc=document.querySelector('.roomscene');if(!sc)return;sc.querySelectorAll('.rplacechip').forEach(x=>x.remove());const a=sc.getBoundingClientRect();let x=a.width/2,y=a.height*.6;
   if(el){const b=el.getBoundingClientRect();x=b.left-a.left+b.width/2;y=b.bottom-a.top+4}
   const d=document.createElement('button');d.className='rplacechip';d.innerHTML='📍 Mudar de lugar';d.style.left=Math.max(70,Math.min(a.width-70,x))+'px';d.style.top=Math.max(30,Math.min(a.height-40,y))+'px';
@@ -3712,8 +3715,7 @@ function roomAct0(k,ev){if(ev)ev.stopPropagation();const q=roomQ(),el=ev&&ev.cur
   if(k==='janela'||k==='cortina'){L.rWin=!L.rWin;roomRedraw();roomBubble(L.rWin?(roomTodOf()==='noite'?'🌙 Entra o ar fresco da noite':'🌊 Cheira a mar!'):'🪟 Janela fechada');return}
   if(k==='leitor'){if(!canEdit()){roomBubble('🎵 Só quem vive aqui põe música',el);return}if(q.on)roomStop();else roomPlay();return}
   if(k==='plafon'){if(roomDebt()){roomBubble('🔌 A luz foi cortada: paguem as contas!');return}plafonZoom();return}
-  if((k==='luz'||k==='teto'||k==='cabeceira'||(k==='mesa'&&LUZES.has(id)))&&roomDebt()){roomBubble('🔌 A luz foi cortada: paguem as contas!');return}
-  if(k==='luz'||k==='teto'||k==='cabeceira'||(k==='mesa'&&LUZES.has(id))){plafonZoom();return}
+  if(LUZES.has(id)&&!['cama','prat'].includes(k)){luzZoom(id);return}
   if(k==='pet'){roomBubble(roomDebt()?pick1(['😿 Tenho fome…','🥺 Não há comida?','*barriga a roncar*']):pick1(PET_FALA[id]||['🐾']),el);roomOnce('.ract-pet','rm-hop',700);return}
   if(k==='cama'){roomBubble(pick1(['💤 Só mais 5 minutos…','🛏️ Que fofinha!','💤 zzz']),el);roomOnce('.ract-cama','rm-squish',700);return}
   if(k==='planta'||k==='planta2'||k==='suspensa'){roomOnce('.ract-'+k,'rm-sway',1300);return}
@@ -3750,14 +3752,34 @@ const LUZ_H={'t-heras':1,'t-lampadas':1,'t-ledazul':1,'l-candeeiro':1,'l-sunset'
 const luzRate=id=>id==='plafon'?1+Math.round(clGet().i*2):(LUZ_H[id]!=null?LUZ_H[id]:LUZES.has(id)?1:0);
 function luzList(q){q=q||roomQ();const ids=new Set(Object.values(q.eq||{}));for(const k in RPOS)mulGet(q,k).forEach(x=>x&&ids.add(x));const L_=[...ids].filter(id=>id&&LUZES.has(id)&&!(id+'').startsWith('pf-')).map(id=>[id,luzRate(id)]);if(q.eq&&q.eq.plafon)L_.push(['plafon',luzRate('plafon')]);return L_}
 const luzHora=q=>luzList(q).reduce((a,x)=>a+x[1],0);
+const lonOf=(q,id)=>q.lon===1||!!(q.lon&&typeof q.lon==='object'&&q.lon[id]);
+const luzDia=q=>luzList(q).filter(x=>lonOf(q,x[0])).reduce((a,x)=>a+x[1],0);
 const isNightAt=t=>todNow(lisNow(new Date(t)))==='noite';
 function lightAccrue(q){if(!canEdit())return false;const now=Date.now();if(!q.lt){q.lt=now;q.lb=+q.lb||0;return true}
-  let t=Math.max(+q.lt,now-7*864e5);if(now-t<60000)return false;const rate=luzHora(q),debt=roomDebt();let hrs=0,nh=0;const ST_=10*60000;
-  while(t<now){const dt=Math.min(ST_,now-t),mid=t+dt/2,ni=isNightAt(mid);if(ni||q.lon){hrs+=dt/36e5;if(ni)nh+=dt/36e5}t+=dt}
-  if(!debt&&rate>0)q.lb=(+q.lb||0)+hrs*rate;q.lt=now;q.lh=(+q.lh||0)+hrs;return true}
+  let t=Math.max(+q.lt,now-7*864e5);if(now-t<60000)return false;const rN=luzHora(q),rD=luzDia(q),debt=roomDebt();let hrs=0,cost=0;const ST_=10*60000;
+  while(t<now){const dt=Math.min(ST_,now-t),mid=t+dt/2,r=isNightAt(mid)?rN:rD;if(r>0){hrs+=dt/36e5;cost+=r*dt/36e5}t+=dt}
+  if(!debt)q.lb=(+q.lb||0)+cost;q.lt=now;q.lh=(+q.lh||0)+hrs;return true}
 function lightTick(){const q=roomQ();if(lightAccrue(q))roomSave(q,1)}
 setInterval(()=>{if(L.screen==='quarto')lightTick()},60000);
-function luzToggle(){if(!canEdit())return;const q=roomQ();lightAccrue(q);q.lon=q.lon?0:1;roomSave(q);roomRedraw();plafonZoom()}
+function luzToggle(id){if(!canEdit())return;const q=roomQ();lightAccrue(q);const m=q.lon===1?Object.fromEntries(luzList(q).map(x=>[x[0],1])):{...(q.lon&&typeof q.lon==='object'?q.lon:{})};if(m[id])delete m[id];else m[id]=1;q.lon=m;roomSave(q);roomRedraw();if(document.querySelector('.rzoom.itemz'))itemZoom(RIT[id].s,id,L.izSel);else luzZoom(id)}
+/* virar objetos (espelho horizontal), à volta do centro do próprio objeto */
+const FLIPOK=new Set(['assento','planta','planta2','mesa','extra','luz','cabeceira','secretaria','pet','suspensa','tapete']);
+function flipT(id,k){const q=roomQ();return q.flip&&q.flip[id]?'F':''}
+/* centro real do objeto: medido no ecrã depois de desenhado */
+function fixFlips(root){const C={};(root||document).querySelectorAll('g[data-flip]:not([data-fd])').forEach(g=>{try{const k=g.dataset.flip;let cx=C[k];if(cx==null){const b=g.getBBox();if(!b.width)return;cx=C[k]=b.x+b.width/2}g.setAttribute('transform',`translate(${2*cx} 0) scale(-1 1)`);g.dataset.fd=1}catch(e){}})}
+new MutationObserver(()=>{if(document.querySelector('g[data-flip]:not([data-fd])'))requestAnimationFrame(()=>fixFlips())}).observe(document.documentElement,{childList:true,subtree:true});
+function roomFlip(id){if(!canEdit())return;const q=roomQ();q.flip={...(q.flip||{})};if(q.flip[id])delete q.flip[id];else q.flip[id]=1;roomSave(q);roomRedraw()}
+function flipBtn(id){const it=RIT[id];if(!it||!FLIPOK.has(it.s)||!canEdit())return '';return `<button class="btn ghost sm" onclick="roomFlip('${id}')">↔ Virar ${(roomQ().flip||{})[id]?'(está virado)':''}</button>`}
+function luzBox(id){const q=roomQ(),noite=roomTodOf()==='noite',on=noite||lonOf(q,id),ed=canEdit();
+  return `<div class="pfrow"><span>${roomDebt()?'🔌 Cortada (contas em atraso)':noite?'🌙 Acesa (à noite não se desliga)':on?'💡 Acesa':'Apagada'}</span>${ed?`<button class="pfsw ${on?'on':''}" ${noite?'disabled':''} onclick="luzToggle('${id}')"><i></i></button>`:''}</div>
+  <div class="rbrows"><div><span>Gasta</span><b>${String(luzRate(id)).replace('.',',')} BPM por hora acesa</b></div></div>`}
+function luzZoom(id){const ed=canEdit(),pf=id==='plafon',it=pf?RIT[roomQ().eq.plafon]:RIT[id];if(!it)return;const L_=clGet(),li=liGet(),k=it.s;
+  zoomOpen(`<div class="rzlist pfz"><div class="izhead"><div class="rth">${itemThumb(it)}</div><div><h3>${esc(it.n)}</h3><p class="hint">${roomTodOf()==='noite'?'É de noite: acende-se sozinha até de manhã.':'De dia podes ligá-la quando quiseres. Quando anoitecer acende-se sozinha.'}</p></div></div>
+  ${luzBox(id)}
+  ${ed&&pf?`<div class="pfrow col"><span>Cor</span><div class="pfcores">${CL_CORES.map(([c,n])=>`<button class="${L_.c===c?'on':''}" style="--c:${c}" title="${n}" onclick="plafonSet({c:'${c}'})"><i></i><small>${n}</small></button>`).join('')}</div></div>
+  <div class="pfrow col"><span>Intensidade · <b id="pfiv">${Math.round(L_.i*100)}%</b></span><input type="range" min="10" max="100" step="5" value="${Math.round(L_.i*100)}" oninput="plafonSet({i:this.value/100},1)"></div><p class="hint">Mais forte gasta mais por hora.</p>`:''}
+  ${ed&&!pf?`<div class="pfrow col"><span>Intensidade dos candeeiros · <b id="liv">${Math.round(li*100)}%</b></span><input type="range" min="10" max="100" step="5" value="${Math.round(li*100)}" oninput="liSet(this.value/100)"></div>`:''}
+  <div class="izacts">${RPOS[k]&&ed?`<button class="btn ghost sm" onclick="itemZoom('${k}','${id}')">📍 Mudar de lugar</button>`:''}${flipBtn(id)}<button class="btn ghost sm" onclick="billsZoom()">🧾 Contas de todas as luzes</button></div></div>`,'sheet')}
 function roomBills(){lightTick();if(!canEdit())return;const q=roomQ(),today=dayNum(lisNow().ymd);if(q.paid==null){q.paid=today;roomSave(q);return}
   const days=Math.min(CUSTO_DIAS,today-q.paid);if(days<=0)return;const v=days*billDay(q.eq);q.custo=(+q.custo||0)+v;q.paid=today;q.blog=[{d:today,n:days,v},...(q.blog||[])].slice(0,6);roomSave(q)}
 const roomDebt=()=>roomCoins()<0;
@@ -3838,7 +3860,7 @@ function postersZoom(){const own=postersOwned(),pl=discPlaces();
 const CL_DEF={on:1,c:'#ffd9a0',i:.7};
 const CL_CORES=[['#ffd9a0','Quente'],['#fff4e0','Branca'],['#dfefff','Fria'],['#ffb36b','Âmbar'],['#ff8fb8','Rosa'],['#c39bff','Roxa'],['#7fc8ff','Azul'],['#8ff0a8','Verde'],['#ff6a5a','Vermelha']];
 const clGet=()=>({...CL_DEF,...(roomQ().cl||{})});
-function plafonOn(eq,c){return !!eq.plafon&&(c?c.lit:((roomTodOf()==='noite'||!!roomQ().lon)&&!roomDebt()))}
+function plafonOn(eq,c){return !!eq.plafon&&(c?c.litf('plafon'):((roomTodOf()==='noite'||lonOf(roomQ(),'plafon'))&&!roomDebt()))}
 const liGet=()=>{const v=roomQ().li;return v==null?.8:+v};
 Object.assign(RDR,{
 'pf-pendente'(it,c){const L_=clGet(),on=plafonOn(c.eq,c);return {b:`<path d="M800 0 V40" stroke="#1d1a18" stroke-width="1.6"/><rect x="796" y="38" width="8" height="8" rx="2" fill="#2a2420"/><path d="M776 70 q24 -36 48 0z" fill="#1d1a18"/><path d="M780 66 q20 -26 40 0" stroke="rgba(255,255,255,.12)" stroke-width="2" fill="none"/><ellipse cx="800" cy="70" rx="24" ry="4" fill="${on?L_.c:'#8b8780'}"/>`,g:on?plafonGlow(800,72):''}},
@@ -3849,17 +3871,7 @@ Object.assign(RDR,{
 });
 function plafonGlow(x,y){const L_=clGet(),i=L_.i;return `<radialGradient id="gl-pf"><stop offset="0" stop-color="${L_.c}" stop-opacity=".95"/><stop offset=".3" stop-color="${L_.c}" stop-opacity=".4"/><stop offset="1" stop-color="${L_.c}" stop-opacity="0"/></radialGradient><circle cx="${x}" cy="${y}" r="${60+i*80}" fill="url(#gl-pf)" style="mix-blend-mode:screen" opacity="${.5+i*.5}"/><path d="M${x-26} ${y+4} L${x-260} 500 L${x+260} 500 L${x+26} ${y+4}z" fill="url(#gl-pf)" style="mix-blend-mode:screen" opacity="${i*.35}"/>`}
 /* painel da luz: abre ao tocar no candeeiro do teto */
-function plafonZoom(){const sc=document.querySelector('.roomscene');if(sc&&!L.rFull&&!document.querySelector('.rzoom.sheet')){const r=sc.getBoundingClientRect();if(r.top<0||r.top>60)scrollTo({top:scrollY+r.top-60,behavior:'smooth'})}const L_=clGet(),ed=canEdit(),id=roomQ().eq.plafon,it=RIT[id];
-  const n=lisNow(),noite=roomTodOf()==='noite',sun=(typeof sunTimes==='function')?sunTimes():null,li=liGet();
-  zoomOpen(`<div class="rzlist pfz"><h3>💡 Luzes do quarto</h3><p class="hint">${noite?'É de noite: as luzes acendem-se sozinhas e não se desligam até de manhã.':'De dia podem ligar as luzes quando quiserem. Quando anoitecer, acendem-se sozinhas.'}${roomDebt()?' 🔌 Agora estão cortadas: paguem as contas!':''}</p>
-  ${(()=>{const q=roomQ(),LL=luzList(q),rh=luzHora(q);return `<div class="pfrow"><span>${noite?'🌙 Ligadas (à noite não se desligam)':q.lon?'💡 Ligadas':'Desligadas'}</span>${ed?`<button class="pfsw ${noite||q.lon?'on':''}" ${noite?'disabled':''} onclick="luzToggle()"><i></i></button>`:''}</div>
-   ${LL.length?`<div class="rbrows">${LL.map(([id,r])=>`<div><span>${esc(id==='plafon'?'Luz do teto':(RIT[id]||{}).n||id)}</span><b>${String(r).replace('.',',')} BPM/h</b></div>`).join('')}<div class="rbtot"><span>Com tudo ligado</span><b>${String(rh).replace('.',',')} BPM por hora</b></div></div>
-   <p class="hint">Paga-se cada hora em que as luzes estão acesas: a noite toda e as horas em que as ligarem de dia. Já gastaram ${Math.floor(+q.lb||0)} BPM em luz.</p>`:'<p class="hint">Ainda não têm luzes no quarto.</p>'}`})()}
-  ${ed?`<div class="pfrow col"><span>Intensidade dos candeeiros · <b id="liv">${Math.round(li*100)}%</b></span><input type="range" min="10" max="100" step="5" value="${Math.round(li*100)}" oninput="liSet(this.value/100)"></div>`:''}
-  ${id?`<h3 style="margin-top:14px">${esc(it?it.n:'Luz do teto')}</h3>`:''}
-  ${ed&&id?`<div class="pfrow col"><span>Cor</span><div class="pfcores">${CL_CORES.map(([c,n])=>`<button class="${L_.c===c?'on':''}" style="--c:${c}" title="${n}" onclick="plafonSet({c:'${c}'})"><i></i><small>${n}</small></button>`).join('')}</div></div>
-  <div class="pfrow col"><span>Intensidade · <b id="pfiv">${Math.round(L_.i*100)}%</b></span><input type="range" min="10" max="100" step="5" value="${Math.round(L_.i*100)}" oninput="plafonSet({i:this.value/100},1)"></div>
-  <p class="hint">Gasta ${luzRate('plafon')} BPM por hora acesa com esta intensidade (mais forte gasta mais).</p>`:ed?'':'<p class="hint">Só quem vive neste quarto mexe na luz.</p>'}</div>`,'sheet')}
+function plafonZoom(){luzZoom('plafon')}
 function liSet(v){if(!canEdit())return;const q=roomQ();q.li=v;roomSave(q,0);const b=document.getElementById('liv');if(b)b.textContent=Math.round(v*100)+'%';clearTimeout(liSet.t);liSet.t=setTimeout(roomRedraw,60)}
 const plafonCost=()=>{const L_=clGet();return 3+Math.round(L_.i*8)};
 function plafonSet(o,live){if(!canEdit())return;const q=roomQ();q.cl={...clGet(),...o};roomSave(q,0);roomRedraw();
@@ -4574,7 +4586,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795610406';
+const BUILD='1795610844';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
