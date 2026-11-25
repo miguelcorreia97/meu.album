@@ -1788,6 +1788,12 @@ html.phland body.has-ddock #app,html.phland.has-ddock #app{padding-bottom:150px!
 .roomscene.editing .ract.edsel .ri{filter:drop-shadow(0 0 4px #ffd23f) drop-shadow(0 0 2px #ffd23f)}
 .roomscene.editing .hud,.roomscene.editing .rfullbtn{display:none!important}.roomscene.editing .roomsvg{touch-action:none}
 .izmore{margin-top:8px;font-size:.85rem}.izmore summary{cursor:pointer;opacity:.75}
+
+.redbtn{position:absolute;right:56px;top:8px;z-index:3;display:flex;align-items:center;gap:4px;padding:7px 12px;border-radius:99px;border:1px solid rgba(255,210,63,.6);background:rgba(20,10,4,.82);color:#ffd23f;font:inherit;font-size:.78rem;font-weight:800;cursor:pointer}
+@media(max-width:700px){.redbtn span{display:none}.redbtn{padding:7px 9px}}
+.rgrid.acesg{grid-template-columns:repeat(auto-fill,minmax(112px,140px))!important;justify-content:start}
+.acesg .ritem .rth{aspect-ratio:1/1;max-height:110px}
+@media(max-width:600px){.rgrid.acesg{grid-template-columns:repeat(3,minmax(0,1fr))!important}.acesg .ritem .rth{max-height:84px}}
 </style>
 </head>
 <body>
@@ -3509,14 +3515,14 @@ function quartoScreen(){if(!QID)return noRoomScreen();const ed=canEdit(),coins=r
   let h=`<div class="tot-head"><div class="mono" style="color:var(--muted)">${L.visit?'de visita':'quarto'}</div><h2>${esc(roomTitle())}</h2><div class="sub">${ed?(CASAL.length>1?'Decorem juntos com os BPM que os dois ganham nas missões. Com música a tocar no quarto também ganham BPM.':'Decora com os BPM que ganhas nas missões. Podes convidar alguém para partilhar o quarto contigo.'):'Estás de visita: só quem vive aqui pode mudar as coisas.'}</div></div>
   ${roomTopBar()}
   <div class="qbar"><span class="qcoins">♩ <b id="bpmv">${coins}</b> BPM</span><span class="rdisc">💿 ${pl.own.length} discos</span><span class="rdisc">🕰️ <b id="rclock">${n.hh}</b> em Portugal</span>${ed?`<button class="rdisc rbill" onclick="billsZoom()">🧾 −${billDay()} BPM/dia</button>`:''}</div>
-  ${L.edit?'<div id="redit" class="redit"></div>':''}<div class="roomscene${L.rFull?' full':''}${L.edit?' editing':''}"><div class="roomscroll">${roomSceneInner()}</div>${sceneHud()}<button class="rfullbtn" onclick="roomFull()">${L.rFull?'<b>✕</b><span> Sair</span>':'<b>⛶</b><span> Ecrã inteiro</span>'}</button><span class="rfullhint">📱 Vira o telemóvel para ver maior</span></div>
+  ${L.edit?'<div id="redit" class="redit"></div>':''}<div class="roomscene${L.rFull?' full':''}${L.edit?' editing':''}"><div class="roomscroll">${roomSceneInner()}</div>${sceneHud()}${canEdit()&&!L.edit&&!L.rFull?`<button class="redbtn" onclick="editStart()"><b>✏️</b><span> Editar posições</span></button>`:''}<button class="rfullbtn" onclick="roomFull()">${L.rFull?'<b>✕</b><span> Sair</span>':'<b>⛶</b><span> Ecrã inteiro</span>'}</button><span class="rfullhint">📱 Vira o telemóvel para ver maior</span></div>
   <p class="hint center todinfo">👆 Toquem nas coisas do quarto: gira-discos, prateleira, móvel, molduras, quadro de recados, janela, luzes, animais… Agora é ${TODN[tnow]} em Portugal: o quarto segue a hora real. O sol nasce às ${n.f(n.rise)} e põe-se às ${n.f(n.set)}.</p>`;
   if(prev)h+=`<div class="rprev"><div><span class="mono">a experimentar</span><b>${esc(prev.n)}</b><em>${prev.lock?`🔒 Só com a missão a dois “${esc(lockM(prev).n)}”: ${esc(lockM(prev).d)}`:`♩ ${prev.p} BPM`}</em></div><div class="acts">${prev.lock?'':falta>0?`<button class="btn" disabled>Faltam ${falta} BPM</button>`:`<button class="btn" onclick="roomBuy('${prev.id}')">Comprar</button>`}<button class="btn ghost" onclick="L.rPrev=null;render()">Tirar</button></div></div>`;
   if(!ed)return h+`<div class="actions"><button class="btn" onclick="L.screen=null;render()">← Voltar</button></div>`;
   h+=`<div class="chips qtabs">${[['loja','🛍️ Loja'],['acess','🧺 Os meus acessórios'],['ganhar','♩ Como ganhar BPM']].map(([k,t])=>`<button class="chip ${L.rTab===k?'on':''}" onclick="L.rTab='${k}';L.rMsg='';render()">${t}</button>`).join('')}</div>`;
   if(L.rTab==='acess'){const it0=it=>{const isOn=onRoom(q,it.id);return `<button class="ritem ${isOn?'on':''}" onclick="roomTry('${it.id}')"><div class="rth">${itemThumb(it)}</div><b>${esc(it.n)}</b>${CUSTO[it.id]?`<small class="icost">🧾 −${CUSTO[it.id][2]} BPM por dia</small>`:''}<em>${isOn?(RFIX[it.s]?'✓ no quarto':'✓ no quarto · tocar para guardar'):'＋ pôr no quarto'}</em></button>`};
     const grupos=RSLOT.map(([k,nm,e])=>[k,nm,e,RITEMS.filter(x=>x.s===k&&ownsItem(0,x.id))]).filter(g=>RPOS[g[0]]?g[3].length:g[3].some(x=>x.p>0||x.lock));
-    h+=`<p class="hint">Tudo o que já é vosso. Toquem num acessório para o pôr no quarto, sem gastar BPM. Para o mudar de sítio ou guardar, toquem nele dentro do quarto.</p><div class="acesbtns"><button class="btn ghost sm" onclick="roomAct('movel')">💿 Os vossos discos (${discPlaces().own.length})</button></div>`;
+    h+=`<p class="hint">Tudo o que já é vosso. Toquem num acessório para o pôr no quarto, sem gastar BPM. Para o mudar de sítio usem ✏️ Editar posições no quarto.</p><div class="acesbtns"><button class="btn ghost sm" onclick="roomAct('movel')">💿 Os vossos discos (${discPlaces().own.length})</button></div>`;
     const AO=L.aOpen||(L.aOpen={});h+=grupos.length?grupos.map(([k,nm,e,its])=>{its=its.slice().sort((x,y)=>onRoom(q,y.id)-onRoom(q,x.id));const vis=AO[k]?its:its.slice(0,3);return `<h3 class="mcat">${e} ${esc(nm)} <small>${its.length}</small></h3><div class="rgrid acesg">${vis.map(it0).join('')}</div>${its.length>3?`<div class="mmore"><button class="btn ghost sm" onclick="L.aOpen['${k}']=${AO[k]?0:1};render()">${AO[k]?'Ver menos ▲':`Ver mais (${its.length-3}) ▼`}</button></div>`:''}`}).join(''):`<p class="hint center">Ainda não compraram acessórios além dos que vêm com o quarto. Vão à Loja!</p>`}
   if(L.rTab==='loja'||!L.rTab){const cat=L.rCat;
     {const T=RTEMAS.find(t=>t[3].includes(cat))||RTEMAS[0],CA=RCATALL();
@@ -3732,7 +3738,7 @@ function roomBubble(t,el){const sc=document.querySelector('.roomscene');if(!sc)r
   const d=document.createElement('div');d.className='rbubble';d.textContent=t;d.style.left=Math.max(50,Math.min(a.width-50,x))+'px';d.style.top=Math.max(8,y)+'px';sc.appendChild(d);setTimeout(()=>d.remove(),2400)}
 function roomOnce(sel,cls,ms){document.querySelectorAll(sel).forEach(e=>{e.classList.remove(cls);void e.getBoundingClientRect();e.classList.add(cls);setTimeout(()=>e.classList.remove(cls),ms||1400)})}
 function roomAct(k,ev){if(L.edit){if(ev)ev.stopPropagation();return}const el=ev&&ev.currentTarget,id=(el&&el.dataset&&el.dataset.id)||roomQ().eq[k];if(canEdit()&&FLIPOK.has(k)&&!RPOS[k]&&!LUZES.has(id))setTimeout(()=>flipChip(id,el),30);
-  if(canEdit()&&(RPOS[k]||k==='movel')){if(ev)ev.stopPropagation();if(!['prat','quadros','movel'].includes(k))roomAct0(k,ev);itemZoom(k,id);return}roomAct0(k,ev)}
+  if(canEdit()&&RPOS[k]&&!LUZES.has(id)&&FLIPOK.has(k)){roomAct0(k,ev);setTimeout(()=>flipChip(id,el),30);return}roomAct0(k,ev)}
 /* painel de um objeto do quarto: mudar de lugar (com pré-visualização) ou guardar */
 function itemZoom(k,id,sel){const q=roomQ(),mv=k==='movel';id=mv?q.eq.movel:id;const it=RIT[id];if(!it)return;
   const first=sel==null;
@@ -3827,7 +3833,7 @@ function luzZoom(id){const ed=canEdit(),pf=id==='plafon',it=pf?RIT[roomQ().eq.pl
   ${ed&&pf?`<div class="pfrow col"><span>Cor</span><div class="pfcores">${CL_CORES.map(([c,n])=>`<button class="${L_.c===c?'on':''}" style="--c:${c}" title="${n}" onclick="plafonSet({c:'${c}'})"><i></i><small>${n}</small></button>`).join('')}</div></div>
   <div class="pfrow col"><span>Intensidade · <b id="pfiv">${Math.round(L_.i*100)}%</b></span><input type="range" min="10" max="100" step="5" value="${Math.round(L_.i*100)}" oninput="plafonSet({i:this.value/100},1)"></div><p class="hint">Mais forte gasta mais por hora.</p>`:''}
   ${ed&&!pf?`<div class="pfrow col"><span>Intensidade dos candeeiros · <b id="liv">${Math.round(li*100)}%</b></span><input type="range" min="10" max="100" step="5" value="${Math.round(li*100)}" oninput="liSet(this.value/100)"></div>`:''}
-  <div class="izacts">${RPOS[k]&&ed?`<button class="btn ghost sm" onclick="editStart('${id}')">✏️ Mover</button>`:''}${flipBtn(id)}<button class="btn ghost sm" onclick="billsZoom()">🧾 Contas de todas as luzes</button></div></div>`,'sheet')}
+  <div class="izacts">${flipBtn(id)}<button class="btn ghost sm" onclick="billsZoom()">🧾 Contas de todas as luzes</button></div></div>`,'sheet')}
 function roomBills(){lightTick();if(!canEdit())return;const q=roomQ(),today=dayNum(lisNow().ymd);if(q.paid==null){q.paid=today;roomSave(q);return}
   const days=Math.min(CUSTO_DIAS,today-q.paid);if(days<=0)return;const v=days*billDay(q.eq);q.custo=(+q.custo||0)+v;q.paid=today;q.blog=[{d:today,n:days,v},...(q.blog||[])].slice(0,6);roomSave(q)}
 const roomDebt=()=>roomCoins()<0;
@@ -4634,7 +4640,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795611790';
+const BUILD='1795612532';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
