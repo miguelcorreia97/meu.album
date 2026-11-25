@@ -3491,16 +3491,16 @@ function offKey(k,id){if(FOLLOW[k]){const q=roomQ(),f=FOLLOW[k];if(k==='mesa'||k
 function offGet(key){const src=L.edit?L.edOff:(roomQ().off||{});const o=src&&src[key];if(L.edit&&!o)return {x:0,y:0,z:1};if(!o||(!o.x&&!o.y&&(o.z==null||o.z===1)))return null;return {x:Math.round(o.x||0),y:Math.round(o.y||0),z:o.z==null?1:o.z}}
 function fixZ(root){const C={};(root||document).querySelectorAll('g[data-zs]:not([data-zd])').forEach(g=>{try{const z=+g.dataset.z||1;if(z===1){g.dataset.zd=1;return}const k=g.dataset.zs;let a=C[k];if(!a){const b=g.getBBox();if(!b.width)return;a=C[k]=[b.x+b.width/2,b.y+b.height]}g.setAttribute('transform',`translate(${a[0]} ${a[1]}) scale(${z}) translate(${-a[0]} ${-a[1]})`);g.dataset.zd=1}catch(e){}})}
 new MutationObserver(()=>{if(document.querySelector('g[data-zs]:not([data-zd])'))requestAnimationFrame(()=>fixZ())}).observe(document.documentElement,{childList:true,subtree:true});
-function editStart(id){if(!canEdit())return;zoomClose();L.edit=1;L.edOff=JSON.parse(JSON.stringify(roomQ().off||{}));L.edSel=id||null;L.rFull&&roomFull(false);render();requestAnimationFrame(()=>{const sc=document.querySelector('.roomscene');if(sc){const r=sc.getBoundingClientRect();scrollTo({top:scrollY+r.top-70,behavior:'smooth'})}})}
-function editEnd(save){if(save){const q=roomQ();const o={};for(const k in L.edOff){const v=L.edOff[k];if(v&&(v.x||v.y||(v.z!=null&&v.z!==1)))o[k]={x:Math.round(v.x||0),y:Math.round(v.y||0),z:+(v.z||1).toFixed(2)}}q.off=o;roomSave(q);toast('✓ Posições guardadas')}L.edit=0;L.edOff=null;L.edSel=null;render()}
+function editStart(id){if(!canEdit())return;L.edBad={};L.edStart={};zoomClose();L.edit=1;L.edOff=JSON.parse(JSON.stringify(roomQ().off||{}));L.edSel=id||null;L.rFull&&roomFull(false);render();requestAnimationFrame(()=>{const sc=document.querySelector('.roomscene');if(sc){const r=sc.getBoundingClientRect();scrollTo({top:scrollY+r.top-70,behavior:'smooth'})}})}
+function editEnd(save){if(save&&Object.keys(L.edBad||{}).length){toast('⚠️ Afasta os objetos sobrepostos antes de confirmar');return}L.edBad={};L.edStart={};if(save){const q=roomQ();const o={};for(const k in L.edOff){const v=L.edOff[k];if(v&&(v.x||v.y||(v.z!=null&&v.z!==1)))o[k]={x:Math.round(v.x||0),y:Math.round(v.y||0),z:+(v.z||1).toFixed(2)}}q.off=o;roomSave(q);toast('✓ Posições guardadas')}L.edit=0;L.edOff=null;L.edSel=null;render()}
 function edKeyOf(id){const it=RIT[id];return it?offKey(it.s,id):'o:'+id}
 function edSel(id){L.edSel=id;edBar();document.querySelectorAll('.roomscene .ract').forEach(g=>g.classList.toggle('edsel',g.dataset.id===id))}
 function edZ(v){if(!L.edSel)return;const k=edKeyOf(L.edSel);L.edOff[k]={...(L.edOff[k]||{}),z:+v};const b=document.getElementById('edzv');if(b)b.textContent=Math.round(v*100)+'%';clearTimeout(edZ.t);edZ.t=setTimeout(()=>{roomRedraw();edSel(L.edSel)},40)}
 function edReset(){if(!L.edSel)return;delete L.edOff[edKeyOf(L.edSel)];roomRedraw();edSel(L.edSel)}
 function edBar(){const el=document.getElementById('redit');if(!el)return;const id=L.edSel,it=RIT[id],o=id?(L.edOff[edKeyOf(id)]||{}):{};
-  el.innerHTML=`<div class="edhead"><b>✏️ Editar posições</b><span>${it?esc(it.n):'Toca num objeto e arrasta-o. As coisas do chão ficam no chão, as da parede ficam na parede, e não se podem pôr umas em cima das outras.'}</span></div>
+  el.innerHTML=`<div class="edhead"><b>✏️ Editar posições</b><span>${it?esc(it.n):'Toca num objeto e arrasta-o. As coisas do chão ficam no chão e as da parede ficam na parede. Se um objeto ficar em cima de outro, fica transparente e não podes confirmar.'}</span></div>
   ${it?`<div class="edbtns">${FLIPOK.has(it.s)?`<button class="btn ghost sm" onclick="roomFlip('${id}');setTimeout(()=>edSel('${id}'),80)">↔ Virar</button>`:''}<button class="btn ghost sm" onclick="edReset()">↺ Repor</button>${RPOS[it.s]&&!RFIX[it.s]?`<button class="btn ghost sm" onclick="itemStore('${it.s}','${id}');setTimeout(edBar,60)">📦 Guardar</button>`:''}</div>`:''}
-  <div class="edbtns main"><button class="btn ghost" onclick="editEnd(0)">Cancelar</button><button class="btn" onclick="editEnd(1)">✓ Confirmar</button></div>`}
+  <p id="edwarn" class="hint" style="display:none;color:#ff9a8a;margin:6px 0 0">⚠️ Há objetos uns em cima dos outros (estão transparentes). Afasta-os para poderes confirmar.</p><div class="edbtns main"><button class="btn ghost" onclick="editEnd(0)">Cancelar</button><button class="btn" id="edok" onclick="editEnd(1)">✓ Confirmar</button></div>`;setTimeout(()=>{for(const k in L.edBad)edMark(k,1);edBtnState()},0)}
 const WALLS=new Set(['prat','quadros','poster','extra','suspensa','fita','teto']),FREE=new Set(['pet','mesa','planta2']);
 function edLimit(id,bb,x,y,px,py){const it=RIT[id]||{},k=it.s,L0=bb.x+x,R0=bb.x+bb.width+x,T0=bb.y+y,B0=bb.y+bb.height+y;
   const win=(l,r,t,b)=>!(r<WX-8||l>WX+WW+8||b<WY-8||t>WY+WH+16);
@@ -3513,12 +3513,18 @@ const edGroup=k=>WALLS.has(k)?'w':FREE.has(k)?null:k==='tapete'?'r':'f';
 function edObstacles(svg,key,grp){const out=[];if(!grp)return out;const seen=new Set([key]);svg.querySelectorAll('.ract[data-id]').forEach(g=>{const id=g.dataset.id,it=RIT[id];if(!it)return;const k2=edKeyOf(id);if(seen.has(k2))return;seen.add(k2);
   if(edGroup(it.s)!==grp||NOEDIT.has(it.s))return;const w=svg.querySelector(`[data-off="${k2}"]`);if(!w)return;try{const b=w.getBBox(),o=L.edOff[k2]||{};out.push([b.x+(o.x||0)+5,b.y+(o.y||0)+5,b.x+b.width+(o.x||0)-5,b.y+b.height+(o.y||0)-5])}catch(e){}});return out}
 const hit=(a,b)=>!(a[2]<b[0]||a[0]>b[2]||a[3]<b[1]||a[1]>b[3]);
+/* sobreposições: deixa passar por cima, mas o objeto fica transparente e não se pode confirmar */
+L.edBad=L.edBad||{};L.edStart=L.edStart||{};
+function edMark(key,bad,els){if(bad)L.edBad[key]=1;else delete L.edBad[key];(els||document.querySelectorAll(`.roomscene [data-off="${key}"]`)).forEach(n=>n.style.opacity=bad?'.38':'');edBtnState()}
+function edBtnState(){const b=document.getElementById('edok'),n=Object.keys(L.edBad||{}).length;if(b){b.disabled=!!n;b.title=n?'Há objetos sobrepostos':''}const w=document.getElementById('edwarn');if(w)w.style.display=n?'block':'none'}
+function edRecheck(){const svg=document.querySelector('.roomscene .roomsvg');if(!svg)return;for(const key of Object.keys(L.edBad)){const id=key.slice(2),it=RIT[id];if(!it){delete L.edBad[key];continue}const w=svg.querySelector(`[data-off="${key}"]`);if(!w)continue;let b;try{b=w.getBBox()}catch(e){continue}const o=L.edOff[key]||{},bx=[b.x+(o.x||0)+5,b.y+(o.y||0)+5,b.x+b.width+(o.x||0)-5,b.y+b.height+(o.y||0)-5];
+  const obs=edObstacles(svg,key,edGroup(it.s)),st=L.edStart[key]||[];edMark(key,obs.some(q=>!st.some(t=>t[0]===q[0]&&t[1]===q[1])&&hit(bx,q)))}}
 function edPointerDown(e){if(!L.edit)return;const g=e.target.closest&&e.target.closest('.ract');if(!g)return;const id=g.dataset.id,it=RIT[id];if(!it||NOEDIT.has(it.s))return;e.preventDefault();e.stopPropagation();edSel(id);
   const svg=g.ownerSVGElement,key=edKeyOf(id),st=L.edOff[key]||{},x0=st.x||0,y0=st.y||0,sx=e.clientX,sy=e.clientY,sc=1080/svg.getBoundingClientRect().width;let moved=0;
-  const els=[...svg.querySelectorAll(`[data-off="${key}"]`)];let bb=null;try{bb=els[0]&&els[0].getBBox()}catch(_){}let lx=x0,ly=y0;const obs=bb?edObstacles(svg,key,edGroup(it.s)):[],box=(x,y)=>[bb.x+x+5,bb.y+y+5,bb.x+bb.width+x-5,bb.y+bb.height+y-5],start=bb?obs.filter(o=>hit(box(x0,y0),o)):[];
+  const els=[...svg.querySelectorAll(`[data-off="${key}"]`)];let bb=null;try{bb=els[0]&&els[0].getBBox()}catch(_){}let lx=x0,ly=y0;const obs=bb?edObstacles(svg,key,edGroup(it.s)):[],box=(x,y)=>[bb.x+x+5,bb.y+y+5,bb.x+bb.width+x-5,bb.y+bb.height+y-5],start=bb?(L.edStart[key]=L.edStart[key]||obs.filter(o=>hit(box(x0,y0),o))):[];
   if(!els.length){L.edOff[key]={...st,x:0,y:0,z:st.z||1};roomRedraw();edSel(id);return}
-  const mv=ev=>{const dx=(ev.clientX-sx)*sc,dy=(ev.clientY-sy)*sc;if(Math.abs(dx)+Math.abs(dy)>2)moved=1;let [nx,ny]=bb?edLimit(id,bb,x0+dx,y0+dy,lx,ly):[x0+dx,y0+dy];if(bb){const bad=(x,y)=>obs.some(o=>!start.includes(o)&&hit(box(x,y),o));if(bad(nx,ny)){if(!bad(nx,ly))ny=ly;else if(!bad(lx,ny))nx=lx;else{nx=lx;ny=ly}}}lx=nx;ly=ny;L.edOff[key]={...(L.edOff[key]||{}),x:nx,y:ny};els.forEach(n=>n.setAttribute('transform',`translate(${nx} ${ny})`))};
-  const up=()=>{removeEventListener('pointermove',mv);removeEventListener('pointerup',up);removeEventListener('pointercancel',up)};
+  const mv=ev=>{const dx=(ev.clientX-sx)*sc,dy=(ev.clientY-sy)*sc;if(Math.abs(dx)+Math.abs(dy)>2)moved=1;let [nx,ny]=bb?edLimit(id,bb,x0+dx,y0+dy,lx,ly):[x0+dx,y0+dy];lx=nx;ly=ny;L.edOff[key]={...(L.edOff[key]||{}),x:nx,y:ny};els.forEach(n=>n.setAttribute('transform',`translate(${nx} ${ny})`));if(bb){const b2=box(nx,ny),isBad=obs.some(o=>!start.some(t=>t[0]===o[0]&&t[1]===o[1])&&hit(b2,o));edMark(key,isBad,els)}};
+  const up=()=>{setTimeout(edRecheck,30);removeEventListener('pointermove',mv);removeEventListener('pointerup',up);removeEventListener('pointercancel',up)};
   addEventListener('pointermove',mv);addEventListener('pointerup',up);addEventListener('pointercancel',up)}
 document.addEventListener('pointerdown',edPointerDown,true);
 function roomSceneInner(){const o={};if(L.rPrev){const ps=RIT[L.rPrev].s;o.eq={[ps]:L.rPrev};if(ps==='lencol'&&L.bedLook)o.eq.cama=L.bedLook;if(ps==='cama'&&L.lenLook)o.eq.lencol=L.lenLook}if(L.rTodV)o.tod=L.rTodV;return roomSvg(0,o)}
@@ -4672,7 +4678,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795613771';
+const BUILD='1795613893';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
