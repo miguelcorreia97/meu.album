@@ -1127,10 +1127,11 @@ body.fx-on #beach .glints,body.fx-on #beach .gull{display:none}
 html,body{overflow-x:hidden!important;overflow-y:auto!important;position:static!important;height:auto!important}
 #fxbg canvas{position:fixed!important;inset:0}
 /* fundo: só a foto de Piúma */
-#beach .ph1{background-image:url(fundo/vitoria.jpg)!important;opacity:1!important;animation:kb1 40s ease-in-out infinite alternate!important;background-position:30% 62%}
-#beach .seashim{display:none!important}
+#beach .ph1{background-image:repeating-radial-gradient(circle at 50% 118%,rgba(255,236,200,0) 0 9px,rgba(255,236,200,.045) 9px 10px),radial-gradient(70% 55% at 50% 112%,#ffd27a 0%,#f29a45 22%,rgba(214,96,52,.9) 42%,rgba(120,44,52,0) 70%),linear-gradient(180deg,#1c1230 0%,#3a1a3a 38%,#7a2e3a 70%,#b8502e 100%)!important;background-size:auto!important;opacity:1!important;animation:none!important;filter:none!important}
+#beach .ph1::after{content:'';position:absolute;inset:0;background:radial-gradient(130% 90% at 50% 40%,transparent 55%,rgba(10,4,12,.55) 100%)}
+#beach .ph2,#beach .ph3,#beach .seashim{display:none!important}
 @keyframes kb1{from{transform:scale(1.04) translate(0,0)}to{transform:scale(1.16) translate(-2%,1.5%)}}
-#beach .sunbloom{position:absolute;left:24%;top:62%;width:60vmax;height:60vmax;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(255,230,140,.55),rgba(255,180,60,.18) 30%,transparent 60%);mix-blend-mode:screen;animation:bloom 7s ease-in-out infinite}
+#beach .sunbloom{position:absolute;left:50%;top:100%;width:60vmax;height:60vmax;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(255,230,140,.55),rgba(255,180,60,.18) 30%,transparent 60%);mix-blend-mode:screen;animation:bloom 7s ease-in-out infinite}
 @keyframes bloom{50%{opacity:.6;transform:translate(-50%,-50%) scale(1.08)}}
 #beach .seashim{position:absolute;left:52%;width:24%;top:45%;bottom:0;background:repeating-linear-gradient(180deg,rgba(255,225,130,.0) 0 6px,rgba(255,225,130,.35) 6px 8px,rgba(255,225,130,0) 8px 16px);mix-blend-mode:screen;filter:blur(1.5px);-webkit-mask:radial-gradient(ellipse 50% 60% at 50% 20%,#000,transparent 75%);mask:radial-gradient(ellipse 50% 60% at 50% 20%,#000,transparent 75%);animation:shim 3s linear infinite}
 @keyframes shim{to{background-position:0 16px}}
@@ -4671,7 +4672,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795613565';
+const BUILD='1795613771';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
