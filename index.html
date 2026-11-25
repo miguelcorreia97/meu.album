@@ -1742,6 +1742,9 @@ body,#app{overflow-x:clip}
 .festa .fcard img,.festa .fnow img,.festa .fmixrow img{filter:blur(calc(max(0,var(--dz,0) - .25) * 10px));transition:filter 1.5s}
 
 .fskip{margin-top:6px;grid-column:2;justify-self:start}
+.festa .fcards{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:5px!important}.festa .fcardw .fcard{padding:4px 6px!important;gap:6px}.festa .fcard img{width:42px!important;height:42px!important}.festa .fcard .fchips{display:none}.festa .fct b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}.festa .fct small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}.festa .fmini{font-size:.62rem!important}
+.festa .fcardw,.festa .fcard,.festa .fcinfo,.festa .fct{min-width:0}.festa .fcard{width:100%;overflow:hidden}
+@media(max-width:600px){.festa .fcards{grid-template-columns:repeat(2,minmax(0,1fr))!important}.festa .fcard img{width:32px!important;height:32px!important}.festa .fmini{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}.festa .fct b{font-size:.74rem}.festa .fct small{font-size:.62rem}}
 .rszchip{display:flex;gap:4px;padding:4px!important;cursor:default!important}.rszchip button{border:0;border-radius:99px;padding:5px 9px;background:rgba(255,255,255,.1);color:var(--cream);font:inherit;font-size:.74rem;font-weight:700;cursor:pointer}.rszchip button.on{background:var(--cream);color:#2a1608}
 .rplacechip{position:absolute;transform:translate(-50%,0);z-index:4;padding:7px 12px;border-radius:99px;border:1px solid rgba(255,214,150,.5);background:rgba(20,10,4,.88);color:var(--cream);font:inherit;font-size:.78rem;font-weight:700;cursor:pointer;white-space:nowrap;box-shadow:0 6px 18px rgba(0,0,0,.4);animation:rzIn .2s ease}
 .rplaces.big button{font-size:.9rem;padding:11px 12px}
@@ -4702,7 +4705,7 @@ const songPool=()=>{if(songPool._p)return songPool._p;songPool._p=SONGS.map((_,i
 const GEN_REL={samba:['samba','suingue','mpb','nordeste'],suingue:['suingue','samba','pop','mpb','reggae'],mpb:['mpb','bossa','samba','pop'],bossa:['bossa','mpb','samba'],pop:['pop','mpb','suingue','rock'],rock:['rock','pop','mpb'],reggae:['reggae','pop','suingue'],nordeste:['nordeste','samba','mpb']};
 function feDeal(F,n){const okp=songPool().filter(i=>{const u=fePvGet(i);return feFull(i)||(u&&u.length>4)});let pool=okp.length>=12?okp:(()=>{const q=songPool().filter(i=>fePvGet(i)!=='');return q.length>=12?q:songPool()})();const out=[];
   {const vp=pool.filter(i=>feOk(F,i)&&!F.used.includes(i));pool=vp.length>=4?vp:songPool().filter(i=>feOk(F,i)&&fePvGet(i)!=='')}
-  if(F.lastG){const fit=(d,rel)=>pool.filter(i=>{const e=ev(i);return !F.used.includes(i)&&Math.abs(e.en-F.lastEn)<=d&&(!rel||(GEN_REL[F.lastG]||[]).includes(e.gen))});const a=fit(1,1),b=fit(1,0),c=fit(2,1);pool=a.length>=6?a:b.length>=6?b:c.length>=6?c:pool}let guard=0;while(out.length<n&&guard++<200){const i=pool[(Math.random()*pool.length)|0];if(!F.used.includes(i)&&!out.includes(i))out.push(i)}
+  if(F.lastG){const fit=(d,rel)=>pool.filter(i=>{const e=ev(i);return !F.used.includes(i)&&Math.abs(e.en-F.lastEn)<=d&&(!rel||(GEN_REL[F.lastG]||[]).includes(e.gen))});const a=fit(1,1),b=fit(1,0),c=fit(2,1);pool=a.length>=9?a:b.length>=9?b:c.length>=9?c:pool}let guard=0;while(out.length<n&&guard++<200){const i=pool[(Math.random()*pool.length)|0];if(!F.used.includes(i)&&!out.includes(i))out.push(i)}
   /* garante que pelo menos uma serve para o acontecimento ou para o público */
   {const fulls=pool.filter(i=>feFull(i)&&!F.used.includes(i)&&!out.includes(i));if(fulls.length&&!out.some(i=>feFull(i))&&Math.random()<.65)out[out.length-1]=fulls[(Math.random()*fulls.length)|0]}
   const ev_=FEN[F.i].evs[F.round];if(ev_&&!out.some(i=>{try{return ev_.ok(ev(i),F,song(i))}catch(e){return false}})){const c=pool.filter(i=>!F.used.includes(i)&&feOk(F,i)).find(i=>{try{return ev_.ok(ev(i),F,song(i))}catch(e){return false}});if(c!=null)out[0]=c}return out.sort(()=>Math.random()-.5)}
@@ -4728,7 +4731,7 @@ function feRound(){const F=L.fe;if(!F)return;if(F.round>60){feEnd();return}const
   /* um pedido de alguém na pista */
   const on=F.crowd.filter(c=>c.on);F.req=Math.random()<.75&&on.length?(()=>{const c=on[(Math.random()*on.length)|0];return {c:F.crowd.indexOf(c),g:c.pref}})():null;
   const gens=Object.keys(GEN_N);F.wh=[];const on2=F.crowd.filter(c=>c.on);for(let k=0;k<2&&on2.length;k++){const c=on2[(Math.random()*on2.length)|0],ci=F.crowd.indexOf(c);if(F.req&&F.req.c===ci)continue;const g=Math.random()<.7?c.pref:gens[(Math.random()*gens.length)|0];F.wh.push({c:ci,t:[`Apetecia-me um ${GEN_N[g].toLowerCase()}…`,`Hoje estou mais para ${GEN_N[g].toLowerCase()}, acho eu`,`Será que ele tem ${GEN_N[g].toLowerCase()}?`,`Uma coisa ${e_en(c)}… ou não`][(Math.random()*4)|0]})}
-  F.turn='me';F.ph='pick';F.opts=feDeal(F,3);F.opts.forEach(i=>fePv(i));F.msg=E?{t:E.t,k:'ev'}:null;feDraw();if(E&&E.fx)feFx(E.fx)}
+  F.turn='me';F.ph='pick';F.opts=feDeal(F,6);F.opts.forEach(i=>fePv(i));F.msg=E?{t:E.t,k:'ev'}:null;feDraw();if(E&&E.fx)feFx(E.fx)}
 const e_en=c=>c.h>60?'mais mexida':'mais calma';
 function feScore(i,F,who,mixQ){const e=ev(i),s=song(i),N=FEN[F.i];let pts=e.nota,notes=[];
   const on=F.crowd.filter(c=>c.on),fit=on.length?on.filter(c=>c.pref===e.gen).length/on.length:0;pts+=fit*8;if(fit>=.4)notes.push('💃 O público adora '+GEN_N[e.gen]);
@@ -4747,7 +4750,7 @@ function feMix(late){const F=L.fe;if(!F||F.ph!=='mix')return;clearTimeout(F.mixT
   const d=Math.abs(pos-.5),q=late?'falhou':d<.06?'perfeito':d<.16?'bom':'falhou';F.ph='play';if(FA.pre){FA.pre.pause();FA.pre=null}const sil=F.tEnd?Math.max(0,Math.floor((Date.now()-F.tEnd)/1000)):0;F.silT=0;const r=feScore(F.sel,F,'me',q);const liked=r.pts>=FE_PAR[CAR[F.i].lvl];const full=feFull(F.sel);let dur=liked?(full?Math.min(150000,(feFull.d[F.sel]||200)*1000):75000):40000;const nl=F.t0+FE_NIGHT-Date.now();if(nl<dur+35000){dur=Math.max(30000,nl);F.lastTrack=1}F.dur=dur;F.tEnd=Date.now()+dur;F.liked=liked;fePlay(F.sel,q,dur);if(sil>0){r.notes.unshift(`🔇 ${sil}s de silêncio na pista`)}F.hype[0]+=r.pts;
   const dn=Math.max(-2.4,Math.min(.95,(r.pts-FE_PAR[CAR[F.i].lvl])/3.8))-Math.min(3.2,.15*sil),n0=F.nota;F.nota=Math.max(0,Math.min(10,Math.round((F.nota+dn)*10)/10));F.hist.push(F.nota);F.last={who:'me',...r,q,i:F.sel,dn:Math.round((F.nota-n0)*10)/10,liked};
   if(q==='falhou')feFx('scratch');feDraw();feFloat(F.last.dn,'me');}
-function feRival(){const F=L.fe;if(!F)return;F.turn='riv';F.ph='rival';F.msg=null;const lvl=CAR[F.i].lvl,opts=feDeal(F,3);
+function feRival(){const F=L.fe;if(!F)return;F.turn='riv';F.ph='rival';F.msg=null;const lvl=CAR[F.i].lvl,opts=feDeal(F,6);
   const noise={facil:5,normal:3,dificil:1.5}[lvl];let best=null,bs=-1e9;opts.forEach(i=>{const sim={...F,crowd:F.crowd.map(c=>({...c})),noise:F.noise};const e=ev(i);const on=F.crowd.filter(c=>c.on);let v=e.nota+(on.length?on.filter(c=>c.pref===e.gen).length/on.length*8:0)+Math.random()*noise;try{v+=(FEN[F.i].rule(e,sim,song(i))||{p:0}).p}catch(x){}if(v>bs){bs=v;best=i}});
   const q=Math.random()<({facil:.25,normal:.45,dificil:.65}[lvl])?'perfeito':Math.random()<.7?'bom':'falhou';F.ev_=F.ev;F.ev=null;
   feDraw();setTimeout(()=>{if(L.fe!==F)return;const r=feScore(best,F,'riv',q);F.hype[1]+=r.pts;F.last={who:'riv',...r,q,i:best};F.ph='rivplay';if(q==='falhou')feFx('scratch');feDraw();feFloat(r.pts,'riv');
@@ -4906,7 +4909,7 @@ function feDeskTick(F){const now=Date.now();if(F.ph!=='play'&&F.ph!=='pick')retu
   if((F.alc||0)>=.45&&Math.random()<.012*F.alc*4){try{fsSfx('hic')}catch(e){}}try{feDistUpd(F,now);if(FSX.lp)FSX.lp.frequency.setTargetAtTime(Math.max(900,18000-(F.alc||0)*14000),FSX.ctx.currentTime,.5)}catch(e){}
   if(F.alc>0){const dt=(now-(F.alcT||now))/60000;F.alc=Math.max(0,F.alc-dt*(L20[F.i].h[1]-L20[F.i].h[0])/10*.15);if(!F.aU||now-F.aU>1500){F.aU=now;feAlcUpd(F)}}F.alcT=now;
   if(feFracT(F)>.15&&F.nota<2){if(!F.badT){F.badT=now;feToastF('⚠️ O dono está a olhar para ti de lado…',false)}else if(now-F.badT>12000&&!F.badW){F.badW=1;feToastF('😠 "Mais uma destas e vais para a rua!"',false)}else if(now-F.badT>25000){feExpel('mau');return}}else{F.badT=0;F.badW=0}
-  if(playing&&(!F.vT||now-F.vT>5000)){F.vT=now;const off=Math.abs((F.vol==null?1:F.vol)-L20[F.i].vol);if(off===0)feBump(.04,'',false);else{feBump(off===1?-.05:-.12,'',false);if(Math.random()<.45)feToastF(L20[F.i].vol>(F.vol==null?1:F.vol)?'🔈 "Não se ouve nada!"':'🔊 "Está alto demais!"',false)}}
+  if(playing&&F.last&&(!F.vT||now-F.vT>5000)){F.vT=now;const off=Math.abs((F.vol==null?1:F.vol)-L20[F.i].vol);if(off===0)feBump(.04,'',false);else{feBump(off===1?-.05:-.12,'',false);if(Math.random()<.45)feToastF(L20[F.i].vol>(F.vol==null?1:F.vol)?'🔈 "Não se ouve nada!"':'🔊 "Está alto demais!"',false)}}
   if(F.ask&&now>F.ask.until){const a=F.ask;F.ask=null;feBump(-.25,'⌛ Ignoraste o pedido',false)}
   if(!F.ask&&playing&&F.ph==='play'&&(!F.aT||now-F.aT>12000)&&Math.random()<.1){F.aT=now;const dk=!F.dT||now-F.dT>14000?Math.random()<.65:Math.random()<.2;if(dk)F.dT=now;F.ask={...(dk?feDrinkAsk():FE_ASKS[(Math.random()*FE_ASKS.length)|0](F)),until:now+9000,dk};try{dk?fsSfx('offer'):fsSfx('ping')}catch(e){}const w=document.querySelector('.fdesk2');if(w){const t=document.createElement('div');t.innerHTML=feDesk(F);w.replaceWith(t.firstChild)}}}
 function fsHorn(){if(!SND.on)return;const c=fsCtx();if(!c)return;const lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=3400;lp.connect(c.destination);const t0=c.currentTime+.03;
@@ -5822,7 +5825,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795646817';
+const BUILD='1795649339';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
