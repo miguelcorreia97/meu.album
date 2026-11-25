@@ -1726,6 +1726,13 @@ body,#app{overflow-x:clip}
 .falc.mid b{color:#f6b24a}.falc.bad b{color:#ff6a5a;animation:pulse 1s infinite}.falcl{font-style:normal;font-size:.7rem;padding:1px 6px;border-radius:99px;background:rgba(255,255,255,.12)}
 .fstagew.tipsy{animation:tipsy 6s ease-in-out infinite}.fstagew.drunk{animation:tipsy 3s ease-in-out infinite}.festa .fstagew{filter:blur(calc(max(0,var(--dz,0) - .2) * 3px)) saturate(calc(1 + var(--dz,0) * .3));transition:filter 1.5s}.festa .fask span,.festa .freqbar,.festa .fevent,.festa .fcards,.ftoast{filter:blur(calc(max(0,var(--dz,0) - .35) * 1.5px));transition:filter 1.5s}@keyframes tipsy{0%,100%{transform:rotate(0) translateX(0)}25%{transform:rotate(.6deg) translateX(3px)}75%{transform:rotate(-.6deg) translateX(-3px)}}
 .fend.exp h2{color:#ff6a5a}@media(prefers-reduced-motion:reduce){.fstagew.tipsy,.fstagew.drunk{animation:none}}
+.fshow{position:absolute;inset:0;pointer-events:none;z-index:6;overflow:hidden;mix-blend-mode:screen;animation:fshowIn .8s ease-out}.fshow.day{opacity:.45}@keyframes fshowIn{from{opacity:0}}
+.fshow .fwash{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 100%,rgba(255,61,127,.35),transparent 60%);animation:fwash 4s linear infinite}@keyframes fwash{0%{filter:hue-rotate(0)}100%{filter:hue-rotate(360deg)}}
+.fbeam{position:absolute;top:-6%;left:var(--x);width:46px;height:120%;margin-left:-23px;transform-origin:50% 0;background:linear-gradient(to bottom,var(--c),transparent 85%);clip-path:polygon(42% 0,58% 0,100% 100%,0 100%);opacity:.55;filter:blur(2px);animation:fbeam var(--t) ease-in-out var(--dl) infinite alternate}@keyframes fbeam{from{transform:rotate(var(--a0))}to{transform:rotate(var(--a1))}}
+.fball{position:absolute;top:2%;left:50%;width:30px;height:30px;margin-left:-15px;border-radius:50%;background:repeating-conic-gradient(#fff 0 12deg,#9aa6b8 12deg 24deg);box-shadow:0 0 22px #fff,0 0 50px rgba(255,255,255,.6);animation:fball 2.5s linear infinite}@keyframes fball{to{transform:rotate(360deg)}}
+.fshow u{position:absolute;left:var(--x);top:var(--y);width:6px;height:6px;border-radius:50%;background:var(--c);box-shadow:0 0 10px var(--c);animation:fspark 1.6s ease-in-out var(--dl) infinite}@keyframes fspark{0%,100%{opacity:0;transform:translate(0,0)}50%{opacity:1;transform:translate(14px,6px)}}
+.fshow s{position:absolute;bottom:2%;left:var(--x);width:120px;height:34px;margin-left:-60px;border-radius:50%;background:radial-gradient(var(--c),transparent 70%);opacity:.7;animation:fspot var(--t) ease-in-out var(--dl) infinite alternate}@keyframes fspot{to{transform:translateX(90px)}}
+@media(prefers-reduced-motion:reduce){.fshow *{animation:none!important}}
 .rszchip{display:flex;gap:4px;padding:4px!important;cursor:default!important}.rszchip button{border:0;border-radius:99px;padding:5px 9px;background:rgba(255,255,255,.1);color:var(--cream);font:inherit;font-size:.74rem;font-weight:700;cursor:pointer}.rszchip button.on{background:var(--cream);color:#2a1608}
 .rplacechip{position:absolute;transform:translate(-50%,0);z-index:4;padding:7px 12px;border-radius:99px;border:1px solid rgba(255,214,150,.5);background:rgba(20,10,4,.88);color:var(--cream);font:inherit;font-size:.78rem;font-weight:700;cursor:pointer;white-space:nowrap;box-shadow:0 6px 18px rgba(0,0,0,.4);animation:rzIn .2s ease}
 .rplaces.big button{font-size:.9rem;padding:11px 12px}
@@ -4818,7 +4825,7 @@ const VOLN=['🔈 Baixo','🔉 Médio','🔊 Alto'];
 function feAct(k){const F=L.fe;if(!F||(F.ph!=='play'&&F.ph!=='pick')||!F.last)return;fsCtx();const e=F.last.e,N=FEN[F.i],loud=L20[F.i].vol===2,calm=L20[F.i].vol===0;F.used2=F.used2||{};const key=k+':'+F.round;if(F.used2[key]){toast('Já usaste isso nesta música');return}F.used2[key]=1;
   let d=0,m='';const night=feSkyH(F).night,fit=F.crowd.filter(c=>c.on&&c.pref===e.gen).length/Math.max(1,F.crowd.filter(c=>c.on).length);
   if(k==='horn'){if(loud&&e.en>=4){d=.45;m='📣 A pista explodiu!'}else if(calm){d=-.6;m='📣 Credo! Que susto…'}else{d=e.en>=4?.15:-.35;m=e.en>=4?'📣 Boa!':'📣 Fora de tempo…'}fsHorn()}
-  if(k==='luz'){if(night&&e.en>=3){d=.3;m='💡 Que luzes!'}else if(!night){d=-.15;m='💡 Ainda é de dia…'}else{d=.05;m='💡 Bonito'}}
+  if(k==='luz'){const st=document.querySelector('.fstage');if(st&&!st.querySelector('.fshow')){const t=document.createElement('div');t.innerHTML=feShowHtml(night);st.querySelector('.fbooth2').before(t.firstChild)}if(night&&e.en>=3){d=.3;m='💡 Que luzes!'}else if(!night){d=-.15;m='💡 Ainda é de dia…'}else{d=.05;m='💡 Bonito'}}
   if(k==='mic'){const din=FEN[F.i].regra.includes('jantar')&&feFracT(F)<.5;if(din){d=-.4;m='🎤 Estão a jantar…'}else if(fit>=.45){d=.35;m='🎤 "Boa noite, '+esc(L20[F.i].cid.split(',')[0])+'!" A malta respondeu!'}else{d=-.1;m='🎤 Silêncio constrangedor…'}}
   if(k==='ded'){if(e.tags.includes('amor')){d=.3;m='💞 Dedicatória aos casais!'}else{d=-.15;m='💞 Hmm, esta música não é de amor…'}}
   feBump(d,m,d>0)}
@@ -4865,6 +4872,9 @@ function fsApplause(){const c=fsCtx();if(!c)return;try{FSX.g.gain.cancelSchedule
   for(let k=0;k<6;k++){const tt=t+.3+Math.random()*2.5;fsTone(tt,'sine',700+Math.random()*300,1300+Math.random()*400,.35,.03)}
   setTimeout(()=>fsStop(),7000)}
 
+
+function feShowHtml(night){const cols=['#ff3d7f','#3dd6ff','#ffd23f','#7cff6b','#b36bff','#ff8a3d'];
+  return `<div class="fshow ${night?'nt':'day'}"><div class="fwash"></div>${cols.map((c,k)=>`<i class="fbeam" style="--c:${c};--x:${8+k*17}%;--a0:${k%2?-28:28}deg;--a1:${k%2?22:-22}deg;--t:${2.2+(k%3)*.7}s;--dl:${-k*.4}s"></i>`).join('')}<b class="fball"></b>${[...Array(14)].map((_,k)=>`<u style="--x:${(k*37)%96+2}%;--y:${(k*53)%70+5}%;--c:${cols[k%6]};--dl:${-(k*.23).toFixed(2)}s"></u>`).join('')}${cols.slice(0,4).map((c,k)=>`<s style="--c:${c};--x:${15+k*22}%;--t:${3+k*.6}s;--dl:${-k}s"></s>`).join('')}</div>`}
 function feScene(F){const N=FEN[F.i],c=CAR[F.i],on=F.crowd.filter(x=>x.on).length,energy=F.last?F.last.e.en:2;
   const sky=feSkyH(F),playing=F.ph==='play'||F.ph==='rivplay';
   const crowd=F.crowd.map((x,k)=>{const st=x.on?(x.like&&playing?'hype':'on'):'off',m=x.h>70?3:x.h>45?2:x.h>25?1:0;const left=x.on?x.x:(k%2?93+((k*7)%5):2+((k*7)%5)),bot=x.on?2+x.y*8:28+(k%3)*2;
@@ -4873,7 +4883,7 @@ function feScene(F){const N=FEN[F.i],c=CAR[F.i],on=F.crowd.filter(x=>x.on).lengt
   const hm=F.nota>=feMeta(F.i)?3:F.nota>=feMeta(F.i)-1.5?2:F.nota>=3?1:0;
   return `<div class="fstage c-${N.cena} e${energy} ${playing?'playing':''} ${sky.night?'night':''}" style="--cc:${c.cor}">${feBg(N.cena,sky,F)}
    ${N.cena==='terraco'&&F.rain?'<div class="fdrizzle"></div>':''}
-   <div class="flights">${energy>=3&&playing?'<i></i><i></i><i></i>':''}</div>
+   <div class="flights">${energy>=3&&playing?'<i></i><i></i><i></i>':''}</div>${playing&&F.used2&&F.used2['luz:'+F.round]?feShowHtml(sky.night):''}
    <div class="fdj me ${playing?'live':''}">${personSvg(F.me,3)}<span class="fbadge">${esc(ME?ME.e:'🙂')}</span></div>
    <div class="fbooth2">${feBooth(c.cor,playing)}</div>
    <div class="fdj host">${personSvg(F.riv,hm)}<span class="fbadge">${c.e}</span><span class="fhost">${esc(c.dj)}</span></div>
@@ -5766,7 +5776,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795644474';
+const BUILD='1795644831';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
