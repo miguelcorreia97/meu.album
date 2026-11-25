@@ -1636,6 +1636,24 @@ body,#app{overflow-x:clip}
 @media(max-width:600px){.ftimer{top:auto;bottom:8px}.ftimer small{display:none}}
 .fnextin{display:block;font-size:.76rem;color:#ffd23f;margin-top:6px;grid-column:2}
 .fnl span{font-weight:800;opacity:.8}.fpts{white-space:nowrap}.fpts small{font-size:.9rem;opacity:.7}
+
+.bkstage{min-height:470px!important;padding:0!important}.bkcounter{display:none}
+.bktable{position:absolute;left:0;right:0;bottom:0;height:42%;z-index:4}.bktfront{position:absolute;left:2%;right:2%;bottom:0;height:34%;background:linear-gradient(180deg,#8a5a32,#5a3418);border-top:6px solid #b07a48;border-radius:4px 4px 0 0;display:grid;place-items:center;box-shadow:0 -4px 12px rgba(0,0,0,.3)}.bktfront span{font-family:Anton,sans-serif;font-size:clamp(.7rem,1.8vw,1rem);letter-spacing:.25em;color:#f4e2c0;opacity:.85;padding:3px 14px;border:2px dashed rgba(244,226,192,.5);border-radius:6px}
+.bkrack{position:absolute;left:24%;right:3%;bottom:30%;display:grid;grid-template-columns:repeat(8,1fr);gap:8px;align-items:end}.bkrack .bkv{transform-origin:50% 100%;transform:perspective(500px) rotateX(10deg);transition:transform .25s}.bkrack .bkv:hover{transform:perspective(500px) rotateX(0) translateY(-8px)}.bkrack .bkv.on{transform:perspective(500px) rotateX(0) translateY(-16px) scale(1.06)}
+.bkrack .bkv img{position:relative;z-index:1}.bkrec{position:absolute;top:4%;left:18%;width:78%;aspect-ratio:1;border-radius:50%;background:repeating-radial-gradient(#111 0 2px,#262626 2px 4px);z-index:0;transition:left .3s}.bkrack .bkv:hover .bkrec,.bkrack .bkv.on .bkrec{left:42%}.bkrec::after{content:'';position:absolute;inset:38%;border-radius:50%;background:#d9473a}
+.bkrack .bkv small{color:#f4e2c0;font-weight:600;text-shadow:0 1px 3px #000}.bkp{z-index:2}.bkr{z-index:2}
+.bkcust{top:auto!important;bottom:6%!important;left:2%!important;z-index:6!important;width:auto!important;max-width:72%}.bkcust .bkfig{width:120px}.bkside{align-self:flex-start;margin-top:0!important}
+.bkcust.walking .pleg{animation:step .3s ease-in-out 3 alternate;transform-box:fill-box;transform-origin:50% 0}
+.bkvendor{right:5%!important;bottom:36%!important;z-index:3!important}
+.bkqueue{position:absolute;left:1%;bottom:30%;z-index:2;display:flex;align-items:flex-end;gap:4px;opacity:.75;filter:saturate(.7)}.bkqp{width:44px;aspect-ratio:60/124;transform:translateX(calc(var(--n)*-8px));animation:bob 2.6s calc(var(--n)*.4s) ease-in-out infinite}.bkqueue small{position:absolute;top:-16px;left:0;font-size:.62rem;opacity:.8;white-space:nowrap}
+.bkcust ~ .bkqueue{left:16%}
+@media(max-width:600px){.bkstage{min-height:520px!important}.bktable{height:52%}.bktfront{height:20%}.bkrack{left:3%;right:3%;bottom:22%;grid-template-columns:repeat(4,1fr);gap:6px}.bkcust{bottom:53%!important;max-width:94%}.bkcust .bkfig{width:74px}.bkvendor{bottom:58%!important;right:3%!important}.bkqueue{display:none}}
+.bkcust{pointer-events:none}.bkcust .bkside{position:absolute;left:96px;bottom:84%;width:min(340px,60vw);z-index:7}
+@media(max-width:600px){.bkcust .bkside{left:60px;bottom:70%;width:62vw}}
+.bkrack{right:16%!important;bottom:37%!important}.bkvendor{right:3%!important;bottom:11%!important;z-index:3!important}.bkvendor .bkfig.sm{width:92px}
+@media(max-width:600px){.bkstage{min-height:610px!important}.bktable{height:46%!important}.bkrack{right:3%!important;bottom:26%!important}.bkcust{bottom:47%!important}.bkcust .bkside{left:0!important;bottom:100%!important;width:84vw!important}.bkvendor{bottom:47%!important;right:3%!important}.bkvendor .bksay{display:none}.bkvendor .bkfig.sm{width:58px}}
+.bkrack{grid-template-columns:repeat(8,minmax(0,1fr))!important}.bkrack .bkv{min-width:0}.bkrack .bkv img{width:100%;aspect-ratio:1;object-fit:cover}
+@media(max-width:600px){.bkrack{grid-template-columns:repeat(4,minmax(0,1fr))!important}}
 .rszchip{display:flex;gap:4px;padding:4px!important;cursor:default!important}.rszchip button{border:0;border-radius:99px;padding:5px 9px;background:rgba(255,255,255,.1);color:var(--cream);font:inherit;font-size:.74rem;font-weight:700;cursor:pointer}.rszchip button.on{background:var(--cream);color:#2a1608}
 .rplacechip{position:absolute;transform:translate(-50%,0);z-index:4;padding:7px 12px;border-radius:99px;border:1px solid rgba(255,214,150,.5);background:rgba(20,10,4,.88);color:var(--cream);font:inherit;font-size:.78rem;font-weight:700;cursor:pointer;white-space:nowrap;box-shadow:0 6px 18px rgba(0,0,0,.4);animation:rzIn .2s ease}
 .rplaces.big button{font-size:.9rem;padding:11px 12px}
@@ -4384,13 +4402,14 @@ const BK_T=[
  {id:'rock',e:'🎸',n:'Roqueira',tol:.2,pay:[1,1.3],pat:11,want:'style',st:['rock'],say:['Tens rock brasileiro? Rita Lee, Cazuza…','Nada de baladas. Quero rock!']},
  {id:'rom',e:'💘',n:'Apaixonado',tol:.3,pay:[1.05,1.3],pat:12,want:'style',st:['mpb','bossa'],say:['É para oferecer à minha namorada. Algo romântico!','Preciso de um disco para um jantar a dois.']}];
 const MOODS=[['😠','Irritado',.82,.5],['😐','Sério',.92,.8],['🙂','Bem-disposto',1,1],['😊','Feliz',1.1,1.25]];
-const BK_GOAL={facil:180,normal:280,dificil:400},BK_DUR=60000;
+const BK_GOAL={facil:260,normal:370,dificil:500},BK_DUR=120000,BK_PAT=1.8;
 const bkVal=k=>Math.max(8,Math.round(discPrice(k)/10));
 const bkRare=k=>{const r=discInfo(k)||{};return ['epico','lend'].includes(r.rar)||r.fama>=4.5};
 function bkPool(){return DISCOS.filter(d=>!DISC_EXCL.has(d.k))}
 function bkDraw(n,not){const pool=bkPool().filter(d=>!(not||[]).includes(d.k));const out=[];while(out.length<n&&pool.length)out.push(pool.splice((Math.random()*pool.length)|0,1)[0].k);return out}
-function bkNewCust(){const B=L.bk,crate=B.crate.map(DISCO);let T=BK_T[(Math.random()*BK_T.length)|0];if(B.last===T.id)T=BK_T[(BK_T.indexOf(T)+1)%BK_T.length];B.last=T.id;
-  const c={t:T,mood:1+((Math.random()*3)|0),pat:T.pat*1000,arr:Date.now(),rounds:0,offer:null,name:T.id==='avo'?['Dona Rosa','Dona Lurdes','Dona Fátima','Dona Graça'][(Math.random()*4)|0]:T.id==='colec'?['Sr. Alberto','Sr. Joaquim','Sr. Mário'][(Math.random()*3)|0]:['Ana','Zé','Rui','Bia','Tó','Lu','Gui','Rita','Nando','Inês','Caio','Dora'][(Math.random()*12)|0]};
+function bkNewCust(){const B0=L.bk;B0.q=B0.q||[];while(B0.q.length<3)B0.q.push(rndPerson('q'+Date.now()+Math.random()));B0.nextP=B0.q.shift();return bkNewCust0()}
+function bkNewCust0(){const B=L.bk,crate=B.crate.map(DISCO);let T=BK_T[(Math.random()*BK_T.length)|0];if(B.last===T.id)T=BK_T[(BK_T.indexOf(T)+1)%BK_T.length];B.last=T.id;
+  const c={t:T,mood:1+((Math.random()*3)|0),pat:T.pat*1000*BK_PAT,arr:Date.now(),rounds:0,offer:null,name:T.id==='avo'?['Dona Rosa','Dona Lurdes','Dona Fátima','Dona Graça'][(Math.random()*4)|0]:T.id==='colec'?['Sr. Alberto','Sr. Joaquim','Sr. Mário'][(Math.random()*3)|0]:['Ana','Zé','Rui','Bia','Tó','Lu','Gui','Rita','Nando','Inês','Caio','Dora'][(Math.random()*12)|0]};
   if(T.want==='artist'){let arts=T.arts||[...new Set(bkPool().map(d=>d.a))];const inC=arts.filter(a=>crate.some(d=>d.a===a));c.a=(Math.random()<.75&&inC.length?inC:arts)[(Math.random()*(Math.random()<.75&&inC.length?inC:arts).length)|0]}
   if(T.want==='cheap')c.b=[18,22,25,28,32][(Math.random()*5)|0];
   c.say=T.say[(Math.random()*T.say.length)|0].replace('{a}',c.a||'').replace('{b}',c.b||'');B.cust=c;B.sel=null;B.msg=null}
@@ -4403,7 +4422,7 @@ function bkTick(){const B=L.bk;if(!B||B.phase!=='play'||L.screen!=='banca'){clea
   if(left<=0)bkEnd()}
 function bkSel(k){const B=L.bk,c=B.cust;if(!c||c.leaving||B.phase!=='play')return;
   if(!bkMatch(c,k)){c.mood=Math.max(0,c.mood-1);B.msg={k:'no',t:['Hmm… não é bem isto que procuro.','Não, não. Isto não!','Não era isso que eu queria…'][(Math.random()*3)|0]};bkShake();if(c.mood===0&&Math.random()<.5){bkLeave('😤 Não tens nada para mim. Adeus!',false);return}bkDraw_();return}
-  const v=bkVal(k),T=c.t,mf=MOODS[c.mood][2];let o=v*(T.pay[0]+Math.random()*(T.pay[1]-T.pay[0]))*mf;if(T.want==='cheap')o=Math.min(o,c.b);if(T.want==='artist'&&T.id==='fa')o*=1.1;
+  const v=bkVal(k),T=c.t,mf=MOODS[c.mood][2];let o=v*(T.pay[0]+Math.random()*(T.pay[1]-T.pay[0]))*mf*.92;if(T.want==='cheap')o=Math.min(o,c.b);if(T.want==='artist'&&T.id==='fa')o*=1.1;
   o=Math.max(3,Math.round(o));const lim=Math.round((T.hag?v*1.08:o*(1+T.tol))*mf*(T.want==='cheap'?1:1));c.offer=o;c.lim=T.want==='cheap'?Math.min(Math.max(o,lim),c.b+3):Math.max(o,lim);B.sel=k;c.rounds=0;
   B.msg={k:'offer',t:[`Gosto deste! Dou-te ${o}€.`,`Hmm, ${o}€ e levo já.`,`Pago ${o}€. Que dizes?`][(Math.random()*3)|0]};bkDraw_()}
 function bkAsk(pct){const B=L.bk,c=B.cust;if(!c||!B.sel||c.leaving)return;const ask=Math.round(c.offer*(1+pct/100));c.rounds++;
@@ -4412,7 +4431,7 @@ function bkAsk(pct){const B=L.bk,c=B.cust;if(!c||!B.sel||c.leaving)return;const 
   if(c.mood===0||c.rounds>=3){bkLeave(pct>=50?'😡 Que exagero! Não volto cá.':'🙄 Esquece, assim não dá.',false);return}
   const co=Math.round((c.offer+Math.min(ask,c.lim))/2);if(co>c.offer&&Math.random()<.7){c.offer=co;B.msg={k:'counter',t:`Isso não. Mas chego aos ${co}€, último preço!`}}else B.msg={k:'no',t:['Nem pensar. Mantenho a minha oferta.','Está caro. Dou o que disse.'][(Math.random()*2)|0]};bkDraw_()}
 function bkSell(p,hag){const B=L.bk,c=B.cust,k=B.sel;B.money+=p;B.sales.push({k,p,c:c.t.e});B.best=Math.max(B.best,p);
-  const cv=document.querySelector(`.bkcrate [data-k="${k}"]`),cu=document.querySelector('.bkcust .bkav'),cash=document.querySelector('.bkcash');
+  const cv=document.querySelector(`.bkrack [data-k="${k}"]`),cu=document.querySelector('.bkcust .bkav'),cash=document.querySelector('.bkcash');
   if(cv&&cu){const a=cv.getBoundingClientRect(),b=cu.getBoundingClientRect(),f=cv.cloneNode(true);f.className='bkfly';Object.assign(f.style,{left:a.left+'px',top:a.top+'px',width:a.width+'px',height:a.height+'px'});document.body.appendChild(f);requestAnimationFrame(()=>{f.style.transform=`translate(${b.left-a.left}px,${b.top-a.top}px) scale(.4) rotate(-20deg)`;f.style.opacity='.2'});setTimeout(()=>f.remove(),700)}
   if(cu&&cash){const b=cu.getBoundingClientRect(),z=cash.getBoundingClientRect();for(let i=0;i<Math.min(8,2+(p/12|0));i++){const m=document.createElement('i');m.className='bkcoin';m.textContent='🪙';Object.assign(m.style,{left:b.left+b.width/2+'px',top:b.top+'px'});document.body.appendChild(m);setTimeout(()=>{m.style.transform=`translate(${z.left-b.left-b.width/2+(Math.random()*30-15)}px,${z.top-b.top}px) scale(.7)`;m.style.opacity='0'},40+i*70);setTimeout(()=>m.remove(),900+i*70)}
     const pl=document.createElement('b');pl.className='bkplus';pl.textContent='+'+p+'€';Object.assign(pl.style,{left:z.left+z.width/2+'px',top:z.top+'px'});document.body.appendChild(pl);setTimeout(()=>pl.remove(),1300);setTimeout(()=>{cash.classList.remove('ka');void cash.offsetWidth;cash.classList.add('ka')},600)}
@@ -4426,9 +4445,9 @@ function bkEnd(){const B=L.bk;if(!B||B.phase!=='play')return;B.phase='end';clear
   try{profAdd('bancaJ');profMax('bancaBest',B.money);if(won){profAdd('bancaWin');vitBpm(VIT_BPM.cpu[B.lvl]||6,'vitória na banca')}partDia()}catch(e){}
   bkDraw_();if(won)confetti(45)}
 function bancaMenu(){const best=(profGet(myPid()).st||{}).bancaBest||0;
-  return `<div class="tot-head"><div class="mono" style="color:var(--muted)">banca de vinis</div><h2>Vende discos na feira</h2><div class="sub">Tens 60 segundos. Chegam clientes, cada um com o seu gosto, feitio e humor. Mostra-lhes o disco certo e aceita a oferta ou negocia: uns aceitam, outros irritam-se e vão-se embora.</div></div>
+  return `<div class="tot-head"><div class="mono" style="color:var(--muted)">banca de vinis</div><h2>Vende discos na feira</h2><div class="sub">Tens 2 minutos. Chegam clientes, cada um com o seu gosto, feitio e humor. Mostra-lhes o disco certo e aceita a oferta ou negocia: uns aceitam, outros irritam-se e vão-se embora.</div></div>
   <div class="bkhow"><span>🧐 Colecionadores querem raridades 💎</span><span>🎒 Estudantes têm pouco dinheiro</span><span>👵 Avós procuram artistas da juventude</span><span>😤 Regateadores oferecem pouco mas cedem</span><span>😊 Clientes felizes pagam mais e aguentam mais tempo</span></div>
-  <div class="modes">${[['facil','Feira de bairro','🧺'],['normal','Feira da Ladra','🏮'],['dificil','Feira de São Cristóvão','🎪']].map(([k,n,e])=>`<button class="modebtn" onclick="bancaStart('${k}')"><span class="ic">${e}</span><b>${n}</b><span>Meta: ${BK_GOAL[k]}€ em 60 segundos · +${VIT_BPM.cpu[k]} BPM se conseguires</span></button>`).join('')}</div>
+  <div class="modes">${[['facil','Feira de bairro','🧺'],['normal','Feira da Ladra','🏮'],['dificil','Feira de São Cristóvão','🎪']].map(([k,n,e])=>`<button class="modebtn" onclick="bancaStart('${k}')"><span class="ic">${e}</span><b>${n}</b><span>Meta: ${BK_GOAL[k]}€ em 2 minutos · +${VIT_BPM.cpu[k]} BPM se conseguires</span></button>`).join('')}</div>
   ${best?`<p class="hint" style="text-align:center">🏅 O teu recorde: ${best}€</p>`:''}<div class="actions"><button class="btn" onclick="L.screen='jogar';render();scrollTo(0,0)">← Voltar</button></div>`}
 
 /* ======================= PESSOAS DESENHADAS (para a festa e para a banca) ======================= */
@@ -4508,7 +4527,7 @@ function feDeal(F,n){const okp=songPool().filter(i=>{const u=fePvGet(i);return u
 function feStart(i){const N0=FEN[i],c=CAR[i];const N={...N0,pub:Math.random()<.35?[...N0.pub,...[Object.keys(GEN_N)[(Math.random()*8)|0]].flatMap(g=>[g,g])]:N0.pub};const crowd=[];for(let k=0;k<N.n;k++){const p=rndPerson('f'+i+'-'+k+'-'+Date.now()%1000);if(Math.random()<.25)p.acc=['sun','glasses','flower','hat','beard'][(Math.random()*5)|0];
     crowd.push({p,pref:N.pub[(Math.random()*N.pub.length)|0],h:55+Math.random()*25,on:true,x:5+((k*61+(k>>2)*7)%90),y:(k%3),d:(Math.random()*.8).toFixed(2)})}
   const me=meLook({acc:'phones',phc:'#ffd23f'}),riv=rndPerson('dj'+i,{acc:'phones'+(i%2?' sun':' beard'),phc:c.cor});
-  L.fe={i,round:1,hype:[0,0],nota:5,hist:[],sil:0,tEnd:null,crowd,me,riv,used:[],noise:0,turn:'me',ph:'intro',opts:[],log:[],lastEn:null,lastG:null,lastA:null,rain:0,req:null,msg:null};L.screen='festa';L.fe.ph='prep';render();scrollTo(0,0);const F0=L.fe;fePrep().then(()=>{if(L.fe===F0&&F0.ph==='prep'){F0.tEnd=Date.now()+30000;feRound()}});clearInterval(L.feT);L.feT=setInterval(feTick,250)}
+  L.fe={i,round:1,hype:[0,0],nota:5,hist:[],sil:0,tEnd:null,crowd,me,riv,used:[],noise:0,turn:'me',ph:'intro',opts:[],log:[],lastEn:null,lastG:null,lastA:null,rain:0,req:null,msg:null};L.screen='festa';L.fe.ph='prep';feBgPause();L.feBg=1;render();scrollTo(0,0);const F0=L.fe;fePrep().then(()=>{if(L.fe===F0&&F0.ph==='prep'){F0.tEnd=Date.now()+30000;feRound()}});clearInterval(L.feT);L.feT=setInterval(feTick,250)}
 async function fePrep(){const pool=songPool().slice().sort(()=>Math.random()-.5);const have=()=>songPool().filter(i=>{const u=fePvGet(i);return u&&u.length>4}).length;if(have()>=24)return;
   const todo=pool.filter(i=>fePvGet(i)==null).slice(0,36);let k=0;const t0=Date.now();const worker=async()=>{while(k<todo.length&&Date.now()-t0<9000){const i=todo[k++];try{await fePv(i)}catch(e){}}};await Promise.race([Promise.all([0,1,2,3,4,5].map(worker)),new Promise(r=>setTimeout(r,9000))])}
 function feTick(){const F=L.fe;if(!F||L.screen!=='festa'){clearInterval(L.feT);return}if(F.ph==='end'||F.ph==='prep'||!F.tEnd)return;const now=Date.now(),left=F.tEnd-now;if(F.ph==='play'&&left<=15000){if(F.round>=FE_ROUNDS)feEnd();else{F.round++;feRound()}return}const el=document.querySelector('.ftimer'),st=document.querySelector('.fstage');
@@ -4552,7 +4571,7 @@ function feFx(k){const sc=document.querySelector('.fstage');if(!sc)return;const 
   if(k==='confetti'||k==='quadrilha')d.innerHTML=Array.from({length:30},(_,j)=>`<i style="left:${(j*3.3)%100}%;animation-delay:${(j%9)*.12}s;background:${['#ffd23f','#ff4f8b','#3fa7d6','#59c97e'][j%4]}"></i>`).join('');
   if(k==='police')d.innerHTML='<span>🚓</span>';if(k==='scratch')d.innerHTML='<span>💥 SCRRRATCH</span>';if(k==='bateria')d.innerHTML='<span>🥁🥁🥁</span>';
   sc.appendChild(d);setTimeout(()=>d.remove(),k==='rain'?6000:2600)}
-function feEnd(){const F=L.fe;F.ph='end';F.tEnd=null;setTimeout(()=>{if(FA.el&&L.fe===F&&F.ph==='end'){const el=FA.el;faFade(el,0,4,()=>el.pause())}},9000);const won=F.nota>=feMeta(F.i);const i=F.i,c=CAR[i];
+function feEnd(){const F=L.fe;F.ph='end';F.tEnd=null;setTimeout(()=>{if(L.fe===F&&F.ph==='end'){const el=FA.el;FA.el=null;L.feBg=0;if(el)faFade(el,0,4,()=>el.pause());setTimeout(()=>{if(SND.on&&L.fe===F)try{musicStart()}catch(e){}},4200)}},9000);const won=F.nota>=feMeta(F.i);const i=F.i,c=CAR[i];
   try{profAdd('games');profAdd('gCpu');profAdd(won?'winCpu':'loseCpu');partDia();if(won)vitBpm(VIT_BPM.cpu[c.lvl]||6,'vitória')}catch(e){}
   if(won&&i>=carDone()){profSet('carN',i+1);const b=CAR_BPM[i]||5;if(CASAL.includes(myPid()))profAdd('vbpm',b);F.newWin=b}
   feDraw();if(won){confetti(50);if(F.newWin)setTimeout(()=>bigFx(`<div class="carwin"><span>${c.e}</span><b>Noite conquistada!</b><small>${esc(c.lugar)} é teu. +${F.newWin} BPM${i+1<CAR.length?` · próxima: ${esc(CAR[i+1].lugar)}`:' · és o rei do Carnaval! 👑'}</small><i class="carstamp big">✓</i></div>`,4200,'carwinfx'),900)}}
@@ -4575,8 +4594,8 @@ function fePlay(i,q){if(!SND.on)return;const go=u=>{if(!u||!L.fe||L.screen!=='fe
 function feHear(i,btn){if(!SND.on){toast('🔇 Liga o som (botão em cima) para ouvir');return}const stop=()=>{if(FA.pre){FA.pre.pause();FA.pre=null}document.querySelectorAll('.fhear.on').forEach(b=>b.classList.remove('on'));if(FA.el&&!IS_IOS)faFade(FA.el,.85,.5)};
   if(FA.pre&&FA.preI===i){stop();return}stop();const go=u=>{if(!u){toast('Sem amostra para esta música');return}const a=new Audio(u);a.volume=IS_IOS?1:.7;a.currentTime=0;a.play().catch(()=>{});FA.pre=a;FA.preI=i;if(btn)btn.classList.add('on');feBgPause();if(FA.el&&!IS_IOS)faFade(FA.el,.15,.4);clearTimeout(FA.preT);FA.preT=setTimeout(()=>{if(FA.pre===a)stop()},9000)};
   const u=fePvGet(i);if(u)go(u);else if(u==='')go(null);else{btn&&btn.classList.add('load');fePv(i).then(x=>{btn&&btn.classList.remove('load');go(x)})}}
-function feStopAll(){if(FA.pre){FA.pre.pause();FA.pre=null}if(FA.el){const el=FA.el;FA.el=null;if(IS_IOS)el.pause();else faFade(el,0,1,()=>el.pause());if(SND.on)setTimeout(()=>{try{musicStart()}catch(e){}},1100)}}
-setInterval(()=>{if((FA.el||FA.pre)&&(L.screen!=='festa'||!SND.on))feStopAll()},800);
+function feStopAll(){L.feBg=0;if(FA.pre){FA.pre.pause();FA.pre=null}if(FA.el){const el=FA.el;FA.el=null;if(IS_IOS)el.pause();else faFade(el,0,1,()=>el.pause());if(SND.on)setTimeout(()=>{try{musicStart()}catch(e){}},1100)}}
+setInterval(()=>{if((FA.el||FA.pre)&&(L.screen!=='festa'||!SND.on))feStopAll();else if(L.feBg&&L.screen!=='festa'){L.feBg=0;if(SND.on)try{musicStart()}catch(e){}}},800);
 
 function feScene(F){const N=FEN[F.i],c=CAR[F.i],on=F.crowd.filter(x=>x.on).length,energy=F.last?F.last.e.en:2;
   const sky=feSky(F.ph==='end'?FE_ROUNDS+1:F.round),playing=F.ph==='play'||F.ph==='rivplay';
@@ -4610,7 +4629,7 @@ const BK_TALK=[
  {k:'hist',t:'📖 «Deixa-me contar a história deste disco…»',up:.18,aff:{avo:.3,turista:.25,rom:.25,fa:.15,colec:.1,dj:-.4,regat:-.1}},
  {k:'bluff',t:'😏 «Tenho outro cliente interessado»',up:.45,aff:{regat:.25,turista:.1,colec:-.2,avo:-.25,estud:-.2}},
  {k:'round',t:'🤝 «Arredonda para cima e fica feito»',up:.1,aff:{}}];
-function bkCustP(c){if(!c.p)c.p=rndPerson('c'+c.arr,BK_LOOK[c.t.id]||{});return c.p}
+function bkCustP(c){if(!c.p)c.p={...(L.bk&&L.bk.nextP||rndPerson('c'+c.arr)),...(BK_LOOK[c.t.id]||{})};return c.p}
 function bkTalk(k){const B=L.bk,c=B.cust;if(!c||!B.sel||c.leaving)return;const T=BK_TALK.find(x=>x.k===k);if(!T)return;c.rounds++;const ask=Math.max(c.offer+1,Math.round(c.offer*(1+T.up)));B.me=T.t.replace(/^[^«]*«|»$/g,'')+(k==='round'?` ${ask}€?`:` Que tal ${ask}€?`);
   if(k==='raro'&&!bkRare(B.sel)){const fooled=c.t.id!=='colec'&&Math.random()<.35;if(!fooled){c.mood=Math.max(0,c.mood-2);B.msg={k:'no',t:c.t.id==='colec'?'Raridade? Isto há em qualquer feira! Não me enganes.':'Hmm… não me parece nada raro.'};bkShake();if(c.mood===0){bkLeave('😤 Não gosto de ser enganado. Adeus!',false);return}bkDraw_();return}}
   if(k==='hist'&&c.t.id==='dj'){c.mood=Math.max(0,c.mood-1);B.msg={k:'no',t:'Não tenho tempo para histórias! Despacha.'};bkShake();bkDraw_();return}
@@ -4630,13 +4649,14 @@ function bancaHtml(){const B=L.bk;if(!B)return '';const left=Math.max(0,B.t0+BK_
   const talking=B.msg&&!c.shown;
   return `<div class="banca"><div class="bktop"><div class="bktime"><b>${Math.ceil(left/1000)}s</b><div><i style="width:${100*left/BK_DUR}%"></i></div></div><div class="bkcash"><span>🧾</span><b>${B.money}€</b><small>meta ${B.goal}€</small><div class="bkgoal"><i style="width:${pct}%"></i></div></div></div>
    <div class="bkstage">${bkMarket()}<div class="bkawn"></div>
-    ${c?`<div class="bkcust ${c.leaving||c.shown?'':'enter'} ${c.leaving?'':''}"><div class="bkfig">${personSvg(bkCustP(c),c.mood,true)}<span class="bkmood" title="${m[1]}">${m[0]}</span></div>
+    ${c?`<div class="bkcust ${c.leaving||c.shown?'':'enter walking'}"><div class="bkfig">${personSvg(bkCustP(c),c.mood,true)}<span class="bkmood" title="${m[1]}">${m[0]}</span></div>
       <div class="bkside"><div class="bkwho"><b>${esc(c.name)}</b><small>${T.e} ${esc(T.n)} · ${m[1].toLowerCase()}</small><div class="bkpat"><i></i></div></div><div class="bksay ${B.msg?B.msg.k:''}" key="${Date.now()}">${esc(B.msg?B.msg.t:c.say)}</div></div></div>`:''}
     <div class="bkvendor"><div class="bkfig sm">${personSvg(vend,2)}<span class="bkbadge">${esc(ME?ME.e:'🙂')}</span></div>${B.me?`<div class="bksay mine">${esc(B.me)}</div>`:''}</div>
-    <div class="bkcounter"></div>
+    <div class="bkqueue">${(B.q||[]).slice(0,2).map((p,n)=>`<div class="bkqp" style="--n:${n}">${personSvg(p,1)}</div>`).join('')}<small>${(B.q||[]).length?'à espera':''}</small></div>
+    <div class="bktable"><div class="bkrack">${B.crate.map(k=>{const d=DISCO(k);return `<button class="bkv ${sel===k?'on':''}" data-k="${k}" onclick="B_me('Olhe este: ${esc((d.t||'').replace(/'/g,'’'))}.');bkSel('${k}')"><span class="bkrec"></span><img src="${esc(d.f)}" alt="" loading="lazy"><span class="bkp">${bkVal(k)}€</span>${bkRare(k)?'<span class="bkr">💎</span>':''}<small>${esc(d.a)}</small></button>`}).join('')}</div><div class="bktfront"><span>VINIS · DISCOS RAROS · MPB</span></div></div>
    </div>
    ${sel&&c&&!c.leaving?`<div class="bkdeal"><div class="bkdisc"><img src="${esc(DISCO(sel).f)}" alt=""><small>catálogo ${bkVal(sel)}€${bkRare(sel)?' · 💎 raro':''}</small></div><div class="bkbtns"><button class="btn" onclick="B_me('Fechado! ${c.offer}€.');bkSell(${c.offer},false)">✅ «Fechado, ${c.offer}€!»</button><div class="bkopts">${BK_TALK.map(x=>`<button class="bkopt" onclick="bkTalk('${x.k}')">${esc(x.t)} <small>${x.k==='round'?'':'→ '}${Math.max(c.offer+1,Math.round(c.offer*(1+x.up)))}€</small></button>`).join('')}</div></div></div>`:c&&!c.leaving?`<div class="bkhint">👇 Escolhe um disco da caixa para mostrar a ${esc(c.name)} · <button class="linkbtn" onclick="B_me('Hoje não tenho nada para si, desculpe.');bkSkip()">«Hoje não tenho nada para si»</button></div>`:''}
-   <div class="bkcrate">${B.crate.map(k=>{const d=DISCO(k);return `<button class="bkv ${sel===k?'on':''}" data-k="${k}" onclick="B_me('Olhe este: ${esc((d.t||'').replace(/'/g,'’'))}.');bkSel('${k}')"><img src="${esc(d.f)}" alt="" loading="lazy"><span class="bkp">${bkVal(k)}€</span>${bkRare(k)?'<span class="bkr">💎</span>':''}<small>${esc(d.a)}</small></button>`}).join('')}</div></div>`}
+   </div>`}
 function B_me(t){if(L.bk)L.bk.me=t}
 
 /* ======= cenários da festa desenhados à mão (viewBox 1000×525, horizonte em y=262) ======= */
@@ -4871,7 +4891,7 @@ function musFade(to,sec){to=Math.max(0,to);if(MUS.vt===false)return;if(MUS.g){co
 function musLevel(v){if(MUS.vt===false)return;if(MUS.g){try{MUS.g.gain.cancelScheduledValues(SND.ctx.currentTime);MUS.g.gain.value=v}catch(e){}}else if(MUS.el)try{MUS.el.volume=v}catch(e){}}
 function musicNext(skip){if(!MUS.el)return;if(skip===true&&!MUS.el.paused&&!MUS.switching){MUS.switching=1;musFade(0,.7);setTimeout(()=>{MUS.switching=0;musicNext()},750);return}
   if(!MUS.queue.length)musicShuffle();MUS.cur=MUS.queue.shift();MUS.last=MUS.cur.src;MUS.out=0;musLevel(0);MUS.el.src=MUS.cur.src;MUS.el.play().then(()=>musFade(MUS_VOL,MUS_FIN)).catch(()=>{});musSession();const h=document.getElementById('hdr');if(h)h.outerHTML=header()}
-function musicStart(){try{if(!MUS.el){MUS.el=new Audio();MUS.el.preload='auto';MUS.el.volume=MUS_VOL;MUS.el.setAttribute('playsinline','');musGraph();
+function musicStart(){if(L.screen==='festa'&&L.fe&&L.fe.ph!=='end')return;try{if(!MUS.el){MUS.el=new Audio();MUS.el.preload='auto';MUS.el.volume=MUS_VOL;MUS.el.setAttribute('playsinline','');musGraph();
     MUS.el.addEventListener('ended',()=>musicNext());MUS.el.addEventListener('error',()=>setTimeout(()=>musicNext(),500));
     MUS.el.addEventListener('timeupdate',()=>{const e=MUS.el;if(!MUS.out&&e.duration&&isFinite(e.duration)&&e.duration-e.currentTime<MUS_FOUT){MUS.out=1;musFade(0,Math.max(.3,e.duration-e.currentTime-.1))}});
     musicShuffle();musicNext()}else{musGraph();musLevel(0);MUS.el.play().then(()=>musFade(MUS_VOL,MUS_FIN)).catch(()=>{})}}catch(e){}}
@@ -5182,7 +5202,7 @@ function playScreen(){
   <div class="modes spmodes">
    <button class="modebtn sp1" onclick="L.screen='carreira';render();scrollTo(0,0)"><span class="ic">🎧</span><b>Carreira de DJ</b><span>8 noites, 8 DJs com estilo próprio. Do Bar do Zé ao Sambódromo.</span><em class="spprog">${carDone()}/8</em></button>
    <button class="modebtn sp2" onclick="L.screen='desafio';render();scrollTo(0,0)"><span class="ic">📅</span><b>Desafio do dia</b><span>O mesmo jogo para toda a gente, uma tentativa. Top do dia.</span>${ddPlayed(ddToday().ymd)?'<em class="spprog">✓ feito</em>':'<em class="spprog new">novo</em>'}</button>
-   <button class="modebtn sp3" onclick="L.screen='bancaMenu';render();scrollTo(0,0)"><span class="ic">💰</span><b>Banca de vinis</b><span>60 segundos a vender discos na feira. Negoceia com cada cliente.</span></button>
+   <button class="modebtn sp3" onclick="L.screen='bancaMenu';render();scrollTo(0,0)"><span class="ic">💰</span><b>Banca de vinis</b><span>2 minutos a vender discos na feira. Negoceia com cada cliente.</span></button>
   </div><div class="actions"><button class="btn" onclick="L.screen=null;render()">← Voltar</button></div>`}
 function rulesScreen(){
   return `<div class="tot-head"><div class="mono" style="color:var(--muted)">regras</div><h2>Como se joga</h2><div class="sub">Tudo o que precisas de saber, passo a passo.</div></div>
@@ -5469,7 +5489,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795637863';
+const BUILD='1795638087';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
