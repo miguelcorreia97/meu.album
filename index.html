@@ -4496,7 +4496,7 @@ function dock(){
 function duelLabel(d){return d>=G.per?'faixa bónus':`duelo ${d+1} / ${G.per}`}
 function scoreboard(sc,lbl){return `<div class="score"><div class="s"><div class="num c0" data-count="${sc[0]}" data-delay="700">${fmt(sc[0])}</div><div class="lbl">${ico(0)}${esc(nm(0))}</div></div><div class="dash">${lbl||'vs'}</div><div class="s"><div class="num c1" data-count="${sc[1]}" data-delay="700">${fmt(sc[1])}</div><div class="lbl">${ico(1)}${esc(nm(1))}</div></div></div>`}
 function partial(d){const s=[0,0];for(let k=0;k<=d;k++){const j=judge(k);if(j.w===-1){s[0]+=1;s[1]+=1}else s[j.w]+=2}return s}
-const PICK_MS=45000,ORDER_BY={5:65000,8:90000,10:120000},orderMs=()=>ORDER_BY[G&&G.per]||90000,STAGE_MS={duel:5000,combos:8000,suspense:5000};
+const PICK_MS=30000,ORDER_BY={5:65000,8:90000,10:120000},orderMs=()=>ORDER_BY[G&&G.per]||90000,STAGE_MS={duel:5000,combos:8000,suspense:5000};
 function stage(){return G.reveal||0}
 function mainTie(){const d=partial(G.per-1);return d[0]+prizePts(0)===d[1]+prizePts(1)}
 function stageKind(){const s=stage(),n=G.per;
@@ -4671,7 +4671,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795613453';
+const BUILD='1795613565';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
