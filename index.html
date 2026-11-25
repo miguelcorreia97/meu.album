@@ -4680,7 +4680,7 @@ function feStart(i){const N0=FEN[i],c=CAR[i];const N={...N0,pub:Math.random()<.3
 async function fePrep(){const pool=songPool().slice().sort(()=>Math.random()-.5);const have=()=>songPool().filter(i=>{const u=fePvGet(i);return u&&u.length>4}).length;if(have()>=24)return;
   const todo=pool.filter(i=>fePvGet(i)==null).slice(0,36);let k=0;const t0=Date.now();const worker=async()=>{while(k<todo.length&&Date.now()-t0<9000){const i=todo[k++];try{await fePv(i)}catch(e){}}};await Promise.race([Promise.all([0,1,2,3,4,5].map(worker)),new Promise(r=>setTimeout(r,9000))])}
 function feGo(){const F=L.fe;if(!F||F.ph!=='brief'||!F.prepOk)return;fsStart(FEN[F.i].cena);F.ph='prep';F.t0=Date.now();F.tEnd=Date.now()+30000;feRound()}
-function feBriefUpd(){const F=L.fe;if(!F||F.ph!=='brief')return;const l=Math.max(0,15-Math.floor((Date.now()-F.bT)/1000)),b=document.querySelector('.fbrief .fbt');if(b)b.textContent=F.prepOk?(l>0?`A noite começa em ${l}s`:'A começar…'):'💿 A preparar a caixa de discos…';const g=document.querySelector('.fbrief .fbgo');if(g)g.disabled=!F.prepOk;if(l<=0&&F.prepOk)feGo()}
+function feBriefUpd(){const F=L.fe;if(!F||F.ph!=='brief')return;const l=Math.max(0,30-Math.floor((Date.now()-F.bT)/1000)),b=document.querySelector('.fbrief .fbt');if(b)b.textContent=F.prepOk?(l>0?`A noite começa em ${l}s`:'A começar…'):'💿 A preparar a caixa de discos…';const g=document.querySelector('.fbrief .fbgo');if(g)g.disabled=!F.prepOk;if(l<=0&&F.prepOk)feGo()}
 function feTick(){const F=L.fe;if(!F||L.screen!=='festa'){clearInterval(L.feT);return}if(F.ph==='brief'){feBriefUpd();return}if(F.ph==='end'||F.ph==='prep'||!F.tEnd)return;const now=Date.now(),left=F.tEnd-now,nightLeft=F.t0+FE_NIGHT-now;
   {const ck=document.querySelector('.fclock');if(ck){const r=feR(F);ck.firstChild&&(ck.firstChild.nodeValue='🕕 '+feClock(r))}}
   if(F.ph==='play'){if(F.lastTrack){if(left<=0){feEnd();return}}else if(left<=30000){F.round++;feRound();return}}
@@ -5696,7 +5696,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795642653';
+const BUILD='1795642758';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
