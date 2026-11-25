@@ -1628,6 +1628,7 @@ body,#app{overflow-x:clip}
 .flights{z-index:8}.fclock,.fcount,.fnoise{z-index:12}.fdrizzle{z-index:11}
 @media(max-width:600px){.fdj.me{width:11%}.fdj.host{width:9%;left:72%}.fbooth2{left:28%;width:44%}}
 .fdancer.edgeL .freq,.fdancer.edgeL .fwhisper{left:0;transform:none}.fdancer.edgeR .freq,.fdancer.edgeR .fwhisper{left:auto;right:0;transform:none}.fdancer.edgeL .freq,.fdancer.edgeR .freq{animation:sayIn .4s}
+.fcount{display:flex;gap:6px;padding:0!important;background:none!important}.fcount>span{padding:5px 10px;border-radius:99px;background:rgba(10,4,10,.72)}.fperf b{font-size:.95rem;color:#ffd23f}.fperf.ok b{color:#7cffb2}.fperf.bad b{color:#ff7a6b}.fnoise{top:46px}
 .rszchip{display:flex;gap:4px;padding:4px!important;cursor:default!important}.rszchip button{border:0;border-radius:99px;padding:5px 9px;background:rgba(255,255,255,.1);color:var(--cream);font:inherit;font-size:.74rem;font-weight:700;cursor:pointer}.rszchip button.on{background:var(--cream);color:#2a1608}
 .rplacechip{position:absolute;transform:translate(-50%,0);z-index:4;padding:7px 12px;border-radius:99px;border:1px solid rgba(255,214,150,.5);background:rgba(20,10,4,.88);color:var(--cream);font:inherit;font-size:.78rem;font-weight:700;cursor:pointer;white-space:nowrap;box-shadow:0 6px 18px rgba(0,0,0,.4);animation:rzIn .2s ease}
 .rplaces.big button{font-size:.9rem;padding:11px 12px}
@@ -4549,7 +4550,7 @@ function feScene(F){const N=FEN[F.i],c=CAR[F.i],on=F.crowd.filter(x=>x.on).lengt
    <div class="fdj host">${personSvg(F.riv,hm)}<span class="fbadge">${c.e}</span><span class="fhost">${esc(c.dj)}</span></div>
    <div class="ffloor">${crowd}</div>
    <div class="fclock">🕕 ${F.ph==='end'?'22:00':feClock(F.round)}<small>${F.ph==='end'?'fim da noite':sky.night?'noite':sky.sun<55?'pôr do sol':'fim de tarde'}</small></div>
-   <div class="fcount">💃 ${on}/${F.crowd.length} a dançar</div>${F.noise?`<div class="fnoise">🔊 ${'●'.repeat(F.noise)}${'○'.repeat(3-F.noise)}</div>`:''}</div>`}
+   <div class="fcount"><span>💃 ${on}/${F.crowd.length} a dançar</span><span class="fperf ${F.nota*2>=feMeta(F.i)*2?'ok':F.nota*2<8?'bad':''}">📊 Desempenho <b>${Math.round(F.nota*2)}</b>/20</span></div>${F.noise?`<div class="fnoise">🔊 ${'●'.repeat(F.noise)}${'○'.repeat(3-F.noise)}</div>`:''}</div>`}
 function festaHtml(){const F=L.fe;if(!F)return '';const c=CAR[F.i],N=FEN[F.i],tot=Math.max(1,F.hype[0]+F.hype[1]);
   const mt=feMeta(F.i),ok=F.nota>=mt;const meter=`<div class="fnota ${ok?'ok':''}"><div class="fnl"><small>nota da noite</small><b>${F.nota.toFixed(1)}</b><span>⭐</span></div><div class="fnbar"><i style="width:${F.nota*10}%"></i><em style="left:${mt*10}%"><span>precisas de ${mt.toFixed(1)}</span></em>${F.hist.map((h,k)=>`<u style="left:${h*10}%;--k:${k}"></u>`).join('')}</div><div class="fnr">${ok?'✓ a passar':`faltam ${(mt-F.nota).toFixed(1)}`}</div></div>`;
   if(F.ph==='end'){const won=F.nota>=feMeta(F.i);return `<div class="festa">${meter}${feScene(F)}<div class="fend ${won?'won':''}"><h2>${won?'A pista é tua! 🎉':'A noite não correu bem 😮‍💨'}</h2><p>${won?`${esc(c.dj)} deu-te ${F.nota.toFixed(1)} ⭐ (precisavas de ${feMeta(F.i).toFixed(1)}).`:`Acabaste com ${F.nota.toFixed(1)} ⭐ e precisavas de ${feMeta(F.i).toFixed(1)}. Ouve os pedidos e os palpites do público, e cumpre a regra do sítio.`}</p>
@@ -5425,7 +5426,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795634096';
+const BUILD='1795634259';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
