@@ -4479,6 +4479,10 @@ const L20=[
   pist:['Na Pedra do Sal nasceu o samba. Respeito!','Mas os jovens também dançam suingue.','Uma mistura falhada aqui não se perdoa.'],
   evs:{2:{t:'🥁 A roda começa: samba que fale do Brasil',ok:e=>e.gen==='samba'&&(e.tags.includes('brasil')||e.nota>=7),b:9},4:{t:'🪘 Pandeiros em uníssono: só mistura perfeita',ok:(e,F)=>F.mixQ==='perfeito',b:10,fx:'bateria'},6:{t:'👑 Apoteose: o maior samba que tiveres',ok:e=>e.gen==='samba'&&e.nota>=7.5,b:12,fx:'confetti'}}}];
 
+const OKL=[[['reggae','bossa','pop','suingue','mpb'],[1,4]],[['mpb','bossa','rock'],[1,3]],[['samba','mpb','bossa','suingue'],[1,4]],[['nordeste','samba','suingue','pop'],[2,5]],[['bossa','mpb','pop'],[1,3]],[['bossa','mpb','reggae'],[1,3]],[['rock','mpb','pop','samba','bossa','reggae','suingue'],[2,5]],[['nordeste','samba','pop','suingue'],[3,5]],[['mpb','bossa'],[1,3]],[['bossa','mpb','rock','pop'],[1,4]],
+ [['mpb','bossa','samba','pop','suingue'],[1,5]],[['reggae','samba','mpb','pop'],[2,4]],[['samba','suingue','mpb'],[2,5]],[['nordeste','samba','suingue','pop'],[3,5]],[['mpb','bossa','samba'],[1,3]],[['samba','suingue','mpb'],[2,5]],[['pop','suingue','samba','mpb'],[3,5]],[['samba','pop','rock','reggae','suingue'],[3,5]],[['bossa','mpb'],[1,3]],[['samba','suingue','mpb'],[2,5]]];
+L20.forEach((x,i)=>x.ok={g:OKL[i][0],en:OKL[i][1]});
+const feOk=(F,i)=>{const V=L20[F.i].ok,e=ev(i);return V.g.includes(e.gen)&&e.en>=V.en[0]&&e.en<=V.en[1]};
 const CAR=L20.map(x=>({lugar:x.lugar,cid:x.cid,dj:x.dj,e:x.e,feitio:x.feitio,lvl:x.lvl,per:8,cor:x.cor,gosto:()=>false,alb:x.lugar,sign:x.sign,meta:x.meta}));
 const CAR_BPM=[3,3,4,4,4,5,5,5,6,6,6,7,7,8,8,9,9,10,12,15];
 const carDone=()=>+((profGet(myPid()).st||{}).carN||0);
@@ -4663,10 +4667,11 @@ const FEN_PISTAS=L20.map(x=>x.pist);
 const songPool=()=>{if(songPool._p)return songPool._p;songPool._p=SONGS.map((_,i)=>i).filter(i=>!EXCL.has(i));return songPool._p};
 const GEN_REL={samba:['samba','suingue','mpb','nordeste'],suingue:['suingue','samba','pop','mpb','reggae'],mpb:['mpb','bossa','samba','pop'],bossa:['bossa','mpb','samba'],pop:['pop','mpb','suingue','rock'],rock:['rock','pop','mpb'],reggae:['reggae','pop','suingue'],nordeste:['nordeste','samba','mpb']};
 function feDeal(F,n){const okp=songPool().filter(i=>{const u=fePvGet(i);return feFull(i)||(u&&u.length>4)});let pool=okp.length>=12?okp:(()=>{const q=songPool().filter(i=>fePvGet(i)!=='');return q.length>=12?q:songPool()})();const out=[];
+  {const vp=pool.filter(i=>feOk(F,i)&&!F.used.includes(i));pool=vp.length>=4?vp:songPool().filter(i=>feOk(F,i)&&fePvGet(i)!=='')}
   if(F.lastG){const fit=(d,rel)=>pool.filter(i=>{const e=ev(i);return !F.used.includes(i)&&Math.abs(e.en-F.lastEn)<=d&&(!rel||(GEN_REL[F.lastG]||[]).includes(e.gen))});const a=fit(1,1),b=fit(1,0),c=fit(2,1);pool=a.length>=6?a:b.length>=6?b:c.length>=6?c:pool}let guard=0;while(out.length<n&&guard++<200){const i=pool[(Math.random()*pool.length)|0];if(!F.used.includes(i)&&!out.includes(i))out.push(i)}
   /* garante que pelo menos uma serve para o acontecimento ou para o público */
   {const fulls=pool.filter(i=>feFull(i)&&!F.used.includes(i)&&!out.includes(i));if(fulls.length&&!out.some(i=>feFull(i))&&Math.random()<.65)out[out.length-1]=fulls[(Math.random()*fulls.length)|0]}
-  const ev_=FEN[F.i].evs[F.round];if(ev_&&!out.some(i=>{try{return ev_.ok(ev(i),F,song(i))}catch(e){return false}})){const c=pool.filter(i=>!F.used.includes(i)).find(i=>{try{return ev_.ok(ev(i),F,song(i))}catch(e){return false}});if(c!=null)out[0]=c}return out.sort(()=>Math.random()-.5)}
+  const ev_=FEN[F.i].evs[F.round];if(ev_&&!out.some(i=>{try{return ev_.ok(ev(i),F,song(i))}catch(e){return false}})){const c=pool.filter(i=>!F.used.includes(i)&&feOk(F,i)).find(i=>{try{return ev_.ok(ev(i),F,song(i))}catch(e){return false}});if(c!=null)out[0]=c}return out.sort(()=>Math.random()-.5)}
 function feStart(i){const N0=FEN[i],c=CAR[i];const N={...N0,pub:Math.random()<.35?[...N0.pub,...[Object.keys(GEN_N)[(Math.random()*8)|0]].flatMap(g=>[g,g])]:N0.pub};const crowd=[];for(let k=0;k<N.n;k++){const p=rndPerson('f'+i+'-'+k+'-'+Date.now()%1000);if(Math.random()<.25)p.acc=['sun','glasses','flower','hat','beard'][(Math.random()*5)|0];
     crowd.push({p,pref:N.pub[(Math.random()*N.pub.length)|0],h:55+Math.random()*25,on:true,x:5+((k*61+(k>>2)*7)%90),y:(k%3),d:(Math.random()*.8).toFixed(2)})}
   const me=meLook({acc:'phones',phc:'#ffd23f'}),riv=rndPerson('dj'+i,{acc:'phones'+(i%2?' sun':' beard'),phc:c.cor});
@@ -4776,7 +4781,7 @@ function festaHtml(){const F=L.fe;if(!F)return '';const c=CAR[F.i],N=FEN[F.i],to
   else if(F.last){const L_=F.last,s=L_.s;panel=`<div class="fpanel"><div class="fturn">🎶 Está a tocar</div>${`<div class="fnow"><img src="${esc(s.c)}" alt="" onerror="this.src='${esc(s.fb)}'"><div><b>${esc(s.t)}</b><small>${esc(s.a)} · ${GEN_IC[L_.e.gen]} ${GEN_N[L_.e.gen]} · mistura ${L_.q}</small><div class="fnotes">${L_.notes.map(n=>`<span>${esc(n)}</span>`).join('')}</div><span class="freac ${L_.liked?'ok':''}">${L_.liked?'🔥 O público está a adorar: a música vai até ao fim':'😐 Não pegou: daqui a 45 s a pista pede outra'}</span><span class="fnextin"></span></div><b class="fpts ${L_.dn<0?'neg':''}">${L_.dn>=0?'+':'−'}${Math.abs(L_.dn*2).toFixed(1)}<small>/20</small></b></div>`}</div>`}
   const brief=F.ph==='brief'?`<div class="fbrief"><div class="fbcard" style="--cc:${c.cor}"><small>Noite ${F.i+1} de ${CAR.length} · ${esc(c.cid)}</small><h2>${c.e} ${esc(c.lugar)}</h2><p class="fbf">${esc(c.feitio)}</p>
     <div class="fbgrid"><div><b>🕕 Horário</b><span>18:00 → 22:00 (cerca de 10 min)</span></div><div><b>🎯 Para passar</b><span>desempenho de ${c.meta}/20</span></div><div><b>🎧 Quem te contratou</b><span>${esc(c.dj)}</span></div><div><b>💃 Público</b><span>${F.crowd.length} pessoas</span></div><div><b>🎚️ Misturas</b><span>${({facil:'agulha lenta',normal:'agulha média',dificil:'agulha rápida, verde estreito'})[c.lvl]}</span></div><div><b>🏆 Prémio</b><span>${i_bpm(F.i)}</span></div></div>
-    <div class="fbrule"><b>📜 Regra da casa</b><span>${esc(N.regra)}</span></div><div class="fbpist"><b>📍 O que se diz por aí</b>${FEN_PISTAS[F.i].map(t=>`<span>🗣️ ${esc(t)}</span>`).join('')}<small>São boatos: o público de hoje pode ser diferente.</small></div>
+    <div class="fbrule"><b>🎶 O que se ouve aqui</b><span>${L20[F.i].ok.g.map(g=>GEN_IC[g]+' '+GEN_N[g]).join(' · ')} · energia ${'⚡'.repeat(L20[F.i].ok.en[0])} a ${'⚡'.repeat(L20[F.i].ok.en[1])}</span></div><div class="fbrule"><b>📜 Regra da casa</b><span>${esc(N.regra)}</span></div><div class="fbpist"><b>📍 O que se diz por aí</b>${FEN_PISTAS[F.i].map(t=>`<span>🗣️ ${esc(t)}</span>`).join('')}<small>São boatos: o público de hoje pode ser diferente.</small></div>
     <div class="fbhow"><span>🎵 Cada música toca enquanto o público gostar; se não pegar, aos 45 s pedem outra.</span><span>⏱️ Tens sempre 30 s para preparar a próxima.</span><span>🔇 O silêncio faz descer o desempenho.</span></div>
     <div class="fbfoot"><span class="fbt">💿 A preparar a caixa de discos…</span><button class="btn fbgo" ${F.prepOk?'':'disabled'} onclick="feGo()">▶ Começar já</button></div></div></div>`:'';
   return `<div class="festa"><div class="frule" onclick="this.classList.toggle('open')">${esc(N.regra)}</div>${meter}<div class="fstagew">${feScene(F)}</div>${panel}${brief}</div>`}
@@ -5651,7 +5656,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795641968';
+const BUILD='1795642085';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
