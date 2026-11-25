@@ -4494,7 +4494,7 @@ function careerScreen(){const done=carDone();
     <span class="carr">${st==='done'?'<i class="carstamp">✓ ganha</i>':st==='now'?`<i class="carplay">▶ Jogar</i>`:''}<small>10 min · ${c.meta}/20${i>=done?` · +${CAR_BPM[i]} BPM`:''}</small></span></button>`}).join('<div class="carroad"></div>')}</div>
   ${done>=CAR.length?'<div class="panel mt" style="text-align:center">👑 Completaste a carreira! Podes repetir qualquer noite.</div>':''}
   <div class="actions"><button class="btn" onclick="L.screen='jogar';render();scrollTo(0,0)">← Voltar</button></div>`}
-function careerIntro(i){const c=CAR[i];if(!c||i>carDone())return;
+function careerIntro(i){const c=CAR[i];if(!c||i>carDone())return;fsCtx();
   bigFx(`<div class="neon" style="--cc:${c.cor}"><small>Noite ${i+1} · ${esc(c.cid)}</small><b>${esc(c.lugar)}</b></div><div class="djvs"><span class="djme">${esc(ME?ME.e:'🙂')}<small>${esc(ME?ME.n:'Tu')} nos pratos</small></span><span class="djx">🎧</span><span class="djcpu">${c.e}<small>${esc(c.dj)}, quem te contratou</small></span></div><p>${esc(c.feitio)} Para passar precisas de ${feMeta(i)*2}/20 de desempenho no fim da noite.</p>`,3200,'carintro');
   setTimeout(()=>feStart(i),2700)}
 /* ---------- 📅 DESAFIO DO DIA ---------- */
@@ -4678,7 +4678,7 @@ function feStart(i){const N0=FEN[i],c=CAR[i];const N={...N0,pub:Math.random()<.3
   L.fe={i,round:1,hype:[0,0],nota:5,hist:[],sil:0,tEnd:null,crowd,me,riv,used:[],noise:0,turn:'me',ph:'intro',opts:[],log:[],lastEn:null,lastG:null,lastA:null,rain:0,req:null,msg:null};L.screen='festa';L.fe.ph='brief';L.fe.bT=Date.now();feBgPause();L.feBg=1;render();scrollTo(0,0);const F0=L.fe;fePrep().then(()=>{F0.prepOk=1;feBriefUpd()});clearInterval(L.feT);L.feT=setInterval(feTick,250)}
 async function fePrep(){const pool=songPool().slice().sort(()=>Math.random()-.5);const have=()=>songPool().filter(i=>{const u=fePvGet(i);return u&&u.length>4}).length;if(have()>=24)return;
   const todo=pool.filter(i=>fePvGet(i)==null).slice(0,36);let k=0;const t0=Date.now();const worker=async()=>{while(k<todo.length&&Date.now()-t0<9000){const i=todo[k++];try{await fePv(i)}catch(e){}}};await Promise.race([Promise.all([0,1,2,3,4,5].map(worker)),new Promise(r=>setTimeout(r,9000))])}
-function feGo(){const F=L.fe;if(!F||F.ph!=='brief'||!F.prepOk)return;F.ph='prep';F.t0=Date.now();F.tEnd=Date.now()+30000;feRound()}
+function feGo(){const F=L.fe;if(!F||F.ph!=='brief'||!F.prepOk)return;fsStart(FEN[F.i].cena);F.ph='prep';F.t0=Date.now();F.tEnd=Date.now()+30000;feRound()}
 function feBriefUpd(){const F=L.fe;if(!F||F.ph!=='brief')return;const l=Math.max(0,15-Math.floor((Date.now()-F.bT)/1000)),b=document.querySelector('.fbrief .fbt');if(b)b.textContent=F.prepOk?(l>0?`A noite começa em ${l}s`:'A começar…'):'💿 A preparar a caixa de discos…';const g=document.querySelector('.fbrief .fbgo');if(g)g.disabled=!F.prepOk;if(l<=0&&F.prepOk)feGo()}
 function feTick(){const F=L.fe;if(!F||L.screen!=='festa'){clearInterval(L.feT);return}if(F.ph==='brief'){feBriefUpd();return}if(F.ph==='end'||F.ph==='prep'||!F.tEnd)return;const now=Date.now(),left=F.tEnd-now,nightLeft=F.t0+FE_NIGHT-now;
   {const ck=document.querySelector('.fclock');if(ck){const r=feR(F);ck.firstChild&&(ck.firstChild.nodeValue='🕕 '+feClock(r))}}
@@ -4705,7 +4705,7 @@ function feScore(i,F,who,mixQ){const e=ev(i),s=song(i),N=FEN[F.i];let pts=e.nota
   /* o público reage */
   F.crowd.forEach(c=>{const like=c.pref===e.gen||(who==='me'&&F.req&&F.req.g===e.gen&&Math.random()<.5);c.h=Math.max(0,Math.min(100,c.h+(like?22:-9)+(mixQ==='falhou'?-10:0)+(R.drop?-18:0)+(F.rain&&!(e.tags.includes('saudade')||e.gen==='bossa')?-10:0)));c.on=c.on?c.h>18:c.h>45;c.like=like});
   F.lastEn=e.en;F.lastG=e.gen;F.lastA=s.a;F.used.push(i);return {pts,notes,e,s}}
-function fePick(i){const F=L.fe;if(!F||F.ph!=='pick'||F.turn!=='me')return;F.sel=i;F.ph='mix';F.mixT0=Date.now();feDraw();clearTimeout(F.mixTO);F.mixTO=setTimeout(()=>{if(L.fe===F&&F.ph==='mix')feMix(true)},4200)}
+function fePick(i){fsCtx();const F=L.fe;if(!F||F.ph!=='pick'||F.turn!=='me')return;F.sel=i;F.ph='mix';F.mixT0=Date.now();feDraw();clearTimeout(F.mixTO);F.mixTO=setTimeout(()=>{if(L.fe===F&&F.ph==='mix')feMix(true)},4200)}
 function feMix(late){const F=L.fe;if(!F||F.ph!=='mix')return;clearTimeout(F.mixTO);const bar=document.querySelector('.fmix'),nd=document.querySelector('.fmix .fneedle');let pos=0;
   if(bar&&nd&&!late){const a=bar.getBoundingClientRect(),b=nd.getBoundingClientRect();pos=(b.left+b.width/2-a.left)/a.width}
   const d=Math.abs(pos-.5),q=late?'falhou':d<.06?'perfeito':d<.16?'bom':'falhou';F.ph='play';if(FA.pre){FA.pre.pause();FA.pre=null}const sil=F.tEnd?Math.max(0,Math.floor((Date.now()-F.tEnd)/1000)):0;F.silT=0;const r=feScore(F.sel,F,'me',q);const liked=r.pts>=FE_PAR[CAR[F.i].lvl];const full=feFull(F.sel);let dur=liked?(full?Math.min(240000,(feFull.d[F.sel]||200)*1000):90000):45000;const nl=F.t0+FE_NIGHT-Date.now();if(nl<dur+35000){dur=Math.max(30000,nl);F.lastTrack=1}F.dur=dur;F.tEnd=Date.now()+dur;F.liked=liked;fePlay(F.sel,q,dur);if(sil>0){r.notes.unshift(`🔇 ${sil}s de silêncio na pista`)}F.hype[0]+=r.pts;
@@ -4724,7 +4724,7 @@ function feFx(k){const sc=document.querySelector('.fstage');if(!sc)return;const 
   if(k==='confetti'||k==='quadrilha')d.innerHTML=Array.from({length:30},(_,j)=>`<i style="left:${(j*3.3)%100}%;animation-delay:${(j%9)*.12}s;background:${['#ffd23f','#ff4f8b','#3fa7d6','#59c97e'][j%4]}"></i>`).join('');
   if(k==='police')d.innerHTML='<span>🚓</span>';if(k==='scratch')d.innerHTML='<span>💥 SCRRRATCH</span>';if(k==='bateria')d.innerHTML='<span>🥁🥁🥁</span>';
   sc.appendChild(d);setTimeout(()=>d.remove(),k==='rain'?6000:2600)}
-function feEnd(){const F=L.fe;if(!F||F.ph==='end')return;F.ph='end';F.tEnd=null;setTimeout(()=>{if(L.fe===F&&F.ph==='end'){const el=FA.el;FA.el=null;L.feBg=0;if(el)faFade(el,0,4,()=>el.pause());setTimeout(()=>{if(SND.on&&L.fe===F)try{musicStart()}catch(e){}},4200)}},9000);const won=F.nota>=feMeta(F.i);const i=F.i,c=CAR[i];
+function feEnd(){const F=L.fe;if(!F||F.ph==='end')return;F.ph='end';setTimeout(()=>{if(L.fe===F)fsStop()},12000);F.tEnd=null;setTimeout(()=>{if(L.fe===F&&F.ph==='end'){const el=FA.el;FA.el=null;L.feBg=0;if(el)faFade(el,0,4,()=>el.pause());setTimeout(()=>{if(SND.on&&L.fe===F)try{musicStart()}catch(e){}},4200)}},9000);const won=F.nota>=feMeta(F.i);const i=F.i,c=CAR[i];
   try{profAdd('games');profAdd('gCpu');profAdd(won?'winCpu':'loseCpu');partDia();if(won)vitBpm(VIT_BPM.cpu[c.lvl]||6,'vitória')}catch(e){}
   if(won&&i>=carDone()){profSet('carN',i+1);const b=CAR_BPM[i]||5;if(CASAL.includes(myPid()))profAdd('vbpm',b);F.newWin=b}
   feDraw();if(won){confetti(50);if(F.newWin)setTimeout(()=>bigFx(`<div class="carwin"><span>${c.e}</span><b>Noite conquistada!</b><small>${esc(c.lugar)} é teu. +${F.newWin} BPM${i+1<CAR.length?` · próxima: ${esc(CAR[i+1].lugar)}`:' · és o rei do samba! 👑'}</small><i class="carstamp big">✓</i></div>`,4200,'carwinfx'),900)}}
@@ -4752,8 +4752,42 @@ function fePlay(i,q,dur){if(!SND.on)return;const fu=feFull(i);const go=u=>{if(!u
 function feHear(i,btn){if(!SND.on){toast('🔇 Liga o som (botão em cima) para ouvir');return}const stop=()=>{if(FA.pre){FA.pre.pause();FA.pre=null}document.querySelectorAll('.fhear.on').forEach(b=>b.classList.remove('on'));if(FA.el&&!IS_IOS)faFade(FA.el,.85,.5)};
   if(FA.pre&&FA.preI===i){stop();return}stop();const go=u=>{if(!u){toast('Sem amostra para esta música');return}const a=new Audio(u);a.volume=IS_IOS?1:.7;a.currentTime=0;a.play().catch(()=>{});FA.pre=a;FA.preI=i;if(btn)btn.classList.add('on');feBgPause();if(FA.el&&!IS_IOS)faFade(FA.el,.15,.4);clearTimeout(FA.preT);FA.preT=setTimeout(()=>{if(FA.pre===a)stop()},9000)};
   const u=fePvGet(i);if(u)go(u);else if(u==='')go(null);else{btn&&btn.classList.add('load');fePv(i).then(x=>{btn&&btn.classList.remove('load');go(x)})}}
-function feStopAll(){L.feBg=0;if(FA.pre){FA.pre.pause();FA.pre=null}if(FA.el){const el=FA.el;FA.el=null;if(IS_IOS)el.pause();else faFade(el,0,1,()=>el.pause());if(SND.on)setTimeout(()=>{try{musicStart()}catch(e){}},1100)}}
+function feStopAll(){L.feBg=0;fsStop();if(FA.pre){FA.pre.pause();FA.pre=null}if(FA.el){const el=FA.el;FA.el=null;if(IS_IOS)el.pause();else faFade(el,0,1,()=>el.pause());if(SND.on)setTimeout(()=>{try{musicStart()}catch(e){}},1100)}}
 setInterval(()=>{if((FA.el||FA.pre)&&(L.screen!=='festa'||!SND.on))feStopAll();else if(L.feBg&&L.screen!=='festa'){L.feBg=0;if(SND.on)try{musicStart()}catch(e){}}},800);
+
+/* ======== sons do ambiente da festa (gerados no momento, sem ficheiros) ======== */
+const FSX={ctx:null,g:null,nodes:[],t:null,cena:null,bab:null};
+const FS_P={praia:{bab:.45,sea:1,gull:.05,ball:.045,steps:.03,laugh:.02},restaurante:{bab:.55,clink:.14,laugh:.03,plate:.05,sea:.2},cafe:{bab:.35,clink:.08,page:.03,laugh:.012,steps:.01},boteco:{bab:.8,clink:.12,laugh:.05,steps:.03,horn:.008},
+ arraial:{bab:.9,fire:1,laugh:.05,boom:.012,steps:.06},pelourinho:{bab:.8,drums:1,laugh:.04,steps:.05},terraco:{bab:.55,city:1,clink:.08,horn:.012,laugh:.03},roda:{bab:.9,clink:.1,laugh:.07,pand:.14,steps:.04}};
+function fsCtx(){try{if(!FSX.ctx){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;FSX.ctx=new AC();FSX.g=FSX.ctx.createGain();FSX.g.gain.value=0;FSX.g.connect(FSX.ctx.destination)}if(FSX.ctx.state==='suspended')FSX.ctx.resume();return FSX.ctx}catch(e){return null}}
+function fsBuf(kind,sec){const c=FSX.ctx,n=c.sampleRate*(sec||2),b=c.createBuffer(1,n,c.sampleRate),d=b.getChannelData(0);let last=0;for(let i=0;i<n;i++){const w=Math.random()*2-1;if(kind==='brown'){last=(last+.02*w)/1.02;d[i]=last*3.5}else d[i]=w}return b}
+function fsLoop(kind,type,freq,q,gain){const c=FSX.ctx,s=c.createBufferSource();s.buffer=fsBuf(kind,3);s.loop=true;const f=c.createBiquadFilter();f.type=type;f.frequency.value=freq;f.Q.value=q||.7;const g=c.createGain();g.gain.value=gain;s.connect(f);f.connect(g);g.connect(FSX.g);s.start();FSX.nodes.push(s);return {s,f,g}}
+function fsNoise(t,dur,type,freq,q,gain){const c=FSX.ctx,s=c.createBufferSource();s.buffer=FSX.wb||(FSX.wb=fsBuf('white',1));const f=c.createBiquadFilter();f.type=type;f.frequency.value=freq;f.Q.value=q||1;const g=c.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(gain,t+.005);g.gain.exponentialRampToValueAtTime(.0001,t+dur);s.connect(f);f.connect(g);g.connect(FSX.g);s.start(t,Math.random()*.5);s.stop(t+dur+.05)}
+function fsTone(t,type,f0,f1,dur,gain,filt){const c=FSX.ctx,o=c.createOscillator();o.type=type;o.frequency.setValueAtTime(f0,t);if(f1)o.frequency.exponentialRampToValueAtTime(f1,t+dur);const g=c.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(gain,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+dur);let n=o;if(filt){const f=c.createBiquadFilter();f.type='bandpass';f.frequency.value=filt;f.Q.value=2;o.connect(f);n=f}n.connect(g);g.connect(FSX.g);o.start(t);o.stop(t+dur+.05)}
+const FSE={
+ clink(t){const f=2400+Math.random()*1800;fsTone(t,'sine',f,0,.5,.035);fsTone(t+.01,'sine',f*1.48,0,.35,.02)},
+ plate(t){fsNoise(t,.09,'bandpass',1900,3,.06);fsTone(t+.02,'triangle',1200+Math.random()*500,0,.25,.025)},
+ laugh(t){const n=4+(Math.random()*3|0),f0=200+Math.random()*160,fm=800+Math.random()*500;for(let k=0;k<n;k++)fsTone(t+k*.15,'sawtooth',f0*(1-k*.04),f0*(.85-k*.04),.13,.035,fm)},
+ steps(t){for(let k=0;k<2+(Math.random()*3|0);k++)fsNoise(t+k*.28,.06,'lowpass',260,1,.07)},
+ gull(t){for(let k=0;k<2+(Math.random()*2|0);k++){const tt=t+k*.42;fsTone(tt,'sine',1500+Math.random()*300,850,.32,.022)}},
+ ball(t){fsTone(t,'sine',160,55,.14,.16);fsNoise(t,.03,'highpass',1500,1,.05);if(Math.random()<.6){fsTone(t+.55,'sine',120,50,.1,.06);fsTone(t+.9,'sine',110,50,.08,.03)}},
+ page(t){fsNoise(t,.22,'bandpass',3200,1.5,.03)},
+ horn(t){fsTone(t,'square',420,0,.32,.012,900);fsTone(t,'square',520,0,.32,.01,900)},
+ pand(t){for(let k=0;k<3;k++)fsNoise(t+k*.09,.07,'highpass',6500,1,.05)},
+ boom(t){fsTone(t,'sine',90,35,.9,.18);for(let k=0;k<12;k++)fsNoise(t+.3+Math.random()*.8,.02,'highpass',3000,1,.03)}};
+function fsStart(cena){const c=fsCtx();if(!c||!SND.on)return;fsStop(true);FSX.cena=cena;const P=FS_P[cena]||{bab:.6};const now=c.currentTime;FSX.g.gain.cancelScheduledValues(now);FSX.g.gain.setTargetAtTime(.9,now,1.2);
+  FSX.bab=fsLoop('brown','bandpass',520,.6,.05*P.bab);const b2=fsLoop('white','bandpass',1300,1.2,.004*P.bab);FSX.bab2=b2;
+  if(P.sea)FSX.sea=fsLoop('brown','lowpass',650,.7,.05*P.sea);if(P.city)fsLoop('brown','lowpass',170,.7,.09);if(P.fire){}
+  clearInterval(FSX.t);FSX.t=setInterval(()=>fsTickS(P),250)}
+function fsTickS(P){const c=FSX.ctx;if(!c||!L.fe||L.screen!=='festa'||!SND.on){fsStop();return}const t=c.currentTime+.02,F=L.fe,sil=F.tEnd&&Date.now()>F.tEnd&&F.ph!=='end',on=F.crowd.filter(x=>x.on).length/Math.max(1,F.crowd.length),en=F.last?F.last.e.en:2;
+  /* conversa: mais alta em silêncio, ondula como um café cheio */
+  try{const lvl=.05*(P.bab||.6)*(sil?2.2:1)*(.7+Math.random()*.6);FSX.bab.g.gain.setTargetAtTime(lvl,t,.4);FSX.bab.f.frequency.setTargetAtTime(420+Math.random()*260,t,.3);if(FSX.bab2)FSX.bab2.g.gain.setTargetAtTime(.006*(P.bab||.6)*(sil?2:1)*Math.random(),t,.2)}catch(e){}
+  if(FSX.sea){const ph=(Date.now()/7000)%1;FSX.sea.g.gain.setTargetAtTime(.02+.06*Math.sin(ph*Math.PI),t,.6)}
+  for(const k in FSE){const pr=P[k];if(pr&&Math.random()<pr*(k==='steps'?on*(en/3):1))FSE[k](t+Math.random()*.2)}
+  if(P.fire)for(let k=0;k<3;k++)if(Math.random()<.5)fsNoise(t+Math.random()*.25,.008+Math.random()*.01,'highpass',2500,1,.04*Math.random());
+  if(P.drums&&!sil){const beat=60/(80+en*14);const b=Math.floor(c.currentTime/beat);if(b!==FSX.lb){FSX.lb=b;if(b%2===0)fsTone(t,'sine',95,45,.25,.09);else if(Math.random()<.6)fsNoise(t,.05,'bandpass',700,2,.04)}}
+  if(sil&&Math.random()<.04)FSE.laugh(t);if(F.rain&&Math.random()<.9)for(let k=0;k<4;k++)fsNoise(t+Math.random()*.25,.01,'highpass',4000,1,.015)}
+function fsStop(keep){clearInterval(FSX.t);FSX.t=null;try{if(FSX.ctx&&FSX.g){const now=FSX.ctx.currentTime;FSX.g.gain.cancelScheduledValues(now);FSX.g.gain.setTargetAtTime(0,now,keep?.05:.6)}}catch(e){}const ns=FSX.nodes.splice(0);setTimeout(()=>ns.forEach(n=>{try{n.stop()}catch(e){}}),keep?100:1500);FSX.sea=null}
 
 function feScene(F){const N=FEN[F.i],c=CAR[F.i],on=F.crowd.filter(x=>x.on).length,energy=F.last?F.last.e.en:2;
   const sky=feSky(F.ph==='end'?FE_ROUNDS+1:feR(F)),playing=F.ph==='play'||F.ph==='rivplay';
@@ -5656,7 +5690,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795642211';
+const BUILD='1795642430';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
