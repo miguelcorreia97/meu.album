@@ -3527,7 +3527,7 @@ function roomAct(k,ev){const el=ev&&ev.currentTarget,id=(el&&el.dataset&&el.data
   if(canEdit()&&(RPOS[k]||k==='movel')){if(ev)ev.stopPropagation();if(!['prat','quadros','movel'].includes(k))roomAct0(k,ev);itemZoom(k,id);return}roomAct0(k,ev)}
 /* painel de um objeto do quarto: mudar de lugar (com pré-visualização) ou guardar */
 function itemZoom(k,id,sel){const q=roomQ(),mv=k==='movel';id=mv?q.eq.movel:id;const it=RIT[id];if(!it)return;
-  const sc=document.querySelector('.roomscene');if(sc&&!L.rFull){const r=sc.getBoundingClientRect();if(r.top<0||r.top>70)scrollTo({top:scrollY+r.top-64,behavior:'smooth'})}
+  const sc=document.querySelector('.roomscene');if(sc&&!L.rFull&&sel==null){const r=sc.getBoundingClientRect(),want=(innerHeight-r.height)/2;if(Math.abs(r.top-want)>12)scrollTo({top:scrollY+r.top-want,behavior:'smooth'})}
   const P=mv?MOVEL_POS.map(x=>[x[0]]):RPOS[k],cur=mv?(+((q.pos||{}).movel)||0):mulGet(q,k).indexOf(id),a=mv?[]:mulGet(q,k);
   sel=sel==null?cur:sel;L.pv=sel!==cur?{k,id,i:sel}:null;roomRedraw();
   const extra=k==='prat'?`<button class="btn ghost sm" onclick="zoomClose();setTimeout(boxZoom,250)">💿 Ver os discos</button>`:k==='quadros'?`<button class="btn ghost sm" onclick="zoomClose();setTimeout(postersZoom,250)">🖼️ Ver os pósteres</button>`:mv?`<button class="btn ghost sm" onclick="zoomClose();setTimeout(boxZoom,250)">💿 Ver os discos guardados</button>`:'';
