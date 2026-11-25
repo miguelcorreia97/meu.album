@@ -3798,7 +3798,8 @@ function musicShuffle(){const q=PLAYLIST.slice();for(let i=q.length-1;i>0;i--){c
 /* fade in / fade out da música de fundo (Web Audio quando há, senão volume) */
 const MUS_VOL=.55,MUS_FIN=1.6,MUS_FOUT=2.2;
 /* a música passa só pelo elemento <audio> (sem Web Audio) para continuar a tocar com o ecrã bloqueado ou noutra app */
-function musGraph(){if(!MUS.el||MUS.vt!=null)return;try{MUS.el.volume=.5;MUS.vt=Math.abs(MUS.el.volume-.5)<.02;MUS.el.volume=MUS_VOL}catch(e){MUS.vt=false}}
+const IS_IOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+function musGraph(){if(!MUS.el||MUS.vt!=null)return;if(IS_IOS){MUS.vt=false;return}try{MUS.el.volume=.5;MUS.vt=Math.abs(MUS.el.volume-.5)<.02;MUS.el.volume=MUS_VOL}catch(e){MUS.vt=false}}
 function musSession(){try{if(!('mediaSession' in navigator)||!MUS.cur)return;navigator.mediaSession.metadata=new MediaMetadata({title:MUS.cur.t,artist:'Meu Álbum',album:'Música de fundo',artwork:[{src:'icon-512.png',sizes:'512x512',type:'image/png'}]});
   if(!MUS.ms){MUS.ms=1;navigator.mediaSession.setActionHandler('nexttrack',()=>musicNext(true));navigator.mediaSession.setActionHandler('play',()=>{if(!SND.on)sndStart();else MUS.el&&MUS.el.play()});navigator.mediaSession.setActionHandler('pause',()=>{try{MUS.el.pause()}catch(e){}})}}catch(e){}}
 function musFade(to,sec){to=Math.max(0,to);if(MUS.vt===false)return;if(MUS.g){const g=MUS.g.gain,t=SND.ctx.currentTime;try{g.cancelScheduledValues(t);g.setValueAtTime(g.value,t);g.linearRampToValueAtTime(to,t+sec)}catch(e){g.value=to}return}
