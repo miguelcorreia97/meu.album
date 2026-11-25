@@ -1780,6 +1780,14 @@ html.phland body.has-ddock #app,html.phland.has-ddock #app{padding-bottom:150px!
 .rinvlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:8px}
 .rinvlist button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px 8px;border-radius:14px;border:1px solid rgba(255,214,150,.25);background:rgba(255,246,230,.06);color:var(--cream);font:inherit;cursor:pointer}
 .rinvlist button span{font-size:1.6rem}.rinvlist button i{font-style:normal;font-size:.72rem;opacity:.65}.rinvlist button[disabled]{opacity:.5;cursor:default}
+
+.redit{position:sticky;top:58px;z-index:30;margin:0 auto 10px;max-width:640px;padding:10px 12px;border-radius:16px;border:1px solid rgba(255,210,63,.55);background:rgba(28,14,6,.94);backdrop-filter:blur(8px)}
+.redit .edhead{display:flex;flex-direction:column;gap:2px;margin-bottom:6px}.redit .edhead span{font-size:.8rem;opacity:.8}
+.redit .edbtns{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.redit .edbtns.main{justify-content:flex-end;border-top:1px solid rgba(255,246,230,.1);padding-top:8px}
+.roomscene.editing .ract{cursor:grab;touch-action:none}.roomscene.editing .ract:hover .ri{filter:drop-shadow(0 0 3px rgba(255,210,63,.7))}
+.roomscene.editing .ract.edsel .ri{filter:drop-shadow(0 0 4px #ffd23f) drop-shadow(0 0 2px #ffd23f)}
+.roomscene.editing .hud,.roomscene.editing .rfullbtn{display:none!important}.roomscene.editing .roomsvg{touch-action:none}
+.izmore{margin-top:8px;font-size:.85rem}.izmore summary{cursor:pointer;opacity:.75}
 </style>
 </head>
 <body>
@@ -2647,7 +2655,9 @@ const MISSOES=[
  {id:'m_vitorias',cat:'A meias',co:1,half:1,n:'Dupla vencedora',d:'Ganhem 60 partidas: 30 cada um',s:'win',t:60,v:{c:'#e8b52a',e:'🏆'}},
  {id:'m_duelos',cat:'A meias',co:1,half:1,n:'Duelos a dois',d:'Ganhem 400 duelos: 200 cada um',s:'duelWin',t:400,v:{c:'#c2477a',e:'⚔️'}},
  {id:'m_stk',cat:'A meias',co:1,half:1,n:'Conversa de stickers',d:'Mandem 400 stickers: 200 cada um',s:'stk',t:400,v:{c:'#8e44d6',e:'💬'}},
- {id:'m_recados',cat:'A meias',co:1,half:1,n:'Correio a meias',d:'Escrevam 30 recados no quadro: 15 cada um',s:'board',t:30,v:{c:'#1f2a24',e:'📝'}}];
+ {id:'m_recados',cat:'A meias',co:1,half:1,n:'Correio a meias',d:'Escrevam 30 recados no quadro: 15 cada um',s:'board',t:30,v:{c:'#1f2a24',e:'📝'}},
+ {id:'rodaantiga',cat:'Estilos',n:'Roda de samba antiga',d:'Escolhe 80 sambas e pagodes (dá o disco d’Os Originais do Samba)',s:'pk.g.samba',t:80,v:{c:'#1f7a45',e:'🥁'}},
+ {id:'gonzaguinha',cat:'Jogo',n:'O que é, o que é?',d:'Ganha 25 partidas (dá o disco do Gonzaguinha)',s:'win',t:25,v:{c:'#f2c230',e:'🌻'}}];
 /* progresso das missões a dois: o melhor dos dois (ou a soma, nalgumas) */
 const coVal=m=>{if(CASAL.length<2)return 0;const v=CASAL.map(w=>stVal(profGet(w),m.s));if(m.half)return Math.min(v[0],m.t/2)+Math.min(v[1],m.t/2);return m.sum?v[0]+v[1]:Math.max(v[0],v[1])};
 const coHalf=m=>CASAL.map(w=>Math.min(stVal(profGet(w),m.s),m.t/2));
@@ -2736,10 +2746,10 @@ const DISCOS=DISCOS_LIB.map(([f,a,t])=>({k:f,f:'capas/biblioteca/'+f+'.jpg',a,t}
 const DISCO=k=>DISCOS.find(d=>d.k===k);
 const DISCO_PRECO=360,SURPRESA_PRECO=240,SURPRESA_MAX=400;
 /* ---------- preço de cada disco: estatuto do artista + fama do álbum + musicalidade ---------- */
-const ART_EST={'Chico Buarque':5,'Jorge Ben Jor':5,'Elis Regina':5,'Tim Maia':5,'Gal Costa':4.8,'Djavan':4.6,'Rita Lee':4.6,'Cazuza':4.3,'Toquinho':4,'Seu Jorge':3.8,'Arlindo Cruz':3.5,'Grupo Revelação':3,'Natiruts':2.8,'Jorge Vercillo':2.6,'Emmanuel Cortes':2};
+const ART_EST={'Gonzaguinha':4.3,'Os Originais do Samba':3.6,"Mart'nália":3.2,'Chico Buarque':5,'Jorge Ben Jor':5,'Elis Regina':5,'Tim Maia':5,'Gal Costa':4.8,'Djavan':4.6,'Rita Lee':4.6,'Cazuza':4.3,'Toquinho':4,'Seu Jorge':3.8,'Arlindo Cruz':3.5,'Grupo Revelação':3,'Natiruts':2.8,'Jorge Vercillo':2.6,'Emmanuel Cortes':2};
 const COLET=/ao vivo|grandes|favourites|essential|a arte de|hits|box|20 grandes|100%|acústico|mtv|coletânea|50 anos|live/i;
 /* ---------- raridade de cada álbum: conta sobretudo o álbum (fama e aclamação), não só o cantor ---------- */
-const ALB_FAMA={
+const ALB_FAMA={'Chico Buarque (1978)':4.6,'Caminhos do Coração':4,'Os Originais do Samba':3.8,'Menino do Rio':3.4,'Raçaman':3.8,
  'Samba Esquema Novo':5,'Puro Suingue':2.5,'A Tábua de Esmeralda':5,'Força Bruta':4.3,'Jorge Ben (1969)':4.6,'África Brasil':5,'Favourites':2,'Ben':4.2,'Negro É Lindo':4,'Ben É Samba Bom':3.3,'Football & Samba Groove Association':2.5,'A Banda do Zé Pretinho':3.5,'Bem-Vinda Amizade':2.7,'Salve Simpatia':3.2,'Salve Jorge':2.7,'Sonsual':2.2,'A Arte de Jorge Ben Jor':2,'Grandes Mestres da MPB':1.8,
  'Djavan (1978)':4.2,'Coisa de Acender':3.3,'Djavan Ao Vivo':3.8,'Luz':4.9,'Bicho Solto – O XIII':3.2,'Grandes Sucessos':1.8,'A Voz, o Violão, a Música de Djavan':4.3,'Malásia':3.6,'Alumbramento':4.4,'Lilás':4,'Ária (Ao Vivo)':2.7,'Rua dos Amores':2.8,'Alumbramento & Cara de Índio':2.4,'Seduzir':4.1,'Vaidade':2.4,'Milagreiro':2.6,'Na Pista, etc':2.2,'Vesúvio':2.5,
  'Cru':3.8,
@@ -2767,7 +2777,7 @@ const discPrice=k=>(discInfo(k)||{p:360}).p;
 
 /* disco certo para cada missão de artista */
 const DISC_ARTISTA={djavan:'djavan--luz',jorgeben:'jorge-ben-jor--a-tabua-de-esmeralda',seujorge:'seu-jorge--cru',chico:'chico-buarque--construcao',cazuza:'cazuza--so-se-for-a-dois',revela:'grupo-revelacao--ao-vivo-no-olimpo',vercillo:'jorge-vercillo--todos-nos-somos-um',gal:'gal-costa--gal-tropical',natiruts:'natiruts--nativus',arlindo:'arlindo-cruz--sambista-perfeito',toquinho:'toquinho--aquarela'};
-const MREW={djavan:550,jorgeben:650,seujorge:300,chico:550,cazuza:280,revela:180,vercillo:150,cortes:120,toquinho:200,gal:350,natiruts:120,arlindo:120,timmaia:300,ecletico:300,
+const MREW={rodaantiga:350,gonzaguinha:400,djavan:550,jorgeben:650,seujorge:300,chico:550,cazuza:280,revela:180,vercillo:150,cortes:120,toquinho:200,gal:350,natiruts:120,arlindo:120,timmaia:300,ecletico:300,
  mpb:400,suingue:350,samba:300,rock:250,bossa:200,pop:180,reggae:150,nordeste:150,amor:450,saudade:250,festa:300,mar:220,brasil:220,calma:300,energia:300,
  estreia:150,maratona:300,viciado:700,vitorias:450,tri:250,penta:500,massacre:350,duelos:600,duplo:300,pedido:450,ouvido:550,pistoleiro:300,
  robo:450,robo1:350,fregues:200,rival:400,dono:400,revanche:250,carta:300,stk1:250,stk2:500,duvidoso:250,humilde:200,moeda:200,ultimo:200,coruja:250,domingo:200,
@@ -2855,7 +2865,7 @@ function sqMerge(base,loc,rem){const S=x=>JSON.stringify(x),o=JSON.parse(S(rem||
   o.eq={...(o.eq||{})};for(const k of new Set([...Object.keys(loc.eq||{}),...Object.keys(base.eq||{})]))if(S(ev(loc,k))!==S(ev(base,k)))o.eq[k]=ev(loc,k);
   if((+loc.lt||0)>(+o.lt||0)){o.lt=loc.lt;o.lb=loc.lb}
   if(loc.md){const a=o.md||{},b=loc.md;if(!a.d||b.d>a.d)o.md={...b};else if(a.d===b.d){o.md={...a};for(const k in b)if(k!=='d')o.md[k]=Math.max(+a[k]||0,+b[k]||0)}}
-  for(const k of ['sh','wl','px','play','on','cl','pos','mul','li','rf1','bm1','lon','flip'])if(S(loc[k])!==S(base[k]))o[k]=loc[k];return o}
+  for(const k of ['sh','wl','px','play','on','cl','pos','mul','li','rf1','bm1','lon','flip','off'])if(S(loc[k])!==S(base[k]))o[k]=loc[k];return o}
 async function sqSync(){if(!(db&&db.cloud)||!QID||!canEdit())return;if(SQ.busy){SQ.again=1;return}SQ.busy=true;SQ.again=0;
   const snap=JSON.parse(JSON.stringify(SQ.d)),base=SQ.base;
   for(let k=0;k<8;k++){const cur=await sqFetch();if(!cur)break;const m=sqMerge(base,snap,cur.d);
@@ -2898,12 +2908,14 @@ function sunPos(n){const hz=WY+100;if(todNow(n)!=='noite'||n.min>=n.rise-40&&n.m
   const len=1440-(n.set-n.rise),tt=((n.min-n.set)%1440+1440)%1440/len,c=Math.max(0,Math.min(1,tt));return [WX+18+c*(WW-36),hz-Math.sin(Math.PI*c)*80]}
 function roomTodOf(){return L.rTodV||todNow()}
 /* música a tocar no quarto dá BPM */
-/* disco a tocar no quarto: +1 BPM por minuto para cada pessoa do quarto, até 30 por dia cada uma; conta com o jogo aberto em qualquer ecrã */
+/* disco a tocar no quarto: +1 BPM a cada 3 minutos para cada pessoa do quarto, até 30 por dia cada uma; conta com o jogo aberto em qualquer ecrã */
 function musDay(q){q=q||roomQ();const d=lisNow().ymd,m=q.md&&q.md.d===d?q.md:{d};return m}
 function bpmOf(pid,q){return +(musDay(q)[pid]||0)}
 function bpmToday(){return ME?bpmOf(myPid()):0}
+const BPM_MIN=3;
 function bpmTick(){if(!ME||!canEdit())return;const q=roomQ();if(!q.on||!discPlaces().play)return;const w=myPid(),m=musDay(q),t=+(m[w]||0);if(t>=BPM_DIA)return;
-  q.md={...m,[w]:t+1};q.mus=(+q.mus||0)+1;roomSave(q,1);
+  const mm=(+(m[w+'m'])||0)+1;if(mm%BPM_MIN){q.md={...m,[w+'m']:mm};roomSave(q,1);return}
+  q.md={...m,[w]:t+1,[w+'m']:mm};q.mus=(+q.mus||0)+1;roomSave(q,1);
   if(L.screen==='quarto'){const v=document.getElementById('bpmv');if(v)v.textContent=roomCoins();const hd=document.getElementById('bpmday');if(hd)hd.textContent=`${t+1}/${BPM_DIA}`;roomPop('+1 BPM')}
   if(t+1===BPM_DIA)toast(`🎶 Já ganhaste os ${BPM_DIA} BPM de música de hoje`)}
 setInterval(bpmTick,60000);
@@ -3037,7 +3049,17 @@ const DISC_MISS=(()=>{const o={},by={};DISCOS.forEach(d=>(by[d.a]=by[d.a]||[]).p
   MISSOES.forEach(m=>{if(m.co)return;const pref=DISC_ARTISTA[m.id],pa=pref&&DISCO(pref)?.a;
     if(pref&&cap[pa]>0&&!used.has(pref)){used.add(pref);cap[pa]--;o[m.id]=pref;return}
     if(m.v.a||m.id==='estreia'||hashS(m.id)%3!==0){const k=next();if(k)o[m.id]=k}});return o})();
+/* álbuns novos (das músicas de fundo): capa provisória até o telemóvel encontrar a oficial */
+const DISCOS_NOVOS=[['chico-buarque--chico-buarque-1978','Chico Buarque','Chico Buarque (1978)'],['gonzaguinha--caminhos-do-coracao','Gonzaguinha','Caminhos do Coração'],['os-originais-do-samba--os-originais-do-samba','Os Originais do Samba','Os Originais do Samba'],['martnalia--menino-do-rio',"Mart'nália",'Menino do Rio'],['natiruts--racaman','Natiruts','Raçaman']];
+DISCOS_NOVOS.forEach(([f,a,t])=>{if(!DISCOS.some(d=>d.k===f))DISCOS.push({k:f,f:'capas/biblioteca/'+f+'.jpg',a,t,rc:1})});
+DISC_MISS.rodaantiga='os-originais-do-samba--os-originais-do-samba';DISC_MISS.gonzaguinha='gonzaguinha--caminhos-do-coracao';
 const DISC_EXCL=new Set(Object.values(DISC_MISS));
+(function coverFix(){const todo=DISCOS.filter(d=>d.rc);let ch=0;todo.forEach(d=>{try{const u=localStorage.getItem('cov:'+d.k);if(u){d.f=u;ch=1}}catch(e){}});
+  setTimeout(async()=>{for(const d of todo){if(d.f.startsWith('http'))continue;try{const r=await jsonp(`https://itunes.apple.com/search?term=${encodeURIComponent(d.a+' '+d.t.replace(/\(.*?\)/g,''))}&entity=album&country=br&limit=10`);
+    const t=nrm(d.t.replace(/\(.*?\)/g,'')),a=nrm(d.a).split(' ').filter(w=>w.length>2);const L_=(r.results||[]).filter(x=>a.some(w=>nrm(x.artistName).includes(w)));
+    const best=L_.find(x=>nrm(x.collectionName)===t)||L_.find(x=>nrm(x.collectionName).startsWith(t))||(/1978/.test(d.t)&&L_.find(x=>(x.releaseDate||'').startsWith('1978')));
+    if(best&&best.artworkUrl100){d.f=best.artworkUrl100.replace('100x100bb','600x600bb');try{localStorage.setItem('cov:'+d.k,d.f)}catch(e){}ch=1}}catch(e){}}
+    if(ch&&(L.screen==='quarto'))render()},5000)})();
 const missOfDisc=k=>MISSOES.find(m=>DISC_MISS[m.id]===k);
 
 /* ---- tempo do dia ---- */
@@ -3340,11 +3362,11 @@ function roomSvg(w,o){o=o||{};RUID=0;const q=roomQ(),eq={...q.eq,...(o.eq||{})};
     if(k==='#patch'){b+=lightPatch(tod);continue}
     let LST;if(RPOS[k]){const a=mulGet(roomQ(),k);if(L.pv&&L.pv.k===k){const j=a.indexOf(L.pv.id);if(j>=0)a[j]=null;if(RSINGLE.has(k))a.fill(null);if(L.pv.i>=0)a[L.pv.i]=L.pv.id}if(eq[k]&&!a.includes(eq[k])){let j;if(RSINGLE.has(k)){j=Math.max(0,a.findIndex(Boolean));a.fill(null)}else{j=a.indexOf(null);if(j<0)j=0}a[j]=eq[k]}LST=a.map((x,i)=>[x,i]).filter(x=>x[0])}else LST=[[k==='janela'||k==='recados'?k:eq[k],null]];
     for(const [id,pi] of LST){
-    if(!id)continue;const it=RIT[id]||{},f=RDR[k==='cor'||k==='chao'?k:id];if(!f)continue;const r=f(it,c)||{};const T=ST[id]||ST[k],PT=posT(k,c,pi),FT=flipT(id,k);const wrF=x=>x&&FT?`<g data-flip="${id}_${pi==null?0:pi}_${RUID}">${x}</g>`:(x||''),wr0=x=>(x=wrF(x))&&T?`<g transform="${T}">${x}</g>`:(x||''),wr=x=>x&&PT?`<g transform="${PT}">${wr0(x)}</g>`:wr0(x);
+    if(!id)continue;const it=RIT[id]||{},f=RDR[k==='cor'||k==='chao'?k:id];if(!f)continue;const r=f(it,c)||{};const T=ST[id]||ST[k],PT=posT(k,c,pi),FT=flipT(id,k),OK_=offKey(k,id),OF=offGet(OK_);const wrF=x=>x&&FT?`<g data-flip="${id}_${pi==null?0:pi}_${RUID}">${x}</g>`:(x||''),wr0=x=>(x=wrF(x))&&T?`<g transform="${T}">${x}</g>`:(x||''),wr1=x=>x&&PT?`<g transform="${PT}">${wr0(x)}</g>`:wr0(x),wr=x=>x&&OF?`<g data-off="${OK_}" transform="translate(${OF.x} ${OF.y})"><g data-zs="${OK_}_${RUID}" data-z="${OF.z}">${wr1(x)}</g></g>`:wr1(x);
     if(part==='w'){if(r.w&&tod==='dia')b+=wr(r.w);continue}
     const ACT=!['cor','chao','recados'].includes(k),open=ACT?`<g class="ract ract-${k}${k==='cortina'&&L.rWin?' win-open':''}" data-id="${id}" onclick="roomAct('${k}',event)">`:'<g>';
     b+=open+'<g class="ri">'+(k==='leitor'?`<g id="rleitor">${wr(r.b)}</g>`:wr(r.b))+'</g></g>';
-    if(k==='leitor'&&c.music)fx+=`<g transform="translate(${movelDx()} 0)"><g transform="${ST.leitor}">${musicNotes(192,top-26)}</g></g>`;
+    if(k==='leitor'&&c.music)fx+=`<g transform="translate(${movelDx()+((offGet(offKey('movel',eq.movel))||{}).x||0)} ${((offGet(offKey('movel',eq.movel))||{}).y||0)})"><g transform="${ST.leitor}">${musicNotes(192,top-26)}</g></g>`;
     if(k==='janela'&&L.rWin)fx+=breeze();
     if(r.g&&!(LUZES.has(id)&&!c.litf(id)))g+=wr(r.g)}}
   const pfOn=plafonOn(eq,c),pfI=pfOn?clGet().i:0;const gk=Math.max(GLOWK[tod],pfOn?.85:0,c.lit&&tod!=='noite'?.55:0);let post=GRADE[tod].map(([col,op,bl])=>`<rect width="${QW}" height="500" fill="${col}" opacity="${(bl==='normal'?op*(1-.62*pfI):op*(1-.4*pfI)).toFixed(3)}" style="mix-blend-mode:${bl}"/>`).join('');
@@ -3386,7 +3408,7 @@ function itemThumb(it){RUID=Math.floor(Math.random()*1e6);const pl={sh:[],wl:[],
   return `<svg viewBox="${IBOX[it.id]||RTHUMB[it.s]}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">${roomDefs()}${inner}</svg>`}
 
 /* ---------- ecrã ---------- */
-function roomTopBar(){const mine=myRoomId(),cv=myInvite();let b='<div class="rtopbar">';
+function roomTopBar(){const mine=myRoomId(),cv=myInvite();let b='<div class="rtopbar">';if(canEdit()&&!L.edit)b+=`<button class="btn ghost sm" onclick="editStart()">✏️ Editar posições</button>`;
   if(L.visit)b+=`<button class="btn sm" onclick="openRoom()">← ${mine?'Voltar ao meu quarto':'Sair da visita'}</button>`;
   else if(mine&&CASAL.length<2&&canEdit())b+=`<button class="btn ghost sm" onclick="inviteZoom()">💌 Convidar alguém</button>`;
   b+=`<button class="btn ghost sm" onclick="visitZoom()">👀 Ver outros quartos</button></div>`;
@@ -3435,6 +3457,32 @@ function roomFull(on){on=on===undefined?!L.rFull:on;L.rFull=on;document.body.cla
  try{if(on){const r=document.documentElement;if(r.requestFullscreen)r.requestFullscreen({navigationUI:'hide'}).catch(()=>{})}else if(document.fullscreenElement){document.exitFullscreen().catch(()=>{})}}catch(e){}}
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&L.rFull)roomFull(false)});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&L.rFull&&!document.querySelector('.rzoom'))roomFull(false)});
+/* ---------- editar posições: arrastar (x,y) e profundidade (z) ---------- */
+const NOEDIT=new Set(['cor','chao','janela','recados','cortina','teto','plafon','moldura','lencol']);
+const FOLLOW={leitor:'movel',mesa:'movel',planta2:'movel',fita:'prat'};
+function offKey(k,id){if(FOLLOW[k]){const q=roomQ(),f=FOLLOW[k];if(k==='mesa'||k==='planta2'){const a=mulGet(q,k);if(a.indexOf(id)>0)return 'o:'+id}return 'o:'+(f==='prat'?(mulGet(q,'prat').find(Boolean)||q.eq.prat):q.eq[f])}return 'o:'+id}
+function offGet(key){const src=L.edit?L.edOff:(roomQ().off||{});const o=src&&src[key];if(L.edit&&!o)return {x:0,y:0,z:1};if(!o||(!o.x&&!o.y&&(o.z==null||o.z===1)))return null;return {x:Math.round(o.x||0),y:Math.round(o.y||0),z:o.z==null?1:o.z}}
+function fixZ(root){const C={};(root||document).querySelectorAll('g[data-zs]:not([data-zd])').forEach(g=>{try{const z=+g.dataset.z||1;if(z===1){g.dataset.zd=1;return}const k=g.dataset.zs;let a=C[k];if(!a){const b=g.getBBox();if(!b.width)return;a=C[k]=[b.x+b.width/2,b.y+b.height]}g.setAttribute('transform',`translate(${a[0]} ${a[1]}) scale(${z}) translate(${-a[0]} ${-a[1]})`);g.dataset.zd=1}catch(e){}})}
+new MutationObserver(()=>{if(document.querySelector('g[data-zs]:not([data-zd])'))requestAnimationFrame(()=>fixZ())}).observe(document.documentElement,{childList:true,subtree:true});
+function editStart(id){if(!canEdit())return;zoomClose();L.edit=1;L.edOff=JSON.parse(JSON.stringify(roomQ().off||{}));L.edSel=id||null;L.rFull&&roomFull(false);render();requestAnimationFrame(()=>{const sc=document.querySelector('.roomscene');if(sc){const r=sc.getBoundingClientRect();scrollTo({top:scrollY+r.top-70,behavior:'smooth'})}})}
+function editEnd(save){if(save){const q=roomQ();const o={};for(const k in L.edOff){const v=L.edOff[k];if(v&&(v.x||v.y||(v.z!=null&&v.z!==1)))o[k]={x:Math.round(v.x||0),y:Math.round(v.y||0),z:+(v.z||1).toFixed(2)}}q.off=o;roomSave(q);toast('✓ Posições guardadas')}L.edit=0;L.edOff=null;L.edSel=null;render()}
+function edKeyOf(id){const it=RIT[id];return it?offKey(it.s,id):'o:'+id}
+function edSel(id){L.edSel=id;edBar();document.querySelectorAll('.roomscene .ract').forEach(g=>g.classList.toggle('edsel',g.dataset.id===id))}
+function edZ(v){if(!L.edSel)return;const k=edKeyOf(L.edSel);L.edOff[k]={...(L.edOff[k]||{}),z:+v};const b=document.getElementById('edzv');if(b)b.textContent=Math.round(v*100)+'%';clearTimeout(edZ.t);edZ.t=setTimeout(()=>{roomRedraw();edSel(L.edSel)},40)}
+function edReset(){if(!L.edSel)return;delete L.edOff[edKeyOf(L.edSel)];roomRedraw();edSel(L.edSel)}
+function edBar(){const el=document.getElementById('redit');if(!el)return;const id=L.edSel,it=RIT[id],o=id?(L.edOff[edKeyOf(id)]||{}):{};
+  el.innerHTML=`<div class="edhead"><b>✏️ Editar posições</b><span>${it?esc(it.n):'Toca num objeto e arrasta-o para o mudar de sítio.'}</span></div>
+  ${it?`<div class="pfrow col"><span>Profundidade (mais à frente = maior) · <b id="edzv">${Math.round((o.z||1)*100)}%</b></span><input type="range" min="60" max="150" step="2" value="${Math.round((o.z||1)*100)}" oninput="edZ(this.value/100)"></div>
+  <div class="edbtns">${FLIPOK.has(it.s)?`<button class="btn ghost sm" onclick="roomFlip('${id}');setTimeout(()=>edSel('${id}'),80)">↔ Virar</button>`:''}<button class="btn ghost sm" onclick="edReset()">↺ Repor</button>${RPOS[it.s]&&!RFIX[it.s]?`<button class="btn ghost sm" onclick="itemStore('${it.s}','${id}');setTimeout(edBar,60)">📦 Guardar</button>`:''}</div>`:''}
+  <div class="edbtns main"><button class="btn ghost" onclick="editEnd(0)">Cancelar</button><button class="btn" onclick="editEnd(1)">✓ Confirmar</button></div>`}
+function edPointerDown(e){if(!L.edit)return;const g=e.target.closest&&e.target.closest('.ract');if(!g)return;const id=g.dataset.id,it=RIT[id];if(!it||NOEDIT.has(it.s))return;e.preventDefault();e.stopPropagation();edSel(id);
+  const svg=g.ownerSVGElement,key=edKeyOf(id),st=L.edOff[key]||{},x0=st.x||0,y0=st.y||0,sx=e.clientX,sy=e.clientY,sc=1080/svg.getBoundingClientRect().width;let moved=0;
+  const els=[...svg.querySelectorAll(`[data-off="${key}"]`)];
+  if(!els.length){L.edOff[key]={...st,x:0,y:0,z:st.z||1};roomRedraw();edSel(id);return}
+  const mv=ev=>{const dx=(ev.clientX-sx)*sc,dy=(ev.clientY-sy)*sc;if(Math.abs(dx)+Math.abs(dy)>2)moved=1;const nx=Math.max(-900,Math.min(900,x0+dx)),ny=Math.max(-400,Math.min(300,y0+dy));L.edOff[key]={...(L.edOff[key]||{}),x:nx,y:ny};els.forEach(n=>n.setAttribute('transform',`translate(${nx} ${ny})`))};
+  const up=()=>{removeEventListener('pointermove',mv);removeEventListener('pointerup',up);removeEventListener('pointercancel',up)};
+  addEventListener('pointermove',mv);addEventListener('pointerup',up);addEventListener('pointercancel',up)}
+document.addEventListener('pointerdown',edPointerDown,true);
 function roomSceneInner(){const o={};if(L.rPrev)o.eq={[RIT[L.rPrev].s]:L.rPrev};if(L.rTodV)o.tod=L.rTodV;return roomSvg(0,o)}
 function roomPop(t){const sc=document.querySelector('.roomscene'),lt=document.getElementById('rleitor');if(!sc||!lt)return;const a=sc.getBoundingClientRect(),b=lt.getBoundingClientRect();const e=document.createElement('div');e.className='rpop';e.textContent=t;e.style.left=(b.left-a.left+b.width/2)+'px';e.style.top=(b.top-a.top)+'px';sc.appendChild(e);setTimeout(()=>e.remove(),1800)}
 /* animação: o disco sai da capa e vai para o gira-discos, com ondas e notas */
@@ -3461,7 +3509,7 @@ function quartoScreen(){if(!QID)return noRoomScreen();const ed=canEdit(),coins=r
   let h=`<div class="tot-head"><div class="mono" style="color:var(--muted)">${L.visit?'de visita':'quarto'}</div><h2>${esc(roomTitle())}</h2><div class="sub">${ed?(CASAL.length>1?'Decorem juntos com os BPM que os dois ganham nas missões. Com música a tocar no quarto também ganham BPM.':'Decora com os BPM que ganhas nas missões. Podes convidar alguém para partilhar o quarto contigo.'):'Estás de visita: só quem vive aqui pode mudar as coisas.'}</div></div>
   ${roomTopBar()}
   <div class="qbar"><span class="qcoins">♩ <b id="bpmv">${coins}</b> BPM</span><span class="rdisc">💿 ${pl.own.length} discos</span><span class="rdisc">🕰️ <b id="rclock">${n.hh}</b> em Portugal</span>${ed?`<button class="rdisc rbill" onclick="billsZoom()">🧾 −${billDay()} BPM/dia</button>`:''}</div>
-  <div class="roomscene${L.rFull?' full':''}"><div class="roomscroll">${roomSceneInner()}</div>${sceneHud()}<button class="rfullbtn" onclick="roomFull()">${L.rFull?'<b>✕</b><span> Sair</span>':'<b>⛶</b><span> Ecrã inteiro</span>'}</button><span class="rfullhint">📱 Vira o telemóvel para ver maior</span></div>
+  ${L.edit?'<div id="redit" class="redit"></div>':''}<div class="roomscene${L.rFull?' full':''}${L.edit?' editing':''}"><div class="roomscroll">${roomSceneInner()}</div>${sceneHud()}<button class="rfullbtn" onclick="roomFull()">${L.rFull?'<b>✕</b><span> Sair</span>':'<b>⛶</b><span> Ecrã inteiro</span>'}</button><span class="rfullhint">📱 Vira o telemóvel para ver maior</span></div>
   <p class="hint center todinfo">👆 Toquem nas coisas do quarto: gira-discos, prateleira, móvel, molduras, quadro de recados, janela, luzes, animais… Agora é ${TODN[tnow]} em Portugal: o quarto segue a hora real. O sol nasce às ${n.f(n.rise)} e põe-se às ${n.f(n.set)}.</p>`;
   if(prev)h+=`<div class="rprev"><div><span class="mono">a experimentar</span><b>${esc(prev.n)}</b><em>${prev.lock?`🔒 Só com a missão a dois “${esc(lockM(prev).n)}”: ${esc(lockM(prev).d)}`:`♩ ${prev.p} BPM`}</em></div><div class="acts">${prev.lock?'':falta>0?`<button class="btn" disabled>Faltam ${falta} BPM</button>`:`<button class="btn" onclick="roomBuy('${prev.id}')">Comprar</button>`}<button class="btn ghost" onclick="L.rPrev=null;render()">Tirar</button></div></div>`;
   if(!ed)return h+`<div class="actions"><button class="btn" onclick="L.screen=null;render()">← Voltar</button></div>`;
@@ -3493,7 +3541,7 @@ function quartoScreen(){if(!QID)return noRoomScreen();const ed=canEdit(),coins=r
     if(sub==='excl'){h+=`<p class="hint">Estes não se compram. Há discos assim de quase todos os cantores: basta um de vocês completar a missão.</p>${chips}<div class="dgrid">`;
       DISCOS.filter(d=>DISC_EXCL.has(d.k)&&!pl.own.includes(d.k)&&(!art||d.a===art)).forEach(d=>{const m=missOfDisc(d.k),best=Math.max(...CASAL.map(w=>Math.min(stVal(profGet(w),m.s),m.t)));h+=`<div class="dcard lock r-${discInfo(d.k).rar}"><img src="${esc(d.f)}" alt="" loading="lazy"><b>${esc(d.t)}</b><span>${esc(d.a)}</span><em class="dmiss">🎯 ${esc(m.n)}</em><div class="mbar"><i style="width:${Math.round(best/m.t*100)}%"></i></div><small>${esc(m.d)} · ${best}/${m.t}</small></div>`});h+=`</div>`}}
   if(L.rTab==='ganhar'){const P=CASAL.map(w=>profGet(w));
-    h+=`<p class="hint">O quarto começa com 0 BPM. As missões de quem vive no quarto enchem a mesma conta: cada missão só paga os BPM quando fica completa (o que já tinham recebido antes desta regra fica vosso). Ter um disco a tocar no quarto, com o som ligado, dá +1 BPM por minuto (até ${BPM_DIA} por dia para cada pessoa do quarto, com o jogo aberto em qualquer ecrã; hoje: ${musWho()}). Cada vitória também paga na hora: contra o computador 3/6/10 BPM (Fácil/Normal/Difícil), contra uma pessoa 8; perder não dá nada. Até ${VIT_DIA} BPM por dia a cada um${(()=>{const u=CASAL.map(w=>{const s=profGet(w).st;return +s.vbDay===dayNum(lisNow().ymd)?+s.vbHoje||0:0});return ` (hoje: 🌴 ${u[0]}/${VIT_DIA} · 🌻 ${u[1]}/${VIT_DIA})`})()}. Atenção às contas do quarto: comida dos animais, luz e água são cobradas todos os dias. Já ganharam ${q.mus||0} BPM com música.</p><div class="mgrid">`;
+    h+=`<p class="hint">O quarto começa com 0 BPM. As missões de quem vive no quarto enchem a mesma conta: cada missão só paga os BPM quando fica completa (o que já tinham recebido antes desta regra fica vosso). Ter um disco a tocar no quarto, com o som ligado, dá +1 BPM a cada 3 minutos (30 BPM = 1 h 30 de música) (até ${BPM_DIA} por dia para cada pessoa do quarto, com o jogo aberto em qualquer ecrã; hoje: ${musWho()}). Cada vitória também paga na hora: contra o computador 3/6/10 BPM (Fácil/Normal/Difícil), contra uma pessoa 8; perder não dá nada. Até ${VIT_DIA} BPM por dia a cada um${(()=>{const u=CASAL.map(w=>{const s=profGet(w).st;return +s.vbDay===dayNum(lisNow().ymd)?+s.vbHoje||0:0});return ` (hoje: 🌴 ${u[0]}/${VIT_DIA} · 🌻 ${u[1]}/${VIT_DIA})`})()}. Atenção às contas do quarto: comida dos animais, luz e água são cobradas todos os dias. Já ganharam ${q.mus||0} BPM com música.</p><div class="mgrid">`;
     MISSOES.map(m=>{const r=mReward(m),vs=P.map(p=>Math.min(stVal(p,m.s),m.t)),cv=m.co?Math.min(coVal(m),m.t):0;return {m,r,vs,got:m.co?mPaid(m,coVal(m),m.id,SQ.d&&SQ.d.leg):vs.reduce((a,v,i)=>a+mPaid(m,v,m.id+'|'+CASAL[i],SQ.d&&SQ.d.leg),0),pr:(m.co?cv:Math.max(...vs))/m.t}}).sort((a,b)=>(a.pr>=1)-(b.pr>=1)||b.pr-a.pr).slice(0,24).forEach(x=>{const d=x.r.disc&&DISCO(x.r.disc),done=x.pr>=1;
       h+=`<div class="mcard ${done?'on':''}">${d?`<img class="rmc" src="${esc(d.f)}" alt="" loading="lazy" style="${done?'':'filter:grayscale(1) brightness(.6)'}">`:vinyl(x.m,done)}<div class="mtxt"><b>${esc(x.m.n)}</b><span>${esc(x.m.d)}</span><span class="rrw">♩ ${x.got} de ${x.r.r*(x.m.co?1:2)} BPM${d?` · 💿 ${esc(d.t)}`:''}${MITEM[x.m.id]?` · 🎁 ${esc(RIT[MITEM[x.m.id]].n)}`:''}</span><span class="rrw who">${x.m.co?(x.m.half?`${plE(CASAL[0])} ${coHalf(x.m)[0]}/${x.m.t/2} · ${plE(CASAL[1])} ${coHalf(x.m)[1]}/${x.m.t/2} · a meias`:`${plE(CASAL[0])}${plE(CASAL[1])} a dois · ${Math.min(coVal(x.m),x.m.t)}/${x.m.t}`):`🌴 ${x.vs[0]}/${x.m.t} · 🌻 ${x.vs[1]}/${x.m.t}`}</span><div class="mbar"><i style="width:${Math.round(x.pr*100)}%"></i></div></div></div>`});
     h+=`</div><div class="actions"><button class="btn ghost" onclick="openMissions()">Ver todas as missões</button></div>`}
@@ -3683,7 +3731,7 @@ function roomRedraw(){const s=document.querySelector('.roomscene .roomsvg');if(s
 function roomBubble(t,el){const sc=document.querySelector('.roomscene');if(!sc)return;const a=sc.getBoundingClientRect();let x=a.width/2,y=a.height*.35;if(el){const b=el.getBoundingClientRect();x=b.left-a.left+b.width/2;y=b.top-a.top}
   const d=document.createElement('div');d.className='rbubble';d.textContent=t;d.style.left=Math.max(50,Math.min(a.width-50,x))+'px';d.style.top=Math.max(8,y)+'px';sc.appendChild(d);setTimeout(()=>d.remove(),2400)}
 function roomOnce(sel,cls,ms){document.querySelectorAll(sel).forEach(e=>{e.classList.remove(cls);void e.getBoundingClientRect();e.classList.add(cls);setTimeout(()=>e.classList.remove(cls),ms||1400)})}
-function roomAct(k,ev){const el=ev&&ev.currentTarget,id=(el&&el.dataset&&el.dataset.id)||roomQ().eq[k];if(canEdit()&&FLIPOK.has(k)&&!RPOS[k]&&!LUZES.has(id))setTimeout(()=>flipChip(id,el),30);
+function roomAct(k,ev){if(L.edit){if(ev)ev.stopPropagation();return}const el=ev&&ev.currentTarget,id=(el&&el.dataset&&el.dataset.id)||roomQ().eq[k];if(canEdit()&&FLIPOK.has(k)&&!RPOS[k]&&!LUZES.has(id))setTimeout(()=>flipChip(id,el),30);
   if(canEdit()&&(RPOS[k]||k==='movel')){if(ev)ev.stopPropagation();if(!['prat','quadros','movel'].includes(k))roomAct0(k,ev);itemZoom(k,id);return}roomAct0(k,ev)}
 /* painel de um objeto do quarto: mudar de lugar (com pré-visualização) ou guardar */
 function itemZoom(k,id,sel){const q=roomQ(),mv=k==='movel';id=mv?q.eq.movel:id;const it=RIT[id];if(!it)return;
@@ -3692,9 +3740,9 @@ function itemZoom(k,id,sel){const q=roomQ(),mv=k==='movel';id=mv?q.eq.movel:id;c
   sel=sel==null?cur:sel;L.izSel=sel;L.pv=sel!==cur?{k,id,i:sel}:null;roomRedraw();
   const extra=k==='prat'?`<button class="btn ghost sm" onclick="zoomClose();setTimeout(boxZoom,250)">💿 Ver os discos</button>`:k==='quadros'?`<button class="btn ghost sm" onclick="zoomClose();setTimeout(postersZoom,250)">🖼️ Ver os pósteres</button>`:mv?`<button class="btn ghost sm" onclick="zoomClose();setTimeout(boxZoom,250)">💿 Ver os discos guardados</button>`:'';
   zoomOpen(`<div class="rzlist itemz"><div class="izhead"><div class="rth">${itemThumb(it)}</div><div><h3>${esc(mv?'Móvel do gira-discos':it.n)}</h3><p class="hint">${mv?'O gira-discos e o que está em cima vão juntos.':it.d?esc(it.d):''}</p></div></div>
-   <h4>📍 Mudar de lugar</h4><p class="hint">Escolham um lugar para ver como fica no quarto e depois confirmem.</p>
+   <button class="btn" style="margin:10px 0 2px" onclick="editStart('${id}')">✏️ Mover (arrastar no quarto)</button><details class="izmore"><summary>Lugares rápidos</summary>
    <div class="rplaces big">${P.map((p,i)=>{const oc=a[i];return `<button class="${sel===i?'on':''}" onclick="itemZoom('${k}','${id}',${i})">${i===cur?'📌 ':''}${esc(p[0])}${i===cur?' <i>(agora)</i>':''}${oc&&oc!==id?` <i>(troca com: ${esc((RIT[oc]||{}).n||'')})</i>`:''}</button>`}).join('')}</div>
-   ${LUZES.has(id)?`<h4>💡 Luz</h4>${luzBox(id)}`:''}<div class="izacts"><button class="btn" ${sel===cur?'disabled':''} onclick="itemConfirm('${k}','${id}',${sel})">✓ Confirmar</button>${flipBtn(id)}${!RFIX[k]&&cur>=0?`<button class="btn ghost" onclick="itemStore('${k}','${id}')">📦 Guardar</button>`:''}${extra}</div></div>`,'sheet itemz')
+   ${LUZES.has(id)?`<h4>💡 Luz</h4>${luzBox(id)}`:''}<div class="izacts"><button class="btn sm" ${sel===cur?'disabled':''} onclick="itemConfirm('${k}','${id}',${sel})">✓ Usar este lugar</button></div></details><div class="izacts">${flipBtn(id)}${!RFIX[k]&&cur>=0?`<button class="btn ghost" onclick="itemStore('${k}','${id}')">📦 Guardar</button>`:''}${extra}</div></div>`,'sheet itemz')
   if(first&&!L.rFull)requestAnimationFrame(()=>{const sc=document.querySelector('.roomscene'),bx=document.querySelector('.rzoom.itemz .rzbox');if(!sc)return;const r=sc.getBoundingClientRect(),av=innerHeight-(bx&&innerWidth<700?bx.getBoundingClientRect().height:0),want=av>r.height+16?(av-r.height)/2:(innerHeight-r.height)/2;if(Math.abs(r.top-want)>10)scrollTo({top:scrollY+r.top-want,behavior:'smooth'})})}
 function itemConfirm(k,id,i){L.pv=null;if(k==='movel')movelPos(i);else roomPlace(id,i);zoomClose()}
 function itemStore(k,id){L.pv=null;const q=roomQ(),a=mulGet(q,k),j=a.indexOf(id);if(j>=0){a[j]=null;mulSet(q,k,a);roomSave(q);render()}zoomClose();toast(`📦 ${(RIT[id]||{}).n||'Guardado'} foi para os vossos acessórios`)}
@@ -3703,7 +3751,7 @@ function flipChip(id,el){const sc=document.querySelector('.roomscene');if(!sc)re
   d.onclick=e=>{e.stopPropagation();roomFlip(id);setTimeout(()=>flipChip(id,document.querySelector(`.ract[data-id="${id}"]`)),60)};sc.appendChild(d);clearTimeout(flipChip.t);flipChip.t=setTimeout(()=>d.remove(),4000)}
 function placeChip(k,id,el){const sc=document.querySelector('.roomscene');if(!sc)return;sc.querySelectorAll('.rplacechip').forEach(x=>x.remove());const a=sc.getBoundingClientRect();let x=a.width/2,y=a.height*.6;
   if(el){const b=el.getBoundingClientRect();x=b.left-a.left+b.width/2;y=b.bottom-a.top+4}
-  const d=document.createElement('button');d.className='rplacechip';d.innerHTML='📍 Mudar de lugar';d.style.left=Math.max(70,Math.min(a.width-70,x))+'px';d.style.top=Math.max(30,Math.min(a.height-40,y))+'px';
+  const d=document.createElement('button');d.className='rplacechip';d.innerHTML='✏️ Mover';d.style.left=Math.max(70,Math.min(a.width-70,x))+'px';d.style.top=Math.max(30,Math.min(a.height-40,y))+'px';
   d.onclick=e=>{e.stopPropagation();d.remove();placeZoom(k,id)};sc.appendChild(d);setTimeout(()=>d.remove(),4000)}
 function placeZoom(k,id){const q=roomQ();let opts;
   if(k==='movel'){const cur=+((q.pos||{}).movel)||0;opts=MOVEL_POS.map(([nm],i)=>`<button class="${cur===i?'on':''}" onclick="movelPos(${i});zoomClose()">${cur===i?'✓ ':''}${esc(nm)}</button>`).join('');
@@ -3779,7 +3827,7 @@ function luzZoom(id){const ed=canEdit(),pf=id==='plafon',it=pf?RIT[roomQ().eq.pl
   ${ed&&pf?`<div class="pfrow col"><span>Cor</span><div class="pfcores">${CL_CORES.map(([c,n])=>`<button class="${L_.c===c?'on':''}" style="--c:${c}" title="${n}" onclick="plafonSet({c:'${c}'})"><i></i><small>${n}</small></button>`).join('')}</div></div>
   <div class="pfrow col"><span>Intensidade · <b id="pfiv">${Math.round(L_.i*100)}%</b></span><input type="range" min="10" max="100" step="5" value="${Math.round(L_.i*100)}" oninput="plafonSet({i:this.value/100},1)"></div><p class="hint">Mais forte gasta mais por hora.</p>`:''}
   ${ed&&!pf?`<div class="pfrow col"><span>Intensidade dos candeeiros · <b id="liv">${Math.round(li*100)}%</b></span><input type="range" min="10" max="100" step="5" value="${Math.round(li*100)}" oninput="liSet(this.value/100)"></div>`:''}
-  <div class="izacts">${RPOS[k]&&ed?`<button class="btn ghost sm" onclick="itemZoom('${k}','${id}')">📍 Mudar de lugar</button>`:''}${flipBtn(id)}<button class="btn ghost sm" onclick="billsZoom()">🧾 Contas de todas as luzes</button></div></div>`,'sheet')}
+  <div class="izacts">${RPOS[k]&&ed?`<button class="btn ghost sm" onclick="editStart('${id}')">✏️ Mover</button>`:''}${flipBtn(id)}<button class="btn ghost sm" onclick="billsZoom()">🧾 Contas de todas as luzes</button></div></div>`,'sheet')}
 function roomBills(){lightTick();if(!canEdit())return;const q=roomQ(),today=dayNum(lisNow().ymd);if(q.paid==null){q.paid=today;roomSave(q);return}
   const days=Math.min(CUSTO_DIAS,today-q.paid);if(days<=0)return;const v=days*billDay(q.eq);q.custo=(+q.custo||0)+v;q.paid=today;q.blog=[{d:today,n:days,v},...(q.blog||[])].slice(0,6);roomSave(q)}
 const roomDebt=()=>roomCoins()<0;
@@ -3985,7 +4033,7 @@ const SND={ctx:null,on:false,timers:[],master:null};
 function sndBtn(){return (SND.on?`<button class="ytlink" onclick="musicNext(true)" title="${esc(MUS.cur?MUS.cur.t:'')} — passar à seguinte">⏭<span class="lt"> ${esc(MUS.cur?MUS.cur.t:'Música')}</span></button>`:'')+`<button class="sndbtn ${SND.on?'on':''}" onclick="sndToggle()" title="${SND.on?'Desligar o som do mar':'Ligar o som do mar e dos pássaros'}" aria-label="${SND.on?'Desligar som':'Ligar som'}">${SND.on?'🔊':'🔇'}</button>`}
 function sndToggle(){if(SND.on)sndStop();else sndStart();lsSet({snd:SND.on});const h=document.getElementById('hdr');if(h)h.outerHTML=header()}
 function sndStop(){SND.on=false;ytStop();musicStop();try{SND.el&&SND.el.pause()}catch(e){}SND.timers.forEach(t=>{clearTimeout(t);clearInterval(t)});SND.timers=[];if(SND.master){const c=SND.ctx;SND.master.gain.setTargetAtTime(0,c.currentTime,.3);setTimeout(()=>{try{c.suspend()}catch(e){}},900)}}
-const PLAYLIST=[['Anjo Azul','anjo-azul'],['Chove Chuva','chove-chuva'],['Flor do Medo','flor-do-medo'],['Como Tudo Deve Ser','como-tudo-deve-ser'],['Amante Amado','amante-amado'],['Cigana','cigana'],['Me Chamando de Paixão','me-chamando-de-paixao'],['A Beleza É Você Menina','a-beleza-e-voce-menina'],['Balança Pema','balanca-pema'],['Azul','azul'],['Onde Anda Você','onde-anda-voce'],['Preciso Dizer Que Te Amo','preciso-dizer-que-te-amo'],['Que Nem Maré','que-nem-mare'],['BB (Garupa de Moto Amarela)','bb-garupa-de-moto-amarela'],['Eu Te Devoro','eu-te-devoro'],['Enamorado','enamorado'],['Amor','amor'],['Eres Tu','eres-tu'],['Bom Dia, Boa Tarde, Boa Noite','bom-dia-boa-tarde-boa-noite'],['O Descobridor dos Sete Mares','o-descobridor-dos-sete-mares'],['Garota de Ipanema','garota-de-ipanema'],['Preciso Me Encontrar','preciso-me-encontrar'],['Essa Moça Tá Diferente','essa-moca-ta-diferente'],['Roda Viva','roda-viva'],['Carolina, Carol Bela','carolina-carol-bela'],['O Telefone Tocou Novamente','o-telefone-tocou-novamente']].map(([t,f])=>({t,src:'musica/'+f+'.mp3'}));
+const PLAYLIST=[['Anjo Azul','anjo-azul'],['Chove Chuva','chove-chuva'],['Flor do Medo','flor-do-medo'],['Como Tudo Deve Ser','como-tudo-deve-ser'],['Amante Amado','amante-amado'],['Cigana','cigana'],['Me Chamando de Paixão','me-chamando-de-paixao'],['A Beleza É Você Menina','a-beleza-e-voce-menina'],['Balança Pema','balanca-pema'],['Azul','azul'],['Onde Anda Você','onde-anda-voce'],['Preciso Dizer Que Te Amo','preciso-dizer-que-te-amo'],['Que Nem Maré','que-nem-mare'],['BB (Garupa de Moto Amarela)','bb-garupa-de-moto-amarela'],['Eu Te Devoro','eu-te-devoro'],['Enamorado','enamorado'],['Amor','amor'],['Eres Tu','eres-tu'],['Bom Dia, Boa Tarde, Boa Noite','bom-dia-boa-tarde-boa-noite'],['O Descobridor dos Sete Mares','o-descobridor-dos-sete-mares'],['Garota de Ipanema','garota-de-ipanema'],['Preciso Me Encontrar','preciso-me-encontrar'],['Essa Moça Tá Diferente','essa-moca-ta-diferente'],['Roda Viva','roda-viva'],['Carolina, Carol Bela','carolina-carol-bela'],['O Telefone Tocou Novamente','o-telefone-tocou-novamente'],['Apesar de Você','apesar-de-voce'],['Bebete Vãobora','bebete-vaobora'],['Magnólia','magnolia'],['Mas Que Nada','mas-que-nada'],['Nem Um Dia','nem-um-dia'],['O Que É, O Que É?','o-que-e-o-que-e'],['Take It Easy My Brother Charles','take-it-easy-my-brother-charles'],['Tenha Fé, Pois Amanhã Um Lindo Dia Vai Nascer','tenha-fe'],['Falador Passa Mal','falador-passa-mal'],['Cabide','cabide'],['Sorri, Sou Rei','sorri-sou-rei'],['Cotidiano','cotidiano']].map(([t,f])=>({t,src:'musica/'+f+'.mp3'}));
 const MUS={el:null,queue:[],cur:null,last:null};
 function musicShuffle(){const q=PLAYLIST.slice();for(let i=q.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[q[i],q[j]]=[q[j],q[i]]}if(MUS.last&&q[0].src===MUS.last&&q.length>1)q.push(q.shift());MUS.queue=q}
 /* fade in / fade out da música de fundo (Web Audio quando há, senão volume) */
@@ -4164,7 +4212,7 @@ function rulesBox(){
     <div class="rchips">${Object.entries(CO_MODES).map(([q,x])=>`<button class="rchip ${m===q?'on':''}" onclick="L.rco='${q}';render()">${x.e} ${x.n}</button>`).join('')}</div><div class="rbody2">${X[m]}</div>
     <p class="rsmall">Quando jogam as duas pessoas do mesmo quarto, estas partidas contam para as <b>missões a dois</b>.</p>`}
   if(k===7){body=`<p>O <b>BPM</b> é o dinheiro do jogo. Tal como a batida dita o ritmo de uma música, os BPM ditam o que o vosso quarto pode ter.</p>
-    <div class="rexp"><b>♩ Como se ganham</b><span>Missões de cada um: entre 100 e 700 BPM, pagos só quando a missão fica completa. Missões a dois: entre 400 e 2 500 BPM, pagas uma vez ao casal. Música a tocar no quarto: +1 BPM por minuto, só com o quarto aberto no ecrã e o som ligado (até 30 por dia para cada pessoa do quarto, com o jogo aberto em qualquer ecrã). Vitórias: cada partida ganha dá BPM na hora (contra o computador 3 no Fácil, 6 no Normal, 10 no Difícil; contra uma pessoa 8; nos modos a dois até 10). Perder não dá nada. Máximo de 40 BPM por dia a cada um.</span></div>
+    <div class="rexp"><b>♩ Como se ganham</b><span>Missões de cada um: entre 100 e 700 BPM, pagos só quando a missão fica completa. Missões a dois: entre 400 e 2 500 BPM, pagas uma vez ao casal. Música a tocar no quarto: +1 BPM a cada 3 minutos, só com o quarto aberto no ecrã e o som ligado (até 30 por dia para cada pessoa do quarto, com o jogo aberto em qualquer ecrã). Vitórias: cada partida ganha dá BPM na hora (contra o computador 3 no Fácil, 6 no Normal, 10 no Difícil; contra uma pessoa 8; nos modos a dois até 10). Perder não dá nada. Máximo de 40 BPM por dia a cada um.</span></div>
     <div class="rexp"><b>🧾 Contas do quarto</b><span>Todos os dias paga-se a casa (8 BPM), a comida de cada animal (5 a 20), a luz de cada candeeiro (1 a 8), a luz do teto (4 a 11, conforme a intensidade), a eletricidade do gira-discos e do computador e a água das plantas. Se ficarem a dever, a luz é cortada e os animais passam fome até pagarem. Se ninguém abrir o jogo durante uns dias, paga-se tudo quando voltarem, mas nunca mais do que uma semana.</span></div>
     <div class="rexp"><b>🏠 Uma só conta</b><span>Os BPM das duas pessoas que partilham o quarto vão todos para a mesma conta. Os dois veem o mesmo número e qualquer um pode gastar.</span></div>
     <div class="rexp"><b>🛍️ O que se compra</b><span>Objetos para o quarto (de 230 a 2 250 BPM), discos com 4 raridades (⚪ Comum até ~250, 🔵 Raro ~300–450, 🟣 Épico ~500–750, 🟡 Lendário ~900–1 150 BPM: conta sobretudo o álbum, não só o cantor) e caixas surpresa de cada raridade. Há 41 discos que só se ganham em missões, e 5 objetos de casal que só se ganham em missões a dois. Os pósteres compram-se à parte (40% do preço do disco): podem ter o póster de um álbum sem terem o disco.</span></div>
@@ -4499,7 +4547,7 @@ function body(){
 }
 function viewKey(){if(L.screen)return 'scr:'+L.screen+(L.rank?'1':'0')+(L.rankPer||'all');if(MODE==='online'&&G&&G.coop&&G.coop.seed){const c=G.coop;return ['co',c.seed,c.m,(c.tp||[]).length,!!(c.ok&&c.ok.p0&&c.ok.p1),JSON.stringify(c.fav&&Object.keys(c.fav)),JSON.stringify(c.gs&&Object.keys(c.gs)),c.r,JSON.stringify(c.hist&&c.hist[c.r])].join('|')}if(!G||!G.seed||!MODE)return [WHO,MODE,CODE,L.status,G?.joined?.p0,G?.joined?.p1,G?.seed].join('|');const ph=phase();return [MODE,G.round,ph,ph==='draft'?picks().length:'',ph==='duels'?stageKind().join(':'):'',ph==='order'?!!G.orders?.[P(WHO)]:''].join('|')}
 function mBackSync(){let b=document.getElementById('mtopback');if(L.screen==='missoes'){if(!b){b=document.createElement('div');b.id='mtopback';b.className='mtopback';b.innerHTML='<button class="btn ghost sm" onclick="closeMissions();scrollTo(0,0)">← Voltar</button>';document.body.appendChild(b)}}else if(b)b.remove()}
-function render(){if(L.visit&&L.screen!=='quarto'){L.visit=null;useRoom(myRoomId())}setTimeout(mBackSync,0);if(L.rFull&&L.screen!=='quarto'){L.rFull=false;document.body.classList.remove('rfull');if(document.fullscreenElement)document.exitFullscreen().catch(()=>{})}
+function render(){if(L.edit)setTimeout(()=>{edBar();if(L.edSel)edSel(L.edSel)},0);if(L.visit&&L.screen!=='quarto'){L.visit=null;useRoom(myRoomId())}setTimeout(mBackSync,0);if(L.rFull&&L.screen!=='quarto'){L.rFull=false;document.body.classList.remove('rfull');if(document.fullscreenElement)document.exitFullscreen().catch(()=>{})}
   const app=document.getElementById('app'),keep={},kx={};app.querySelectorAll('.rtemas,.rcats,.rart,.qtabs,.dsub,.roomscroll').forEach((e,i)=>kx[e.className+'#'+i]=e.scrollLeft);app.querySelectorAll('input[id]').forEach(i=>keep[i.id]=i.value);
   const fid=document.activeElement&&document.activeElement.id;
   const key=viewKey(),enter=key!==L.lastKey,prevKey=L.lastKey||'';L.lastKey=key;
@@ -4586,7 +4634,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795610844';
+const BUILD='1795611790';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
