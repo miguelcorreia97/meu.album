@@ -3767,10 +3767,10 @@ function roomSvg(w,o){o=o||{};RUID=0;const q=roomQ(),eq={...q.eq,...(o.eq||{})};
     b+=open+'<g class="ri">'+(k==='leitor'?`<g id="rleitor">${wr(r.b)}</g>`:wr(r.b))+'</g></g>';
     if(k==='leitor'&&c.music)fx+=`<g transform="translate(${movelDx()+(OF?OF.x:0)} ${OF?OF.y:0})"><g transform="${ST.leitor}">${musicNotes(192,top-26)}</g></g>`;
     if(k==='janela'&&L.rWin)fx+=breeze();
-    if(r.g&&!(LUZES.has(id)&&!c.litf(id)))g+=wr(r.g)}}
+    if(r.g&&!(LUZES.has(id)&&!c.litf(id)))g+=LUZES.has(id)?`<g opacity="${(.12+.88*lintOf(id)).toFixed(2)}">${wr(r.g)}</g>`:wr(r.g)}}
   const pfOn=plafonOn(eq,c),pfI=pfOn?clGet().i:0;const gk=Math.max(GLOWK[tod],pfOn?.85:0,c.lit&&tod!=='noite'?.55:0);let post=GRADE[tod].map(([col,op,bl])=>`<rect width="${QW}" height="500" fill="${col}" opacity="${(bl==='normal'?op*(1-.92*Math.pow(pfI,.8)):op*(1-.7*pfI)).toFixed(3)}" style="mix-blend-mode:${bl}"/>`).join('');
   if(pfOn)post+=`<rect width="${QW}" height="500" fill="${clGet().c}" opacity="${(.06+.34*pfI).toFixed(3)}" style="mix-blend-mode:soft-light"/><rect width="${QW}" height="500" fill="${clGet().c}" opacity="${(.22*pfI*pfI).toFixed(3)}" style="mix-blend-mode:screen"/>`;
-  if(g&&gk)post+=`<g opacity="${(gk*(tod==='noite'?(.12+.88*liGet()):1)).toFixed(3)}">${g}</g>`;
+  if(g&&gk)post+=`<g opacity="${gk.toFixed(3)}">${g}</g>`;
   post+=`<polygon points="${WX},${WY+WH} ${WX+WW},${WY+WH} ${patchPts(tod).join(' ')}" fill="url(#beam)" style="mix-blend-mode:screen" opacity="${tod==='dia'?.14:tod==='noite'?.1:.2}"/>`;
   post+=`<circle cx="${WX+WW/2}" cy="${WY+WH/2}" r="190" fill="url(#winglow)" style="mix-blend-mode:screen" opacity="${tod==='noite'?.25:tod==='dia'?.35:.6}"/>`;
   post+=fx+dust(tod)+`<rect width="${QW}" height="500" fill="url(#grain)" style="mix-blend-mode:multiply" opacity=".9"/><rect width="${QW}" height="500" fill="url(#vign)"/>`;
@@ -4302,7 +4302,7 @@ function luzZoom(id){const ed=canEdit(),pf=id==='plafon',it=pf?RIT[roomQ().eq.pl
   ${luzBox(id)}
   ${ed&&pf?`<div class="pfrow col"><span>Cor</span><div class="pfcores">${CL_CORES.map(([c,n])=>`<button class="${L_.c===c?'on':''}" style="--c:${c}" title="${n}" onclick="plafonSet({c:'${c}'})"><i></i><small>${n}</small></button>`).join('')}</div></div>
   <div class="pfrow col"><span>Intensidade · <b id="pfiv">${Math.round(L_.i*100)}%</b></span><input type="range" min="10" max="100" step="5" value="${Math.round(L_.i*100)}" oninput="plafonSet({i:this.value/100},1)"></div><p class="hint">Mais forte gasta mais por hora.</p>`:''}
-  ${ed&&!pf?`<div class="pfrow col"><span>Intensidade dos candeeiros · <b id="liv">${Math.round(li*100)}%</b></span><input type="range" min="10" max="100" step="5" value="${Math.round(li*100)}" oninput="liSet(this.value/100)"></div>`:''}
+  ${ed&&!pf?`<div class="pfrow col"><span>Intensidade deste candeeiro · <b id="liv">${Math.round(lintOf(id)*100)}%</b></span><input type="range" min="10" max="100" step="5" value="${Math.round(lintOf(id)*100)}" oninput="liSet(this.value/100,'${id}')"></div>`:''}
   <div class="izacts">${flipBtn(id)}<button class="btn ghost sm" onclick="billsZoom()">🧾 Contas de todas as luzes</button></div></div>`,'sheet')}
 function roomBills(){lightTick();if(!canEdit())return;const q=roomQ(),today=dayNum(lisNow().ymd);if(q.paid==null){q.paid=today;roomSave(q);return}
   const days=Math.min(CUSTO_DIAS,today-q.paid);if(days<=0)return;const v=days*billDay(q.eq);q.custo=(+q.custo||0)+v;q.paid=today;q.blog=[{d:today,n:days,v},...(q.blog||[])].slice(0,6);roomSave(q)}
@@ -5318,7 +5318,8 @@ Object.assign(RDR,DECO_RDR);
 function plafonGlow(x,y){const L_=clGet(),i=L_.i;return `<radialGradient id="gl-pf"><stop offset="0" stop-color="${L_.c}" stop-opacity=".95"/><stop offset=".3" stop-color="${L_.c}" stop-opacity=".4"/><stop offset="1" stop-color="${L_.c}" stop-opacity="0"/></radialGradient><circle cx="${x}" cy="${y}" r="${40+i*150}" fill="url(#gl-pf)" style="mix-blend-mode:screen" opacity="${.3+i*.7}"/><path d="M${x-26} ${y+4} L${x-300} 500 L${x+300} 500 L${x+26} ${y+4}z" fill="url(#gl-pf)" style="mix-blend-mode:screen" opacity="${i*i*.6}"/>`}
 /* painel da luz: abre ao tocar no candeeiro do teto */
 function plafonZoom(){luzZoom('plafon')}
-function liSet(v){if(!canEdit())return;const q=roomQ();q.li=v;roomSave(q,0);const b=document.getElementById('liv');if(b)b.textContent=Math.round(v*100)+'%';clearTimeout(liSet.t);liSet.t=setTimeout(roomRedraw,60)}
+function lintOf(id){const q=roomQ(),m=q.lint||{};return m[id]!=null?+m[id]:liGet()}
+function liSet(v,id){if(!canEdit())return;const q=roomQ();if(id)q.lint={...(q.lint||{}),[id]:v};else q.li=v;roomSave(q,0);const b=document.getElementById('liv');if(b)b.textContent=Math.round(v*100)+'%';clearTimeout(liSet.t);liSet.t=setTimeout(roomRedraw,60)}
 const plafonCost=()=>{const L_=clGet();return 3+Math.round(L_.i*8)};
 function plafonSet(o,live){if(!canEdit())return;const q=roomQ();q.cl={...clGet(),...o};roomSave(q,0);roomRedraw();
   if(live){const v=document.getElementById('pfiv');if(v)v.textContent=Math.round(q.cl.i*100)+'%';return}plafonZoom()}
@@ -6046,7 +6047,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795652238';
+const BUILD='1795652316';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
