@@ -5205,6 +5205,100 @@ Object.assign(RDR,{
 'pf-lustre'(it,c){const L_=clGet(),on=plafonOn(c.eq,c),bl=on?L_.c:'#f4ead6';let a='';[-30,-15,0,15,30].forEach((d,k)=>{const y=74-Math.abs(d)*.25;a+=`<path d="M800 56 Q${800+d*.6} ${y+6} ${800+d} ${y}" stroke="#c9a43a" stroke-width="2" fill="none"/><rect x="${800+d-2}" y="${y-9}" width="4" height="9" fill="#f4ead6"/><ellipse cx="${800+d}" cy="${y-11}" rx="2.4" ry="3.6" fill="${bl}"/><path d="M${800+d} ${y+2} l-2 6 h4z" fill="#dff3ff" opacity=".8"/>`});
   return {b:`<path d="M800 0 V50" stroke="#c9a43a" stroke-width="1.6"/><circle cx="800" cy="54" r="5" fill="#c9a43a"/>${a}<path d="M786 78 l14 14 l14 -14" stroke="#dff3ff" stroke-width="1" fill="none" opacity=".7"/><circle cx="800" cy="92" r="3" fill="#dff3ff"/>`,g:on?plafonGlow(800,66):''}}
 });
+
+/* ---- redesenho: animais e luzes ---- */
+const DECO_RDR={
+'pet-gato'(it,c){const bd=c.eq&&c.eq.cama,[x,y]=bd?(bd==='cm-futon'?[960,422]:[968,400]):[470,452];
+  return {b:`<g transform="translate(${x} ${y})"><ellipse cx="0" cy="15" rx="32" ry="5" fill="url(#gsh)"/>
+  <g class="rm-tail"><path d="M24 9 C36 10 38 0 32 -5 C28 -8 24 -6 23 -3" stroke="#e08a3a" stroke-width="6.5" fill="none" stroke-linecap="round"/><path d="M27 10 l2 -2 M33 6 l3 -1 M34 0 l3 1" stroke="#b25e1c" stroke-width="1.6" stroke-linecap="round"/></g>
+  <path d="M-26 8 C-29 -8 -10 -16 6 -15 C22 -14 31 -3 28 8 C26 16 -22 18 -26 8Z" fill="#e5893a"/>
+  <path d="M-20 -6 C-8 -15 18 -15 27 -2 C20 -8 -2 -10 -20 -6Z" fill="#c96f25" opacity=".55"/>
+  <path d="M-24 10 C-14 17 16 17 26 9 C22 15 -18 18 -24 10Z" fill="#f3d3a8"/>
+  ${[[-10,-12],[-1,-14],[8,-13],[16,-10]].map(([a,b2],k)=>`<path d="M${a} ${b2} q3 5 0 10" stroke="#b25e1c" stroke-width="${2.4-k*.3}" fill="none" stroke-linecap="round" opacity=".8"/>`).join('')}
+  <ellipse cx="-13" cy="14" rx="5.5" ry="3" fill="#f6dfbd"/><ellipse cx="-4" cy="15" rx="5" ry="2.8" fill="#f3d6b0"/><path d="M-16 15 v-1.5 M-13 15.5 v-1.5 M-6 16 v-1.5 M-3 16 v-1.5" stroke="#d9b48a" stroke-width=".7"/>
+  <path d="M-33 -12 L-31 -24 L-23 -15Z" fill="#e08a3a"/><path d="M-31 -14 L-30 -21 L-25 -16Z" fill="#f2a7a0"/><path d="M-18 -15 L-12 -25 L-10 -13Z" fill="#d97f30"/><path d="M-16 -15 L-12 -22 L-11.5 -15Z" fill="#f2a7a0"/>
+  <circle cx="-22" cy="-3" r="12" fill="#e5893a"/><path d="M-34 0 C-34 8 -26 11 -20 10 C-14 10 -10 6 -10 2 C-14 6 -28 6 -34 0Z" fill="#f3d3a8"/>
+  <path d="M-25 -14 q1 4 0 6 M-22 -15 q0 4 0 6 M-19 -14 q-1 4 0 6" stroke="#b25e1c" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <path d="M-30 -3 q3 2.4 6 0 M-20 -3 q3 2.4 6 0" stroke="#3a2416" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+  <path d="M-23.5 1.5 h3 l-1.5 1.8z" fill="#d9776f"/><path d="M-22 3.3 q-2 2 -4 1 M-22 3.3 q2 2 4 1" stroke="#8a4a2a" stroke-width=".7" fill="none"/>
+  <path d="M-28 3 l-9 -1 M-28 4.5 l-9 1.5 M-16 3 l9 -1 M-16 4.5 l9 1.5" stroke="#fff" stroke-width=".5" opacity=".7"/>
+  <g class="rm-zz"><text x="-14" y="-22" font-size="9" fill="#fff" opacity=".8">z</text><text x="-8" y="-31" font-size="7" fill="#fff" opacity=".6">z</text></g></g>`}},
+'pet-caramelo'(it,c){return {b:`<g transform="translate(468 446)"><ellipse cx="2" cy="23" rx="50" ry="6" fill="url(#gsh)"/>
+  <g class="rm-wag"><path d="M38 6 q16 -4 20 -20" stroke="#c78545" stroke-width="6.5" fill="none" stroke-linecap="round"/><path d="M55 -10 q2 -4 3 -6" stroke="#e7c08e" stroke-width="5" stroke-linecap="round"/></g>
+  <ellipse cx="27" cy="11" rx="17" ry="12" fill="#b9783c"/>
+  <path d="M-16 -2 C-6 -13 30 -13 41 0 C47 12 41 22 27 22 L-14 22 C-23 22 -25 6 -16 -2Z" fill="#c98a4a"/>
+  <path d="M-12 -6 C0 -13 28 -13 39 -2 C26 -8 4 -8 -12 -6Z" fill="#a86a32" opacity=".6"/>
+  <path d="M30 4 q6 8 2 16" stroke="#a86a32" stroke-width="1.5" fill="none" opacity=".6"/>
+  <path d="M-36 15 h28 a4.5 4.5 0 0 1 0 9 h-28 a4.5 4.5 0 0 1 0 -9z" fill="#b9783c"/><path d="M-40 11 h30 a4.5 4.5 0 0 1 0 9 h-30 a4.5 4.5 0 0 1 0 -9z" fill="#c98a4a"/>
+  <ellipse cx="-39" cy="15.5" rx="5" ry="4.2" fill="#ecc893"/><ellipse cx="-35" cy="20" rx="5" ry="4" fill="#e2b980"/><path d="M-42 13 v4 M-39 12.5 v4.5 M-38 18 v4 M-35 17.5 v4" stroke="#c9a06a" stroke-width=".7"/>
+  <ellipse cx="-14" cy="9" rx="10" ry="11" fill="#ecc893"/>
+  <path d="M-20 -8 C-14 -2 -8 -2 -4 -8" stroke="#c8352a" stroke-width="3.4" fill="none" stroke-linecap="round"/><circle cx="-12" cy="-3" r="2.4" fill="#ffd23f" stroke="#c9a43a" stroke-width=".6"/>
+  <ellipse cx="-26" cy="-12" rx="14" ry="12" fill="#c98a4a"/>
+  <path d="M-40 -8 C-44 -6 -48 -2 -47 2 C-45 7 -36 8 -30 5 C-27 2 -30 -6 -40 -8Z" fill="#ecc893"/>
+  <ellipse cx="-46.5" cy="-4" rx="3.3" ry="2.6" fill="#2a1a10"/><circle cx="-47.5" cy="-4.8" r=".8" fill="#fff" opacity=".7"/>
+  <path d="M-44 2 q4 3 9 1" stroke="#8a5a2e" stroke-width=".9" fill="none"/>
+  <circle cx="-31" cy="-15" r="2.3" fill="#2a1a10"/><circle cx="-31.7" cy="-15.7" r=".75" fill="#fff"/><path d="M-34 -19 q3 -2 6 0" stroke="#8a5a2e" stroke-width=".9" fill="none"/>
+  <path d="M-22 -22 C-12 -24 -10 -10 -14 2 C-18 0 -22 -8 -24 -16Z" fill="#9a6230"/><path d="M-20 -20 C-14 -20 -13 -10 -15 -2" stroke="#7d4c22" stroke-width="1" fill="none" opacity=".7"/>
+  <path d="M-30 -22 q4 -3 8 -1" stroke="#e7c08e" stroke-width="2" fill="none" opacity=".6" stroke-linecap="round"/></g>`}},
+'pet-papagaio'(it,c){return {b:`<g transform="translate(318 0)"><ellipse cx="0" cy="360" rx="22" ry="4" fill="url(#gsh)"/>
+  <ellipse cx="0" cy="356" rx="17" ry="4" fill="#5c3c22"/><rect x="-17" y="352" width="34" height="4" rx="2" fill="#7a5232"/>
+  <rect x="-2.2" y="262" width="4.4" height="92" fill="#7a5232"/><rect x="-2.2" y="262" width="1.4" height="92" fill="#a07850"/>
+  <path d="M2 263 C11 298 8 328 1 350 C-5 324 -6 292 -4 263Z" fill="#2f6fb8"/><path d="M0 266 C4 296 4 324 1 346" stroke="#1f4f8a" stroke-width="1" fill="none"/><path d="M-3 270 C-4 300 -3 326 0 344" stroke="#e8b52a" stroke-width="1.4" fill="none" opacity=".8"/>
+  <rect x="-26" y="258" width="52" height="6" rx="3" fill="#8a5d38"/><path d="M-22 260.5 h44" stroke="#a87b52" stroke-width="1" opacity=".7"/>
+  <path d="M-30 256 h8 l-1 6 h-6z" fill="#c9a46c"/><path d="M22 256 h8 l-1 6 h-6z" fill="#c9a46c"/>
+  <path d="M-5 258 q-2 3 1 4 M-1 258 q-1 3 2 4 M4 258 q-1 3 2 4" stroke="#6b6560" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+  <g class="rm-bob">
+  <ellipse cx="0" cy="243" rx="12" ry="19" fill="#2f8fd0"/>
+  <path d="M-10 234 C-15 250 -7 262 4 261 C2 250 0 240 -3 231Z" fill="#f2c12e"/><path d="M-9 240 C-11 250 -6 258 0 259" stroke="#e0a21c" stroke-width="1" fill="none"/>
+  <path d="M2 230 C15 236 15 256 5 266 C0 254 -2 242 2 230Z" fill="#2a6fb0"/>
+  <path d="M4 236 q5 2 7 6 M4 242 q5 2 7 7 M4 249 q4 3 5 8" stroke="#1f4f8a" stroke-width="1.1" fill="none"/><path d="M6 232 q4 1 6 4" stroke="#3aa36a" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <circle cx="-2" cy="223" r="9.5" fill="#3a9be0"/><path d="M-8 216 q5 -4 11 -1" stroke="#3aa36a" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <ellipse cx="-6.5" cy="225" rx="5" ry="6" fill="#f4f1ea"/><path d="M-10 226 q3 1 6 0 M-10 228.5 q3 1 6 0" stroke="#1d1a18" stroke-width=".55" fill="none"/>
+  <circle cx="-6" cy="222.5" r="2.2" fill="#f2d24a"/><circle cx="-6" cy="222.5" r="1.2" fill="#111"/><circle cx="-6.5" cy="222" r=".45" fill="#fff"/>
+  <path d="M-11 220 C-21 220 -21 233 -13 236 C-14 230 -13 226 -9 227Z" fill="#1d1a18"/><path d="M-11 229 q-4 3 -1 6" stroke="#3a3530" stroke-width="1.2" fill="none"/><path d="M-13 222 q-3 1 -4 4" stroke="#fff" stroke-width=".6" opacity=".35" fill="none"/>
+  <path d="M-9 233 q4 2 8 0" stroke="#1d1a18" stroke-width="1.6" fill="none"/></g></g>`}},
+'pet-peixe'(it,c){return {b:`<g transform="translate(${WX+30} ${WY+WH+3})"><ellipse cx="0" cy="0" rx="19" ry="2.6" fill="url(#gsh)"/>
+  <path d="M-16 -2 A18 18 0 1 1 16 -2Z" fill="rgba(180,225,240,.32)"/>
+  <path d="M-17.6 -14 A18 18 0 0 0 16 -2 L-16 -2 A18 18 0 0 1 -17.6 -14Z" fill="rgba(110,180,210,.28)"/><path d="M-17.6 -14 Q0 -12 17.6 -14" stroke="rgba(255,255,255,.55)" stroke-width=".8" fill="none"/>
+  <path d="M-14 -4 q14 -5 28 0 v2 h-28z" fill="#e8d7b0"/>${[[-10,-4,'#c98a4a'],[-6,-5,'#8fa3b0'],[-2,-4.6,'#e9e2d4'],[3,-4.8,'#c46a48'],[8,-4.4,'#8fa3b0'],[11,-3.8,'#d9b98a']].map(([x,y,f])=>`<ellipse cx="${x}" cy="${y}" rx="1.6" ry="1" fill="${f}"/>`).join('')}
+  <path d="M8 -5 q3 -6 -1 -12 M10 -5 q4 -5 2 -10 M6 -5 q-1 -4 1 -8" stroke="#3a9a52" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+  <g class="rm-fish"><path d="M-6 -11 q-5 -5 -7 -3 q1 3 -1 6 q4 1 8 -3z" fill="#ff9f45" opacity=".85"/><ellipse cx="0" cy="-11" rx="5.5" ry="3.6" fill="#ff8a2a"/><path d="M-3 -9 q3 2 7 0" stroke="#ffc27a" stroke-width="1.2" fill="none"/><path d="M-1 -14.2 q2 -2.4 4 0" fill="#ff9f45"/><circle cx="3" cy="-11.6" r="1" fill="#fff"/><circle cx="3.2" cy="-11.6" r=".55" fill="#111"/></g>
+  <path d="M-9 -26 q9 -2 18 0" stroke="rgba(255,255,255,.75)" stroke-width="1" fill="none"/><ellipse cx="0" cy="-26.4" rx="9" ry="1.6" fill="none" stroke="rgba(255,255,255,.55)" stroke-width=".8"/>
+  <path d="M-12 -20 a14 14 0 0 0 0 14" stroke="#fff" stroke-width="1.6" fill="none" opacity=".55" stroke-linecap="round"/><circle cx="9" cy="-20" r="1.6" fill="#fff" opacity=".5"/>
+  <path d="M-16 -2 A18 18 0 1 1 16 -2Z" fill="none" stroke="rgba(255,255,255,.7)" stroke-width=".9"/></g>`}},
+'pet-tartaruga'(it,c){return {b:`<g transform="translate(300 466)" class="rm-turt"><ellipse cx="0" cy="9" rx="27" ry="4" fill="url(#gsh)"/>
+  <path d="M15 4 q6 1 8 4" stroke="#8aa565" stroke-width="3" stroke-linecap="round"/>
+  <ellipse cx="12" cy="8" rx="5" ry="3.4" fill="#7f9a5c"/><ellipse cx="-10" cy="8" rx="5" ry="3.4" fill="#8aa565"/><path d="M-13 9.5 h2 M-9 10 h2 M10 9.5 h2" stroke="#5f7742" stroke-width=".8"/>
+  <path d="M-14 3 C-18 2 -20 -1 -22 -3" stroke="#93ad6c" stroke-width="6" stroke-linecap="round" fill="none"/>
+  <ellipse cx="-25" cy="-3" rx="7.5" ry="5.4" fill="#93ad6c"/><path d="M-30 -1 q3 1.5 6 0" stroke="#5f7742" stroke-width=".8" fill="none"/>
+  <circle cx="-27" cy="-4.5" r="1.5" fill="#1d1a18"/><circle cx="-27.4" cy="-5" r=".5" fill="#fff"/>${[[-22,-6],[-20,-2],[-24,-7.5]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r=".8" fill="#7f9a5c"/>`).join('')}
+  <path d="M-19 5 h38 q0 3.5 -3.5 3.5 h-31 q-3.5 0 -3.5 -3.5z" fill="#a88a52"/>
+  <path d="M-18 5 C-17 -15 17 -15 18 5Z" fill="#6b7f3e"/>
+  <path d="M-6 -9 L6 -9 L9 -2 L0 3 L-9 -2Z" fill="#7f9448" stroke="#4f5f2c" stroke-width="1"/>
+  <path d="M-9 -2 L-17 2 M9 -2 L17 2 M-6 -9 L-11 -11 M6 -9 L11 -11 M0 3 L0 5 M-9 -2 L-13 -8 M9 -2 L13 -8" stroke="#4f5f2c" stroke-width="1"/>
+  <path d="M-14 -4 C-10 -10 -4 -12 2 -12" stroke="#a3b878" stroke-width="1.6" fill="none" opacity=".5" stroke-linecap="round"/></g>`}},
+'l-bambu'(){let w='';for(let i=0;i<7;i++)w+=`<path d="M${356+i*.5} ${280+i*8} q22 5 44 0" stroke="#9a6430" stroke-width="1.3" fill="none" opacity=".8"/>`;for(let i=0;i<9;i++){const x=356+i*5.5;w+=`<path d="M${x} ${276+Math.abs(4-i)*2} q${(i-4)*.6} 30 0 ${54-Math.abs(4-i)*3}" stroke="#b07a40" stroke-width="1" fill="none" opacity=".7"/>`}
+  return {b:`<ellipse cx="378" cy="420" rx="20" ry="3.5" fill="url(#gsh)"/><path d="M378 336 V412 M378 384 L364 420 M378 384 L392 420" stroke="#6b4a2a" stroke-width="2.6" stroke-linecap="round"/><path d="M378 336 V412" stroke="#8a6a44" stroke-width="1" opacity=".7"/><circle cx="378" cy="384" r="2.4" fill="#4a3220"/>
+   <path d="M378 268 q-26 6 -26 40 q0 22 26 28 q26 -6 26 -28 q0 -34 -26 -40z" fill="#d39a57"/>${w}<path d="M378 268 q26 6 26 40 q0 22 -26 28 q12 -12 12 -34 q0 -24 -12 -34z" fill="#8a5428" opacity=".28"/><path d="M362 284 q-4 14 0 30" stroke="#fff" stroke-width="2" fill="none" opacity=".25" stroke-linecap="round"/><ellipse cx="378" cy="268" rx="6" ry="1.6" fill="#7a4e26"/>`,g:`<path d="M378 268 q-26 6 -26 40 q0 22 26 28 q26 -6 26 -28 q0 -34 -26 -40z" fill="#ffc46b" opacity=".75"/>${glow(378,304,110,'lar',.95)}`}},
+'l-candeeiro'(){return {b:`<ellipse cx="378" cy="420" rx="24" ry="4" fill="url(#gsh)"/><ellipse cx="378" cy="417" rx="17" ry="4.5" fill="#e9e4dc"/><path d="M361 417 v-3 a17 4.5 0 0 1 34 0 v3" fill="#d6d0c6"/><path d="M366 414 q6 -2 14 0" stroke="#bdb5aa" stroke-width=".8" fill="none"/>
+   <path d="M378 414 V176 Q378 150 350 150 Q326 150 322 170" stroke="#b08a4a" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M377 410 V178" stroke="#e2c58a" stroke-width=".8" opacity=".7"/>
+   <circle cx="322" cy="172" r="3" fill="#b08a4a"/><path d="M300 192 C302 176 342 176 344 192Z" fill="#1d1a18"/><path d="M306 186 C310 178 334 178 338 186" stroke="rgba(255,255,255,.18)" stroke-width="2" fill="none"/><ellipse cx="322" cy="192" rx="22" ry="4" fill="#3a3530"/><ellipse cx="322" cy="192" rx="17" ry="2.8" fill="#ffe7a8"/>`,g:`<path d="M302 192 L262 420 L382 420 L342 192z" fill="url(#gl-cone)" style="mix-blend-mode:screen" opacity=".55"/>${glow(322,194,70,'amb',.9)}`}},
+'l-lua'(){return {b:`<ellipse cx="166" cy="366" rx="24" ry="3.5" fill="url(#gsh)"/><path d="M152 363 h28 l-2 -6 h-24z" fill="#a8824e"/><path d="M152 363 h28 v2 h-28z" fill="#8a6a3e"/><path d="M160 357 q6 -10 12 0" stroke="#a8824e" stroke-width="3" fill="none"/>
+   <circle cx="166" cy="324" r="22" fill="#f6efd9"/><path d="M166 302 a22 22 0 0 1 0 44 a16 22 0 0 0 0 -44z" fill="#d9ccb0" opacity=".55"/>
+   ${[[158,314,4,'#e6dcc1'],[173,330,5.5,'#e3d8bb'],[171,312,2.6,'#e6dcc1'],[156,333,3,'#e6dcc1'],[178,318,2,'#e3d8bb']].map(([x,y,r,f])=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${f}"/><path d="M${x-r*.7} ${y-r*.3} a${r} ${r} 0 0 1 ${r*1.2} -${r*.5}" stroke="#cfc3a6" stroke-width=".8" fill="none"/>`).join('')}
+   <path d="M150 312 a20 20 0 0 1 14 -10" stroke="#fff" stroke-width="3" fill="none" opacity=".7" stroke-linecap="round"/>`,g:`${glow(166,324,95,'ama',1)}<circle cx="166" cy="324" r="22" fill="#fff8e6" opacity=".9"/>`}},
+'l-onair'(){return {b:`<path d="M942 160 V200 M930 206 l-6 -6 M954 206 l6 -6" stroke="#2a2420" stroke-width="1"/><rect x="888" y="204" width="108" height="36" rx="5" fill="#1d1a18"/><rect x="890" y="206" width="104" height="32" rx="4" fill="#2f2b28"/><rect x="894" y="210" width="96" height="24" rx="2" fill="#fff4dc"/><rect x="894" y="210" width="96" height="6" fill="#fff" opacity=".35"/>
+   <text x="942" y="230" text-anchor="middle" font-family="Anton,Impact" font-size="20" letter-spacing="2" fill="#d8352a">ON AIR</text>${[[891,207],[991,207],[891,235],[991,235]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.1" fill="#8b8780"/>`).join('')}<path d="M996 222 q14 4 10 40" stroke="#1d1a18" stroke-width="1.2" fill="none"/>`,g:`${glow(942,222,90,'amb',.95)}<text x="942" y="230" text-anchor="middle" font-family="Anton,Impact" font-size="20" letter-spacing="2" fill="#ff5a3c">ON AIR</text>`}},
+'l-neon'(){const t=`<text x="200" y="${232}" text-anchor="middle" font-family="Fraunces,serif" font-style="italic" font-weight="700" font-size="34"`;return {b:`<rect x="156" y="196" width="88" height="56" rx="8" fill="rgba(255,255,255,.07)" stroke="rgba(255,255,255,.22)" stroke-width="1"/>${[[162,202],[238,202],[162,246],[238,246]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.6" fill="#cfc9bf"/>`).join('')}${t} fill="none" stroke="#ff8fcf" stroke-width="2.2">mpb</text><path d="M168 240 h64" stroke="#7fd1ff" stroke-width="2" stroke-linecap="round"/><path d="M244 236 q16 6 10 60" stroke="#2a2420" stroke-width="1" fill="none"/>`,g:`${t} fill="none" stroke="#ffd6ef" stroke-width="2.6">mpb</text><path d="M168 240 h64" stroke="#d9f3ff" stroke-width="2.4" stroke-linecap="round"/>${glow(200,224,62,'ros',.9)}${glow(200,240,40,'azu',.5)}`}},
+'pf-pendente'(it,c){const L_=clGet(),on=plafonOn(c.eq,c);return {b:`<ellipse cx="800" cy="2" rx="8" ry="2.5" fill="#2a2420"/><path d="M800 2 V40" stroke="#1d1a18" stroke-width="1.4"/><rect x="795" y="38" width="10" height="9" rx="2" fill="#b08a4a"/><rect x="795" y="38" width="3" height="9" fill="#e2c58a" opacity=".6"/>
+   <path d="M772 72 C774 52 788 46 800 46 C812 46 826 52 828 72Z" fill="#1d1a18"/><path d="M780 64 C782 54 790 50 798 50" stroke="rgba(255,255,255,.2)" stroke-width="2.2" fill="none" stroke-linecap="round"/><ellipse cx="800" cy="72" rx="28" ry="4.4" fill="#2f2b28"/><ellipse cx="800" cy="72" rx="23" ry="3.2" fill="${on?L_.c:'#8b8780'}"/>`,g:on?plafonGlow(800,74):''}},
+'pf-globo'(it,c){const L_=clGet(),on=plafonOn(c.eq,c);return {b:`<ellipse cx="800" cy="2" rx="7" ry="2.2" fill="#c9a46c"/><path d="M800 2 V46" stroke="#c9a46c" stroke-width="1.4"/><path d="M793 44 h14 l-2 7 h-10z" fill="#c9a46c"/><rect x="793" y="44" width="4" height="7" fill="#e8cf9a" opacity=".7"/>
+   <circle cx="800" cy="70" r="20" fill="${on?L_.c:'#f1ede6'}" opacity="${on?1:.92}"/><circle cx="800" cy="70" r="20" fill="url(#glob)"/>${on?`<circle cx="800" cy="70" r="6" fill="#fff" opacity=".9"/>`:`<path d="M797 72 q3 -8 6 0" stroke="#b9ad96" stroke-width="1" fill="none"/>`}<ellipse cx="792" cy="62" rx="5" ry="3.5" fill="#fff" opacity=".6" transform="rotate(-30 792 62)"/><circle cx="800" cy="70" r="20" fill="none" stroke="rgba(255,255,255,.5)" stroke-width=".8"/>`,g:on?plafonGlow(800,70):''}},
+'pf-lustre'(it,c){const L_=clGet(),on=plafonOn(c.eq,c),bl=on?L_.c:'#f4ead6';let a='',cr='';[-32,-16,0,16,32].forEach((d,k)=>{const y=74-Math.abs(d)*.25;a+=`<path d="M800 56 Q${800+d*.6} ${y+8} ${800+d} ${y}" stroke="#c9a43a" stroke-width="1.8" fill="none"/><path d="M${800+d-3} ${y} h6 l-1 2 h-4z" fill="#c9a43a"/><rect x="${800+d-1.8}" y="${y-9}" width="3.6" height="9" rx=".8" fill="#f7efe0"/><path d="M${800+d} ${y-9} q-2.6 -3 0 -6.5 q2.6 3.5 0 6.5z" fill="${bl}"/>`;
+   cr+=`<path d="M${800+d*.75} ${y+6} v4" stroke="#c9a43a" stroke-width=".5"/><path d="M${800+d*.75} ${y+10} l-1.8 3 l1.8 4 l1.8 -4z" fill="#e6f6ff" opacity=".9"/>`});
+  return {b:`<ellipse cx="800" cy="2" rx="9" ry="2.6" fill="#c9a43a"/><path d="M800 2 V48" stroke="#c9a43a" stroke-width="1.4"/><path d="M796 48 h8 l-1 6 h-6z" fill="#c9a43a"/><circle cx="800" cy="58" r="5" fill="#d9b44a"/><circle cx="798.5" cy="56.5" r="1.6" fill="#fff3c4" opacity=".7"/>${a}${cr}<path d="M800 63 v14" stroke="#c9a43a" stroke-width="1"/><path d="M800 77 l-3 5 l3 7 l3 -7z" fill="#dff3ff"/><path d="M800 77 l-3 5 l3 7z" fill="#fff" opacity=".6"/>`,g:on?plafonGlow(800,66):''}}
+};
+Object.assign(RDR,DECO_RDR);
 function plafonGlow(x,y){const L_=clGet(),i=L_.i;return `<radialGradient id="gl-pf"><stop offset="0" stop-color="${L_.c}" stop-opacity=".95"/><stop offset=".3" stop-color="${L_.c}" stop-opacity=".4"/><stop offset="1" stop-color="${L_.c}" stop-opacity="0"/></radialGradient><circle cx="${x}" cy="${y}" r="${40+i*150}" fill="url(#gl-pf)" style="mix-blend-mode:screen" opacity="${.3+i*.7}"/><path d="M${x-26} ${y+4} L${x-300} 500 L${x+300} 500 L${x+26} ${y+4}z" fill="url(#gl-pf)" style="mix-blend-mode:screen" opacity="${i*i*.6}"/>`}
 /* painel da luz: abre ao tocar no candeeiro do teto */
 function plafonZoom(){luzZoom('plafon')}
@@ -5936,7 +6030,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795651686';
+const BUILD='1795651997';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
