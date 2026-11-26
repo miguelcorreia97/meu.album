@@ -3252,6 +3252,65 @@ const glow=(cx,cy,r,c,o)=>`<circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#gl-
 const GLC={amb:'#ffb347',azl:'#5d8bff',ama:'#ffd98a',ver:'#ff5a3c',ros:'#ff5fb0',lar:'#ff8a3c',azu:'#7fd1ff'};
 const leaf=(x,y,a,s,c)=>`<ellipse cx="0" cy="0" rx="${(s*1.6).toFixed(1)}" ry="${(s*.75).toFixed(1)}" fill="${c}" transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${a.toFixed(0)})"/>`;
 
+/* plantas: desenho limpo e realista */
+const PLC={d:'#24482f',m:'#2f5d3a',g:'#3f7a4a',l:'#5f9a5c',h:'#8fbf7a',s:'#7d9e78'};
+function plPot(cx,y0,w,h,k){const P={creme:['#efe8dc','#f7f2ea','#d9cfc0'],terra:['#c46a48','#d98466','#a3543a'],betao:['#b9b4ab','#cfcac2','#99948b'],preto:['#2f2d2b','#45423f','#1f1e1c'],cesto:['#d9c39a','#e6d4b0','#bfa478'],verde:['#6f8f76','#86a68c','#58765f']}[k]||['#efe8dc','#f7f2ea','#d9cfc0'];
+  const b=w/2,bb=b*.84;let s=`<ellipse cx="${cx}" cy="${y0+h+2}" rx="${b+6}" ry="3.2" fill="url(#gsh)"/>`;
+  s+=`<path d="M${cx-b} ${y0+5} L${cx+b} ${y0+5} L${cx+bb} ${y0+h-3} Q${cx+bb} ${y0+h} ${cx+bb-3} ${y0+h} L${cx-bb+3} ${y0+h} Q${cx-bb} ${y0+h} ${cx-bb} ${y0+h-3}Z" fill="${P[0]}"/>`;
+  s+=`<path d="M${cx+b*.35} ${y0+5} L${cx+b} ${y0+5} L${cx+bb} ${y0+h-3} Q${cx+bb} ${y0+h} ${cx+bb-3} ${y0+h} L${cx+bb*.3} ${y0+h}Z" fill="${P[2]}" opacity=".55"/>`;
+  s+=`<path d="M${cx-b+4} ${y0+8} L${cx-bb+4} ${y0+h-4}" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".22"/>`;
+  if(k==='cesto')for(let i=1;i<5;i++)s+=`<path d="M${cx-b+(b-bb)*i/5} ${y0+5+i*(h-5)/5} H${cx+b-(b-bb)*i/5}" stroke="${P[2]}" stroke-width="1.4" opacity=".8"/>`;
+  s+=`<rect x="${cx-b-2}" y="${y0}" width="${w+4}" height="6" rx="2.5" fill="${P[1]}"/><rect x="${cx-b-2}" y="${y0+4}" width="${w+4}" height="2" fill="${P[2]}" opacity=".45"/>`;return s}
+const plSoil=(cx,y,rx)=>`<ellipse cx="${cx}" cy="${y}" rx="${rx}" ry="2.6" fill="#3b2a20"/>`;
+/* folha lanceolada com nervura e meia sombra (aponta para cima) */
+function plLeaf(x,y,a,len,w,c,c2){return `<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${a.toFixed(1)})"><path d="M0 0 C${w*.7} ${-len*.2} ${w*.55} ${-len*.75} 0 ${-len} C${-w*.55} ${-len*.75} ${-w*.7} ${-len*.2} 0 0Z" fill="${c}"/><path d="M0 0 C${w*.7} ${-len*.2} ${w*.55} ${-len*.75} 0 ${-len}Z" fill="${c2||'#000'}" opacity="${c2?1:.16}"/><path d="M0 -1 Q${w*.08} ${-len*.5} 0 ${-len*.94}" stroke="#fff" stroke-width=".7" opacity=".35" fill="none"/></g>`}
+/* folha em coração (pothos) */
+function plHeart(x,y,a,s,c,vr){return `<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${a.toFixed(0)})"><path d="M0 0 C${-s*.25} ${-s*.15} ${-s} ${-s*.1} ${-s*.9} ${-s*.8} C${-s*.8} ${-s*1.3} ${-s*.25} ${-s*1.55} 0 ${-s*1.9} C${s*.25} ${-s*1.55} ${s*.8} ${-s*1.3} ${s*.9} ${-s*.8} C${s} ${-s*.1} ${s*.25} ${-s*.15} 0 0Z" fill="${c}"/>${vr?`<path d="M${-s*.2} ${-s*.4} q${-s*.4} ${-s*.4} ${-s*.3} ${-s*.9}" stroke="#e8e0a0" stroke-width="${(s*.28).toFixed(1)}" stroke-linecap="round" fill="none" opacity=".7"/>`:''}<path d="M0 0 C${s*.25} ${-s*.15} ${s} ${-s*.1} ${s*.9} ${-s*.8} C${s*.8} ${-s*1.3} ${s*.25} ${-s*1.55} 0 ${-s*1.9}Z" fill="#000" opacity=".14"/><path d="M0 -.5 L0 ${-s*1.7}" stroke="#fff" stroke-width=".5" opacity=".35"/></g>`}
+/* liana com folhas em coração a cair */
+function plVine(x,y,len,sw,seed,sz){let v=`<path d="M${x} ${y} C${x+sw} ${y+len*.3} ${x-sw} ${y+len*.65} ${x+sw*.4} ${y+len}" stroke="#4a6b3a" stroke-width="1" fill="none"/>`;const n=Math.floor(len/8);for(let k=1;k<=n;k++){const t=k/n,px=x+Math.sin(t*3.1+seed)*sw*.8,py=y+t*len,side=k%2?1:-1;v+=plHeart(px,py,side*(60+((k*37+seed*11)%30))+180-side*20,sz*(1-t*.25),(k+seed)%3?PLC.g:PLC.l,(k+seed)%4===0)}return v}
+let PLU=0;
+function plEll(cx,cy,rx,ry,rot){const r=rot*Math.PI/180,dx=rx*Math.cos(r),dy=rx*Math.sin(r);return `M${(cx-dx).toFixed(1)} ${(cy-dy).toFixed(1)} A${rx} ${ry} ${rot} 1 0 ${(cx+dx).toFixed(1)} ${(cy+dy).toFixed(1)} A${rx} ${ry} ${rot} 1 0 ${(cx-dx).toFixed(1)} ${(cy-dy).toFixed(1)}Z`}
+function plMonst(x,y,a,s,c){const id='mst'+(PLU++),L=`M0 0 C${-s*.3} ${-s*.12} ${-s*1.05} ${-s*.05} ${-s*1.05} ${-s*.85} C${-s*1.05} ${-s*1.5} ${-s*.4} ${-s*1.85} 0 ${-s*1.8} C${s*.4} ${-s*1.85} ${s*1.05} ${-s*1.5} ${s*1.05} ${-s*.85} C${s*1.05} ${-s*.05} ${s*.3} ${-s*.12} 0 0Z`;
+  let holes='';[[.42,.55,-35],[.5,1.0,-20],[.42,1.42,-5]].forEach(([fx,fy,r])=>{holes+=plEll(-s*fx,-s*fy,s*.24,s*.06,r)+plEll(s*fx,-s*fy,s*.24,s*.06,-r)});
+  let slits='';[[.85,.6,-25],[.95,1.05,-10],[.75,1.5,10]].forEach(([fx,fy,r])=>{slits+=plEll(-s*fx,-s*fy,s*.3,s*.045,r)+plEll(s*fx,-s*fy,s*.3,s*.045,-r)});
+  let veins='';[.55,1.0,1.42].forEach(fy=>{veins+=`<path d="M0 ${-s*fy*.85} Q${-s*.4} ${-s*fy} ${-s*.95} ${-s*fy*1.02} M0 ${-s*fy*.85} Q${s*.4} ${-s*fy} ${s*.95} ${-s*fy*1.02}" stroke="#9fcf8a" stroke-width=".6" fill="none" opacity=".35"/>`});
+  return `<g transform="translate(${x} ${y}) rotate(${a})"><mask id="${id}"><path d="${L}" fill="#fff"/><path d="${holes}${slits}" fill="#000"/></mask><g mask="url(#${id})"><path d="${L}" fill="${c}"/><path d="M0 0 C${s*.3} ${-s*.12} ${s*1.05} ${-s*.05} ${s*1.05} ${-s*.85} C${s*1.05} ${-s*1.5} ${s*.4} ${-s*1.85} 0 ${-s*1.8}Z" fill="#000" opacity=".15"/>${veins}<path d="M0 0 Q${s*.05} ${-s*.9} 0 ${-s*1.75}" stroke="#a8d394" stroke-width=".9" fill="none" opacity=".45"/></g></g>`}
+function plFiddle(x,y,a,s,c){const L=`M0 0 C${-s*.45} ${-s*.12} ${-s*.3} ${-s*.6} ${-s*.5} ${-s*1.0} C${-s*.72} ${-s*1.45} ${-s*.25} ${-s*1.8} 0 ${-s*1.72} C${s*.25} ${-s*1.8} ${s*.72} ${-s*1.45} ${s*.5} ${-s*1.0} C${s*.3} ${-s*.6} ${s*.45} ${-s*.12} 0 0Z`;let v='';for(let k=1;k<6;k++){const yy=-s*k*.3;v+=`<path d="M0 ${yy} Q${-s*.25} ${yy-s*.08} ${-s*.45} ${yy-s*.22} M0 ${yy} Q${s*.25} ${yy-s*.08} ${s*.45} ${yy-s*.22}" stroke="#b6d79e" stroke-width=".55" fill="none" opacity=".4"/>`}
+  return `<g transform="translate(${x} ${y}) rotate(${a})"><path d="${L}" fill="${c}"/><path d="M0 0 C${s*.45} ${-s*.12} ${s*.3} ${-s*.6} ${s*.5} ${-s*1.0} C${s*.72} ${-s*1.45} ${s*.25} ${-s*1.8} 0 ${-s*1.72}Z" fill="#000" opacity=".16"/><path d="M${-s*.35} ${-s*1.2} Q${-s*.4} ${-s*1.5} ${-s*.15} ${-s*1.62}" stroke="#fff" stroke-width="1.2" fill="none" opacity=".18" stroke-linecap="round"/>${v}<path d="M0 0 L0 ${-s*1.65}" stroke="#c4e0ad" stroke-width=".9" opacity=".55"/></g>`}
+/* fronde: curva quadrática com folíolos */
+function plFrond(x0,y0,cx,cy,x1,y1,n,len,w,col,col2,droop){let s=`<path d="M${x0} ${y0} Q${cx} ${cy} ${x1} ${y1}" stroke="${col2}" stroke-width="1.1" fill="none"/>`;for(let k=2;k<=n;k++){const t=k/n,u=1-t,px=u*u*x0+2*u*t*cx+t*t*x1,py=u*u*y0+2*u*t*cy+t*t*y1,tx=2*u*(cx-x0)+2*t*(x1-cx),ty=2*u*(cy-y0)+2*t*(y1-cy),ang=Math.atan2(ty,tx)*180/Math.PI+90,l=len*(1-t*.55);
+  s+=plLeaf(px,py,ang-62+droop,l,w,k%2?col:col2,null)+plLeaf(px,py,ang+62+droop,l,w,k%2?col2:col,null)}return s}
+const PLANT_RDR={
+'pl-espada'(){let l='';[[56,-9,84,10],[62,-4,104,11],[68,1,120,12],[74,5,108,11],[80,10,90,10],[50,-15,66,9],[86,15,70,9],[66,-1,76,9]].forEach(([x,lean,h,w],i)=>{const b=378,tx=x+lean;
+   l+=`<path d="M${x-w/2} ${b} Q${x-w*.62+lean*.25} ${b-h*.55} ${tx} ${b-h} Q${x+w*.62+lean*.25} ${b-h*.55} ${x+w/2} ${b}Z" fill="${i%2?'#2c5434':'#335f3b'}" stroke="#cdbf6a" stroke-width=".9"/>`;
+   for(let k=1;k<9;k++){const t=k/9.5,yy=b-h*t,hw=w*.5*(1-t*.75);l+=`<path d="M${x+lean*t*t-hw*.8} ${yy} q${hw*.8} ${-2.5} ${hw*1.6} 0" stroke="#86ab6e" stroke-width="1.3" fill="none" opacity=".38"/>`}
+   l+=`<path d="M${x-w*.15} ${b-4} Q${x-w*.25+lean*.2} ${b-h*.5} ${tx-.5} ${b-h+4}" stroke="#fff" stroke-width=".8" fill="none" opacity=".18"/>`});
+  return {b:`${l}${plPot(68,374,48,48,'creme')}`}},
+'pl-palmeira'(){let f='';[[[34,286],[20,330]],[[46,268],[28,296]],[[62,256],[50,272]],[[78,256],[90,274]],[[92,268],[110,296]],[[104,286],[118,332]],[[56,300],[34,348]],[[82,300],[104,348]]].forEach(([[cx,cy],[ex,ey]],i)=>{f+=plFrond(68,378,cx,cy,ex,ey,15,14,3,i%2?'#3f7a4a':'#4c8a55','#2f5d3a',18*(ex<68?-1:1))});
+  return {b:`${f}${plPot(68,374,44,48,'terra')}`}},
+'pl-monstera'(){let st='',lv='';[[50,330,-34,19,'#2f5d3a'],[88,326,30,20,'#2c5434'],[68,312,-3,21,'#356a40'],[46,360,-62,15,'#3a6e44'],[92,360,60,15,'#2f5d3a']].forEach(([x,y,a,s,c])=>{st+=`<path d="M68 378 Q${(68+x)/2} ${(378+y)/2+8} ${x} ${y}" stroke="#4f7a45" stroke-width="2.2" fill="none"/>`;lv+=plMonst(x,y,a,s,c)});
+  return {b:`${st}${lv}${plPot(68,374,50,48,'betao')}`}},
+'pl-figueira'(){let lv='';[[67,318,-48,17],[69,312,46,17],[69,298,-28,18],[68,292,28,18],[68,280,-6,17],[66,334,-70,14],[70,330,66,14]].forEach(([x,y,a,s],i)=>{lv+=plFiddle(x,y,a,s,i%3===0?'#2c5a34':i%3===1?'#336640':'#2a5230')});
+  return {b:`<path d="M68 378 C66 350 71 322 68 296 C67 288 69 282 68 278" stroke="#7a5a3c" stroke-width="3.2" fill="none" stroke-linecap="round"/><path d="M68 360 l-3 -3 M69 338 l3 -2" stroke="#7a5a3c" stroke-width="1.5"/>${lv}${plPot(68,376,44,46,'cesto')}`}},
+'pl-feto'(){let back='',front='';[[38,332,22,360],[48,314,32,326],[62,304,52,300],[76,304,86,300],[90,314,106,326],[100,332,116,360],[56,316,40,318],[82,314,98,318]].forEach(([cx,cy,ex,ey],i)=>{back+=plFrond(68,380,cx,cy,ex,ey,14,7,2.2,i%2?'#5f9a4c':'#6fa856','#4b8240',0)});
+   [[38,370,26,408],[52,368,42,414],[84,368,94,414],[98,370,110,408]].forEach(([cx,cy,ex,ey],i)=>{front+=plFrond(68,380,cx,cy,ex,ey,13,6.5,2.1,i%2?'#5f9a4c':'#6fa856','#4b8240',0)});
+  return {b:`${back}${plPot(68,378,46,44,'creme')}${plSoil(68,381,20)}${front}`}},
+'pp-jiboia'(it,c){const y=c.top;let v='';[[264,48,5,0],[272,30,4,1],[282,58,6,2],[288,36,4,3]].forEach(([x,l,sw,sd])=>{v+=plVine(x,y-14,l,sw,sd,4.2)});let top='';[[265,y-19,-40],[274,y-22,-8],[283,y-20,30],[268,y-17,-75],[285,y-16,70]].forEach(([x,yy,a],k)=>{top+=plHeart(x,yy,a,5.4,k%2?PLC.g:PLC.l,k===2)});
+  return {b:`${top}${plPot(274,y-20,26,20,'creme')}${v}`}},
+'pp-cacto'(it,c){const y=c.top,b=y-14;const col=(x,yb,w,h)=>`<path d="M${x-w/2} ${yb} V${yb-h+w/2} A${w/2} ${w/2} 0 0 1 ${x+w/2} ${yb-h+w/2} V${yb}Z" fill="#4f7f4a"/><path d="M${x+w*.1} ${yb} V${yb-h+w*.6} A${w/2} ${w/2} 0 0 1 ${x+w/2} ${yb-h+w/2} V${yb}Z" fill="#000" opacity=".15"/>`+[-.25,0,.25].map(f=>`<path d="M${x+f*w} ${yb-2} V${yb-h+w*.45}" stroke="#3d6a3c" stroke-width=".8"/>`).join('')+[...Array(Math.floor(h/5))].map((_,k)=>`<circle cx="${x+((k%3)-1)*w*.25}" cy="${yb-3-k*4.5}" r=".55" fill="#f2ead2"/>`).join('');
+  return {b:`${col(274,b,12,40)}<path d="M268 ${b-16} h-5 a3 3 0 0 1 -3 -3 v-9 a3 3 0 0 1 6 0 v6 h2z" fill="#4f7f4a"/><path d="M280 ${b-22} h4 a3 3 0 0 0 3 -3 v-6 a3 3 0 0 0 -6 0 v4 h-1z" fill="#45763f"/><circle cx="274" cy="${b-41}" r="2.6" fill="#f4a3c0"/><circle cx="274" cy="${b-41}" r="1" fill="#ffe08a"/>${plPot(274,y-16,22,16,'terra')}`}},
+'pp-suculenta'(it,c){const y=c.top,cy=y-13;let r='';[[0,14,'#7fa392',8],[22,12,'#8fb3a1',7.5],[45,10,'#9cc0ad',7]].forEach(([off,len,col,w],ring)=>{for(let k=0;k<8;k++){const a=k*45+off;r+=`<g transform="translate(274 ${cy}) scale(1 .62)">${plLeaf(0,0,a,len-ring,w,col,null)}</g>`}});
+  r+=`<g transform="translate(274 ${cy}) scale(1 .62)">${[0,72,144,216,288].map(a=>plLeaf(0,0,a,6,5,'#b5d3bf',null)).join('')}</g><path d="M266 ${cy-4} q2 -2 4 0 M279 ${cy-5} q2 -2 4 0" stroke="#d98a9a" stroke-width=".8" fill="none" opacity=".7"/>`;
+  return {b:`${plPot(274,y-11,38,11,'betao')}${r}`}},
+'su-jiboia'(){let v='';[[334,96,6,0],[342,124,7,1],[352,84,5,2],[360,110,6,3],[346,66,4,4]].forEach(([x,l,sw,sd])=>{v+=plVine(x,64,l,sw,sd,4)});let top='';[[336,52,-45],[346,48,-10],[356,50,25],[340,56,-80],[354,56,75]].forEach(([x,yy,a],k)=>{top+=plHeart(x,yy,a,5.4,k%2?PLC.g:PLC.l,k===1)});
+  return {b:`<path d="M346 0 V30 M346 30 L330 54 M346 30 L362 54 M346 30 L346 54" stroke="#cfc3ad" stroke-width="1"/><circle cx="346" cy="30" r="2" fill="#b9ad96"/>${top}<path d="M330 54 h32 l-3 15 q-13 4 -26 0z" fill="#c46a48"/><path d="M350 54 h12 l-3 15 q-5 1.5 -9 1.5z" fill="#a3543a" opacity=".6"/><rect x="328" y="52" width="36" height="5" rx="2" fill="#d98466"/>${v}`}},
+'su-macrame'(){let lv='';[[-70,30],[-50,36],[-30,34],[-12,30],[8,32],[28,36],[48,34],[70,30],[-88,24],[88,24]].forEach(([a,l],i)=>{const r=a*Math.PI/180,ex=346+Math.sin(r)*l*1.1,ey=84-Math.cos(r)*l*.55+Math.abs(a)*.42,cx=346+Math.sin(r)*l*.55,cy=84-l*.75;
+   lv+=`<path d="M${346+(i%3-1)*3} 86 Q${cx} ${cy} ${ex} ${ey}" stroke="${i%2?'#5f9a4c':'#4b8240'}" stroke-width="4.6" fill="none" stroke-linecap="round"/><path d="M${346+(i%3-1)*3} 86 Q${cx} ${cy} ${ex} ${ey}" stroke="#eef3d8" stroke-width="1" fill="none" stroke-linecap="round" opacity=".85"/>`});
+  const baby=(x,y)=>`<path d="M${x} ${y-8} v8" stroke="#8fae6e" stroke-width=".8"/>`+[-50,-20,10,40].map(a=>plLeaf(x,y,a+180,7,2.2,'#5f9a4c',null)).join('');
+  return {b:`<path d="M346 0 V26" stroke="#e8dcc6" stroke-width="2"/><circle cx="346" cy="28" r="3" fill="none" stroke="#e8dcc6" stroke-width="1.8"/><path d="M346 31 L326 84 M346 31 L338 84 M346 31 L354 84 M346 31 L366 84" stroke="#e8dcc6" stroke-width="1.5"/>${[56,64,72].map(yy=>`<circle cx="${346-(yy-31)*.38}" cy="${yy}" r="1.6" fill="#e8dcc6"/><circle cx="${346+(yy-31)*.38}" cy="${yy}" r="1.6" fill="#e8dcc6"/>`).join('')}
+   ${lv}<path d="M328 84 h36 q-2 18 -18 18 q-16 0 -18 -18z" fill="#f4efe6"/><path d="M350 84 h14 q-2 18 -18 18 q8 -4 4 -18z" fill="#d9cfc0" opacity=".7"/><rect x="326" y="82" width="40" height="4" rx="2" fill="#fbf8f2"/><path d="M346 102 v6 M340 103 v14 M352 103 v10" stroke="#e8dcc6" stroke-width="1.2"/>
+   <path d="M330 92 q-14 20 -10 44" stroke="#8fae6e" stroke-width=".9" fill="none"/>${baby(320,136)}<path d="M362 92 q12 14 10 30" stroke="#8fae6e" stroke-width=".9" fill="none"/>${baby(372,122)}`}}};
+
 const RDR={
 /* paredes e chão */
 cor(it){const c=it.c;return {b:`<rect width="${RW}" height="${RY}" fill="${c}"/><rect width="${RW}" height="${RY}" fill="url(#wtex)" opacity=".55"/><rect width="${RW}" height="${RY}" fill="url(#wvig)"/><rect y="${RY-10}" width="${RW}" height="12" fill="${shade(c,-.25)}"/><rect y="${RY-10}" width="${RW}" height="2" fill="${shade(c,.15)}"/>`}},
@@ -3728,6 +3787,7 @@ function roomDefs(S){S=S||SKY.tarde;return roomDefsBase().replace('</defs>',`
  <radialGradient id="vign" cx=".5" cy=".45" r=".75"><stop offset=".6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".35"/></radialGradient>
  <pattern id="grain" width="140" height="140" patternUnits="userSpaceOnUse"><image href="${grainUrl()}" width="140" height="140"/></pattern></defs>`)}
 const RTHUMB={recados:'0 150 130 190',lencol:'800 230 280 270',moldura:'214 44 176 178',fita:'14 90 210 140',plafon:'730 0 140 130',cor:'0 0 1080 500',chao:'0 340 1080 160',prat:'14 56 196 168',poster:'214 44 176 178',teto:'0 0 1080 260',luz:'150 120 250 320',mesa:'100 230 70 90',movel:'96 280 208 150',leitor:'136 240 128 76',tapete:'60 420 280 96',planta:'24 270 92 160',planta2:'246 250 56 120',assento:'250 330 180 110',extra:'14 172 116 130',cortina:'330 18 260 340',cama:'790 130 290 380',secretaria:'560 100 210 270',cabeceira:'740 260 80 110',quadros:'566 40 194 176',suspensa:'300 0 100 130'};
+Object.assign(RDR,PLANT_RDR);
 const IBOX={'l-onair':'870 190 150 70','l-led':'0 240 260 260','pet-gato':'425 420 90 56','pet-caramelo':'400 405 135 75','pet-papagaio':'290 205 60 165','pet-peixe':'375 170 50 40','pet-tartaruga':'270 440 60 40','sc-estante':'580 100 180 270'};
 function itemThumb(it){RUID=Math.floor(Math.random()*1e6);const pl={sh:[],wl:[],px:[],play:null,box:Array(12)},c={pl,top:330,music:false,on:false,tod:'tarde',eq:{},hh:lisNow().hh};let inner;
   if(it.s==='cor')inner=`<rect width="1080" height="500" fill="${it.c}"/><rect width="1080" height="500" fill="url(#wtex)" opacity=".6"/>`;
@@ -5876,7 +5936,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795650826';
+const BUILD='1795651686';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
