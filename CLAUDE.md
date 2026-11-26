@@ -1,5 +1,7 @@
 # Meu Álbum — notas para o Claude
 
+> Para rever o jogo à procura de erros, lê também `docs/GUIA-DE-REVISAO.md` (ideia do jogo, o que o Miguel gosta, queixas habituais, erros já corrigidos e lista de revisão).
+
 Jogo web de música brasileira (MPB) feito pelo Miguel para jogar com a Clara. Está publicado em GitHub Pages: https://miguelcorreia97.github.io/meu.album/
 
 ## Como falar e escrever
