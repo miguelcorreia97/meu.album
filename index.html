@@ -1761,6 +1761,10 @@ body,#app{overflow-x:clip}
 @media(prefers-reduced-motion:reduce){.roomscene .ri{animation:none!important}}
 .ledrow{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.ledc{display:flex;align-items:center;gap:5px;padding:5px 9px;border-radius:99px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:var(--cream);font:inherit;font-size:.74rem;cursor:pointer}.ledc i{width:12px;height:12px;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c)}.ledc.rgb i{background:conic-gradient(#ff3b3b,#ffd23f,#3dff8a,#3de8ff,#3d7bff,#b04dff,#ff3b3b)}.ledc.on{border-color:#ffd23f;background:rgba(255,210,63,.15)}
 .rm-rgb{animation:rmRgb 6s linear infinite}@keyframes rmRgb{to{filter:hue-rotate(360deg)}}@media(prefers-reduced-motion:reduce){.rm-rgb{animation:none}}
+@media(max-width:700px){.view:has(.banca),.view:has(.festa){backdrop-filter:none!important;-webkit-backdrop-filter:none!important}.banca{padding-bottom:200px}.banca .bkdeal{position:fixed;left:8px;right:8px;bottom:calc(8px + env(safe-area-inset-bottom));z-index:60;max-height:48vh;overflow:auto;margin:0;padding:10px;border-radius:16px;background:rgba(28,14,22,.96);border:1px solid rgba(255,210,63,.4);box-shadow:0 -8px 30px rgba(0,0,0,.5)}.banca .bkdeal .bkdisc{display:none}.banca .bkdeal .bkbtns{width:100%}.banca .bkdeal .bkbtns>.btn{width:100%;padding:10px}.banca .bkdeal .bkopts{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}.banca .bkdeal .bkopt{padding:7px 8px;font-size:.74rem;line-height:1.25}.banca{padding-bottom:240px}
+ .festa .fask{position:fixed;left:8px;right:8px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:60;background:rgba(40,22,10,.97);box-shadow:0 -6px 24px rgba(0,0,0,.5);padding:12px;font-size:.86rem}.festa .fask .btn{padding:10px 16px}}
+.rgtabs{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:0 0 12px}.rgtab{display:flex;align-items:center;gap:6px;padding:8px 13px;border-radius:99px;border:1px solid rgba(255,214,150,.25);background:rgba(255,255,255,.05);color:var(--cream);font:inherit;font-size:.85rem;cursor:pointer}.rgtab.on{background:#ffd23f;color:#2a1608;font-weight:800;border-color:#ffd23f}
+.rgbody .rglead{font-size:1rem;line-height:1.5;margin:0 0 12px}.rgsec{margin:14px 0}.rgsec h3{font-size:.95rem;margin:0 0 8px;color:#ffd23f}.rgit{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.06)}.rgit span{font-size:1.1rem;width:24px;flex:none;text-align:center}.rgit p{margin:0;line-height:1.45;font-size:.9rem}
 .rszchip{display:flex;gap:4px;padding:4px!important;cursor:default!important}.rszchip button{border:0;border-radius:99px;padding:5px 9px;background:rgba(255,255,255,.1);color:var(--cream);font:inherit;font-size:.74rem;font-weight:700;cursor:pointer}.rszchip button.on{background:var(--cream);color:#2a1608}
 .rplacechip{position:absolute;transform:translate(-50%,0);z-index:4;padding:7px 12px;border-radius:99px;border:1px solid rgba(255,214,150,.5);background:rgba(20,10,4,.88);color:var(--cream);font:inherit;font-size:.78rem;font-weight:700;cursor:pointer;white-space:nowrap;box-shadow:0 6px 18px rgba(0,0,0,.4);animation:rzIn .2s ease}
 .rplaces.big button{font-size:.9rem;padding:11px 12px}
@@ -4924,7 +4928,7 @@ function ambSet(on){try{if(!SND.master||!SND.ctx)return;const c=SND.ctx;if(on){i
 function feBgPause(){ambSet(false);try{if(MUS.el&&!MUS.el.paused){musFade(0,.6);const el=MUS.el;setTimeout(()=>{try{el.pause()}catch(e){}},650)}}catch(e){}}
 const FE_FULLF={"36": "festa/trem-das-onze.mp3", "136": "festa/meu-lugar.mp3", "60": "festa/voce-me-vira-a-cabeca.mp3", "120": "festa/deixa-acontecer.mp3", "134": "festa/pe-na-areia.mp3", "126": "festa/sera-que-e-amor.mp3", "102": "festa/taj-mahal.mp3", "37": "festa/menina-mulher-da-pele-preta.mp3", "129": "festa/carolina.mp3", "20": "festa/oceano.mp3", "24": "festa/meu-bem-querer.mp3", "3": "festa/samurai.mp3", "22": "festa/se.mp3", "38": "festa/construcao.mp3", "95": "festa/eu-sei-que-vou-te-amar.mp3"};
 function feFull(i){if(!feFull.m){feFull.m={...FE_FULLF};feFull.d={};const by={};PLAYLIST.forEach(p=>by[nrm(p.t)]=p.src);songPool().forEach(k=>{const t=nrm(song(k).t);if(by[t])feFull.m[k]=by[t]})}return feFull.m[i]||null}
-function fePlay(i,q,dur){if(!SND.on)return;const fu=feFull(i);const go=u=>{if(!u||!L.fe||L.screen!=='festa')return;feBgPause();const old=FA.el,n=new Audio(u);n.loop=!fu&&(dur||30000)>30000;if(fu)n.addEventListener('loadedmetadata',()=>{feFull.d[i]=n.duration});n.addEventListener('ended',()=>feAudioEnd(n));n.volume=0;n.setAttribute('playsinline','');if(fu)try{feDistWire(n)}catch(e){}FA.el=n;FA.i=i;n._vt=[.45,.75,1][L.fe&&L.fe.vol!=null?L.fe.vol:1];
+function fePlay(i,q,dur){if(!SND.on)return;const fu=feFull(i);const go=u=>{if(!u||!L.fe||L.screen!=='festa')return;feBgPause();const old=FA.el,n=new Audio(u);n.loop=!fu&&(dur||30000)>30000;if(fu)n.addEventListener('loadedmetadata',()=>{feFull.d[i]=n.duration});n.addEventListener('ended',()=>feAudioEnd(n));n.volume=0;n.setAttribute('playsinline','');if(fu&&!IS_IOS)try{feDistWire(n)}catch(e){}FA.el=n;FA.i=i;n._vt=[.45,.75,1][L.fe&&L.fe.vol!=null?L.fe.vol:1];
     const smooth=q==='perfeito'?6:q==='bom'?4:0;
     if(smooth||!old||old.paused){n.play().then(()=>{if(IS_IOS)n.volume=1;else faFade(n,n._vt||.85,smooth||2)}).catch(()=>{});if(old){if(IS_IOS)old.pause();else faFade(old,0,smooth||.8,()=>old.pause())}}
     else{/* transição simples: a anterior desaparece e só depois entra a nova */if(IS_IOS){old.pause();n.play().then(()=>n.volume=1).catch(()=>{})}else{faFade(old,0,2.6,()=>{old.pause();n.play().then(()=>faFade(n,n._vt||.85,2.6)).catch(()=>{})})}}};
@@ -5035,7 +5039,7 @@ function feCurve(k){const n=1024,c=new Float32Array(n);for(let i=0;i<n;i++){cons
 function feDistWire(n){const c=fsCtx();if(!c)return;const src=c.createMediaElementSource(n),dry=c.createGain(),wet=c.createGain(),sh=c.createWaveShaper(),lo=c.createBiquadFilter(),hi=c.createBiquadFilter(),out=c.createGain();lo.type='lowshelf';lo.frequency.value=140;lo.gain.value=0;hi.type='highshelf';hi.frequency.value=5000;hi.gain.value=0;sh.oversample='4x';sh.curve=feCurve(0);wet.gain.value=0;
   src.connect(dry);src.connect(sh);sh.connect(wet);dry.connect(lo);wet.connect(lo);lo.connect(hi);hi.connect(out);out.connect(c.destination);n._dist={dry,wet,sh,lo,hi,out,k:-1}}
 function feDistUpd(F,now){const el=FA.el;if(!el)return;const a=F.alc||0,x=Math.min(1,a/FE_ALC_MAX);
-  if(a>=.2){el.preservesPitch=false;el.mozPreservesPitch=false;el.webkitPreservesPitch=false;el.playbackRate=1+x*.45+Math.sin(now/1300)*.02*x}else if(el.playbackRate!==1)el.playbackRate=1;
+  if(a>=.2){const tg=Math.round((1+x*.45)*20)/20;if(Math.abs(el.playbackRate-tg)>.02){el.preservesPitch=false;el.mozPreservesPitch=false;el.webkitPreservesPitch=false;el.playbackRate=tg}}else if(el.playbackRate!==1)el.playbackRate=1;
   const d=el._dist;if(d){const k=Math.round(x*7);if(k!==d.k){d.k=k;d.sh.curve=feCurve(k)}const t=FSX.ctx.currentTime;d.wet.gain.setTargetAtTime(x*.3,t,.5);d.dry.gain.setTargetAtTime(1-x*.15,t,.5);d.lo.gain.setTargetAtTime(x*7,t,.5);d.hi.gain.setTargetAtTime(x*4,t,.5);d.out.gain.setTargetAtTime(1+x*.15,t,.5)}}
 function feDesk(F){const v=F.vol==null?1:F.vol,u=k=>F.used2&&F.used2[k+':'+F.round];
   return `<div class="fdesk2"><div class="fdrow"><span class="fdl">🎛️ Mesa</span><button class="fdb" onclick="feAct('horn')">📣 Buzina</button><button class="fdb ${F.lights?'on':''}" onclick="feAct('luz')">💡 Luzes ${F.lights?'on':'off'}</button><button class="fdb" ${u('mic')?'disabled':''} onclick="feAct('mic')">🎤 Falar</button><button class="fdb" ${u('ded')?'disabled':''} onclick="feAct('ded')">💞 Dedicar</button></div>
@@ -5667,8 +5671,8 @@ setInterval(tick,250);
 const RD={a:5,b:22,c:[20,39,113],d:[69,113]};
 function rset(k){L.rule=k;L.rsel=null;L.rrev=false;render();const el=document.querySelector('.rules2');if(el)el.scrollIntoView({block:'nearest',behavior:'smooth'})}
 function rmv(k,d){const o=L.rord=L.rord||RD.c.slice();if(k+d<0||k+d>=o.length)return;[o[k],o[k+d]]=[o[k+d],o[k]];render()}
-function rulesBox(){
-  const k=L.rule||0,S=song;
+function rulesBox(md){
+  const k=md===2?7:md===1&&(L.rule||0)===7?0:(L.rule||0),S=song;
   const T=[['🎵','Isto ou aquilo'],['🌙','Pedido da noite'],['↕️','Ordenar'],['⚔️','Duelos'],['🧩','Combinações'],['⏱️','Tempo e desempate'],['👫','Modos a dois'],['♩','BPM e quarto']];
   let body='';
   if(k===0){const A=S(RD.a),B=S(RD.b),sel=L.rsel;
@@ -5720,9 +5724,9 @@ function rulesBox(){
     <div class="rexp"><b>🛍️ O que se compra</b><span>Objetos para o quarto (de 230 a 2 250 BPM), discos com 4 raridades (⚪ Comum até ~250, 🔵 Raro ~300–450, 🟣 Épico ~500–750, 🟡 Lendário ~900–1 150 BPM: conta sobretudo o álbum, não só o cantor) e caixas surpresa de cada raridade. Há 41 discos que só se ganham em missões, e 5 objetos de casal que só se ganham em missões a dois. Os pósteres compram-se à parte (40% do preço do disco): podem ter o póster de um álbum sem terem o disco.</span></div>
     <div class="rexp"><b>💿 Vinis e discos</b><span>As missões normais são de cada um: cada um tem a sua coleção de vinis. As missões a dois e “a meias” aparecem nas duas coleções. Nas missões a meias, cada um tem de fazer metade: se um fizer tudo sozinho, só conta até 50%. Os discos do quarto nunca se repetem: basta um completar a missão.</span></div>`}
   return `<div class="panel rules2"><div class="rhead"><span class="mono">como se joga</span><span class="rstep">${k+1} / ${T.length}</span></div>
-   <div class="rtabs">${T.map((t,i)=>`<button class="${i===k?'on':''}" onclick="rset(${i})" title="${t[1]}"><span>${t[0]}</span><small>${t[1]}</small></button>`).join('')}</div>
+   ${md===2?'':`<div class="rtabs">${T.map((t,i)=>md===1&&i===7?'':`<button class="${i===k?'on':''}" onclick="rset(${i})" title="${t[1]}"><span>${t[0]}</span><small>${t[1]}</small></button>`).join('')}</div>`}
    <h3 class="rtitle">${T[k][0]} ${T[k][1]}</h3><div class="rbody" key="${k}">${body}</div>
-   <div class="rnav"><button class="btn ghost sm" ${k===0?'disabled':''} onclick="rset(${k-1})">← Anterior</button>${k<T.length-1?`<button class="btn sm" onclick="rset(${k+1})">Seguinte →</button>`:`<span class="rdone">Prontos para jogar! 🎶</span>`}</div></div>`;
+   <div class="rnav" ${md===2?'style="display:none"':''}><button class="btn ghost sm" ${k===0?'disabled':''} onclick="rset(${k-1})">← Anterior</button>${k<(md===1?6:T.length-1)?`<button class="btn sm" onclick="rset(${k+1})">Seguinte →</button>`:`<span class="rdone">Prontos para jogar! 🎶</span>`}</div></div>`;
 }
 
 /* ======== ações ======== */
@@ -5851,21 +5855,41 @@ function modeScreen(){
   </div>
   <div class="modes one mt"><button class="modebtn" onclick="L.screen='regras';render();scrollTo(0,0)"><span class="ic">📖</span><b>Regras</b><span>Como se escolhe, se ordena e se ganha. Com exemplos.</span></button></div>`;
 }
+function spModesHtml(){return `  <div class="mono" style="color:var(--muted);margin:22px 0 10px;text-align:center">outros jogos contra o computador</div>
+  <div class="modes spmodes">
+   <button class="modebtn sp1" onclick="L.screen='carreira';render();scrollTo(0,0)"><span class="ic">🎧</span><b>Carreira de DJ</b><span>20 noites como DJ, do quiosque na praia à Pedra do Sal.</span><em class="spprog">${carDone()}/20</em></button>
+   <button class="modebtn sp2" onclick="L.screen='desafio';render();scrollTo(0,0)"><span class="ic">📅</span><b>Desafio do dia</b><span>O mesmo jogo para toda a gente, uma tentativa. Top do dia.</span>${ddPlayed(ddToday().ymd)?'<em class="spprog">✓ feito</em>':'<em class="spprog new">novo</em>'}</button>
+   <button class="modebtn sp3" onclick="L.screen='bancaMenu';render();scrollTo(0,0)"><span class="ic">💰</span><b>Banca de vinis</b><span>2 minutos a vender discos na feira. Negoceia com cada cliente.</span></button>
+  </div>`}
 function playScreen(){
   return `<div class="tot-head"><div class="mono" style="color:var(--muted)">jogar</div><h2>Como queres jogar?</h2><div class="sub">Escolhe o modo. Depois escolhes quantas músicas tem cada álbum.</div></div>
   <div class="modes">
    <button class="modebtn" onclick="L.screen=null;setMode('online')"><span class="ic">👥</span><b>Com um amigo</b><span>Cada um no seu telemóvel, numa sala com código.</span></button>
-   <button class="modebtn" onclick="L.screen=null;setMode('cpu')"><span class="ic">🤖</span><b>Contra o computador</b><span>Um adversário que também sabe montar álbuns. E goza contigo.</span></button>
+   <button class="modebtn" onclick="L.screen=null;setMode('cpu')"><span class="ic">🤖</span><b>Contra o computador</b><span>O jogo do álbum e ainda a Carreira de DJ, o Desafio do dia e a Banca de vinis.</span></button>
   </div>
-  <div class="mono" style="color:var(--muted);margin:22px 0 10px;text-align:center">modos especiais contra o computador</div>
-  <div class="modes spmodes">
-   <button class="modebtn sp1" onclick="L.screen='carreira';render();scrollTo(0,0)"><span class="ic">🎧</span><b>Carreira de DJ</b><span>8 noites, 8 DJs com estilo próprio. 20 noites, do quiosque na praia à Pedra do Sal.</span><em class="spprog">${carDone()}/20</em></button>
-   <button class="modebtn sp2" onclick="L.screen='desafio';render();scrollTo(0,0)"><span class="ic">📅</span><b>Desafio do dia</b><span>O mesmo jogo para toda a gente, uma tentativa. Top do dia.</span>${ddPlayed(ddToday().ymd)?'<em class="spprog">✓ feito</em>':'<em class="spprog new">novo</em>'}</button>
-   <button class="modebtn sp3" onclick="L.screen='bancaMenu';render();scrollTo(0,0)"><span class="ic">💰</span><b>Banca de vinis</b><span>2 minutos a vender discos na feira. Negoceia com cada cliente.</span></button>
-  </div><div class="actions"><button class="btn" onclick="L.screen=null;render()">← Voltar</button></div>`}
-function rulesScreen(){
-  return `<div class="tot-head"><div class="mono" style="color:var(--muted)">regras</div><h2>Como se joga</h2><div class="sub">Tudo o que precisas de saber, passo a passo.</div></div>
-  ${rulesBox()}<div class="actions"><button class="btn" onclick="L.screen=null;render()">← Voltar</button></div>`}
+  <div class="actions"><button class="btn" onclick="L.screen=null;render()">← Voltar</button></div>`}
+const RG=[['album','🎵','Álbum'],['dj','🎧','Carreira de DJ'],['dd','📅','Desafio do dia'],['banca','💰','Banca de vinis'],['bpm','♩','BPM e quarto']];
+function rgSec(t,items){return `<div class="rgsec"><h3>${t}</h3>${items.map(x=>`<div class="rgit"><span>${x[0]}</span><p>${x[1]}</p></div>`).join('')}</div>`}
+function rulesGame(g){
+  if(g==='dj')return `<p class="rglead">És o DJ de uma festa a sério. Há 20 noites, cada uma num sítio diferente (bar, praia, restaurante, roda de samba…), com o seu horário e o seu público. Cada noite dura cerca de 10 minutos.</p>
+   ${rgSec('Antes de começar',[['📋','Tens 30 segundos para ler o pedido da noite: o sítio, o horário, a regra, o público e a nota de que precisas para passar (de 12/20 nas primeiras até 19/20 na última).'],['🕵️','As pistas sobre o que o público gosta ajudam, mas nunca são certezas.']])}
+   ${rgSec('Durante a música',[['💿','Escolhes uma de 6 músicas. Combina o estilo e a energia com o sítio e com o que está a tocar.'],['🎚️','Carrega na zona verde para misturar: perfeita, boa ou falhada. Uma mistura falhada corta a música.'],['❤️','Se o público gostar, a música toca mais tempo. Se não gostar, muda aos 40 segundos. Depois de 30 segundos podes trocar quando quiseres.'],['🔇','Ficar em silêncio faz descer o desempenho.']])}
+   ${rgSec('A mesa do DJ',[['📣','Buzina: anima as pistas agitadas, assusta as calmas.'],['💡','Luzes: só resultam de noite.'],['🎤','Falar: quando a pista gosta do estilo que está a tocar. Nunca a meio do jantar.'],['💞','Dedicar: só com músicas de amor.'],['🔊','Volume: cada sítio tem o seu volume ideal.'],['🙋','Pedidos do público: parabéns, mais alto, selfie, pedido de casamento… Tens 9 segundos para responder.']])}
+   ${rgSec('Bebidas e expulsão',[['🍹','Oferecem-te bebidas. Aceitar não tira pontos, mas o álcool sobe. Com 1,2 g/L és expulso.'],['💧','Água, café e sumos fazem baixar o álcool. Com o passar das horas também baixa.'],['🥴','Quanto mais bebes, mais difícil fica: a agulha acelera, as capas desfocam e os nomes baralham-se.'],['🚪','Se o desempenho ficar abaixo de 4/20 durante muito tempo, o dono manda-te embora.']])}
+   ${rgSec('Multijogador',[['👥','Cria uma sala, escolhe o sítio e partilha o código. Todos tocam a mesma festa ao mesmo tempo e veem a nota e o álcool dos outros. Ganha a nota mais alta.']])}`;
+  if(g==='dd')return `<p class="rglead">Um jogo do álbum igual para toda a gente, que muda todos os dias.</p>
+   ${rgSec('Como funciona',[['🎲','Todos recebem as mesmas músicas, pela mesma ordem, contra o mesmo computador no nível Difícil.'],['1️⃣','Só há uma tentativa por dia.'],['🏆','A pontuação do teu álbum entra no top do dia. À meia-noite começa um desafio novo.']])}
+   ${rgSec('Regras do jogo',[['🎵','São as mesmas do jogo do álbum: escolher, ordenar e os duelos no fim. Vê a secção Álbum.']])}`;
+  if(g==='banca')return `<p class="rglead">Tens uma banca de vinis na feira e 2 minutos para fazer dinheiro.</p>
+   ${rgSec('Vender',[['🧑‍🤝‍🧑','Chegam clientes, um de cada vez, cada um com o seu gosto, feitio e humor.'],['💿','Escolhe no expositor o disco que achas que lhe agrada. Ele faz uma oferta.'],['✅','Aceitas a oferta, ou negoceias: dizer que é raro, contar a história do disco, dizer que tens outro cliente ou arredondar.'],['😤','Cada cliente tem paciência limitada. Se exageras, vai-se embora.']])}
+   ${rgSec('Clientes',[['🧐','Colecionadores pagam bem por raridades 💎.'],['🎒','Estudantes têm pouco dinheiro.'],['👵','Avós procuram os artistas da juventude.'],['😊','Clientes felizes pagam mais e aguentam mais tempo.']])}
+   ${rgSec('Metas e multijogador',[['🎯','Feira de bairro 260€, Feira da Ladra 370€, Feira de São Cristóvão 500€.'],['👥','No multijogador todos têm os mesmos discos e os mesmos clientes. Ganha quem fizer mais dinheiro.']])}`;
+  return '';
+}
+function rulesScreen(){const g=L.rg||'album';
+  return `<div class="tot-head"><div class="mono" style="color:var(--muted)">regras</div><h2>Como se joga</h2><div class="sub">Escolhe o jogo para veres as regras.</div></div>
+  <div class="rgtabs">${RG.map(([k,e,n])=>`<button class="rgtab ${g===k?'on':''}" onclick="L.rg='${k}';${k==='bpm'?'L.rule=7;':k==='album'&&(L.rule||0)===7?'L.rule=0;':''}render()"><span>${e}</span>${n}</button>`).join('')}</div>
+  <div class="panel rgbody">${g==='album'?rulesBox(1):g==='bpm'?rulesBox(2):rulesGame(g)}</div><div class="actions"><button class="btn" onclick="L.screen=null;render()">← Voltar</button></div>`}
 function whoScreen(){
   const guests=Object.values(PLAYERS).filter(p=>!BASE_PL[p.id]).sort((a,b)=>a.n.localeCompare(b.n));
   const form=L.newP?`<div class="panel gform"><div class="mono" style="color:var(--muted)">o teu nome</div>
@@ -5886,9 +5910,9 @@ function newScreen(){
   <div class="panel"><div class="modeline mono">a jogar ${MODE==='cpu'?'🤖 contra o computador':'👥 com mais uma pessoa'} · <button class="linkbtn" onclick="toMenu()">trocar para ${MODE==='cpu'?'👥 com mais uma pessoa':'🤖 contra o computador'}</button></div>${MODE==='cpu'?'':'<div class="mono" style="color:var(--muted)">Músicas por álbum</div>'}
   ${MODE==='cpu'?`<div class="mono" style="color:var(--muted)">nível do computador</div><div class="chips" style="margin:10px 0 16px">${[['facil','Fácil'],['normal','Normal'],['dificil','Difícil']].map(([k,n])=>`<button class="chip ${(L.level||'normal')===k?'on':''}" onclick="L.level='${k}';render()">${n}</button>`).join('')}</div><div class="mono" style="color:var(--muted)">Músicas por álbum</div>`:''}<div class="chips" style="margin-top:10px">${[5,8,10].map(n=>{const vs=MODE==='online'?votersFor(n):'';return `<button class="chip vchip ${(MODE==='online'?myVote()===n:L.per===n)?'on':''} ${vs?'voted':''}" onclick="${MODE==='online'?`castVote(${n})`:`L.per=${n};render()`}">${n} cada · ${n*2} no total${vs?`<span class="vwho">${vs}</span>`:''}</button>`}).join('')}</div>${MODE==='online'?voteHint():''}
   ${coModesBox()}
-  ${rulesBox()}
+  ${rulesBox(1)}
   ${L.err?`<div class="err">${esc(L.err)}</div>`:''}
-  ${MODE==='online'?'':`<button class="btn full mt" ${L.busy?'disabled':''} onclick="startGame()">🪙 Atirar a moeda e começar</button>`}</div>`;
+  ${MODE==='online'?'':`<button class="btn full mt" ${L.busy?'disabled':''} onclick="startGame()">🪙 Atirar a moeda e começar</button>`}</div>${MODE==='cpu'?spModesHtml():''}`;
 }
 function shelf(i){
   const tr=rawTracks(i),slots=Array.from({length:G.per},(_,k)=>tr[k]?mini(tr[k]):'<div class="slot"></div>');
@@ -6150,7 +6174,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795653207';
+const BUILD='1795682534';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
