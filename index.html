@@ -4687,6 +4687,8 @@ const BK_T=[
 const bkFem=(s,f)=>!f?s:({'Irritado':'Irritada','Sério':'Séria','Bem-disposto':'Bem-disposta','Regateador':'Regateadora','DJ apressado':'DJ apressada','Apaixonado':'Apaixonada','Colecionador':'Colecionadora'})[s]||s;
 const MOODS=[['😠','Irritado',.82,.5],['😐','Sério',.92,.8],['🙂','Bem-disposto',1,1],['😊','Feliz',1.1,1.25]];
 const BK_GOAL={facil:260,normal:370,dificil:500},BK_DUR=120000,BK_PAT=1.8;
+/* ajuste por nível: no normal os clientes começam por oferecer pouco (negociar recupera o valor), têm menos paciência e chegam com pausas — aceitar tudo não chega para os 370€ */
+const BK_LV={facil:{offer:1,pat:1,gap:0},normal:{offer:.6,pat:.8,gap:3500},dificil:{offer:1,pat:1,gap:0}},bkLv=()=>BK_LV[(L.bk&&L.bk.lvl)||'normal']||BK_LV.normal;
 const bkVal=k=>Math.max(8,Math.round(discPrice(k)/10));
 const bkRare=k=>{const r=discInfo(k)||{};return ['epico','lend'].includes(r.rar)||r.fama>=4.5};
 function bkPool(){return DISCOS.filter(d=>!DISC_EXCL.has(d.k))}
@@ -4694,7 +4696,7 @@ const bkR=()=>(L.bk&&L.bk.rnd?L.bk.rnd():Math.random());
 function bkDraw(n,not,R){R=R||bkR;const pool=bkPool().filter(d=>!(not||[]).includes(d.k));const out=[];while(out.length<n&&pool.length)out.push(pool.splice((R()*pool.length)|0,1)[0].k);return out}
 function bkNewCust(){const B0=L.bk;B0.q=B0.q||[];while(B0.q.length<3)B0.q.push(rndPerson('q'+Date.now()+Math.random()));B0.nextP=B0.q.shift();return bkNewCust0()}
 function bkNewCust0(){const B=L.bk,crate=B.crate.map(DISCO);let T=BK_T[(bkR()*BK_T.length)|0];if(B.last===T.id)T=BK_T[(BK_T.indexOf(T)+1)%BK_T.length];B.last=T.id;
-  const c={t:T,mood:1+((bkR()*3)|0),pat:T.pat*1000*BK_PAT,arr:Date.now(),rounds:0,offer:null,f:T.id==='avo'||T.id==='rock'?1:T.id==='colec'||T.id==='rom'?0:(bkR()<.5?1:0)};
+  const c={t:T,mood:1+((bkR()*3)|0),pat:T.pat*1000*BK_PAT*bkLv().pat,arr:Date.now(),rounds:0,offer:null,f:T.id==='avo'||T.id==='rock'?1:T.id==='colec'||T.id==='rom'?0:(bkR()<.5?1:0)};
   c.name=T.id==='avo'?['Dona Rosa','Dona Lurdes','Dona Fátima','Dona Graça'][(bkR()*4)|0]:T.id==='colec'?['Sr. Alberto','Sr. Joaquim','Sr. Mário'][(bkR()*3)|0]:c.f?['Ana','Bia','Lu','Rita','Inês','Dora'][(bkR()*6)|0]:['Zé','Rui','Tó','Gui','Nando','Caio'][(bkR()*6)|0];
   if(T.want==='artist'){let arts=T.arts||[...new Set(bkPool().map(d=>d.a))];const inC=arts.filter(a=>crate.some(d=>d.a===a));const pool=bkR()<.75&&inC.length?inC:arts;c.a=pool[(bkR()*pool.length)|0]||arts[0]}
   if(T.want==='cheap')c.b=[18,22,25,28,32][(bkR()*5)|0];
@@ -4714,7 +4716,7 @@ function bkHand(r,url){const v=document.querySelector('.bkvendor .bkfig'),cu=doc
 function bkSel(k){const B=L.bk,c=B.cust;if(!c||c.leaving||B.phase!=='play')return;{const el=document.querySelector(`.bkrack [data-k="${k}"] img`);if(el){const r=el.getBoundingClientRect(),u=el.src;setTimeout(()=>bkHand(r,u),0)}}
   if(!bkMatch(c,k)){c.mood=Math.max(0,c.mood-1);B.msg={k:'no',t:['Hmm… não é bem isto que procuro.','Não, não. Isto não!','Não era isso que eu queria…'][(Math.random()*3)|0]};bkShake();if(c.mood===0&&Math.random()<.5){bkLeave('😤 Não tens nada para mim. Adeus!',false);return}bkDraw_();return}
   const v=bkVal(k),T=c.t,mf=MOODS[c.mood][2];let o=v*(T.pay[0]+Math.random()*(T.pay[1]-T.pay[0]))*mf*.92;if(T.want==='cheap')o=Math.min(o,c.b);if(T.want==='artist'&&T.id==='fa')o*=1.1;
-  o=Math.max(3,Math.round(o));const lim=Math.round((T.hag?v*1.08:o*(1+T.tol))*mf*(T.want==='cheap'?1:1));c.offer=o;c.lim=T.want==='cheap'?Math.min(Math.max(o,lim),c.b+3):Math.max(o,lim);B.sel=k;c.rounds=0;
+  o=Math.max(3,Math.round(o));const lim=Math.round((T.hag?v*1.08:o*(1+T.tol))*mf*(T.want==='cheap'?1:1));o=Math.max(3,Math.round(o*bkLv().offer));c.offer=o;c.lim=T.want==='cheap'?Math.min(Math.max(o,lim),c.b+3):Math.max(o,lim);B.sel=k;c.rounds=0;
   B.msg={k:'offer',t:[`Gosto deste! Dou-te ${o}€.`,`Hmm, ${o}€ e levo já.`,`Pago ${o}€. Que dizes?`][(Math.random()*3)|0]};bkDraw_()}
 function bkAsk(pct){const B=L.bk,c=B.cust;if(!c||!B.sel||c.leaving)return;const ask=Math.round(c.offer*(1+pct/100));c.rounds++;
   const ok=ask<=c.lim+(Math.random()*4-2);if(ok){bkSell(ask,true);return}
@@ -4728,7 +4730,7 @@ function bkSell(p,hag){const B=L.bk,c=B.cust,k=B.sel;B.money+=p;B.sales.push({k,
     const pl=document.createElement('b');pl.className='bkplus';pl.textContent='+'+p+'€';Object.assign(pl.style,{left:z.left+z.width/2+'px',top:z.top+'px'});document.body.appendChild(pl);setTimeout(()=>pl.remove(),1300);setTimeout(()=>{cash.classList.remove('ka');void cash.offsetWidth;cash.classList.add('ka')},600)}
   B.crate=B.crate.map(x=>x===k?bkDraw(1,B.crate)[0]:x);c.mood=Math.min(3,c.mood+1);bkLeave(hag?'🤝 Negócio fechado! Obrigado!':'😄 Obrigado! Adorei!',true)}
 function bkLeave(t,happy){const B=L.bk,c=B.cust;if(!c||c.leaving)return;c.leaving=1;B.msg={k:happy?'yes':'bye',t};B.sel=null;bkDraw_();const el=document.querySelector('.bkcust');if(el)el.classList.add(happy?'leave-ok':'leave-bad');
-  setTimeout(()=>{if(L.bk!==B||B.phase!=='play')return;bkNewCust();bkDraw_()},1100)}
+  setTimeout(()=>{if(L.bk!==B||B.phase!=='play')return;bkNewCust();bkDraw_()},1100+(bkLv().gap?bkLv().gap*(.8+Math.random()*.6):0))}
 function bkSkip(){bkLeave('👋 Está bem, fica para a próxima.',false)}
 function bkShake(){const e=document.querySelector('.bkcust');if(e){e.classList.remove('shake');void e.offsetWidth;e.classList.add('shake')}}
 function bkDraw_(){if(L.bk&&L.bk.cust)setTimeout(()=>{if(L.bk&&L.bk.cust)L.bk.cust.shown=1},600);const w=document.querySelector('.banca');if(w)w.outerHTML=bancaHtml();else render()}
@@ -6208,7 +6210,7 @@ try{fxInit()}catch(e){}
 })();
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795738785';
+const BUILD='1795739337';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
