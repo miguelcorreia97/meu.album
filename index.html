@@ -4687,8 +4687,8 @@ const BK_T=[
 const bkFem=(s,f)=>!f?s:({'Irritado':'Irritada','Sério':'Séria','Bem-disposto':'Bem-disposta','Regateador':'Regateadora','DJ apressado':'DJ apressada','Apaixonado':'Apaixonada','Colecionador':'Colecionadora'})[s]||s;
 const MOODS=[['😠','Irritado',.82,.5],['😐','Sério',.92,.8],['🙂','Bem-disposto',1,1],['😊','Feliz',1.1,1.25]];
 const BK_GOAL={facil:260,normal:370,dificil:500},BK_DUR=120000,BK_PAT=1.8;
-/* ajuste por nível: no normal os clientes começam por oferecer pouco (negociar recupera o valor), têm menos paciência e chegam com pausas — aceitar tudo não chega para os 370€ */
-const BK_LV={facil:{offer:1,pat:1,gap:0},normal:{offer:.6,pat:.8,gap:3500},dificil:{offer:1,pat:1,gap:0}},bkLv=()=>BK_LV[(L.bk&&L.bk.lvl)||'normal']||BK_LV.normal;
+/* ajuste por nível: os clientes começam por oferecer pouco (negociar recupera o valor até ao máximo de cada um), e chegam com pausas — aceitar tudo não chega para a meta, negociar sim */
+const BK_LV={facil:{offer:.45,up:1.6,lim:1,pat:1,gap:3000},normal:{offer:.55,up:2.3,lim:1,pat:.8,gap:3500},dificil:{offer:.65,up:2.3,lim:1.25,pat:.75,gap:2000}},bkLv=()=>BK_LV[(L.bk&&L.bk.lvl)||'normal']||BK_LV.normal,bkUp=x=>x.up*(bkLv().up||1);
 const bkVal=k=>Math.max(8,Math.round(discPrice(k)/10));
 const bkRare=k=>{const r=discInfo(k)||{};return ['epico','lend'].includes(r.rar)||r.fama>=4.5};
 function bkPool(){return DISCOS.filter(d=>!DISC_EXCL.has(d.k))}
@@ -4716,7 +4716,7 @@ function bkHand(r,url){const v=document.querySelector('.bkvendor .bkfig'),cu=doc
 function bkSel(k){const B=L.bk,c=B.cust;if(!c||c.leaving||B.phase!=='play')return;{const el=document.querySelector(`.bkrack [data-k="${k}"] img`);if(el){const r=el.getBoundingClientRect(),u=el.src;setTimeout(()=>bkHand(r,u),0)}}
   if(!bkMatch(c,k)){c.mood=Math.max(0,c.mood-1);B.msg={k:'no',t:['Hmm… não é bem isto que procuro.','Não, não. Isto não!','Não era isso que eu queria…'][(Math.random()*3)|0]};bkShake();if(c.mood===0&&Math.random()<.5){bkLeave('😤 Não tens nada para mim. Adeus!',false);return}bkDraw_();return}
   const v=bkVal(k),T=c.t,mf=MOODS[c.mood][2];let o=v*(T.pay[0]+Math.random()*(T.pay[1]-T.pay[0]))*mf*.92;if(T.want==='cheap')o=Math.min(o,c.b);if(T.want==='artist'&&T.id==='fa')o*=1.1;
-  o=Math.max(3,Math.round(o));const lim=Math.round((T.hag?v*1.08:o*(1+T.tol))*mf*(T.want==='cheap'?1:1));o=Math.max(3,Math.round(o*bkLv().offer));c.offer=o;c.lim=T.want==='cheap'?Math.min(Math.max(o,lim),c.b+3):Math.max(o,lim);B.sel=k;c.rounds=0;
+  o=Math.max(3,Math.round(o));const lim=Math.round((T.hag?v*1.08:o*(1+T.tol))*mf*(T.want==='cheap'?1:1)*(bkLv().lim||1));o=Math.max(3,Math.round(o*bkLv().offer));c.offer=o;c.lim=T.want==='cheap'?Math.min(Math.max(o,lim),c.b+3):Math.max(o,lim);B.sel=k;c.rounds=0;
   B.msg={k:'offer',t:[`Gosto deste! Dou-te ${o}€.`,`Hmm, ${o}€ e levo já.`,`Pago ${o}€. Que dizes?`][(Math.random()*3)|0]};bkDraw_()}
 function bkAsk(pct){const B=L.bk,c=B.cust;if(!c||!B.sel||c.leaving)return;const ask=Math.round(c.offer*(1+pct/100));c.rounds++;
   const ok=ask<=c.lim+(Math.random()*4-2);if(ok){bkSell(ask,true);return}
@@ -5127,7 +5127,7 @@ const BK_TALK=[
  {k:'bluff',t:'😏 «Tenho outro cliente interessado»',up:.45,aff:{regat:.25,turista:.1,colec:-.2,avo:-.25,estud:-.2}},
  {k:'round',t:'🤝 «Arredonda para cima e fica feito»',up:.1,aff:{}}];
 function bkCustP(c){if(!c.p){c.p={...(L.bk&&L.bk.nextP||rndPerson('c'+c.arr)),...(BK_LOOK[c.t.id]||{})};if(!c.f)c.p.sk=false}return c.p}
-function bkTalk(k){const B=L.bk,c=B.cust;if(!c||!B.sel||c.leaving)return;const T=BK_TALK.find(x=>x.k===k);if(!T)return;c.rounds++;const ask=Math.max(c.offer+1,Math.round(c.offer*(1+T.up)));B.me=T.t.replace(/^[^«]*«|»$/g,'')+(k==='round'?` ${ask}€?`:` Que tal ${ask}€?`);
+function bkTalk(k){const B=L.bk,c=B.cust;if(!c||!B.sel||c.leaving)return;const T=BK_TALK.find(x=>x.k===k);if(!T)return;c.rounds++;const ask=Math.max(c.offer+1,Math.round(c.offer*(1+bkUp(T))));B.me=T.t.replace(/^[^«]*«|»$/g,'')+(k==='round'?` ${ask}€?`:` Que tal ${ask}€?`);
   if(k==='raro'&&!bkRare(B.sel)){const fooled=c.t.id!=='colec'&&Math.random()<.35;if(!fooled){c.mood=Math.max(0,c.mood-2);B.msg={k:'no',t:c.t.id==='colec'?'Raridade? Isto há em qualquer feira! Não me enganes.':'Hmm… não me parece nada raro.'};bkShake();if(c.mood===0){bkLeave('😤 Não gosto de ser enganado. Adeus!',false);return}bkDraw_();return}}
   if(k==='hist'&&c.t.id==='dj'){c.mood=Math.max(0,c.mood-1);B.msg={k:'no',t:'Não tenho tempo para histórias! Despacha.'};bkShake();bkDraw_();return}
   const aff=(T.aff[c.t.id]||0)+(MOODS[c.mood][2]-1),eff=c.lim*(1+aff);const ok=ask<=eff*(.94+Math.random()*.12);
@@ -5154,7 +5154,7 @@ function bancaHtml(){const B=L.bk;if(!B)return '';const left=Math.max(0,B.t0+BK_
     ${c?`<div class="bkcust ${c.leaving||c.shown?'':'enter walking'}"><div class="bkfig">${personSvg(bkCustP(c),c.mood,true)}<span class="bkmood" title="${m[1]}">${m[0]}</span></div>
       <div class="bkside"><div class="bkwho"><b>${esc(c.name)}</b><small>${T.e} ${esc(bkFem(T.n,c.f))} · ${bkFem(m[1],c.f).toLowerCase()}</small><div class="bkpat"><i></i></div></div><div class="bksay ${B.msg?B.msg.k:''}" key="${Date.now()}">${esc(B.msg?B.msg.t:c.say)}</div></div></div>`:''}
    </div>
-   ${sel&&c&&!c.leaving?`<div class="bkdeal"><div class="bkdisc"><img src="${esc(DISCO(sel).f)}" alt=""><small>catálogo ${bkVal(sel)}€${bkRare(sel)?' · 💎 raro':''}</small></div><div class="bkbtns"><button class="btn" onclick="B_me('Fechado! ${c.offer}€.');bkSell(${c.offer},false)">✅ «Fechado, ${c.offer}€!»</button><div class="bkopts">${BK_TALK.map(x=>`<button class="bkopt" onclick="bkTalk('${x.k}')">${esc(x.t)} <small>${x.k==='round'?'':'→ '}${Math.max(c.offer+1,Math.round(c.offer*(1+x.up)))}€</small></button>`).join('')}</div></div></div>`:c&&!c.leaving?`<div class="bkhint">👇 Escolhe um disco da caixa para mostrar a ${esc(c.name)} · <button class="linkbtn" onclick="B_me('Hoje não tenho nada para si, desculpe.');bkSkip()">«Hoje não tenho nada para si»</button></div>`:''}
+   ${sel&&c&&!c.leaving?`<div class="bkdeal"><div class="bkdisc"><img src="${esc(DISCO(sel).f)}" alt=""><small>catálogo ${bkVal(sel)}€${bkRare(sel)?' · 💎 raro':''}</small></div><div class="bkbtns"><button class="btn" onclick="B_me('Fechado! ${c.offer}€.');bkSell(${c.offer},false)">✅ «Fechado, ${c.offer}€!»</button><div class="bkopts">${BK_TALK.slice().sort((a,b)=>bkUp(a)-bkUp(b)).map(x=>`<button class="bkopt" onclick="bkTalk('${x.k}')">${esc(x.t)} <small>${x.k==='round'?'':'→ '}${Math.max(c.offer+1,Math.round(c.offer*(1+bkUp(x))))}€</small></button>`).join('')}</div></div></div>`:c&&!c.leaving?`<div class="bkhint">👇 Escolhe um disco da caixa para mostrar a ${esc(c.name)} · <button class="linkbtn" onclick="B_me('Hoje não tenho nada para si, desculpe.');bkSkip()">«Hoje não tenho nada para si»</button></div>`:''}
    </div>`}
 function B_me(t){if(L.bk)L.bk.me=t}
 
@@ -6208,9 +6208,94 @@ try{fxInit()}catch(e){}
   try{room=await c.use('room')}catch(e){room=null}
   const m=lsGet().mode;if(m==='online'||m==='cpu')setMode(m);else{L.status='ok';render()}
 })();
+/* ======= 🐾 animais com vida: o gato, o cão e a tartaruga passeiam pelo chão, o papagaio voa pelo quarto e volta ao poleiro =======
+   O desenho de casa de cada animal fica igual; quando sai a passear é escondido e aparece um desenho a andar/voar por cima do quarto. */
+const PL_FLOOR=472;/* linha do chão livre, à frente do tapete e do móvel (sem passar pela cama) */
+const PETL={st:{},t:0,raf:0};
+function plSvgPt(svg,x,y){const p=svg.createSVGPoint();p.x=x;p.y=y;const m=svg.getScreenCTM();return m?p.matrixTransform(m.inverse()):{x,y}}
+function plHome(svg,id){const g=svg.querySelector(`.ract-pet[data-id="${id}"] .ri`);if(!g)return null;const vis=g.style.visibility;g.style.visibility='';const r=g.getBoundingClientRect();g.style.visibility=vis;if(!r.width)return null;const a=plSvgPt(svg,r.left,r.top),b=plSvgPt(svg,r.right,r.bottom);return {g,x:(a.x+b.x)/2,top:a.y,bottom:b.y,w:b.x-a.x}}
+/* desenhos a andar, virados para a esquerda; (0,0) = patas no chão */
+const PL_DRAW={
+ 'pet-gato':()=>`<ellipse cx="0" cy="1" rx="27" ry="4.5" fill="rgba(0,0,0,.28)"/>
+  <g class="pl-tail"><path d="M19 -24 C33 -26 38 -38 32 -50 C30 -54 26 -54 25 -50" stroke="#e08a3a" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M30 -30 l3 -1 M34 -38 l3 0 M33 -46 l3 1" stroke="#b25e1c" stroke-width="1.5" stroke-linecap="round"/></g>
+  <g class="pl-leg b"><rect x="9" y="-20" width="6" height="20" rx="3" fill="#c96f25"/><ellipse cx="12" cy="-1" rx="4" ry="2.4" fill="#f3d6b0"/></g>
+  <g class="pl-leg a"><rect x="-17" y="-20" width="6" height="20" rx="3" fill="#c96f25"/><ellipse cx="-14" cy="-1" rx="4" ry="2.4" fill="#f3d6b0"/></g>
+  <path d="M-22 -26 C-22 -36 -6 -38 8 -37 C22 -36 27 -30 26 -22 C25 -15 18 -13 8 -13 L-12 -13 C-20 -13 -22 -19 -22 -26Z" fill="#e5893a"/>
+  <path d="M-16 -15 C-8 -12 10 -12 20 -15 C14 -11 -10 -10 -16 -15Z" fill="#f3d3a8"/>
+  ${[[-6,-37],[2,-37],[10,-36],[17,-34]].map(([x,y])=>`<path d="M${x} ${y} q2 5 0 9" stroke="#b25e1c" stroke-width="2" fill="none" stroke-linecap="round" opacity=".75"/>`).join('')}
+  <g class="pl-leg a"><rect x="13" y="-20" width="6.5" height="20" rx="3.2" fill="#e5893a"/><ellipse cx="16.3" cy="-1" rx="4.2" ry="2.5" fill="#f6dfbd"/></g>
+  <g class="pl-leg b"><rect x="-13" y="-20" width="6.5" height="20" rx="3.2" fill="#e5893a"/><ellipse cx="-9.7" cy="-1" rx="4.2" ry="2.5" fill="#f6dfbd"/></g>
+  <g class="pl-head"><path d="M-36 -45 L-34 -57 L-26 -48Z" fill="#e08a3a"/><path d="M-34 -47 L-33 -54 L-28 -49Z" fill="#f2a7a0"/><path d="M-22 -48 L-17 -58 L-14 -46Z" fill="#d97f30"/><path d="M-20 -48 L-17 -55 L-15.5 -48Z" fill="#f2a7a0"/>
+  <circle cx="-26" cy="-37" r="11" fill="#e5893a"/><path d="M-37 -34 C-37 -27 -30 -25 -25 -26 C-20 -26 -17 -29 -17 -33 C-21 -30 -32 -29 -37 -34Z" fill="#f3d3a8"/>
+  <path d="M-28 -47 q1 3 0 5 M-25 -48 q0 3 0 5" stroke="#b25e1c" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+  <ellipse cx="-31" cy="-38" rx="1.9" ry="2.4" fill="#2a1d12"/><ellipse cx="-23" cy="-38" rx="1.9" ry="2.4" fill="#2a1d12"/><circle cx="-31.5" cy="-38.8" r=".6" fill="#fff"/><circle cx="-23.5" cy="-38.8" r=".6" fill="#fff"/>
+  <path d="M-28 -33.5 l1.6 1.6 l1.6 -1.6z" fill="#e58a8a"/><path d="M-36 -32 h-6 M-36 -30.5 l-6 1.5 M-18 -32 h6 M-18 -30.5 l6 1.5" stroke="#f6e7d2" stroke-width=".6" opacity=".8"/></g>`,
+ 'pet-caramelo':()=>`<ellipse cx="0" cy="1" rx="36" ry="5.5" fill="rgba(0,0,0,.28)"/>
+  <g class="pl-wag"><path d="M27 -34 q14 -6 16 -22" stroke="#c78545" stroke-width="6.5" fill="none" stroke-linecap="round"/><path d="M42 -53 q1 -3 1 -5" stroke="#e7c08e" stroke-width="5" stroke-linecap="round"/></g>
+  <g class="pl-leg b"><rect x="13" y="-24" width="8" height="24" rx="3.6" fill="#a86a32"/><ellipse cx="17" cy="-1.5" rx="5" ry="2.8" fill="#e2b980"/></g>
+  <g class="pl-leg a"><rect x="-21" y="-24" width="8" height="24" rx="3.6" fill="#a86a32"/><ellipse cx="-17" cy="-1.5" rx="5" ry="2.8" fill="#e2b980"/></g>
+  <path d="M-26 -32 C-26 -45 -6 -47 10 -46 C26 -45 32 -38 31 -28 C30 -19 22 -17 12 -17 L-16 -17 C-24 -17 -26 -23 -26 -32Z" fill="#c98a4a"/>
+  <path d="M-20 -42 C-6 -47 20 -47 30 -36 C20 -42 0 -43 -20 -42Z" fill="#a86a32" opacity=".55"/>
+  <path d="M-22 -22 C-12 -17 10 -17 24 -20 C16 -15 -14 -14 -22 -22Z" fill="#ecc893"/>
+  <g class="pl-leg a"><rect x="17" y="-24" width="8.5" height="24" rx="3.8" fill="#c98a4a"/><ellipse cx="21.2" cy="-1.5" rx="5.2" ry="2.9" fill="#ecc893"/></g>
+  <g class="pl-leg b"><rect x="-17" y="-24" width="8.5" height="24" rx="3.8" fill="#c98a4a"/><ellipse cx="-12.8" cy="-1.5" rx="5.2" ry="2.9" fill="#ecc893"/></g>
+  <g class="pl-head"><ellipse cx="-24" cy="-36" rx="9" ry="10" fill="#ecc893"/>
+  <path d="M-31 -46 C-25 -41 -19 -41 -15 -46" stroke="#c8352a" stroke-width="3.2" fill="none" stroke-linecap="round"/><circle cx="-23" cy="-41.5" r="2.2" fill="#ffd23f" stroke="#c9a43a" stroke-width=".6"/>
+  <ellipse cx="-32" cy="-54" rx="12.5" ry="11" fill="#c98a4a"/>
+  <path d="M-44 -52 C-49 -50 -53 -46 -52 -42 C-50 -37 -42 -36 -36 -39 C-33 -42 -35 -50 -44 -52Z" fill="#ecc893"/>
+  <ellipse cx="-51.5" cy="-48" rx="3.2" ry="2.5" fill="#2a1a10"/><circle cx="-52.4" cy="-48.8" r=".8" fill="#fff" opacity=".7"/>
+  <path d="M-49 -42 q4 3 8 1" stroke="#8a5a2e" stroke-width=".9" fill="none"/>
+  <circle cx="-36" cy="-57" r="2.2" fill="#2a1a10"/><circle cx="-36.7" cy="-57.7" r=".7" fill="#fff"/>
+  <path d="M-26 -63 C-18 -64 -14 -56 -17 -46 C-19 -42 -24 -46 -24 -52Z" fill="#a86a32"/></g>`,
+ 'pet-papagaio':()=>`<g class="pl-wing far"><path d="M-2 -4 C-8 -24 6 -40 20 -44 C14 -30 12 -16 6 -4Z" fill="#1f5f9e"/></g>
+  <path d="M10 2 C24 6 40 6 52 2 C42 10 26 12 10 8Z" fill="#2f6fb8"/><path d="M12 4 C26 8 38 8 48 5" stroke="#e8b52a" stroke-width="1.3" fill="none" opacity=".8"/>
+  <ellipse cx="0" cy="0" rx="17" ry="9" fill="#2f8fd0"/>
+  <path d="M-12 2 C-6 9 6 10 14 6 C6 6 -4 4 -12 2Z" fill="#f2c12e"/>
+  <circle cx="-17" cy="-4" r="8" fill="#3a9be0"/><path d="M-21 -11 q5 -3 9 0" stroke="#3aa36a" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+  <ellipse cx="-20" cy="-3" rx="4.2" ry="5" fill="#f4f1ea"/><circle cx="-20" cy="-4" r="1.5" fill="#1d1a18"/><circle cx="-20.4" cy="-4.5" r=".5" fill="#fff"/>
+  <path d="M-25 -5 C-31 -5 -32 1 -28 3 C-27 0 -26 -2 -24 -2Z" fill="#2a2420"/>
+  <g class="pl-wing"><path d="M-4 -2 C-10 -26 8 -44 24 -48 C16 -32 14 -16 8 -2Z" fill="#2a6fb0"/><path d="M2 -8 q4 -12 14 -22 M5 -5 q5 -10 13 -16" stroke="#1f4f8a" stroke-width="1" fill="none"/><path d="M-2 -6 q2 -10 8 -18" stroke="#3aa36a" stroke-width="1.8" fill="none" stroke-linecap="round"/></g>`
+};
+function plRand(a,b){return a+Math.random()*(b-a)}
+function plSprite(svg,lay,id){let s=lay.querySelector(`[data-pl="${id}"]`);if(!s){s=document.createElementNS('http://www.w3.org/2000/svg','g');s.setAttribute('data-pl',id);s.setAttribute('class','pl-sprite '+id);s.innerHTML=`<g class="pl-flip">${PL_DRAW[id]()}</g>`;lay.appendChild(s)}return s}
+function plPlace(s,x,y,dir,moving,extra){s.setAttribute('transform',`translate(${x.toFixed(1)} ${y.toFixed(1)})${extra||''}`);const f=s.firstChild;f.setAttribute('transform',dir>0?'scale(-1 1)':'');s.classList.toggle('still',!moving)}
+function plReset(){for(const id in PETL.st){const S=PETL.st[id];if(S.home&&S.home.g){S.home.g.style.visibility='';S.home.g.removeAttribute('transform')}}PETL.st={};document.querySelectorAll('#petlife').forEach(e=>e.remove())}
+function plTick(now){PETL.raf=requestAnimationFrame(plTick);const dt=Math.min(.1,(now-(PETL.t||now))/1000);PETL.t=now;
+  const svg=L.screen==='quarto'&&!L.edit&&!document.hidden?document.querySelector('.roomscene .roomsvg'):null;
+  if(!svg||matchMedia('(prefers-reduced-motion: reduce)').matches){if(Object.keys(PETL.st).length)plReset();return}
+  const pet=[...svg.querySelectorAll('.ract-pet[data-id]')].map(g=>g.getAttribute('data-id'))[0];
+  if(!pet||!(pet in PL_DRAW||pet==='pet-tartaruga')){if(Object.keys(PETL.st).length)plReset();return}
+  let lay=svg.querySelector('#petlife');if(!lay){lay=document.createElementNS('http://www.w3.org/2000/svg','g');lay.id='petlife';lay.setAttribute('pointer-events','none');svg.appendChild(lay)}
+  for(const k in PETL.st)if(k!==pet)delete PETL.st[k];
+  let S=PETL.st[pet];if(!S){S=PETL.st[pet]={mode:'home',until:now+plRand(pet==='pet-tartaruga'?3000:12000,pet==='pet-tartaruga'?6000:26000)}}
+  if(!S.home||!S.home.g||!S.home.g.isConnected){const h0=plHome(svg,pet);if(!h0)return;S.home=h0}
+  const H=S.home,hungry=typeof roomDebt==='function'&&roomDebt();
+  /* tartaruga: o próprio desenho passeia devagar pelo tapete */
+  if(pet==='pet-tartaruga'){S.x=S.x||0;S.dir=S.dir||-1;
+    if(S.mode==='home'){if(now>S.until&&!hungry){S.mode='walk';S.tx=plRand(-130,110);S.dir=S.tx<S.x?-1:1}}
+    else{const d=S.tx-S.x;if(Math.abs(d)<1){S.mode='home';S.until=now+plRand(4000,9000)}else S.x+=Math.sign(d)*Math.min(Math.abs(d),9*dt)}
+    H.g.setAttribute('transform',`translate(${S.x.toFixed(1)} 0)${S.dir>0?` translate(${(2*H.x).toFixed(1)} 0) scale(-1 1)`:''}`);H.g.classList.toggle('pl-still',S.mode==='home');return}
+  const s=plSprite(svg,lay,pet);
+  if(pet==='pet-papagaio'){
+    if(S.mode==='home'){s.style.display='none';H.g.style.visibility='';if(now>S.until&&!hungry){S.mode='fly';S.t0=now;S.dur=plRand(7000,9500);const side=H.x<540?1:-1;S.p=[[H.x,H.top+18],[H.x+side*120,H.top-90],[H.x+side*plRand(380,560),plRand(90,150)],[H.x+side*plRand(150,260),plRand(170,230)],[H.x-side*60,H.top-40],[H.x,H.top+18]]}return}
+    const u=Math.min(1,(now-S.t0)/S.dur);if(u>=1){S.mode='home';S.until=now+plRand(20000,40000);s.style.display='none';H.g.style.visibility='';return}
+    H.g.style.visibility='hidden';s.style.display='';const P=S.p,n=P.length-1,f=u*n,i=Math.min(n-1,Math.floor(f)),w=f-i,e=w*w*(3-2*w);
+    const a=P[Math.max(0,i-1)],b=P[i],c=P[i+1],d2=P[Math.min(n,i+2)];const cr=(p0,p1,p2,p3,t)=>.5*((2*p1)+(-p0+p2)*t+(2*p0-5*p1+4*p2-p3)*t*t+(-p0+3*p1-3*p2+p3)*t*t*t);
+    const x=cr(a[0],b[0],c[0],d2[0],e),y=cr(a[1],b[1],c[1],d2[1],e)+Math.sin(now/260)*3;const dir=(S.lx!=null?x-S.lx:0);if(Math.abs(dir)>.05)S.dir=dir>0?1:-1;S.lx=x;
+    plPlace(s,x,y,S.dir||1,true,'');return}
+  /* gato e cão: dormem/descansam em casa, depois passeiam pelo chão e voltam */
+  const sp=pet==='pet-gato'?42:56,lo=140;if(S.hi==null){let hi=QW-150;const bd=svg.querySelector('.ract-cama .ri');if(bd){const r=bd.getBoundingClientRect(),a=plSvgPt(svg,r.left,r.top);if(a.x>QW/2)hi=a.x-45}S.hi=hi;S.land=Math.min(hi,Math.max(lo,H.x))}const hi=S.hi;
+  if(S.mode==='home'){s.style.display='none';H.g.style.visibility='';if(now>S.until&&!hungry){S.mode='down';S.t0=now;S.x=H.x;S.y=H.bottom-4;S.dir=S.land<H.x-2?-1:S.land>H.x+2?1:(H.x>540?-1:1);S.legs=plRand(2,4)|0}return}
+  H.g.style.visibility='hidden';s.style.display='';
+  if(S.mode==='down'||S.mode==='up'){const up=S.mode==='up',u=Math.min(1,(now-S.t0)/(pet==='pet-gato'?650:900)),y0=up?PL_FLOOR:H.bottom-4,y1=up?H.bottom-4:PL_FLOOR,yy=y0+(y1-y0)*u-Math.sin(u*Math.PI)*(pet==='pet-gato'?Math.max(18,Math.abs(y1-y0)*.6):4);
+    const xx=up?S.land+(H.x-S.land)*u:H.x+(S.land-H.x)*u;S.x=xx;plPlace(s,xx,yy,S.dir,false,'');if(u>=1){if(up){S.mode='home';S.until=now+plRand(pet==='pet-gato'?25000:15000,pet==='pet-gato'?45000:30000);s.style.display='none';H.g.style.visibility=''}else{S.mode='idle';S.y=PL_FLOOR;S.until=now+plRand(600,1400)}}return}
+  if(S.mode==='idle'){plPlace(s,S.x,S.y,S.dir,false,'');if(now>S.until){if(S.legs-->0){S.tx=Math.max(lo,Math.min(hi,S.x+plRand(-320,320)));if(Math.abs(S.tx-S.x)<60)S.tx=S.x+(S.x<(lo+hi)/2?160:-160);S.tx=Math.max(lo,Math.min(hi,S.tx));S.mode='walk'}else{S.tx=S.land;S.mode='back'}S.dir=S.tx<S.x?-1:1}return}
+  if(S.mode==='walk'||S.mode==='back'){const d=S.tx-S.x;if(Math.abs(d)<1.5){if(S.mode==='back'){S.mode='up';S.t0=now;S.dir=H.x<S.x-2?-1:H.x>S.x+2?1:S.dir}else{S.mode='idle';S.until=now+plRand(1800,4200)}}else S.x+=Math.sign(d)*Math.min(Math.abs(d),sp*dt);plPlace(s,S.x,S.y,S.dir,true,'');return}}
+if(!PETL.raf)PETL.raf=requestAnimationFrame(plTick);
+
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795739337';
+const BUILD='1795791044';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
@@ -6282,34 +6367,33 @@ body>div:has(>main.view .banca){padding-bottom:0!important}
  .banca .bkcust .bkside{left:62px!important;width:calc(100vw - 120px)!important;padding:6px 8px!important;gap:5px!important}
 }
 
-/* jogo do álbum no telemóvel: ordenar com o mínimo de scroll (5 faixas cabem inteiras) */
+/* jogo do álbum no telemóvel: ordenar sem sair do ecrã, com estilo, energia e tema sempre à vista */
+.ogrid{grid-template-columns:minmax(0,1fr)!important}
+.ogrid>*{min-width:0}
 @media(max-width:600px){
  main.view:has(.ogrid) .pedido{padding:6px 10px!important;margin-bottom:6px!important}
  main.view:has(.ogrid) .pedido>span:last-child{font-size:.74rem;line-height:1.25}
- main.view:has(.ogrid) .tot-head{padding:4px 0 6px!important;margin:0!important}
- main.view:has(.ogrid) .tot-head h2{font-size:1.5rem!important;margin:0!important;line-height:1.1}
- main.view:has(.ogrid) .tot-head .sub{display:none!important}
+ main.view:has(.ogrid) .tot-head{padding:2px 0 4px!important;margin:0!important}
+ main.view:has(.ogrid) .tot-head h2{font-size:1.25rem!important;margin:0!important;line-height:1.1}
  main.view:has(.ogrid) .tot-head h2::after{display:none!important}
- main.view:has(.ogrid) .tot-head .mono,main.view:has(.ogrid) .tot-head h2+div:empty{display:none}
- .ogrid .olist{padding:10px!important}
+ main.view:has(.ogrid) .tot-head .sub,main.view:has(.ogrid) .tot-head .mono{display:none!important}
+ .ogrid .olist{padding:8px!important;min-width:0}
  .ogrid .olist>label{display:none}
- .ogrid .olist>input{padding:6px 10px!important;font-size:.88rem!important}
- .ogrid .olist>.mt{margin-top:8px!important}
- .ogrid .orow{grid-template-columns:16px 38px minmax(0,1fr) auto!important;gap:6px!important;padding:4px 6px!important;align-items:center}
+ .ogrid .olist>input{padding:6px 10px!important;font-size:.88rem!important;width:100%;box-sizing:border-box}
+ .ogrid .olist>.mt{margin-top:6px!important}
+ .ogrid .orow{grid-template-columns:16px 42px minmax(0,1fr) 36px!important;gap:6px!important;padding:5px 6px!important;align-items:center;margin-bottom:0!important}
  .ogrid .orow .n{font-size:.9rem}
- .ogrid .orow .thumb,.ogrid .orow .thumb img{width:38px!important;height:38px!important}
+ .ogrid .orow .thumb,.ogrid .orow .thumb img{width:42px!important;height:42px!important}
+ .ogrid .orow .info{min-width:0}
  .ogrid .orow .tt{font-size:.86rem!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
  .ogrid .orow .ta{font-size:.72rem!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
- .ogrid .orow .info{display:flex!important;flex-wrap:wrap;align-items:center;column-gap:6px;row-gap:2px;min-width:0}
- .ogrid .orow .info .tt{flex:1 0 100%}
- .ogrid .orow .info .ta{flex:0 1 auto;max-width:45%}
- .ogrid .orow .tags{flex:1 1 0;min-width:0;flex-wrap:nowrap!important;overflow:hidden;margin:0!important;gap:3px!important}
- .ogrid .orow .tags>span{font-size:.6rem!important;padding:1px 5px!important;white-space:nowrap;flex:none}
+ .ogrid .orow .tags{display:flex!important;flex-wrap:wrap!important;margin-top:3px!important;gap:3px!important}
+ .ogrid .orow .tags>span{font-size:.62rem!important;padding:1px 6px!important;white-space:nowrap}
  .ogrid .orow .tags small{display:none}
- .ogrid .orow .mvs{display:flex!important;flex-direction:row!important;gap:4px!important}
- .ogrid .orow .mv{width:38px!important;height:38px!important}
- .ogrid .olink{padding:1px 8px!important;margin:2px 0!important;font-size:.68rem!important;display:flex;gap:6px;align-items:baseline;white-space:nowrap;overflow:hidden}
- .ogrid .olink .lw{overflow:hidden;text-overflow:ellipsis;min-width:0}
+ .ogrid .orow .mvs{display:flex!important;flex-direction:column!important;gap:4px!important}
+ .ogrid .orow .mv{width:36px!important;height:30px!important;min-height:0!important}
+ .ogrid .olink{padding:1px 6px 1px 8px!important;margin:2px 0 2px 22px!important;font-size:.66rem!important;display:flex;gap:6px;align-items:baseline;line-height:1.25}
+ .ogrid .olink .lw{min-width:0}
 }
 
 /* topo: botão de passar música com fundo escuro (nada de cinzento claro do browser) e botões com tamanho para o dedo */
@@ -6321,6 +6405,22 @@ body>div:has(>main.view .banca){padding-bottom:0!important}
 
 /* DJ, ecrã antes da noite: a contagem e o «Começar já» ficam sempre à vista no fundo do cartão */
 .fbcard .fbfoot{position:sticky;bottom:-18px;z-index:3;margin:0 -18px -18px;padding:10px 18px 14px;background:linear-gradient(180deg,rgba(42,18,32,.0),rgba(42,18,32,.96) 28%);backdrop-filter:blur(2px)}
+
+/* animais com vida no quarto */
+#petlife .pl-leg{transform-box:fill-box;transform-origin:50% 0;animation:plLeg .5s ease-in-out infinite alternate}
+#petlife .pl-leg.b{animation-delay:-.25s}
+#petlife .pet-caramelo .pl-leg{animation-duration:.42s}#petlife .pet-caramelo .pl-leg.b{animation-delay:-.21s}
+#petlife .still .pl-leg{animation-play-state:paused;transform:none}
+#petlife .pl-tail{transform-box:fill-box;transform-origin:0 100%;animation:rmTail 2.2s ease-in-out infinite alternate}
+#petlife .pl-wag{transform-box:fill-box;transform-origin:0 100%;animation:rmWag .32s ease-in-out infinite alternate}
+#petlife .pl-head{transform-box:fill-box;transform-origin:80% 80%;animation:plHead 1s ease-in-out infinite alternate}
+#petlife .still .pl-head{animation-duration:2.6s}
+#petlife .pl-wing{transform-box:fill-box;transform-origin:30% 100%;animation:plWing .19s ease-in-out infinite alternate}
+#petlife .pl-wing.far{animation-delay:-.05s;opacity:.85}
+@keyframes plLeg{from{transform:rotate(-17deg)}to{transform:rotate(17deg)}}
+@keyframes plHead{from{transform:translateY(0)}to{transform:translateY(1.2px)}}
+@keyframes plWing{from{transform:scaleY(1)}to{transform:scaleY(-.55)}}
+@media(prefers-reduced-motion:reduce){#petlife *{animation:none!important}}
 </style>
 </body>
 </html>
