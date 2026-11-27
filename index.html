@@ -3746,7 +3746,7 @@ let GRAIN='';function grainUrl(){if(GRAIN)return GRAIN;try{const c=document.crea
 const ST={fita:'translate(130 -14)',secretaria:'translate(662 366) scale(1.1) translate(-666 -366)',prat:'translate(130 -14)',extra:'translate(125 16)',poster:'translate(643 -14)',movel:'translate(260 -62)',leitor:'translate(260 -62)',mesa:'translate(260 -62)',planta2:'translate(260 -62)',planta:'translate(-6 -64) scale(1.3)',assento:'translate(-120 -32) scale(1.2)',tapete:'translate(300 -66) scale(1.1)',
   'l-candeeiro':'translate(-235 -60)','l-neon':'translate(740 4)','l-sunset':'translate(640 -14)','pet-caramelo':'translate(110 0)','pet-tartaruga':'translate(170 0)'};
 /* lugares à escolha: [nome, dx, dy, escala, ox, oy] (escala à volta da base do objeto) */
-const RPOS={planta:[['Canto esquerdo'],['Ao lado do móvel',260,-123,.62,85,491],['À frente, junto à cama',640,5,.95,85,491]],
+const RPOS={pet:[['No sítio dele'],['No sítio dele',0,0,1,0,0],['No sítio dele',0,0,1,0,0],['No sítio dele',0,0,1,0,0],['No sítio dele',0,0,1,0,0]],planta:[['Canto esquerdo'],['Ao lado do móvel',260,-123,.62,85,491],['À frente, junto à cama',640,5,.95,85,491]],
  assento:[['À frente do móvel'],['Junto à cama',427,4,1,293,492],['Ao centro, no tapete',225,0,1,293,492]],
  extra:[['Ao lado da prateleira'],['Junto à janela',86,0,1,194,258],['Por cima da mesa de cabeceira',600,-95,1,194,258]],
  tapete:[['No centro'],['Ao pé da cama',240,23,1,520,447],['À esquerda',-270,3,1,520,447],['Debaixo da secretária',140,-50,.7,520,447]],
@@ -4224,7 +4224,7 @@ function itemZoom(k,id,sel){const q=roomQ(),mv=k==='movel';id=mv?q.eq.movel:id;c
   sel=sel==null?cur:sel;L.izSel=sel;L.pv=sel!==cur?{k,id,i:sel}:null;roomRedraw();
   const extra=k==='prat'?`<button class="btn ghost sm" onclick="zoomClose();setTimeout(boxZoom,250)">💿 Ver os discos</button>`:k==='quadros'?`<button class="btn ghost sm" onclick="zoomClose();setTimeout(postersZoom,250)">🖼️ Ver os pósteres</button>`:mv?`<button class="btn ghost sm" onclick="zoomClose();setTimeout(boxZoom,250)">💿 Ver os discos guardados</button>`:'';
   zoomOpen(`<div class="rzlist itemz"><div class="izhead"><div class="rth">${itemThumb(it)}</div><div><h3>${esc(mv?'Móvel do gira-discos':it.n)}</h3><p class="hint">${mv?'O gira-discos e o que está em cima vão juntos.':it.d?esc(it.d):''}</p></div></div>
-   <button class="btn" style="margin:10px 0 2px" onclick="editStart('${id}')">✏️ Mover (arrastar no quarto)</button><details class="izmore"><summary>Lugares rápidos</summary>
+   <button class="btn" style="margin:10px 0 2px" onclick="editStart('${id}')">✏️ Mover (arrastar no quarto)</button><details class="izmore" ${k==='pet'?'hidden':''}><summary>Lugares rápidos</summary>
    <div class="rplaces big">${P.map((p,i)=>{const oc=a[i];return `<button class="${sel===i?'on':''}" onclick="itemZoom('${k}','${id}',${i})">${i===cur?'📌 ':''}${esc(p[0])}${i===cur?' <i>(agora)</i>':''}${oc&&oc!==id?` <i>(troca com: ${esc((RIT[oc]||{}).n||'')})</i>`:''}</button>`}).join('')}</div>
    ${LUZES.has(id)?`<h4>💡 Luz</h4>${luzBox(id)}`:''}<div class="izacts"><button class="btn sm" ${sel===cur?'disabled':''} onclick="itemConfirm('${k}','${id}',${sel})">✓ Usar este lugar</button></div></details><div class="izacts">${flipBtn(id)}${!RFIX[k]&&cur>=0?`<button class="btn ghost" onclick="itemStore('${k}','${id}')">📦 Guardar</button>`:''}${extra}</div></div>`,'sheet itemz')
   if(first&&!L.rFull)requestAnimationFrame(()=>{const sc=document.querySelector('.roomscene'),bx=document.querySelector('.rzoom.itemz .rzbox');if(!sc)return;const r=sc.getBoundingClientRect(),av=innerHeight-(bx&&innerWidth<700?bx.getBoundingClientRect().height:0),want=av>r.height+16?(av-r.height)/2:(innerHeight-r.height)/2;if(Math.abs(r.top-want)>10)scrollTo({top:scrollY+r.top-want,behavior:'smooth'})})}
@@ -5297,11 +5297,11 @@ const DECO_RDR={
 'pet-papagaio'(it,c){return {b:`<g transform="translate(318 0)"><ellipse cx="0" cy="360" rx="22" ry="4" fill="url(#gsh)"/>
   <ellipse cx="0" cy="356" rx="17" ry="4" fill="#5c3c22"/><rect x="-17" y="352" width="34" height="4" rx="2" fill="#7a5232"/>
   <rect x="-2.2" y="262" width="4.4" height="92" fill="#7a5232"/><rect x="-2.2" y="262" width="1.4" height="92" fill="#a07850"/>
-  <path d="M2 263 C11 298 8 328 1 350 C-5 324 -6 292 -4 263Z" fill="#2f6fb8"/><path d="M0 266 C4 296 4 324 1 346" stroke="#1f4f8a" stroke-width="1" fill="none"/><path d="M-3 270 C-4 300 -3 326 0 344" stroke="#e8b52a" stroke-width="1.4" fill="none" opacity=".8"/>
+  <g class="rm-bob pbird"><path d="M2 263 C11 298 8 328 1 350 C-5 324 -6 292 -4 263Z" fill="#2f6fb8"/><path d="M0 266 C4 296 4 324 1 346" stroke="#1f4f8a" stroke-width="1" fill="none"/><path d="M-3 270 C-4 300 -3 326 0 344" stroke="#e8b52a" stroke-width="1.4" fill="none" opacity=".8"/></g>
   <rect x="-26" y="258" width="52" height="6" rx="3" fill="#8a5d38"/><path d="M-22 260.5 h44" stroke="#a87b52" stroke-width="1" opacity=".7"/>
   <path d="M-30 256 h8 l-1 6 h-6z" fill="#c9a46c"/><path d="M22 256 h8 l-1 6 h-6z" fill="#c9a46c"/>
-  <path d="M-5 258 q-2 3 1 4 M-1 258 q-1 3 2 4 M4 258 q-1 3 2 4" stroke="#6b6560" stroke-width="1.4" fill="none" stroke-linecap="round"/>
-  <g class="rm-bob">
+  <g class="pbird"><path d="M-5 258 q-2 3 1 4 M-1 258 q-1 3 2 4 M4 258 q-1 3 2 4" stroke="#6b6560" stroke-width="1.4" fill="none" stroke-linecap="round"/></g>
+  <g class="rm-bob pbird">
   <ellipse cx="0" cy="243" rx="12" ry="19" fill="#2f8fd0"/>
   <path d="M-10 234 C-15 250 -7 262 4 261 C2 250 0 240 -3 231Z" fill="#f2c12e"/><path d="M-9 240 C-11 250 -6 258 0 259" stroke="#e0a21c" stroke-width="1" fill="none"/>
   <path d="M2 230 C15 236 15 256 5 266 C0 254 -2 242 2 230Z" fill="#2a6fb0"/>
@@ -6259,14 +6259,17 @@ const PL_DRAW={
 function plRand(a,b){return a+Math.random()*(b-a)}
 function plSprite(svg,lay,id){let s=lay.querySelector(`[data-pl="${id}"]`);if(!s){s=document.createElementNS('http://www.w3.org/2000/svg','g');s.setAttribute('data-pl',id);s.setAttribute('class','pl-sprite '+id);s.innerHTML=`<g class="pl-flip">${PL_DRAW[id]()}</g>`;lay.appendChild(s)}return s}
 function plPlace(s,x,y,dir,moving,extra){s.setAttribute('transform',`translate(${x.toFixed(1)} ${y.toFixed(1)})${extra||''}`);const f=s.firstChild;f.setAttribute('transform',dir>0?'scale(-1 1)':'');s.classList.toggle('still',!moving)}
-function plReset(){for(const id in PETL.st){const S=PETL.st[id];if(S.home&&S.home.g){S.home.g.style.visibility='';S.home.g.removeAttribute('transform')}}PETL.st={};document.querySelectorAll('#petlife').forEach(e=>e.remove())}
+const plBird=(g,show)=>{g.querySelectorAll('.pbird').forEach(e=>e.style.visibility=show?'':'hidden')};
+function plReset(){for(const id in PETL.st){const S=PETL.st[id];if(S.home&&S.home.g){S.home.g.style.visibility='';S.home.g.removeAttribute('transform');plBird(S.home.g,true)}}PETL.st={};document.querySelectorAll('#petlife').forEach(e=>e.remove())}
 function plTick(now){PETL.raf=requestAnimationFrame(plTick);const dt=Math.min(.1,(now-(PETL.t||now))/1000);PETL.t=now;
   const svg=L.screen==='quarto'&&!L.edit&&!document.hidden?document.querySelector('.roomscene .roomsvg'):null;
   if(!svg||matchMedia('(prefers-reduced-motion: reduce)').matches){if(Object.keys(PETL.st).length)plReset();return}
-  const pet=[...svg.querySelectorAll('.ract-pet[data-id]')].map(g=>g.getAttribute('data-id'))[0];
-  if(!pet||!(pet in PL_DRAW||pet==='pet-tartaruga')){if(Object.keys(PETL.st).length)plReset();return}
+  const pets=[...svg.querySelectorAll('.ract-pet[data-id]')].map(g=>g.getAttribute('data-id')).filter(id=>id in PL_DRAW||id==='pet-tartaruga');
+  if(!pets.length){if(Object.keys(PETL.st).length)plReset();return}
   let lay=svg.querySelector('#petlife');if(!lay){lay=document.createElementNS('http://www.w3.org/2000/svg','g');lay.id='petlife';lay.setAttribute('pointer-events','none');svg.appendChild(lay)}
-  for(const k in PETL.st)if(k!==pet)delete PETL.st[k];
+  for(const k in PETL.st)if(!pets.includes(k)){const S=PETL.st[k];if(S.home&&S.home.g){S.home.g.style.visibility='';plBird(S.home.g,true)}lay.querySelector(`[data-pl="${k}"]`)?.remove();delete PETL.st[k]}
+  for(const pet of pets)plStep(pet,svg,lay,now,dt)}
+function plStep(pet,svg,lay,now,dt){
   let S=PETL.st[pet];if(!S){S=PETL.st[pet]={mode:'home',until:now+plRand(pet==='pet-tartaruga'?3000:12000,pet==='pet-tartaruga'?6000:26000)}}
   if(!S.home||!S.home.g||!S.home.g.isConnected){const h0=plHome(svg,pet);if(!h0)return;S.home=h0}
   const H=S.home,hungry=typeof roomDebt==='function'&&roomDebt();
@@ -6277,9 +6280,9 @@ function plTick(now){PETL.raf=requestAnimationFrame(plTick);const dt=Math.min(.1
     H.g.setAttribute('transform',`translate(${S.x.toFixed(1)} 0)${S.dir>0?` translate(${(2*H.x).toFixed(1)} 0) scale(-1 1)`:''}`);H.g.classList.toggle('pl-still',S.mode==='home');return}
   const s=plSprite(svg,lay,pet);
   if(pet==='pet-papagaio'){
-    if(S.mode==='home'){s.style.display='none';H.g.style.visibility='';if(now>S.until&&!hungry){S.mode='fly';S.t0=now;S.dur=plRand(7000,9500);const side=H.x<540?1:-1;S.p=[[H.x,H.top+18],[H.x+side*120,H.top-90],[H.x+side*plRand(380,560),plRand(90,150)],[H.x+side*plRand(150,260),plRand(170,230)],[H.x-side*60,H.top-40],[H.x,H.top+18]]}return}
-    const u=Math.min(1,(now-S.t0)/S.dur);if(u>=1){S.mode='home';S.until=now+plRand(20000,40000);s.style.display='none';H.g.style.visibility='';return}
-    H.g.style.visibility='hidden';s.style.display='';const P=S.p,n=P.length-1,f=u*n,i=Math.min(n-1,Math.floor(f)),w=f-i,e=w*w*(3-2*w);
+    if(S.mode==='home'){s.style.display='none';plBird(H.g,true);if(now>S.until&&!hungry){S.mode='fly';S.t0=now;S.dur=plRand(7000,9500);const side=H.x<540?1:-1;S.p=[[H.x,H.top+18],[H.x+side*120,H.top-90],[H.x+side*plRand(380,560),plRand(90,150)],[H.x+side*plRand(150,260),plRand(170,230)],[H.x-side*60,H.top-40],[H.x,H.top+18]]}return}
+    const u=Math.min(1,(now-S.t0)/S.dur);if(u>=1){S.mode='home';S.until=now+plRand(20000,40000);s.style.display='none';plBird(H.g,true);return}
+    plBird(H.g,false);s.style.display='';const P=S.p,n=P.length-1,f=u*n,i=Math.min(n-1,Math.floor(f)),w=f-i,e=w*w*(3-2*w);
     const a=P[Math.max(0,i-1)],b=P[i],c=P[i+1],d2=P[Math.min(n,i+2)];const cr=(p0,p1,p2,p3,t)=>.5*((2*p1)+(-p0+p2)*t+(2*p0-5*p1+4*p2-p3)*t*t+(-p0+3*p1-3*p2+p3)*t*t*t);
     const x=cr(a[0],b[0],c[0],d2[0],e),y=cr(a[1],b[1],c[1],d2[1],e)+Math.sin(now/260)*3;const dir=(S.lx!=null?x-S.lx:0);if(Math.abs(dir)>.05)S.dir=dir>0?1:-1;S.lx=x;
     plPlace(s,x,y,S.dir||1,true,'');return}
@@ -6295,7 +6298,7 @@ if(!PETL.raf)PETL.raf=requestAnimationFrame(plTick);
 
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795791044';
+const BUILD='1795795280';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
