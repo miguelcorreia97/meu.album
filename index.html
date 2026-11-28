@@ -5804,6 +5804,9 @@ function otherMode(){L.per=G.per||L.per;if(MODE==='cpu')L.level=G.level||L.level
   if(MODE==='cpu'){G=null;saveLocal();L.round=null;render();scrollTo(0,0);return}
   W({...emptyRoom(CODE,G.joined),players:G.players||{},round:(G.round||0)+1,names:G.names||{}},true);scrollTo(0,0)}
 function resetGame(){
+  const hdr=()=>{const x=document.getElementById('hdr');if(x)x.outerHTML=header()};
+  clearTimeout(L.newT);
+  if(!L.confirmNew){L.confirmNew=true;hdr();L.newT=setTimeout(()=>{L.confirmNew=false;hdr()},3000);return}
   L.confirmNew=false;if(MODE==='cpu'){G=null;saveLocal();L.round=null;render();return}W({...emptyRoom(CODE,G.joined),players:G.players||{},round:(G.round||0)+1,names:G.names||{}},true);
 }
 function pickPatch(p,i){const np=[...picks(),{p,i}],now=Date.now(),o={picks:np,ts:now};if(np.length>=G.per*2)o.orderTs=now;return o}
@@ -5839,7 +5842,7 @@ function header(){
   const inRoom=MODE==='online'&&CODE&&G;
   return `<div class="top" id="hdr"><div class="logo">Meu Álbum<small>${WHO!=null&&ME?'tu és '+esc(ME.e+' '+ME.n):'jogo de música brasileira'}${MODE==='cpu'?' · vs computador':''}</small></div>
   <div class="topr">${(G&&G.seed&&MODE)?`<button class="linkbtn rxtop" onclick="rxToggle()" aria-label="stickers">${RX.mute?'🔕':'😊'}<span class="lt"> stickers</span></button>`:''}${sndBtn()}${inRoom?`<span><span class="dot ${L.peerOnline?'on':''}"></span>${nm(1-WHO)}</span><span class="codepill">${esc(CODE)}</span>`:''}
-  ${(inRoom||MODE==='cpu')&&G?.seed?`<button class="linkbtn ${L.confirmNew?'warn':''}" onclick="resetGame()">↻<span class="lt"> Nova partida</span></button>`:''}
+  ${(inRoom||MODE==='cpu')&&G?.seed?`<button class="linkbtn ${L.confirmNew?'warn':''}" onclick="resetGame()" aria-label="Nova partida">${L.confirmNew?'Apagar?':'↻<span class="lt"> Nova partida</span>'}</button>`:''}
   ${inRoom?`<button class="linkbtn ${L.confirmLeave?'warn':''}" onclick="leaveRoom()">${L.confirmLeave?'Sair?':'✕<span class="lt"> Sair da sala</span>'}</button>`:''}
   ${WHO!=null&&L.screen!=='ranking'?`<button class="linkbtn" onclick="openRanking()">🏆<span class="lt"> top 10</span></button>`:''}
   ${(MODE||L.screen)?`<button class="linkbtn home ${L.confirmHome?'warn':''}" onclick="goHome()" aria-label="menu principal">${L.confirmHome?'Sair?':'🏠<span class="lt"> menu</span>'}</button>`:''}
@@ -6350,7 +6353,7 @@ if(!PETL.raf)PETL.raf=requestAnimationFrame(plTick);
 
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795866707';
+const BUILD='1795866884';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
