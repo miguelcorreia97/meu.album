@@ -5070,7 +5070,7 @@ function feDesk(F){const v=F.vol==null?1:F.vol,u=k=>F.used2&&F.used2[k+':'+F.rou
   return `<div class="fdesk2"><div class="fdrow"><span class="fdl">🎛️ Mesa</span><button class="fdb" onclick="feAct('horn')">📣 Buzina</button><button class="fdb ${F.lights?'on':''}" onclick="feAct('luz')">💡 Luzes ${F.lights?'on':'off'}</button><button class="fdb" ${u('mic')?'disabled':''} onclick="feAct('mic')">🎤 Falar</button><button class="fdb" ${u('ded')?'disabled':''} onclick="feAct('ded')">💞 Dedicar</button></div>
    <div class="fdrow"><span class="fdl">Volume</span>${VOLN.map((n,k)=>`<button class="fdv ${v===k?'on':''}" onclick="feVol(${k})">${n}</button>`).join('')}</div>
 </div>`}
-function feAskHtml(F){return F&&F.ask&&(F.ph==='play'||F.ph==='pick')?`<div class="fask"><span>${feDz(F.ask.t)}</span><button class="btn sm" onclick="feAsk(1)">Sim</button><button class="btn ghost sm" onclick="feAsk(0)">Agora não</button><i style="animation-duration:${Math.max(1,(F.ask.until-Date.now())/1000)}s"></i></div>`:''}
+function feAskHtml(F){return F&&F.ask&&(F.ph==='play'||F.ph==='pick')?`<div class="fask"><span>${feDz(F.ask.t)}</span><button class="btn sm" onclick="feAsk(1)">Sim</button><button class="btn ghost sm" onclick="feAsk(0)">Não</button><i style="animation-duration:${Math.max(1,(F.ask.until-Date.now())/1000)}s"></i></div>`:''}
 function feAskRe(F){const w=document.querySelector('.faskw');if(w){w.innerHTML=feAskHtml(F);requestAnimationFrame(feBubbles)}}
 /* pista viva: enquanto a música toca, entra e sai gente conforme o desempenho (e há quem vá ao bar e volte) */
 function feFloorRe(F){const sc=document.querySelector('.ffloor');if(sc){const tmp=document.createElement('div');tmp.innerHTML=feScene(F);const nf=tmp.querySelector('.ffloor');if(nf){sc.replaceWith(nf);requestAnimationFrame(feBubbles)}}const fc=document.querySelector('.fcount span');if(fc)fc.textContent=`💃 ${F.crowd.filter(c=>c.on).length}/${F.crowd.length} a dançar`}
@@ -6311,7 +6311,7 @@ if(!PETL.raf)PETL.raf=requestAnimationFrame(plTick);
 
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795797656';
+const BUILD='1795863563';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
@@ -6437,6 +6437,16 @@ body>div:has(>main.view .banca){padding-bottom:0!important}
 @keyframes plHead{from{transform:translateY(0)}to{transform:translateY(1.2px)}}
 @keyframes plWing{from{transform:scaleY(1)}to{transform:scaleY(-.55)}}
 @media(prefers-reduced-motion:reduce){#petlife *{animation:none!important}}
+
+/* comentários e reações do outro jogador/computador no telemóvel: em baixo, acima dos avisos, sem tapar títulos */
+@media(max-width:600px){.rxfloat{bottom:calc(84px + env(safe-area-inset-bottom))!important;top:auto!important}.rxfloat .rxs,.rxfloat img,.rxfloat video{width:48px!important;height:48px!important;max-width:48px!important;max-height:48px!important}.rxfloat .rxe{font-size:32px!important}}
+/* DJ no telemóvel: cartão dos pedidos baixo e numa linha, para não tapar o público */
+@media(max-width:600px){
+ .festa .faskw .fask{flex-wrap:nowrap!important;align-items:center!important;gap:6px!important;padding:5px 6px 7px 10px!important;bottom:6px!important}
+ .festa .faskw .fask span{flex:1 1 auto!important;min-width:0;font-size:.72rem!important;line-height:1.25}
+ .festa .faskw .fask .btn{flex:0 0 auto!important;min-height:38px;min-width:46px;padding:0 10px!important;font-size:.78rem!important}
+ .festa .fstage .ftoast{top:30%!important}
+}
 </style>
 </body>
 </html>
