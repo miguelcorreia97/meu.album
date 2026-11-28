@@ -2091,6 +2091,7 @@ html.phland body.has-ddock #app,html.phland.has-ddock #app{padding-bottom:150px!
 .roomscene.full .rtopbtns{top:calc(env(safe-area-inset-top,0px) + 16px);right:calc(env(safe-area-inset-right,0px) + 16px);zoom:var(--iz,1);gap:8px}
 .roomscene.full .rtopbtns button{padding:10px 16px!important;font-size:.95rem!important;min-height:44px;background:rgba(20,10,4,.82)!important}
 @media(pointer:coarse){.roomscene.full .rtopbtns{top:calc(env(safe-area-inset-top,0px) + 22px)}}
+.amgh{margin:0 0 6px;font-size:1.05rem}
 </style>
 </head>
 <body>
@@ -4065,6 +4066,11 @@ const CO_MODES={ab:{n:'Lado A × Lado B',e:'💿',d:'Os dois contra o computador
   onda:{n:'Na mesma onda',e:'🌊',d:'Cada um escolhe as suas 5 favoritas em segredo e tenta adivinhar as do outro.'},
   noite:{n:'Turno da noite',e:'🌙',d:'Rondas seguidas contra o computador, cada vez mais difícil. Têm 3 vidas para os dois.'}};
 const CO_PER=6,CO_VIDAS=3;
+/* revelação por etapas dos resultados a dois: atrasos contam desde a 1.ª vez que o resultado apareceu */
+function revT(key){L.rev=L.rev||{};if(L.rev[key]==null)L.rev[key]=Date.now();return (Date.now()-L.rev[key])/1000}
+const revD=(key,s)=>`animation-delay:${(s-revT(key)).toFixed(2)}s`;
+function revSkip(key){L.rev=L.rev||{};L.rev[key]=Date.now()-600000;render()}
+const revBar=(key,total,txt)=>revT(key)<total?`<div class="revnote" style="animation-delay:${(total-revT(key)).toFixed(2)}s"><span>${txt}</span><button class="btn ghost sm" onclick="revSkip('${key}')">⏭ Ver tudo</button></div>`:'';
 const CO=()=>(G&&G.coop&&G.coop.seed)?G.coop:null;
 function cdeck(seed){if(cdeck._s===seed)return cdeck._d;const r=rng(hash(seed+':co'));const d=SONGS.map((_,i)=>i).filter(i=>!EXCL.has(i));for(let i=d.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[d[i],d[j]]=[d[j],d[i]]}cdeck._s=seed;cdeck._d=d;return d}
 const coSong=(n)=>song(cdeck(CO().seed)[n]);
@@ -4132,14 +4138,15 @@ function abScreen(){const c=CO(),k=c.tp.length,me=WHO,mySide=abSideOf(me),N=2*AB
     return `<div class="tot-head"><div class="mono" style="color:var(--muted)">💿 lado a × lado b</div><h2>Cada um ordena o seu lado</h2><div class="sub">Tu só mexes no teu Lado ${mySide}; o lado ${d_(1-me)} aparece aqui em direto. Os lados valem pela química entre as suas músicas, e o álbum ainda ganha (ou perde) pontos pela sintonia entre os dois lados.</div></div>
     <div class="cosides">${side(mySide)}${side(mySide==='A'?'B':'A')}</div>
     <div class="panel cosync"><h3>🤝 Sintonia entre lados <b>${sg(sumP(sy))||'0'}</b></h3>${sy.map(prow).join('')||'<p class="hint">Ainda a montar…</p>'}<p class="hint">Estilos, energia e temas em comum entre os dois lados, e a passagem da última do Lado A para a primeira do Lado B.</p></div>
-    <div class="actions">${iOk?`<button class="btn" disabled>✓ Pronto · à espera ${d_(1-me)}</button>`:`<button class="btn" ${L.busy?'disabled':''} onclick="abReady()">✓ O meu lado está pronto</button>`}${oOk&&!iOk?`<span class="hint">${emo(1-me)} já tem o lado pronto</span>`:''}</div>`}
-  const s=abScore(),won=s.tot[0]>s.tot[1],tie=s.tot[0]===s.tot[1];coRecord('ab',{won,tie});
+    <div class="cobar"><div class="cosum"><span>Lado A <b>${sg(sumP(ca))||'0'}</b></span><span>Lado B <b>${sg(sumP(cb))||'0'}</b></span><span>🤝 Sintonia <b>${sg(sumP(sy))||'0'}</b></span><span class="cot">Total <b>${sg(sumP(ca)+sumP(cb)+sumP(sy))||'0'}</b></span></div>
+    <div class="actions">${iOk?`<button class="btn" disabled>✓ Pronto · à espera ${d_(1-me)}</button>`:`<button class="btn" ${L.busy?'disabled':''} onclick="abReady()">✓ O meu lado está pronto</button>`}${oOk&&!iOk?`<span class="hint">${emo(1-me)} já tem o lado pronto</span>`:''}</div></div>`}
+  const s=abScore(),won=s.tot[0]>s.tot[1],tie=s.tot[0]===s.tot[1];coRecord('ab',{won,tie});const RK='ab'+c.seed,ND=s.ds.length,TD=ND*.85+.4,TC=TD+.9,TT=TC+1.4;
   const col=(t,arr)=>`<div class="panel pcard"><h3>${t}</h3>${arr.map(prow).join('')||'<p class="hint">Nada desta vez.</p>'}</div>`;
-  return `<div class="winner"><div class="mono" style="color:var(--muted)">💿 lado a × lado b · resultado</div><h1 class="${won?'c0':''} wtitle">${won?'Ganharam os dois! 🎉':tie?'Empate com a máquina 🤝':'Ganhou o computador 🤖'}</h1><div class="by">${esc(nm(0))} & ${esc(nm(1))} · <b>${fmt(s.tot[0])}</b> contra <b>${fmt(s.tot[1])}</b></div></div>
-  <div class="panel"><h3>⚔️ Duelos</h3><table class="duels"><thead><tr><th class="mono">#</th><th>Vocês</th><th class="mono" style="text-align:center">notas</th><th>🤖 Computador</th></tr></thead><tbody>${s.ds.map((x,k)=>`<tr class="corow" style="animation-delay:${k*.1}s"><td class="mono">${k<AB_N?'A':'B'}${k%AB_N+1}</td><td class="${x.w===0?'w':''}">${esc(x.t.t)} <span class="cby">${emo(x.t.by)}</span><div class="a">${esc(x.t.a)}</div></td><td class="res"><b class="${x.w===0?'c0':''}">${fmt1(x.a)}</b> – <b>${fmt1(x.b)}</b></td><td class="${x.w===1?'w':''}">${esc(x.c.t)}<div class="a">${esc(x.c.a)}</div></td></tr>`).join('')}</tbody></table></div>
-  <div class="cosides3">${col(`🧩 Lado A · ${emo(c.first)}`,s.ca)}${col(`🧩 Lado B · ${emo(1-c.first)}`,s.cb)}${col('🤝 Sintonia entre lados',s.sy)}</div>
-  <details class="panel more mt"><summary>Ver as combinações do computador</summary><div class="cosides3">${col('🤖 Lado A',s.pa)}${col('🤖 Lado B',s.pb)}${col('🤖 Sintonia',s.ps)}</div></details>
-  <div class="sumtable panel final"><div class="sr head"><div></div><div class="sc c0">Vocês</div><div class="sc">🤖</div></div><div class="sr"><div class="sl">⚔️ Duelos</div><div class="sc">${fmt(s.d[0])}</div><div class="sc">${fmt(s.d[1])}</div></div><div class="sr"><div class="sl">🧩 Lado A + Lado B</div><div class="sc">${sg(sumP(s.ca)+sumP(s.cb))||'0'}</div><div class="sc">${sg(sumP(s.pa)+sumP(s.pb))||'0'}</div></div><div class="sr"><div class="sl">🤝 Sintonia</div><div class="sc">${sg(sumP(s.sy))||'0'}</div><div class="sc">${sg(sumP(s.ps))||'0'}</div></div><div class="sr tot"><div class="sl">Total</div><div class="sc big ${won?'lead':''}">${fmt(s.tot[0])}</div><div class="sc big ${!won&&!tie?'lead':''}">${fmt(s.tot[1])}</div></div></div>
+  return `${revBar(RK,TT,'🎚️ A revelar duelo a duelo…')}<div class="winner"><div class="mono" style="color:var(--muted)">💿 lado a × lado b · resultado</div><h1 class="${won?'c0':''} wtitle revin" style="${revD(RK,TT)}">${won?'Ganharam os dois! 🎉':tie?'Empate com a máquina 🤝':'Ganhou o computador 🤖'}</h1><div class="by revin" style="${revD(RK,TT)}">${esc(nm(0))} & ${esc(nm(1))} · <b>${fmt(s.tot[0])}</b> contra <b>${fmt(s.tot[1])}</b></div></div>
+  <div class="panel"><h3>⚔️ Duelos</h3><table class="duels"><thead><tr><th class="mono">#</th><th>Vocês</th><th class="mono" style="text-align:center">notas</th><th>🤖 Computador</th></tr></thead><tbody>${s.ds.map((x,k)=>`<tr class="corow revrow" style="${revD(RK,k*.85)}"><td class="mono">${k<AB_N?'A':'B'}${k%AB_N+1}</td><td class="${x.w===0?'w':''}">${esc(x.t.t)} <span class="cby">${emo(x.t.by)}</span><div class="a">${esc(x.t.a)}</div></td><td class="res"><span class="revpop" style="${revD(RK,k*.85+.45)}"><b class="${x.w===0?'c0':''}">${fmt1(x.a)}</b> – <b>${fmt1(x.b)}</b></span></td><td class="${x.w===1?'w':''}">${esc(x.c.t)}<div class="a">${esc(x.c.a)}</div></td></tr>`).join('')}</tbody></table></div>
+  <div class="cosides3 revin" style="${revD(RK,TD)}">${col(`🧩 Lado A · ${emo(c.first)}`,s.ca)}${col(`🧩 Lado B · ${emo(1-c.first)}`,s.cb)}${col('🤝 Sintonia entre lados',s.sy)}</div>
+  <details class="panel more mt revin" style="${revD(RK,TD)}"><summary>Ver as combinações do computador</summary><div class="cosides3">${col('🤖 Lado A',s.pa)}${col('🤖 Lado B',s.pb)}${col('🤖 Sintonia',s.ps)}</div></details>
+  <div class="sumtable panel final revin" style="${revD(RK,TC)}"><div class="sr head"><div></div><div class="sc c0">Vocês</div><div class="sc">🤖</div></div><div class="sr"><div class="sl">⚔️ Duelos</div><div class="sc">${fmt(s.d[0])}</div><div class="sc">${fmt(s.d[1])}</div></div><div class="sr"><div class="sl">🧩 Lado A + Lado B</div><div class="sc">${sg(sumP(s.ca)+sumP(s.cb))||'0'}</div><div class="sc">${sg(sumP(s.pa)+sumP(s.pb))||'0'}</div></div><div class="sr"><div class="sl">🤝 Sintonia</div><div class="sc">${sg(sumP(s.sy))||'0'}</div><div class="sc">${sg(sumP(s.ps))||'0'}</div></div><div class="sr tot"><div class="sl">Total</div><div class="sc big ${won?'lead':''}">${fmt(s.tot[0])}</div><div class="sc big ${!won&&!tie?'lead':''}">${fmt(s.tot[1])}</div></div></div>
   ${coEndActions()}`}
 
 /* ---------- Na mesma onda ---------- */
@@ -4157,11 +4164,15 @@ function ondaScreen(){const c=CO(),me=WHO,k=P(me),mf=c.fav&&c.fav[k],mg=c.gs&&c.
     <div class="tot-head"><h2>${step==='fav'?'As tuas 5 favoritas':`O que escolheu ${o_(1-me)}?`}</h2><div class="sub">${step==='fav'?'Escolhe em segredo as 5 que preferes, pela ordem: a primeira que tocares é a tua n.º 1.':`Agora tenta adivinhar as 5 favoritas ${d_(1-me)}. Cada acerto vale 2 pontos, e acertar na n.º 1 dá mais 1.`}</div></div>
     <div class="ondagrid">${S.map(s=>{const j=sel.indexOf(s.i);return `<button class="ondac ${j>=0?'on':''}" onclick="ondaTap(${s.i})">${cimg(s)}${j>=0?`<span class="onum">${step==='fav'?j+1:'✓'}</span>`:''}<b>${esc(s.t)}</b><small>${esc(s.a)}</small></button>`}).join('')}</div>
     <div class="actions"><button class="btn" ${sel.length!==ONDA_K||L.busy?'disabled':''} onclick="ondaSend()">${step==='fav'?'Guardar as minhas favoritas':'Fechar a minha aposta'} (${sel.length}/${ONDA_K})</button><button class="btn ghost sm" onclick="coLeave()">Sair</button></div>`}
-  const R=ondaRes();coRecord('onda',R);const S=ondaSongs(),col=p=>{const fav=c.fav[P(p)],guess=c.gs[P(1-p)];
-    return `<div class="panel pcard"><h3 class="c${p}">${ico(p)}Favoritas ${d_(p)}</h3>${fav.map((i,n)=>{const s=song(i),hit=guess.includes(i);return `<div class="orow ${hit?'hit':''}"><div class="n">${n+1}</div><div class="thumb">${cimg(s)}</div><div class="info"><div class="tt">${esc(s.t)}</div><div class="ta">${esc(s.a)}</div></div><div class="ohit">${hit?`✓ ${emo(1-p)} acertou`:'✗'}</div></div>`}).join('')}<p class="hint">${esc(nm(1-p))} acertou ${R.r[1-p].hits.length} de ${ONDA_K}${R.r[1-p].top?' e a n.º 1! (+1)':''} · ${R.pts[1-p]} pontos</p></div>`};
+  const R=ondaRes();coRecord('onda',R);const RK='onda'+c.seed,TT=ONDA_K*2*.5+1.6;
+  /* para cada pessoa: as favoritas dela ao lado do que o outro adivinhou */
+  const cmp=(p,base)=>{const fav=c.fav[P(p)],guess=c.gs[P(1-p)];return `<div class="panel pcard ondacmp revin" style="${revD(RK,base)}"><h3 class="c${p}">${ico(p)}Favoritas ${d_(p)} · palpites ${d_(1-p)}</h3>
+    <div class="ocmp head"><span></span><span>${esc(nm(p))} escolheu</span><span>${esc(nm(1-p))} adivinhou</span></div>
+    ${fav.map((i,n)=>{const s=song(i),g=guess[n]!=null?song(guess[n]):null,gHit=guess[n]!=null&&fav.includes(guess[n]),fHit=guess.includes(i);return `<div class="ocmp revrow" style="${revD(RK,base+.3+n*.5)}"><span class="n">${n+1}</span><span class="oc ${fHit?'hit':''}">${cimg(s)}<b>${esc(s.t)}</b><small>${esc(s.a)}</small>${fHit?'<i>✓</i>':''}</span><span class="oc ${gHit?'hit':'miss'}">${g?`${cimg(g)}<b>${esc(g.t)}</b><small>${esc(g.a)}</small><i>${gHit?'✓':'✗'}</i>`:''}</span></div>`}).join('')}
+    <p class="hint">${esc(nm(1-p))} acertou ${R.r[1-p].hits.length} de ${ONDA_K}${R.r[1-p].top?' e a n.º 1! (+1)':''} · ${R.pts[1-p]} pontos</p></div>`};
   const msg=R.pct>=80?'Telepatia pura 🔮':R.pct>=60?'Bem sintonizados 💞':R.pct>=40?'Quase lá 🎶':'Cada um na sua onda 🌊';
-  return `<div class="winner"><div class="mono" style="color:var(--muted)">🌊 na mesma onda · resultado</div><h1 class="wtitle">${msg}</h1><div class="sintonia"><b>${R.pct}%</b><span>de sintonia</span></div><div class="by">${R.tot} pontos de equipa · gostos em comum: ${R.comum.length} música${R.comum.length===1?'':'s'}</div></div>
-  <div class="shelves" style="margin-top:0">${col(0)}${col(1)}</div>${R.comum.length?`<div class="panel"><h3>💞 Escolheram os dois</h3><div class="row" style="grid-template-columns:repeat(${Math.max(3,R.comum.length)},1fr)">${R.comum.map(i=>mini(song(i))).join('')}</div></div>`:''}
+  return `${revBar(RK,TT,'🌊 A comparar os gostos…')}<div class="winner"><div class="mono" style="color:var(--muted)">🌊 na mesma onda · resultado</div><h1 class="wtitle revin" style="${revD(RK,TT-.4)}">${msg}</h1><div class="sintonia"><b class="revpop" style="${revD(RK,TT-1.2)}">${R.pct}%</b><span>de sintonia</span></div><div class="by revin" style="${revD(RK,TT-.4)}">${R.tot} pontos de equipa · gostos em comum: ${R.comum.length} música${R.comum.length===1?'':'s'}</div></div>
+  <div class="ondacmps">${cmp(0,0)}${cmp(1,ONDA_K*.5+.3)}</div>${R.comum.length?`<div class="panel revin" style="${revD(RK,TT)}"><h3>💞 Escolheram os dois</h3><div class="row" style="grid-template-columns:repeat(${Math.max(3,R.comum.length)},1fr)">${R.comum.map(i=>mini(song(i))).join('')}</div></div>`:''}
   ${coEndActions()}`}
 
 /* ---------- Turno da noite ---------- */
@@ -4638,20 +4649,19 @@ function careerScreen(){const done=carDone();
     <span class="carn">${i+1}</span><span class="care">${st==='lock'?'🔒':c.e}</span><span class="cart"><b>${esc(c.lugar)}</b><small>${esc(c.cid)} · ${esc(c.dj)}</small><small class="carf">${st==='lock'?'Ganha a noite anterior para desbloquear':esc(c.feitio)}</small></span>
     <span class="carr">${st==='done'?'<i class="carstamp">✓ ganha</i>':st==='now'?`<i class="carplay">▶ Jogar</i>`:''}<small>10 min · ${c.meta}/20${i>=done?` · +${CAR_BPM[i]} BPM`:''}</small></span></button>`}).join('<div class="carroad"></div>')}</div>
   ${done>=CAR.length?'<div class="panel mt" style="text-align:center">👑 Completaste a carreira! Podes repetir qualquer noite.</div>':''}
-  <div class="panel mt bkmmenu"><div class="mono" style="color:var(--muted)">👥 multijogador · quem tem a melhor nota?</div><p class="hint">Escolhe onde se toca. Todos jogam a mesma festa ao mesmo tempo, cada um no seu telemóvel, e no fim ganha quem tiver o desempenho mais alto. Aqui podes tocar em qualquer sítio, mesmo nos que ainda não desbloqueaste (não conta para a carreira).</p>
-   <div class="bkmjoin">${djmVenSel('djmVen',Math.min(done,CAR.length-1),0)}<button class="btn sm" onclick="djmCreate()">Criar sala</button></div>
-   <div class="bkmjoin"><input id="djmIn" class="inp sm" maxlength="4" placeholder="CÓDIGO" autocomplete="off" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')djmJoin()"><button class="btn sm" onclick="djmJoin()">Entrar na sala</button></div></div>
+  <div class="panel mt" style="text-align:center"><button class="btn ghost" onclick="L.screen='amigoModes';render();scrollTo(0,0)">👥 Jogar com amigos (salas com código)</button></div>
   ${rulesDet('dj')}<div class="actions"><button class="btn" onclick="L.screen='cpuModes';render();scrollTo(0,0)">← Jogos contra o computador</button></div>`}
 function careerIntro(i){const c=CAR[i];if(!c)return;if(i>carDone()){toast('🔒 Ganha a noite anterior para desbloquear '+c.lugar);return}fsCtx();
   bigFx(`<div class="neon" style="--cc:${c.cor}"><small>Noite ${i+1} · ${esc(c.cid)}</small><b>${esc(c.lugar)}</b></div><div class="djvs"><span class="djme">${esc(ME?ME.e:'🙂')}<small>${esc(ME?ME.n:'Tu')} nos pratos</small></span><span class="djx">🎧</span><span class="djcpu">${c.e}<small>${esc(c.dj)}, quem te contratou</small></span></div><p>${esc(c.feitio)} Para passar precisas de ${feMeta(i)*2}/20 de desempenho no fim da noite.</p>`,3200,'carintro');
   setTimeout(()=>feStart(i),2700)}
 /* ---------- 📅 DESAFIO DO DIA ---------- */
-const DD_URL=ymd=>PROF_URL('desafio-'+ymd);
+/* top do dia numa sala própria: código com O (as salas de jogo nunca têm O), um por dia */
+const ddCode=ymd=>{const A='ABCDEFGHIJKLMNOPQRSTUVWXYZ',n=dayNum(ymd);return 'O'+A[Math.floor(n/676)%26]+A[Math.floor(n/26)%26]+A[n%26]};
 function ddToday(){const ymd=lisNow().ymd,h=hash('dia'+ymd);return {ymd,seed:'dia-'+ymd,per:[5,8,8,10][h%4],starter:h%2,level:'dificil',alb:CPU_ALB[h%CPU_ALB.length]}}
 const ddPlayed=ymd=>{try{return localStorage.getItem('dd:'+ymd)}catch(e){return null}};
-async function ddLoad(){const t=ddToday();L.ddRank=L.ddRank&&L.ddRank.ymd===t.ymd?L.ddRank:{ymd:t.ymd,rows:null};try{const r=await fetch(DD_URL(t.ymd),{cache:'no-store'});if(!r.ok){L.ddRank.rows=[];}else{const j=await r.json(),rows=[];for(const f in (j.fields||{}))if(f.startsWith('r_')){try{rows.push({id:f.slice(2),...JSON.parse(j.fields[f].stringValue)})}catch(e){}}rows.sort((a,b)=>b.s-a.s);L.ddRank.rows=rows}}catch(e){L.ddRank.rows=L.ddRank.rows||[]}if(L.screen==='desafio')render()}
+async function ddLoad(){const t=ddToday();L.ddRank=L.ddRank&&L.ddRank.ymd===t.ymd?L.ddRank:{ymd:t.ymd,rows:null};try{const cur=await salaGet(ddCode(t.ymd));const d=cur&&cur.exists&&cur.data&&cur.data.t==='dd'?cur.data:null;const rows=d?Object.entries(d.r||{}).map(([id,v])=>({id,...v})):[];rows.sort((a,b)=>b.s-a.s);L.ddRank.rows=rows}catch(e){L.ddRank.rows=L.ddRank.rows||[]}if(L.screen==='desafio')render()}
 async function ddSave(won){const t=ddToday();if(G.seed!==t.seed)return;const me=myPid();if(!me)return;let s=0;try{s=Math.round(rankScore(WHO))}catch(e){}const rec={s,w:won?1:0,n:(ME&&ME.n)||'',e:(ME&&ME.e)||'🙂'};
-  try{localStorage.setItem('dd:'+t.ymd,JSON.stringify(rec))}catch(e){}if(!(db&&db.cloud))return;try{await fetch(DD_URL(t.ymd)+'&updateMask.fieldPaths=r_'+me,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:{['r_'+me]:{stringValue:JSON.stringify(rec)}}})})}catch(e){}}
+  try{localStorage.setItem('dd:'+t.ymd,JSON.stringify(rec))}catch(e){}if(!(db&&db.cloud))return;try{await salaMut(ddCode(t.ymd),d=>{d=d&&d.t==='dd'?d:{t:'dd',ymd:t.ymd,r:{}};d.r=d.r||{};d.r[me]=rec;return d})}catch(e){}}
 function ddScreen(){const t=ddToday(),pl=ddPlayed(t.ymd),mine=pl&&pl!=='1'?JSON.parse(pl):null;if(!L.ddRank||L.ddRank.ymd!==t.ymd||L.ddRank.rows==null)setTimeout(ddLoad,0);
   const rows=(L.ddRank&&L.ddRank.ymd===t.ymd&&L.ddRank.rows)||null,me=myPid();const now=lisNow(),left=24*60-now.min;
   const d=new Date(t.ymd+'T12:00:00Z');
@@ -4740,12 +4750,20 @@ function bkEnd(){const B=L.bk;if(!B||B.phase!=='play')return;B.phase='end';clear
 
 /* ======================= 💰 BANCA MULTIJOGADOR ======================= */
 
+/* ---- salas partilhadas (DJ, banca e top do dia): o Firestore só deixa gravar em salas/XXXX (4 letras maiúsculas), com os campos s e at, como as salas do jogo do álbum ---- */
+const SALA_URL=(c,q)=>`${FS_DOCS}/salas/${c}?key=${FS_KEY}${q||''}`;
+async function salaGet(c){try{const r=await fetch(SALA_URL(c),{cache:'no-store'});if(r.status===404)return {exists:false,data:null,ut:null};if(!r.ok)return null;const j=await r.json();let data=null;try{data=JSON.parse(j.fields.s.stringValue)}catch(e){}return {exists:true,data,ut:j.updateTime}}catch(e){return null}}
+async function salaMut(c,fn){for(let k=0;k<6;k++){const cur=await salaGet(c);if(!cur)throw new Error('sem ligação');const data=fn(cur.exists&&cur.data?JSON.parse(JSON.stringify(cur.data)):null);
+    const pre=cur.ut?'&currentDocument.updateTime='+encodeURIComponent(cur.ut):'&currentDocument.exists=false';
+    const r=await fetch(SALA_URL(c,pre),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:{s:{stringValue:JSON.stringify(data)},at:{stringValue:new Date().toISOString()}}})});
+    if(r.ok)return {ok:true};await new Promise(z=>setTimeout(z,120+Math.random()*300))}throw new Error('sala ocupada')}
+async function salaNewCode(){for(let n=0;n<8;n++){const c=genCode();const cur=await salaGet(c);if(cur&&!cur.exists)return c}return genCode()}
+const salaRead=(t)=>async c=>{const cur=await salaGet(c);if(!cur||!cur.exists||!cur.data||cur.data.t!==t)return null;return {meta:cur.data.meta||null,pl:cur.data.pl||{}}};
+const salaWrite=(t)=>async(c,obj)=>salaMut(c,d=>{d=d&&d.t===t?d:{t,meta:null,pl:{}};d.pl=d.pl||{};for(const k in obj){if(k==='meta')d.meta=obj[k];else if(k.startsWith('p_'))d.pl[k.slice(2)]=obj[k]}return d});
 /* ---- DJ multijogador ---- */
-const DJM_URL=c=>PROF_URL('djm-'+c);
-async function djmGet(c){const r=await fetch(DJM_URL(c),{cache:'no-store'});if(!r.ok)return null;const j=await r.json(),f=j.fields||{};const out={meta:null,pl:{}};for(const k in f){try{const v=JSON.parse(f[k].stringValue);if(k==='meta')out.meta=v;else if(k.startsWith('p_'))out.pl[k.slice(2)]=v}catch(e){}}return out}
-async function djmPatch(c,obj){const ks=Object.keys(obj),q=ks.map(k=>'updateMask.fieldPaths='+k).join('&');const fields={};ks.forEach(k=>fields[k]={stringValue:JSON.stringify(obj[k])});return fetch(DJM_URL(c)+'&'+q,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields})})}
+const djmGet=salaRead('djm'),djmPatch=salaWrite('djm');
 const djmMe=(done)=>{const F=L.fe&&L.fe.mp?L.fe:null;return {n:(ME&&ME.n)||'?',e:(ME&&ME.e)||'🙂',nota:F?Math.round(F.nota*20)/10:0,alc:F?Math.round((F.alc||0)*100)/100:0,exp:F&&F.exp||'',done:done?1:0,at:Date.now()}};
-async function djmCreate(){if(!(db&&db.cloud)){toast('Sem ligação: o multijogador precisa de internet');return}const sel=document.getElementById('djmVen');const ven=sel?+sel.value:0;const code=bkmCode();L.djm={code,host:1,data:null};L.screen='djm';render();scrollTo(0,0);
+async function djmCreate(){if(!(db&&db.cloud)){toast('Sem ligação: o multijogador precisa de internet');return}const sel=document.getElementById('djmVen');const ven=sel?+sel.value:0;const code=await salaNewCode();L.djm={code,host:1,data:null};L.screen='djm';render();scrollTo(0,0);
   try{await djmPatch(code,{meta:{host:myPid(),ven,state:'lobby',t0:0,seed:'dj'+code+Date.now()},['p_'+myPid()]:djmMe(0)});djmPoll()}catch(e){toast('Não deu para criar a sala')}}
 async function djmJoin(){const c=(document.getElementById('djmIn')||{}).value;const code=String(c||'').trim().toUpperCase();if(code.length!==4){toast('O código tem 4 letras');return}
   try{const d=await djmGet(code);if(!d||!d.meta){toast('Não encontrei essa sala');return}if(d.meta.state!=='lobby'){toast('Essa festa já começou');return}L.djm={code,host:0,data:d};await djmPatch(code,{['p_'+myPid()]:djmMe(0)});L.screen='djm';render();scrollTo(0,0);djmPoll()}catch(e){toast('Não deu para entrar')}}
@@ -4764,20 +4782,19 @@ function djmHtml(){const M=L.djm;if(!M)return '';const d=M.data,m=d&&d.meta,pl=d
    ${m?`<div class="panel mt djmven" style="--cc:${c.cor}"><div class="mono" style="color:var(--muted)">📍 onde se toca</div>${M.host&&m.state==='lobby'?djmVenSel('djmVenL',m.ven,0):`<b>${c.e} ${esc(c.lugar)}</b>`}<small>${esc(c.cid)} · ${hFmt(L20[m.ven].h[0])} → ${hFmt(L20[m.ven].h[1])} · para ganhar: a nota mais alta</small><small>${esc(c.feitio)}</small></div>`:''}
    <div class="panel mt bkmlist"><div class="mono" style="color:var(--muted)">🎧 DJs (${pl.length})</div>${pl.map(([id,v],i)=>`<div class="bkmrow" style="--i:${i}"><span class="bkmav">${esc(v.e)}</span><b>${esc(v.n)}</b>${m&&m.host===id?'<em>anfitrião</em>':''}${id===myPid()?'<em class="me">tu</em>':''}</div>`).join('')||'<p class="hint">A carregar…</p>'}</div>
    ${m&&m.state==='go'?`<div class="bkmcount">A preparar…</div>`:M.host?`<div class="actions"><button class="btn" onclick="djmStart()">▶ Começar a festa${pl.length<2?' (ainda só tu)':''}</button></div>`:'<p class="hint" style="text-align:center">À espera que o anfitrião comece a festa…</p>'}
-   <div class="actions"><button class="btn ghost" onclick="L.djm=null;L.screen='carreira';render()">← Sair da sala</button></div></div>`}
+   <div class="actions"><button class="btn ghost" onclick="L.djm=null;L.screen='amigoModes';render()">← Sair da sala</button></div></div>`}
 function djmRows(){const M=L.djm,F=L.fe;if(!M||!M.data)return [];return Object.entries(M.data.pl).map(([id,v])=>{const me=id===myPid()&&F&&F.mp;return {id,...v,nota:me?Math.round(F.nota*20)/10:v.nota,exp:me?(F.exp||''):v.exp,done:me?(F.ph==='end'?1:0):v.done,alc:me?(F.alc||0):v.alc}}).sort((a,b)=>(!!a.exp-!!b.exp)||(b.nota-a.nota))}
 function djmLive(){return djmRows().map((r,i)=>{const n=+r.nota||0,al=+r.alc||0,ap=Math.min(100,al/FE_ALC_MAX*100);return `<div class="djmp ${r.id===myPid()?'me':''} ${r.exp?'exp':''}"><span class="djmpos">${r.exp?'🚪':['🥇','🥈','🥉'][i]||i+1}</span><span class="djmav">${esc(r.e)}</span><div class="djmst"><b>${esc(r.n)}${r.id===myPid()?' (tu)':''}${r.done&&!r.exp?' ✓':''}</b>
-  <div class="djmbar"><span>🎧</span><i><u style="width:${n*5}%"></u></i><em>${n.toFixed(1)}/20</em></div>
-  <div class="djmbar alc ${al>=.8?'bad':al>=.5?'mid':''}"><span>🍷</span><i><u style="width:${ap}%"></u></i><em>${al.toFixed(2)} g/L${al>=.8?' 🥴':''}</em></div>${r.exp?`<small>${r.exp==='alc'?'expulso por álcool':'expulso por mau desempenho'}</small>`:''}</div></div>`}).join('')}
+  <div class="djmbar"><span>🎧</span><i><u style="width:${n*5}%"></u></i><em>${nPt(n,1)}/20</em></div>
+  <div class="djmbar alc ${al>=.8?'bad':al>=.5?'mid':''}"><span>🍷</span><i><u style="width:${ap}%"></u></i><em>${nPt(al,2)} g/L${al>=.8?' 🥴':''}</em></div>${r.exp?`<small>${r.exp==='alc'?'expulso por álcool':'expulso por mau desempenho'}</small>`:''}</div></div>`}).join('')}
 function djmResults(){const M=L.djm;if(!M||!M.data)return '<p class="hint">A juntar os resultados…</p>';const rows=djmRows(),all=rows.every(r=>r.done);
   if(all&&!M.fin){M.fin=1;if(rows[0]&&rows[0].id===myPid()&&rows.length>1&&!rows[0].exp){setTimeout(()=>confetti(60),300);try{profAdd('djMpWin')}catch(e){}}}
-  return `<div class="bkmres"><div class="mono" style="color:var(--muted)">🏆 resultado da sala ${esc(M.code)}</div>${rows.map((r,i)=>`<div class="bkmrow big ${r.id===myPid()?'me':''} ${i===0&&all&&!r.exp?'win':''}" style="--i:${i}"><span class="ddpos">${r.exp?'🚪':['🥇','🥈','🥉'][i]||i+1}</span><span class="bkmav">${esc(r.e)}</span><b>${esc(r.n)}</b><span class="bkmm">${(+r.nota).toFixed(1)}/20</span><small>${r.exp?(r.exp==='alc'?'expulso (álcool)':'expulso'):r.done?'acabou a noite':'a tocar…'} · 🍷 ${(+r.alc||0).toFixed(2)} g/L</small></div>`).join('')}${all?(rows[0].exp?'<h3 class="bkmwin">🚪 Foram todos expulsos!</h3>':rows[0].id===myPid()?'<h3 class="bkmwin">👑 Foste o melhor DJ da noite!</h3>':`<h3 class="bkmwin">👑 ${esc(rows[0].e)} ${esc(rows[0].n)} foi o melhor DJ!</h3>`):'<p class="hint">À espera que os outros acabem a noite…</p>'}</div>`}
+  return `<div class="bkmres"><div class="mono" style="color:var(--muted)">🏆 resultado da sala ${esc(M.code)}</div>${rows.map((r,i)=>`<div class="bkmrow big ${r.id===myPid()?'me':''} ${i===0&&all&&!r.exp?'win':''}" style="--i:${i}"><span class="ddpos">${r.exp?'🚪':['🥇','🥈','🥉'][i]||i+1}</span><span class="bkmav">${esc(r.e)}</span><b>${esc(r.n)}</b><span class="bkmm">${nPt(+r.nota,1)}/20</span><small>${r.exp?(r.exp==='alc'?'expulso (álcool)':'expulso'):r.done?'acabou a noite':'a tocar…'} · 🍷 ${nPt(+r.alc||0,2)} g/L</small></div>`).join('')}${all?(rows[0].exp?'<h3 class="bkmwin">🚪 Foram todos expulsos!</h3>':rows[0].id===myPid()?'<h3 class="bkmwin">👑 Foste o melhor DJ da noite!</h3>':`<h3 class="bkmwin">👑 ${esc(rows[0].e)} ${esc(rows[0].n)} foi o melhor DJ!</h3>`):'<p class="hint">À espera que os outros acabem a noite…</p>'}</div>`}
 const BKM_URL=c=>PROF_URL('bkm-'+c);
 function bkmCode(){const A='ABCDEFGHJKLMNPQRSTUVWXYZ';let c='';for(let i=0;i<4;i++)c+=A[(Math.random()*A.length)|0];return c}
-async function bkmGet(c){const r=await fetch(BKM_URL(c),{cache:'no-store'});if(!r.ok)return null;const j=await r.json(),f=j.fields||{};const out={meta:null,pl:{}};for(const k in f){try{const v=JSON.parse(f[k].stringValue);if(k==='meta')out.meta=v;else if(k.startsWith('p_'))out.pl[k.slice(2)]=v}catch(e){}}return out}
-async function bkmPatch(c,obj){const ks=Object.keys(obj),q=ks.map(k=>'updateMask.fieldPaths='+k).join('&');const fields={};ks.forEach(k=>fields[k]={stringValue:JSON.stringify(obj[k])});return fetch(BKM_URL(c)+'&'+q,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields})})}
+const bkmGet=salaRead('bkm'),bkmPatch=salaWrite('bkm');
 const bkmMe=()=>({n:(ME&&ME.n)||'?',e:(ME&&ME.e)||'🙂',money:L.bk&&L.bk.mp?L.bk.money:0,sales:L.bk&&L.bk.mp?L.bk.sales.length:0,done:0,at:Date.now()});
-async function bkmCreate(lvl){if(!(db&&db.cloud)){toast('Sem ligação: o multijogador precisa de internet');return}const code=bkmCode();L.bkm={code,host:1,data:null};L.screen='bkm';render();
+async function bkmCreate(lvl){if(!(db&&db.cloud)){toast('Sem ligação: o multijogador precisa de internet');return}const code=await salaNewCode();L.bkm={code,host:1,data:null};L.screen='bkm';render();
   try{await bkmPatch(code,{meta:{host:myPid(),lvl,state:'lobby',t0:0,seed:'bk'+code+Date.now()},['p_'+myPid()]:bkmMe()});bkmPoll()}catch(e){toast('Não deu para criar a sala')}}
 async function bkmJoin(){const c=(document.getElementById('bkmIn')||{}).value;const code=String(c||'').trim().toUpperCase();if(code.length!==4){toast('O código tem 4 letras');return}
   try{const d=await bkmGet(code);if(!d||!d.meta){toast('Não encontrei essa sala');return}if(d.meta.state!=='lobby'){toast('Essa banca já começou');return}L.bkm={code,host:0,data:d};await bkmPatch(code,{['p_'+myPid()]:bkmMe()});L.screen='bkm';render();bkmPoll()}catch(e){toast('Não deu para entrar')}}
@@ -4793,7 +4810,7 @@ function bkmHtml(){const M=L.bkm;if(!M)return '';const d=M.data,m=d&&d.meta,pl=d
    <div class="bkmcode"><small>código da sala</small><b>${esc(M.code)}</b><span>Diz este código aos outros jogadores para entrarem.</span></div>
    <div class="panel mt bkmlist"><div class="mono" style="color:var(--muted)">💰 vendedores (${pl.length})${m?` · ${lv[m.lvl]||''}`:''}</div>${pl.map(([id,v],i)=>`<div class="bkmrow" style="--i:${i}"><span class="bkmav">${esc(v.e)}</span><b>${esc(v.n)}</b>${m&&m.host===id?'<em>anfitrião</em>':''}${id===myPid()?'<em class="me">tu</em>':''}</div>`).join('')||'<p class="hint">A carregar…</p>'}</div>
    ${m&&m.state==='go'?`<div class="bkmcount">A preparar…</div>`:M.host?`<div class="actions"><button class="btn" ${pl.length<2?'':''} onclick="bkmStart()">▶ Abrir as bancas${pl.length<2?' (ainda só tu)':''}</button></div>`:'<p class="hint" style="text-align:center">À espera que o anfitrião abra as bancas…</p>'}
-   <div class="actions"><button class="btn ghost" onclick="L.bkm=null;L.screen='bancaMenu';render()">← Sair da sala</button></div></div>`}
+   <div class="actions"><button class="btn ghost" onclick="L.bkm=null;L.screen='amigoModes';render()">← Sair da sala</button></div></div>`}
 function bkmLive(){const M=L.bkm,B=L.bk;if(!M||!M.data||!B)return;const rows=Object.entries(M.data.pl).map(([id,v])=>({id,...v,money:id===myPid()?B.money:v.money})).sort((a,b)=>b.money-a.money);
   const el=document.querySelector('.bkmlive');const h=rows.map((r,i)=>`<span class="${r.id===myPid()?'me':''}">${['🥇','🥈','🥉'][i]||i+1} ${esc(r.e)} ${esc(r.n)} <b>${r.money}€</b>${r.done?' ✓':''}</span>`).join('');if(el)el.innerHTML=h;return h}
 function bkmResults(){const M=L.bkm,B=L.bk;if(!M||!M.data)return '<p class="hint">A juntar os resultados…</p>';const rows=Object.entries(M.data.pl).map(([id,v])=>({id,...v,money:id===myPid()?B.money:v.money,done:id===myPid()?1:v.done})).sort((a,b)=>b.money-a.money);const all=rows.every(r=>r.done);
@@ -4805,9 +4822,7 @@ function bancaMenu(){const best=(profGet(myPid()).st||{}).bancaBest||0;
   <div class="bkhow"><span>🧐 Colecionadores querem raridades 💎</span><span>🎒 Estudantes têm pouco dinheiro</span><span>👵 Avós procuram artistas da juventude</span><span>😤 Regateadores oferecem pouco mas cedem</span><span>😊 Clientes felizes pagam mais e aguentam mais tempo</span></div>
   <div class="modes">${[['facil','Feira de bairro','🧺'],['normal','Feira da Ladra','🏮'],['dificil','Feira de São Cristóvão','🎪']].map(([k,n,e])=>`<button class="modebtn" onclick="bancaStart('${k}')"><span class="ic">${e}</span><b>${n}</b><span>Meta: ${BK_GOAL[k]}€ em 2 minutos · +${VIT_BPM.cpu[k]} BPM se conseguires</span></button>`).join('')}</div>
   ${best?`<p class="hint" style="text-align:center">🏅 O teu recorde: ${best}€</p>`:''}
-  <div class="panel mt bkmmenu"><div class="mono" style="color:var(--muted)">👥 multijogador · quem vende mais?</div><p class="hint">Todos jogam ao mesmo tempo, cada um no seu telemóvel, com os mesmos discos e os mesmos clientes. No fim vê-se quem fez mais dinheiro.</p>
-   <div class="chips">${[['facil','🧺 Bairro'],['normal','🏮 Ladra'],['dificil','🎪 São Cristóvão']].map(([k,n])=>`<button class="chip" onclick="bkmCreate('${k}')">Criar sala · ${n}</button>`).join('')}</div>
-   <div class="bkmjoin"><input id="bkmIn" class="inp sm" maxlength="4" placeholder="CÓDIGO" autocomplete="off" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')bkmJoin()"><button class="btn sm" onclick="bkmJoin()">Entrar na sala</button></div></div>
+  <div class="panel mt" style="text-align:center"><button class="btn ghost" onclick="L.screen='amigoModes';render();scrollTo(0,0)">👥 Jogar com amigos (salas com código)</button></div>
   ${rulesDet('banca')}<div class="actions"><button class="btn" onclick="L.screen='cpuModes';render();scrollTo(0,0)">← Jogos contra o computador</button></div>`}
 
 /* ======================= PESSOAS DESENHADAS (para a festa e para a banca) ======================= */
@@ -5119,7 +5134,7 @@ function feScene(F){const N=FEN[F.i],c=CAR[F.i],on=F.crowd.filter(x=>x.on).lengt
 function festaHtml(){const F=L.fe;if(!F)return '';const c=CAR[F.i],N=FEN[F.i],tot=Math.max(1,F.hype[0]+F.hype[1]);
   const mt=feMeta(F.i),ok=F.nota>=mt;const meter=`<div class="fnota ${ok?'ok':''}"><div class="fnl"><small>desempenho</small><b>${nPt(F.nota*2,1)}</b><span>/20</span></div><div class="fnbar"><i style="width:${F.nota*10}%"></i><em style="left:${mt*10}%"><span>precisas de ${mt*2}/20</span></em>${F.hist.map((h,k)=>`<u style="left:${h*10}%;--k:${k}"></u>`).join('')}</div><div class="fnr">${ok?'✓ a passar':`faltam ${nPt((mt-F.nota)*2,1)}`}</div></div>`;
   if(F.ph==='end'){const won=!F.exp&&F.nota>=feMeta(F.i);return `<div class="festa">${meter}${feAlcHtml(F)}${feScene(F)}<div class="fend ${won?'won':''} ${F.exp?'exp':''}"><h2>${F.exp?'Foste expulso! 🚪':won?'A pista é tua! 🎉':'A noite não correu bem 😮‍💨'}</h2><p>${F.exp==='alc'?`Chegaste a ${nPt(F.alc||0,2)} g/L de álcool no sangue e ${esc(c.dj)} tirou-te da cabine. Na próxima, aceita menos bebidas ou escolhe as sem álcool.`:F.exp==='mau'?`O desempenho ficou abaixo de 4/20 durante tempo demais e ${esc(c.dj)} mandou-te embora a meio da festa.`:won?`${esc(c.dj)} deu-te ${nPt(F.nota*2,1)}/20 (precisavas de ${feMeta(F.i)*2}/20).`:`Acabaste com ${nPt(F.nota*2,1)}/20 e precisavas de ${feMeta(F.i)*2}/20. Ouve os pedidos e os palpites do público, e cumpre a regra do sítio.`}</p>
-    ${F.mp?`<div class="djmres">${djmResults()}</div><div class="actions"><button class="btn ghost" onclick="L.fe=null;L.djm=null;L.screen='carreira';render();scrollTo(0,0)">🗺️ Sair da sala</button></div>`:''}<div class="actions" ${F.mp?'style="display:none"':''}><button class="btn" onclick="feStart(${F.i})">🔁 Repetir a noite</button>${won&&F.i+1<CAR.length?`<button class="btn" onclick="careerIntro(${F.i+1})">▶ Próxima noite: ${esc(CAR[F.i+1].lugar)}</button>`:''}<button class="btn ghost" onclick="L.fe=null;L.screen='carreira';render();scrollTo(0,0)">🗺️ Carreira</button></div></div></div>`}
+    ${F.mp?`<div class="djmres">${djmResults()}</div><div class="actions"><button class="btn ghost" onclick="L.fe=null;L.djm=null;L.screen='amigoModes';render();scrollTo(0,0)">🗺️ Sair da sala</button></div>`:''}<div class="actions" ${F.mp?'style="display:none"':''}><button class="btn" onclick="feStart(${F.i})">🔁 Repetir a noite</button>${won&&F.i+1<CAR.length?`<button class="btn" onclick="careerIntro(${F.i+1})">▶ Próxima noite: ${esc(CAR[F.i+1].lugar)}</button>`:''}<button class="btn ghost" onclick="L.fe=null;L.screen='carreira';render();scrollTo(0,0)">🗺️ Carreira</button></div></div></div>`}
   let panel='';
   if(F.ph==='prep')panel=`<div class="fpanel"><div class="fturn">💿 A preparar a caixa de discos…</div><div class="fthink"><i></i><i></i><i></i></div><p class="hint">Só entram músicas que dá para ouvir. Assim que a primeira estiver pronta tens 30 segundos para abrir a pista.</p></div>`;
   else if(F.ph==='pick')panel=`<div class="fpanel"><div class="fturn">🎧 ${F.round===1?'Abre a pista':'Prepara a próxima música'} · música ${F.round}${SND.on?'':' <small class="fsnd">🔇 liga o som para ouvires as músicas</small>'}</div>${F.req?`<div class="freqbar">${feDz(`📣 Alguém na pista está a pedir <b>${GEN_IC[F.req.g]} ${GEN_N[F.req.g]}</b>!`)}</div>`:''}${F.msg?`<div class="fevent">${feDz(esc(F.msg.t))}</div>`:''}<div class="fcards">${F.opts.map((i,kk)=>{const s=song(i),e=ev(i),sx=song(feSw(F,kk)),hd=feHid(F,kk);return `<div class="fcardw"><button class="fcard" onclick="if(FA.pre){FA.pre.pause();FA.pre=null}fePick(${i})"><img src="${esc(s.c)}" alt="" onerror="this.src='${esc(s.fb)}'"><span class="fcinfo"><span class="fct"><b>${hd?'???':feDz(esc(sx.t))}</b><small>${hd?'??? ???':feDz(esc(sx.a))}</small></span><span class="fmini">${hd>1?'❓ ???':GEN_IC[e.gen]+' '+GEN_N[e.gen]} · ${'⚡'.repeat(e.en)} · ⭐ ${fmt1(e.nota)}${e.tags.length?' · '+e.tags.join(', '):''}</span></span><span class="fchips">${hd>1?'<i>❓ ???</i><i>⚡ ?</i><i>⭐ ?</i>':`<i>${GEN_IC[e.gen]} ${GEN_N[e.gen]}</i><i>${'⚡'.repeat(e.en)}</i><i>⭐ ${fmt1(e.nota)}</i>`}${(hd>1?[]:e.tags).map(t=>`<i class="tg">${t}</i>`).join('')}</span></button></div>`}).join('')}</div></div>`;
@@ -5154,7 +5169,7 @@ function bancaHtml(){const B=L.bk;if(!B)return '';const left=Math.max(0,B.t0+BK_
     <div class="bkstats"><span>🛍️ <b>${B.sales.length}</b> vendas</span><span>⭐ melhor venda <b>${B.best}€</b></span><span>🏅 recorde <b>${(profGet(myPid()).st||{}).bancaBest||B.money}€</b></span></div>
     ${B.mp?bkmResults():''}<div class="bksold">${B.sales.map((s,i)=>`<span style="--i:${i}"><img src="${esc((DISCO(s.k)||{}).f||'')}" alt="">${s.c} ${s.p}€</span>`).join('')}</div>
     ${won?`<p class="hint">+${VIT_BPM.cpu[B.lvl]||6} BPM para o quarto (conta para o limite de vitórias do dia).</p>`:''}
-    <div class="actions">${B.mp?`<button class="btn" onclick="L.bk=null;L.bkm=null;L.screen='bancaMenu';render()">👥 Nova sala</button>`:`<button class="btn" onclick="bancaStart('${B.lvl}')">🔁 Abrir a banca outra vez</button>`}<button class="btn ghost" onclick="L.bk=null;L.screen='bancaMenu';render()">🎚️ Mudar a meta</button><button class="btn ghost" onclick="L.bk=null;L.screen='cpuModes';render();scrollTo(0,0)">← Jogos contra o computador</button></div></div></div>`}
+    <div class="actions">${B.mp?`<button class="btn" onclick="L.bk=null;L.bkm=null;L.screen='amigoModes';render()">👥 Nova sala</button>`:`<button class="btn" onclick="bancaStart('${B.lvl}')">🔁 Abrir a banca outra vez</button>`}<button class="btn ghost" onclick="L.bk=null;L.screen='bancaMenu';render()">🎚️ Mudar a meta</button><button class="btn ghost" onclick="L.bk=null;L.screen='cpuModes';render();scrollTo(0,0)">← Jogos contra o computador</button></div></div></div>`}
   const T=c&&c.t,m=c?MOODS[c.mood]:null,sel=B.sel,vend=meLook({});
   const talking=B.msg&&!c.shown;
   return `<div class="banca">${B.mp?`<div class="bkmlive">${bkmLive()||''}</div>`:''}<div class="bktop"><div class="bktime"><b>${Math.ceil(left/1000)}s</b><div><i style="width:${100*left/BK_DUR}%"></i></div></div><div class="bkcash"><span>🧾</span><b>${B.money}€</b><small>meta ${B.goal}€</small><div class="bkgoal"><i style="width:${pct}%"></i></div></div></div>
@@ -5906,10 +5921,20 @@ function cpuModesScreen(){return `<div class="tot-head"><div class="mono" style=
    <button class="modebtn sp2" onclick="L.screen='desafio';render();scrollTo(0,0)"><span class="ic">📅</span><b>Desafio do dia</b><span>O mesmo jogo para toda a gente, uma tentativa. Top do dia.</span>${ddPlayed(ddToday().ymd)?'<em class="spprog">✓ feito</em>':'<em class="spprog new">novo</em>'}</button>
    <button class="modebtn sp3" onclick="L.screen='bancaMenu';render();scrollTo(0,0)"><span class="ic">💰</span><b>Banca de vinis</b><span>2 minutos a vender discos na feira. Negoceia com cada cliente.</span></button>
   </div><div class="actions"><button class="btn" onclick="L.screen='jogar';render();scrollTo(0,0)">← Voltar</button></div>`}
+function amigoModes(){
+  return `<div class="tot-head"><div class="mono" style="color:var(--muted)">com amigos</div><h2>Jogar com amigos</h2><div class="sub">Cada um no seu telemóvel, numa sala com código.</div></div>
+  <div class="modes"><button class="modebtn" onclick="L.screen=null;setMode('online')"><span class="ic">🎵</span><b>Jogo do álbum</b><span>Lado A × Lado B, Na mesma onda e os outros modos a dois.</span></button></div>
+  <div class="panel mt bkmmenu" id="amg-dj"><h3 class="amgh">🎧 Carreira de DJ · quem tem a melhor nota?</h3><p class="hint">Escolhe onde se toca. Todos jogam a mesma festa ao mesmo tempo, cada um no seu telemóvel, e no fim ganha quem tiver o desempenho mais alto. Aqui podes tocar em qualquer sítio, mesmo nos que ainda não desbloqueaste (não conta para a carreira).</p>
+   <div class="bkmjoin">${djmVenSel('djmVen',Math.min(carDone(),CAR.length-1),0)}<button class="btn sm" onclick="djmCreate()">Criar sala</button></div>
+   <div class="bkmjoin"><input id="djmIn" class="inp sm" maxlength="4" placeholder="CÓDIGO" autocomplete="off" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')djmJoin()"><button class="btn sm" onclick="djmJoin()">Entrar na sala</button></div></div>
+  <div class="panel mt bkmmenu" id="amg-bk"><h3 class="amgh">💰 Banca de vinis · quem vende mais?</h3><p class="hint">Todos jogam ao mesmo tempo, cada um no seu telemóvel, com os mesmos discos e os mesmos clientes. No fim vê-se quem fez mais dinheiro.</p>
+   <div class="chips">${[['facil','🧺 Bairro'],['normal','🏮 Ladra'],['dificil','🎪 São Cristóvão']].map(([k,n])=>`<button class="chip" onclick="bkmCreate('${k}')">Criar sala · ${n}</button>`).join('')}</div>
+   <div class="bkmjoin"><input id="bkmIn" class="inp sm" maxlength="4" placeholder="CÓDIGO" autocomplete="off" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')bkmJoin()"><button class="btn sm" onclick="bkmJoin()">Entrar na sala</button></div></div>
+  <div class="actions"><button class="btn" onclick="L.screen='jogar';render();scrollTo(0,0)">← Voltar</button></div>`}
 function playScreen(){
   return `<div class="tot-head"><div class="mono" style="color:var(--muted)">jogar</div><h2>Como queres jogar?</h2><div class="sub">Escolhe o modo. Depois escolhes quantas músicas tem cada álbum.</div></div>
   <div class="modes">
-   <button class="modebtn" onclick="L.screen=null;setMode('online')"><span class="ic">👥</span><b>Com um amigo</b><span>Cada um no seu telemóvel, numa sala com código.</span></button>
+   <button class="modebtn" onclick="L.screen='amigoModes';render();scrollTo(0,0)"><span class="ic">👥</span><b>Com um amigo</b><span>Jogo do álbum, Carreira de DJ e Banca de vinis, cada um no seu telemóvel.</span></button>
    <button class="modebtn" onclick="L.screen='cpuModes';render();scrollTo(0,0)"><span class="ic">🤖</span><b>Contra o computador</b><span>O jogo do álbum e ainda a Carreira de DJ, o Desafio do dia e a Banca de vinis.</span></button>
   </div>
   <div class="actions"><button class="btn" onclick="L.screen=null;render()">← Voltar</button></div>`}
@@ -6110,6 +6135,7 @@ function body(){
   if(L.screen==='jogar')return playScreen();
   if(L.screen==='regras')return rulesScreen();
   if(L.screen==='cpuModes')return cpuModesScreen();
+  if(L.screen==='amigoModes')return amigoModes();
   if(L.screen==='carreira')return careerScreen();
   if(L.screen==='festa')return L.fe?festaHtml():careerScreen();
   if(L.screen==='desafio')return ddScreen();
@@ -6311,7 +6337,7 @@ if(!PETL.raf)PETL.raf=requestAnimationFrame(plTick);
 
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795863563';
+const BUILD='1795865034';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
@@ -6446,6 +6472,77 @@ body>div:has(>main.view .banca){padding-bottom:0!important}
  .festa .faskw .fask span{flex:1 1 auto!important;min-width:0;font-size:.72rem!important;line-height:1.25}
  .festa .faskw .fask .btn{flex:0 0 auto!important;min-height:38px;min-width:46px;padding:0 10px!important;font-size:.78rem!important}
  .festa .fstage .ftoast{top:30%!important}
+}
+
+/* revelação por etapas (resultados a dois) */
+.revin{animation:rise .6s both}
+.revrow{animation:vtIn .5s both}
+.revpop{display:inline-block;animation:revPop .45s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes revPop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+.revnote{position:sticky;top:6px;z-index:5;display:flex;align-items:center;justify-content:center;gap:10px;margin:0 auto 8px;padding:6px 8px 6px 14px;width:max-content;max-width:100%;border-radius:99px;background:rgba(34,16,6,.92);border:1px solid rgba(255,210,63,.4);font-size:.82rem;animation:revOut .4s both}
+@keyframes revOut{to{opacity:0;visibility:hidden;height:0;padding:0;margin:0;border:0}}
+/* Na mesma onda: favoritas lado a lado com os palpites */
+.ondacmps{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:760px){.ondacmps{grid-template-columns:1fr}}
+.ocmp{display:grid;grid-template-columns:18px 1fr 1fr;gap:6px;align-items:center;margin:4px 0}
+.ocmp.head{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:2px}
+.ocmp .oc{position:relative;display:grid;grid-template-columns:34px 1fr;column-gap:6px;align-items:center;padding:4px 22px 4px 4px;border-radius:10px;background:rgba(255,255,255,.04);min-width:0}
+.ocmp .oc img{grid-row:1/3;width:34px;height:34px;border-radius:6px;object-fit:cover}
+.ocmp .oc b{font-size:.76rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ocmp .oc small{font-size:.66rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ocmp .oc i{position:absolute;right:6px;top:50%;transform:translateY(-50%);font-style:normal;font-weight:900}
+.ocmp .oc.hit{background:rgba(47,158,68,.18)}.ocmp .oc.hit i{color:#7fe08f}
+.ocmp .oc.miss i{color:#ff8a7a}
+.ocmp .n{font-weight:800;color:var(--muted);text-align:center}
+@media(prefers-reduced-motion:reduce){.revin,.revrow,.revpop,.revnote{animation:none!important}}
+
+/* Lado A × Lado B: pontuação e botão sempre à vista enquanto se ordena */
+.cobar{position:sticky;bottom:0;z-index:20;margin:8px -4px 0;padding:8px 10px calc(8px + env(safe-area-inset-bottom));border-radius:16px 16px 0 0;background:rgba(28,14,22,.96);border:1px solid rgba(255,210,63,.35);box-shadow:0 -8px 24px rgba(0,0,0,.45)}
+.cobar .cosum{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 12px;font-size:.8rem;margin-bottom:6px}
+.cobar .cosum b{color:var(--gold)}.cobar .cosum .cot b{font-size:1.05rem}
+.cobar .actions{margin:0!important;justify-content:center}
+
+/* Na mesma onda no telemóvel: as 12 músicas e o botão cabem no ecrã */
+@media(max-width:600px){
+ main.view:has(.ondagrid) .tot-head{padding:2px 0 4px!important;margin:0!important}
+ main.view:has(.ondagrid) .tot-head h2{font-size:1.2rem!important;margin:0!important;line-height:1.15}
+ main.view:has(.ondagrid) .tot-head h2::after{display:none!important}
+ main.view:has(.ondagrid) .tot-head .sub{font-size:.72rem!important;line-height:1.3;margin-top:2px!important}
+ .ondagrid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important}
+ .ondagrid .ondac{padding:4px!important;gap:2px!important;min-width:0}
+ .ondagrid .ondac img{width:100%!important;height:auto!important;aspect-ratio:1;border-radius:6px}
+ .ondagrid .ondac b{font-size:.62rem!important;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+ .ondagrid .ondac small{font-size:.56rem!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+}
+main.view:has(.ondagrid) .actions{position:sticky;bottom:0;z-index:20;margin:8px -4px 0!important;padding:8px 10px calc(8px + env(safe-area-inset-bottom));border-radius:16px 16px 0 0;background:rgba(28,14,22,.96);border:1px solid rgba(255,210,63,.35);justify-content:center}
+
+/* Lado A × Lado B no telemóvel: faixas compactas como no jogo do álbum */
+@media(max-width:600px){
+ .cosides .orow{grid-template-columns:16px 42px minmax(0,1fr) 36px!important;gap:6px!important;padding:5px 6px!important;align-items:center;margin-bottom:0!important}
+ .cosides .orow .n{font-size:.9rem}
+ .cosides .orow .thumb,.cosides .orow .thumb img{width:42px!important;height:42px!important}
+ .cosides .orow .info{min-width:0}
+ .cosides .orow .tt{font-size:.86rem!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
+ .cosides .orow .ta{font-size:.72rem!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
+ .cosides .orow .tags{display:flex!important;flex-wrap:wrap!important;margin-top:3px!important;gap:3px!important}
+ .cosides .orow .tags>span{font-size:.62rem!important;padding:1px 6px!important;white-space:nowrap}
+ .cosides .orow .tags small{display:none}
+ .cosides .orow .mvs{display:flex!important;flex-direction:column!important;gap:4px!important}
+ .cosides .orow .mv{width:36px!important;height:30px!important;min-height:0!important}
+ .cosides .olink{padding:1px 6px 1px 8px!important;margin:2px 0 2px 22px!important;font-size:.66rem!important;display:flex;gap:6px;align-items:baseline;line-height:1.25}
+ .cosides .olink .lw{min-width:0}
+ .cosides{gap:8px!important}
+ .cosides .coside,.cosides>.panel{padding:8px!important}
+ main.view:has(.cosides) .tot-head .sub{font-size:.72rem!important;line-height:1.3}
+ main.view:has(.cosides) .tot-head h2{font-size:1.25rem!important}
+}
+
+@media(max-width:600px){
+ .cosides .coside2:not(.mine) .orow{padding:2px 6px!important;grid-template-columns:22px 30px minmax(0,1fr)!important;min-height:0}
+ .cosides .coside2:not(.mine) .orow .thumb,.cosides .coside2:not(.mine) .orow .thumb img{width:30px!important;height:30px!important}
+ .cosides .coside2:not(.mine) .orow .info>*:not(.tt){display:none!important}
+ .cosides .coside2:not(.mine) .olink{display:none!important}
+ .cosides .coside2 .coshead h3{font-size:.95rem;margin:0}
 }
 </style>
 </body>
