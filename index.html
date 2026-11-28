@@ -5703,8 +5703,18 @@ function cpuTick(){
 
 /* ======== relógio ======== */
 function autoPickFor(c){const [a,b]=offer(picks().length);W(pickPatch(c,(Math.random()<.5?a:b).i))}
+/* contra o computador o relógio pára enquanto não estás a ver o jogo (menu, top 10, jogo fechado) */
+function pauseClock(now){
+  if(MODE!=='cpu'||!G||!G.seed)return false;
+  if(L.screen)return true;
+  const gap=G.seen?now-G.seen:0;
+  if(gap>1500){for(const k of ['ts','orderTs','revealAt'])if(G[k])G[k]=Math.min(now,G[k]+gap);G.seen=now;saveLocal();render()}
+  else if(!G.seen||gap>=1000){G.seen=now;saveLocal()}
+  return false;
+}
 function tick(){
   const now=Date.now();
+  if(pauseClock(now))return;
   document.querySelectorAll('[data-deadline]').forEach(el=>{const tot=+el.dataset.total,left=Math.max(0,(+el.dataset.deadline-now)/1000);const tl=el.querySelector('.tl'),tb=el.querySelector('.tb');if(tl)tl.textContent=Math.ceil(left)+'s';if(tb)tb.style.width=Math.min(100,left/tot*100)+'%';el.classList.toggle('low',left<=5)});
   if(!G||!G.seed||!MODE||L.busy)return;
   const ph=phase();
@@ -6353,7 +6363,7 @@ if(!PETL.raf)PETL.raf=requestAnimationFrame(plTick);
 
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795866884';
+const BUILD='1795867078';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
