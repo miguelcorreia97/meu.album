@@ -2427,7 +2427,7 @@ function checklist(tr){
   const es=tr.map(t=>ev(t.i)),n=tr.length,cs=combos(tr),get=k=>cs.find(x=>x.k===k),rows=[];
   const q=get('quim');rows.push({ic:'🧪',t:'Química entre faixas',p:q.p,ok:q.p>0,h:'A soma das ligações entre faixas seguidas (as linhas entre as músicas).'});
   rows.push({ic:'⚡',t:'Abrir com energia',p:es[0].en>=4?1:0,ok:es[0].en>=4,h:es[0].en>=4?'A faixa 1 tem energia 4 ou 5.':`Põe em 1.º uma faixa com energia 4 ou 5 (agora: ${es[0].en}).`,max:1});
-  rows.push({ic:'🌙',t:'Fechar com balada',p:es[n-1].en<=2?1:0,ok:es[n-1].en<=2,h:es[n-1].en<=2?'A última faixa é calma.':`Põe no fim uma faixa com energia 1 ou 2 (agora: ${es[n-1].en}).`,max:1});
+  rows.push({ic:'🕯️',t:'Fechar com balada',p:es[n-1].en<=2?1:0,ok:es[n-1].en<=2,h:es[n-1].en<=2?'A última faixa é calma.':`Põe no fim uma faixa com energia 1 ou 2 (agora: ${es[n-1].en}).`,max:1});
   const pk=es.reduce((m,e,k)=>e.en>es[m].en?k:m,0),pico=n>=4&&pk>0&&pk<n-1&&es[pk].en>=4&&es[0].en<es[pk].en;
   rows.push({ic:'⛰️',t:'Pico de energia a meio',p:pico?.5:0,ok:pico,h:pico?`A faixa ${pk+1} é o ponto alto do álbum.`:'A faixa mais dançante (energia 4 ou 5) fica a meio, acima da 1.ª.',max:.5});
   const t=get('tema'),tc={};es.forEach(e=>e.tags.forEach(x=>tc[x]=(tc[x]||0)+1));const bt=Object.entries(tc).filter(([x])=>x!=='amor').sort((a,b)=>b[1]-a[1])[0];
@@ -3008,7 +3008,10 @@ async function profLoad(w){if(!w)return;const cur=await profFetch(w);if(cur){PRO
   if(w===myPid()){const loc=profLocal(w);if(!cur.ut&&Object.keys(loc.st||{}).length){PEND[w].add={...loc.st};delete PEND[w].add['#artistas'];delete PEND[w].add.streak;delete PEND[w].add.bestStreak;PEND[w].set={streak:+loc.st.streak||0,bestStreak:+loc.st.bestStreak||0};PEND[w].u={...loc.u};if(loc.q)PEND[w].q=loc.q;profFlush(w)}}}
   {const mb=document.getElementById('mbpm');if(mb&&roomReady())mb.textContent=roomCoins()}if(L.screen==='missoes'||L.screen==='quarto')render()}
 /* registo das escolhas */
-function missionPick(i){try{if(!ME||!G||!G.seed)return;if(L.eSeed!==G.seed){L.eSeed=G.seed;if(!(SQ.d&&SQ.d.leg))legMigrate();try{L.e0=roomEarned()}catch(e){L.e0=null}}const n=picks().length,[x,y]=offer(n),other=x.i===i?y:x,s=song(i),e=ev(i);
+function missionPick(i){try{if(!ME||!G||!G.seed)return;if(L.eSeed!==G.seed){L.eSeed=G.seed;if(!(SQ.d&&SQ.d.leg))legMigrate();try{L.e0=roomEarned()}catch(e){L.e0=null}}const n=picks().length;
+  /* cada vez de escolher só conta uma vez para as missões, mesmo que desfaças e voltes a escolher */
+  const vez=G.seed+':'+n,feitas=JSON.parse(localStorage.getItem('miss-pk')||'[]');if(feitas.includes(vez))return;localStorage.setItem('miss-pk',JSON.stringify([...feitas,vez].slice(-80)));
+  const [x,y]=offer(n),other=x.i===i?y:x,s=song(i),e=ev(i);
   const dt=Date.now()-(G.ts||Date.now());profAdd('pk.n');profAdd('pk.a.'+artistKey(s.a));profAdd('pk.g.'+e.gen);e.tags.forEach(t=>profAdd('pk.t.'+t));
   if(e.en<=2)profAdd('pk.calm');if(e.en>=4)profAdd('pk.hot');
   const d=ev(other.i).nota-e.nota;if(d>=.5)profAdd('pk.bad');else if(d<=-.5)profAdd('pk.good');
@@ -6365,7 +6368,7 @@ if(!PETL.raf)PETL.raf=requestAnimationFrame(plTick);
 
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795867535';
+const BUILD='1795867686';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
@@ -6603,6 +6606,8 @@ body.has-dock .rxfloat{top:calc(4px + env(safe-area-inset-top))!important;bottom
 body.has-dock .rxfloat .rxtxt{margin:0!important;max-width:290px!important;border-radius:14px}
 body.has-dock .rxfloat .rxs,body.has-dock .rxfloat img{width:48px!important;height:48px!important}
 body.has-dock .rxfloat .rxn{display:none}
+/* barra das escolhas no telemóvel: «Computador» cabe inteiro */
+@media(max-width:600px){.ddock .drows .drow2{grid-template-columns:74px minmax(0,1fr)!important;gap:6px!important}.ddock .dlab b{font-size:11px!important;overflow-wrap:normal}.ddock .dlab .nico{margin-right:1px}}
 </style>
 </body>
 </html>
