@@ -5714,7 +5714,11 @@ function tick(){
   else if(ph==='order'){const dl=(G.orderTs||now)+orderMs();
     if(!G.orders?.[P(WHO)]&&now>dl&&!L.autoLock){L.autoLock=G.round;toast('⏱ Acabou o tempo — fechei o teu álbum assim.');lockOrder()}
     else if(MODE==='online'&&G.orders?.[P(WHO)]&&!G.orders?.[P(1-WHO)]&&!L.peerOnline&&now>dl+60000&&L.autoLockO!==G.round){L.autoLockO=G.round;W({orders:{[P(1-WHO)]:rawTracks(1-WHO).map((_,k)=>k)},reveal:0,revealAt:now})}}
-  else if(ph==='duels'){const [k]=stageKind(),dur=STAGE_MS[k];if(dur&&now>(G.revealAt||now)+dur&&L.lastAdv!==stage())advance()}
+  else if(ph==='duels'){const [k]=stageKind(),dur=STAGE_MS[k];
+    if(k==='bonus'){const dl=(G.revealAt||now)+PICK_MS,auto=p=>{const [a,b]=bonusOffer(p);W({bonus:{[P(p)]:(Math.random()<.5?a:b).i},revealAt:Date.now()})};
+      if(G.bonus?.[P(WHO)]==null){if(now>dl&&L.autoB!==G.seed){L.autoB=G.seed;toast('⏱ Acabou o tempo — escolhi por ti.');auto(WHO)}}
+      else if(MODE==='online'&&G.bonus?.[P(1-WHO)]==null&&!L.peerOnline&&now>dl+45000&&L.autoBO!==G.seed){L.autoBO=G.seed;auto(1-WHO)}}
+    if(dur&&now>(G.revealAt||now)+dur&&L.lastAdv!==stage())advance()}
 }
 setInterval(tick,250);
 
@@ -5818,7 +5822,7 @@ function mv(k,d){const o=L.order;if(k+d<0||k+d>=o.length)return;const before={};
     if(+el.dataset.id===moved)el.animate([{boxShadow:'0 0 0 2px #ffc93c, 0 0 30px rgba(255,201,60,.5)'},{boxShadow:'0 0 0 0 transparent'}],{duration:900})});
   const tot=document.querySelector('.dock-tot,.otot');if(tot)tot.animate([{transform:'scale(1.25)'},{transform:'scale(1)'}],{duration:350});}
 function lockOrder(){if(G&&G.orders&&G.orders[P(WHO)])return;const n=(document.getElementById('albName')?.value||L.albName||'').trim().slice(0,40);const tr=rawTracks(WHO);const ord=(L.order&&L.order.length===tr.length)?L.order.slice():tr.map((_,k)=>k);W({orders:{[P(WHO)]:ord},names:{[P(WHO)]:n},reveal:0,revealAt:Date.now()})}
-function chooseBonus(i){W({bonus:{[P(WHO)]:i},revealAt:Date.now()})}
+function chooseBonus(i){if(L.busy||G.bonus?.[P(WHO)]!=null)return;W({bonus:{[P(WHO)]:i},revealAt:Date.now()})}
 function flip(){const c=document.getElementById('coin'),w=coinWinner();if(c){c.classList.add('spin');setTimeout(()=>{c.textContent=nm(w)},600)}setTimeout(()=>{L.coinShown=true;render()},1700)}
 async function copyRes(w){
   const sc=score();let s=`🎶 MEU ÁLBUM — ${nm(0)} × ${nm(1)}\n🏆 ${alb(w)} (${nm(w)}) venceu ${fmt(Math.max(...sc))}–${fmt(Math.min(...sc))}\n`;
@@ -6077,6 +6081,15 @@ function timerBar(deadline,total,label){const left=Math.max(0,(deadline-Date.now
 function duels(){const [k,d]=stageKind();
   if(k==='duel')return duelScreen(d);if(k==='combos')return prizesScreen();if(k==='bonus')return bonusScreen();if(k==='suspense')return suspense();
   const f=score();return result(f[0]===f[1]);}
+/* empate depois das combinações: cada um escolhe uma faixa bónus, em isto ou aquilo */
+function bonusScreen(){
+  const mine=G.bonus?.[P(WHO)],oi=1-WHO,dl=(G.revealAt||Date.now())+PICK_MS;
+  const head=`<div class="tot-head"><div class="mono" style="color:var(--muted)">empate!</div><h2>Faixa bónus</h2><div class="sub">${mine==null?'Escolhe uma. Vai duelar com a '+(isCpu(oi)?'do computador':'de '+esc(nm(oi)))+'.':'Escolhida! À espera que '+o_(oi)+' escolha a sua.'}</div></div>`;
+  if(mine!=null)return head+`<div class="panel wait"><div class="minirecord"></div><div class="big">${esc(song(mine).t)}</div><p>${esc(song(mine).a)}</p></div>`;
+  const card=s=>`<div onclick="if(!event.target.closest('a'))chooseBonus(${s.i})" class="pick tappable">${sleeve(s)}<div class="info"><div class="tt">${esc(s.t)}</div><div class="ta">${esc(s.a)}</div>${chips(s)}<div class="dlisten">${listen(s)}</div><button class="btn" ${L.busy?'disabled':''} onclick="event.stopPropagation();chooseBonus(${s.i})">Fica comigo</button></div></div>`;
+  const [a,b]=bonusOffer(WHO);
+  return head+timerBar(dl,PICK_MS,'tens')+`<div class="pair mt">${card(a)}<div class="ou">ou</div>${card(b)}</div>${L.err?`<div class="err">${esc(L.err)}</div>`:''}`;
+}
 function suspense(){return `<div class="suspense"><div class="mono" style="color:var(--muted)">resultado final</div><h2>E o melhor álbum é…</h2>
   <div class="sus-covers"><div class="sc0">${albumCover(0)}<div class="cap c0">${esc(nm(0))}</div></div><div class="sus-x">🥁</div><div class="sc1">${albumCover(1)}<div class="cap c1">${esc(nm(1))}</div></div></div><div class="stagedock">${stageBar('a revelar em')}</div></div>`}
 function bars(e){return `<div class="bars">${CRIT.map(([k,n])=>`<div class="bar"><span>${n}</span><i><b style="width:${e[k]*10}%"></b></i><em>${e[k]}</em></div>`).join('')}</div>`}
@@ -6337,7 +6350,7 @@ if(!PETL.raf)PETL.raf=requestAnimationFrame(plTick);
 
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795866391';
+const BUILD='1795866707';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
