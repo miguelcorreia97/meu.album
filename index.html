@@ -2741,7 +2741,7 @@ document.addEventListener('pointerdown',e=>{if(RX.open&&!e.target.closest('.rxwr
 function rxFloat(e,who,txt){if(RX.mute&&who!==WHO)return;const now=Date.now(),at=Math.max(now,(RX.nextAt||0));
   if(at-now>9000)return; /* fila demasiado cheia: descarta */
   RX.nextAt=at+3000;if(at>now){setTimeout(()=>rxShow(e,who,txt),at-now);return}rxShow(e,who,txt)}
-function rxShow(e,who,txt){if(RX.mute&&who!==WHO)return;const d=document.createElement('div');d.className='rxfloat';{const vw=innerWidth,w=txt?Math.min(vw<600?170:230,vw*.52):(vw<600?86:160),room=Math.max(0,vw/2-w-12),x=who===WHO?12+Math.random()*room:vw-w-12-Math.random()*room;d.style.left=Math.max(8,x)+'px';d.style.width=w+'px'}
+function rxShow(e,who,txt){if(RX.mute&&who!==WHO)return;const d=document.createElement('div');d.className='rxfloat';if(document.body.classList.contains('has-dock'))document.querySelectorAll('.rxfloat').forEach(x=>x.remove());{const vw=innerWidth,w=txt?Math.min(vw<600?170:230,vw*.52):(vw<600?86:160),room=Math.max(0,vw/2-w-12),x=who===WHO?12+Math.random()*room:vw-w-12-Math.random()*room;d.style.left=Math.max(8,x)+'px';d.style.width=w+'px'}
   d.innerHTML=`${txt?`<span class="rxtxt">${esc(txt)}</span>`:''}${rxHtml(e)}<span class="rxn c${who}">${esc(emo(who)+' '+nm(who))}</span>`;if(txt)d.classList.add('long');document.body.appendChild(d);if(txt&&isCpu(who)){const tx=d.querySelector('.rxtxt');if(tx){tx.textContent='a escrever…';tx.classList.add('typing');setTimeout(()=>{tx.textContent=txt;tx.classList.remove('typing')},750)}}setTimeout(()=>d.remove(),txt?4800:3800)}
 function react(e){const now=Date.now();if(now-RX.last<900)return;RX.last=now;profAdd('stk');RX.open=false;document.querySelector('.rxwrap')?.classList.remove('open');
   const k=P(WHO);RX.seen[k]=now;rxFloat(e,WHO);
@@ -6365,7 +6365,7 @@ if(!PETL.raf)PETL.raf=requestAnimationFrame(plTick);
 
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795867400';
+const BUILD='1795867535';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
@@ -6597,6 +6597,12 @@ main.view:has(.ondagrid) .actions{position:sticky;bottom:0;z-index:20;margin:8px
  .cosides .coside2:not(.mine) .olink{display:none!important}
  .cosides .coside2 .coshead h3{font-size:.95rem;margin:0}
 }
+
+/* a ordenar o álbum: stickers e mensagens ficam em cima, sobre o título, sem tapar a lista */
+body.has-dock .rxfloat{top:calc(4px + env(safe-area-inset-top))!important;bottom:auto!important;left:8px!important;right:8px!important;width:auto!important;margin:0 auto;max-width:460px;flex-direction:row!important;justify-content:center;gap:8px;animation:none!important;opacity:1}
+body.has-dock .rxfloat .rxtxt{margin:0!important;max-width:290px!important;border-radius:14px}
+body.has-dock .rxfloat .rxs,body.has-dock .rxfloat img{width:48px!important;height:48px!important}
+body.has-dock .rxfloat .rxn{display:none}
 </style>
 </body>
 </html>
