@@ -6337,7 +6337,7 @@ if(!PETL.raf)PETL.raf=requestAnimationFrame(plTick);
 
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795865034';
+const BUILD='1795866391';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
@@ -6412,6 +6412,31 @@ body>div:has(>main.view .banca){padding-bottom:0!important}
 /* jogo do álbum no telemóvel: ordenar sem sair do ecrã, com estilo, energia e tema sempre à vista */
 .ogrid{grid-template-columns:minmax(0,1fr)!important}
 .ogrid>*{min-width:0}
+/* computador: lista à esquerda e pontuação sempre à vista à direita, sem descer a página */
+@media(min-width:821px){
+ .ogrid{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)!important;gap:14px!important}
+ main.view:has(.ogrid) .pedido{padding:6px 14px!important;margin-bottom:6px!important}
+ main.view:has(.ogrid) .tot-head{padding:0!important;margin:0 0 8px!important}
+ main.view:has(.ogrid) .tot-head h2{font-size:1.5rem!important;margin:0!important;line-height:1.15}
+ main.view:has(.ogrid) .tot-head h2::after{display:none!important}
+ main.view:has(.ogrid) .tot-head .sub{font-size:.78rem;margin:2px auto 0!important;max-width:none}
+ .ogrid .olist,.ogrid .oside{padding:10px 12px!important}
+ .ogrid .oside{top:64px!important;max-height:calc(100vh - 72px)}
+ .ogrid .oside .timer{margin:0 0 4px}
+ .ogrid .oside .osum>.mono,.ogrid .oside .otot{position:static;background:none}
+ .ogrid .oside .otot{font-size:34px!important;margin:0 0 2px!important;line-height:1.15}
+ .ogrid .oside .ck{padding:4px 0!important}
+ .ogrid .oside .ck div span{font-size:11px;line-height:1.25}
+ .ogrid .oside .btn.full{position:sticky;bottom:0;margin-top:8px!important;padding-top:9px;padding-bottom:9px}
+ .ogrid .oside .hint{margin:4px 0 0}
+}
+@media(min-width:821px) and (max-height:760px){
+ .ogrid .oside .ck div span{display:none}
+ .ogrid .oside .ck.bad div span{display:block}
+ .ogrid .oside .ck{padding:3px 0!important}
+ main.view:has(.ogrid) .tot-head .sub{display:none}
+ .ogrid .olist>label{display:none}
+}
 @media(max-width:600px){
  main.view:has(.ogrid) .pedido{padding:6px 10px!important;margin-bottom:6px!important}
  main.view:has(.ogrid) .pedido>span:last-child{font-size:.74rem;line-height:1.25}
