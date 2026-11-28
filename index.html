@@ -5772,7 +5772,7 @@ function rulesBox(md){
     body=`<p>No fim analiso <b>como montaste o álbum</b>. Estes pontos valem mais do que os duelos!</p>
     <div class="rchips">${C.map((c,i)=>`<button class="rchip ${sel===i?'on':''}" onclick="L.rsel=${i};render()">${c[0]} ${c[1]}</button>`).join('')}</div>
     <div class="rexp"><b>${C[sel][0]} ${C[sel][1]}</b><span>${C[sel][2]}</span></div>`}
-  if(k===5){body=`<div class="rtimes"><div><b>45 s</b><span>para cada escolha</span><i class="rbar"><em style="animation-duration:6s"></em></i></div><div><b>1:05 · 1:30 · 2:00</b><span>para ordenar álbuns de 5, 8 ou 10 músicas</span><i class="rbar"><em style="animation-duration:12s"></em></i></div></div>
+  if(k===5){body=`<div class="rtimes"><div><b>30 s</b><span>para cada escolha</span><i class="rbar"><em style="animation-duration:6s"></em></i></div><div><b>1:05 · 1:30 · 2:00</b><span>para ordenar álbuns de 5, 8 ou 10 músicas</span><i class="rbar"><em style="animation-duration:12s"></em></i></div></div>
     <p class="rsmall">Se o tempo acabar, escolho por ti ou fecho o álbum como está. Os resultados aparecem aos dois ao mesmo tempo.</p>
     <div class="rtie"><div>🤝 <b>Empate?</b><span>Cada um escolhe uma faixa bónus, também em isto ou aquilo.</span></div><div>🪙 <b>Ainda empatado?</b><span>Decide a moeda.</span></div></div>`}
 
@@ -6363,7 +6363,7 @@ if(!PETL.raf)PETL.raf=requestAnimationFrame(plTick);
 
 </script>
 <script>/* aviso de versão nova: compara com o index.html publicado e oferece atualizar */
-const BUILD='1795867078';
+const BUILD='1795867290';
 (function(){let shown=0;async function chk(){if(shown||document.hidden)return;try{const t=await (await fetch(location.pathname+'?v='+Date.now(),{cache:'no-store'})).text(),m=t.match(/const BUILD='(\d+)'/);
  if(m&&m[1]!==BUILD){shown=1;const d=document.createElement('button');d.className='newver';d.textContent='✨ Há uma versão nova do jogo · tocar para atualizar';d.onclick=()=>location.reload();document.body.appendChild(d)}}catch(e){}}
  setTimeout(chk,4000);setInterval(chk,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()})})();</script>
